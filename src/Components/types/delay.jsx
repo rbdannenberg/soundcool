@@ -25,8 +25,8 @@ class Delay extends Component {
     });
   };
 
-  handleKinect = e => {
-    const k = this.state.kinect;
+  handleKinect = () => {
+    const k = this.props.blocks.kinect;
     this.setState({
       kinect: !k
     });
@@ -43,39 +43,51 @@ class Delay extends Component {
       <React.Fragment>
         <div className="card-body">
           <input
-            className="slider m-1"
+            className="slider m-2"
             type="range"
-            onChange={this.handleChangeDelay}
+            style={{ width: "12rem" }}
+            onChange={() => this.props.handleChangeDelay(this.props.block)}
             min={0}
             max={100}
-            value={this.state.delayTime}
+            value={this.props.block.delayTime}
             id="delayTime"
           />
           <label htmlFor="delayTime">
-            {"delay(ms): " + this.state.delayTime}
+            {"delay(ms): " + this.props.block.delayTime}
           </label>
           <input
-            className="slider m-1"
+            className="slider m-2"
             type="range"
-            onChange={this.handleChangeFeedback}
+            style={{ width: "12rem" }}
+            onChange={() => this.props.handleChangeFeedback(this.props.block)}
             step={0.001}
             min={0}
             max={1}
-            value={this.state.feedback}
+            value={this.props.block.feedback}
             id="feedback"
           />
-          <label htmlFor="feedback">{"feedback: " + this.state.feedback}</label>
+          <label htmlFor="feedback">
+            {"feedback: " + this.props.block.feedback}
+          </label>
         </div>
-        <div className="card-footer">
-          <label htmlFor="kinect">Kinect</label>
-          <input
-            type="checkbox"
-            className="m-1"
-            id="kinect"
-            onClick={this.handleKinect}
-          />
-          <label htmlFor="osc">OSC port:</label>
-          <input type="text" id="osc" onChange={this.handleOsc} />
+        <div className="card-footer row">
+          <span className="col-md-4">
+            <label htmlFor="kinect">Kinect</label>
+            <input
+              type="checkbox"
+              className="m-2 "
+              id="kinect"
+              onClick={() => this.props.handleKinect(this.props.block)}
+            />
+            <label htmlFor="osc">OSC port:</label>
+            <input
+              type="text"
+              className="m-2"
+              style={{ height: "1.5rem", width: "4rem" }}
+              id="osc"
+              onChange={() => this.props.handleOsc(this.props.block)}
+            />
+          </span>
         </div>
       </React.Fragment>
     );

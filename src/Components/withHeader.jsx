@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Collapse } from "reactstrap";
+import { FaMinus, FaTimes } from "react-icons/fa";
 
 const withHeader = Block => {
   class WithHeader extends Component {
@@ -10,7 +11,7 @@ const withHeader = Block => {
         <div
           className="card text-white text-left my-2"
           style={{
-            width: "22rem",
+            width: "24rem",
             backgroundColor: b.color,
             textDecorationColor: "black"
           }}
@@ -32,32 +33,34 @@ const withHeader = Block => {
             >
               <h5>{this.props.block.typename}</h5>
             </span>
-            <button
-              id="collapseButton"
-              className="btn btn-light float-right m-1 btn-sm"
-              onClick={() => this.props.collapse(this.props.block)}
-            >
-              _
-            </button>
-            <button
-              id="closeButton"
-              className="btn btn-light float-right m-1 btn-sm"
-              onClick={() => this.props.onDelete(this.props.block.id)}
-            >
-              X
-            </button>
+            <span className="float-right">
+              <button
+                id="collapseButton"
+                className="btn btn-light m-1 btn-sm"
+                onClick={() => this.props.collapse(this.props.block)}
+              >
+                <FaMinus />
+              </button>
 
-            <button
-              id="outButton"
-              className="btn btn-warning badge-right float-right m-1 btn-sm"
-              onClick={() => this.props.onOut(this.props.block)}
-            >
-              Out
-            </button>
-            {/* in\out\name\close */}
+              <button
+                id="closeButton"
+                className="btn btn-light m-1 btn-sm"
+                onClick={() => this.props.onDelete(this.props.block.id)}
+              >
+                <FaTimes />
+              </button>
+
+              <button
+                id="outButton"
+                className="btn btn-warning badge-right float-right m-1 btn-sm"
+                onClick={() => this.props.onOut(this.props.block)}
+              >
+                Out
+              </button>
+            </span>
           </div>
           <Collapse isOpen={this.props.block.collapse}>
-            <Block />
+            <Block block={this.props.block} />
           </Collapse>
         </div>
       );

@@ -4,23 +4,30 @@ import withHeader from "./withHeader";
 
 class Blocks extends Component {
   state = {};
+
+  eva = typeName => {
+    let t;
+    switch (typeName) {
+      case "Delay":
+        t = Delay;
+        break;
+      case "Transposer":
+        t = Transposer;
+        break;
+      case "Pan":
+        t = Pan;
+        break;
+      default:
+        t = Delay;
+    }
+    return t;
+  };
+
   render() {
     return (
       <div>
         {this.props.blocks.map(b => {
-          let t;
-          switch (b.typename) {
-            case "Delay":
-              t = Delay;
-              break;
-            case "Transposer":
-              t = Transposer;
-              break;
-            case "Pan":
-              t = Pan;
-              break;
-          }
-          const Wrapper = withHeader(t);
+          const Wrapper = withHeader(this.eva(b.typename));
           return (
             <Wrapper
               key={b.id}

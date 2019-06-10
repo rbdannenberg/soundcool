@@ -5,7 +5,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import $ from "jquery";
+// import $ from "jquery";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

@@ -10,6 +10,7 @@
     "react": "^16.8.6",
     "react-bootstrap-slider": "^1.1.7",
     "react-dom": "^16.8.6",
+    "react-icons": "^3.7.0",
     "react-input-range": "^1.3.0",
     "react-rangeslider": "^2.2.0",
     "react-scripts": "3.0.1",

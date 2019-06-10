@@ -14,11 +14,15 @@ class App extends Component {
         Type: Delay,
         in: null,
         out: null,
-        collpse: false
+        collpse: false,
+        delayTime: 76,
+        feedback: 0.119,
+        kinect: false,
+        osc: 0
       },
       {
         id: 2,
-        name: "D2",
+        name: "P1",
         typename: "Pan",
         Type: Pan,
         in: null,
@@ -27,7 +31,7 @@ class App extends Component {
       },
       {
         id: 3,
-        name: "D3",
+        name: "T1",
         typename: "Transposer",
         Type: Transposer,
         in: null,
@@ -36,7 +40,7 @@ class App extends Component {
       },
       {
         id: 4,
-        name: "D4",
+        name: "D2",
         typename: "Delay",
         Type: Delay,
         in: null,
@@ -46,9 +50,30 @@ class App extends Component {
     ],
     nowIn: null,
     nowOut: null,
-    nowId: 5
+    nowId: 5,
+    nowCount: { Delay: 3, Transposer: 2, Pan: 2 }
   };
 
+  eva = typeName => {
+    let t;
+    switch (typeName) {
+      case "Delay":
+        t = Delay;
+        break;
+      case "Transposer":
+        t = Transposer;
+        break;
+      case "Pan":
+        t = Pan;
+        break;
+      default:
+        t = Delay;
+    }
+    return t;
+  };
+
+  // Blocks property methods
+  // #region
   handleDelete = id => {
     const blocks = this.state.blocks.filter(c => c.id !== id);
     this.setState({ blocks });
@@ -85,53 +110,58 @@ class App extends Component {
     this.setState(JSON.parse(state));
   };
 
-  handleNewDelay = () => {
+  handleNew = typeName => {
     const newB = {
       id: this.state.nowId,
-      name: "D" + this.state.nowId,
-      typename: "Delay",
-      Type: Delay,
+      name: typeName.charAt(0) + this.state.nowCount[typeName],
+      typename: typeName,
+      Type: this.eva(typeName),
       in: null,
       out: null,
       collpse: false
     };
     const blocks = this.state.blocks;
     const newId = this.state.nowId + 1;
+    const c = this.state.nowCount;
+    c[typeName] = c[typeName] + 1;
+    const newCount = c;
     blocks.push(newB);
-    this.setState({ blocks, nowId: newId });
+    this.setState({ blocks, nowId: newId, nowCount: newCount });
+  };
+  // #endregion
+
+  // Delay property methods
+  // #region
+  handleChangeDelay = (e, b) => {
+    const blocks = { ...this.state.blocks };
+    const index = this.state.blocks.indexOf(b);
+    blocks[index] = { ...b };
+    blocks[index].delayTime = e.target.value;
+    this.setState({
+      blocks
+    });
   };
 
-  handleNewTransposer = () => {
-    const newB = {
-      id: this.state.nowId,
-      name: "T" + this.state.nowId,
-      typename: "Transposer",
-      Type: Transposer,
-      in: null,
-      out: null,
-      collpse: false
-    };
-    const blocks = this.state.blocks;
-    const newId = this.state.nowId + 1;
-    blocks.push(newB);
-    this.setState({ blocks, nowId: newId });
+  handleChangeFeedback = e => {
+    this.setState({
+      feedback: e.target.value
+    });
   };
 
-  handleNewPan = () => {
-    const newB = {
-      id: this.state.nowId,
-      name: "P" + this.state.nowId,
-      typename: "Pan",
-      Type: Pan,
-      in: null,
-      out: null,
-      collpse: false
-    };
-    const blocks = this.state.blocks;
-    const newId = this.state.nowId + 1;
-    blocks.push(newB);
-    this.setState({ blocks, nowId: newId });
+  handleKinect = e => {
+    const k = this.props.blocks.kinect;
+    this.setState({
+      kinect: !k
+    });
   };
+
+  handleOsc = e => {
+    this.setState({
+      osc: e.target.value
+    });
+  };
+
+  // #endregion
 
   render() {
     return (
@@ -142,9 +172,6 @@ class App extends Component {
         <button className="btn btn-info m-2" onClick={this.handleShow}>
           Load Saved
         </button>
-        {/* <button className="btn btn-info m-2" onClick={this.handleNew}>
-          New
-        </button> */}
         <div class="dropdown">
           <button
             className="btn btn-info m-2 dropdown-toggle"
@@ -156,13 +183,16 @@ class App extends Component {
             New
           </button>
           <div class="dropdown-menu" aria-labelledby="New Dropdown">
-            <div class="dropdown-item" onClick={this.handleNewDelay}>
+            <div class="dropdown-item" onClick={() => this.handleNew("Delay")}>
               Delay
             </div>
-            <div class="dropdown-item" onClick={this.handleNewTransposer}>
+            <div
+              class="dropdown-item"
+              onClick={() => this.handleNew("Transposer")}
+            >
               Transposer
             </div>
-            <div class="dropdown-item" onClick={this.handleNewPan}>
+            <div class="dropdown-item" onClick={() => this.handleNew("Pan")}>
               Pan
             </div>
           </div>
