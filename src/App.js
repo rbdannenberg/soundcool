@@ -80,13 +80,15 @@ class App extends Component {
   };
 
   handleIn = b => {
-    const blocks = [...this.state.blocks];
-    const index = blocks.indexOf(b);
     this.setState({ nowIn: b });
     const thisIn = this.state.nowOut === (null || b) ? null : this.state.nowOut;
-    blocks[index] = { ...b };
-    blocks[index].in = thisIn;
-    this.setState({ blocks });
+    const bs = this.state.blocks.map(block => {
+      if (block === b) {
+        block.in = thisIn;
+      }
+      return block;
+    });
+    this.setState({ blocks: bs });
   };
 
   handleOut = b => {
@@ -94,11 +96,13 @@ class App extends Component {
   };
 
   handleCollapse = b => {
-    const blocks = [...this.state.blocks];
-    const index = blocks.indexOf(b);
-    blocks[index] = { ...b };
-    blocks[index].collapse = !blocks[index].collapse;
-    this.setState({ blocks });
+    const bs = this.state.blocks.map(block => {
+      if (block === b) {
+        block.collapse = !block.collapse;
+      }
+      return block;
+    });
+    this.setState({ blocks: bs });
   };
 
   handleSave = () => {
@@ -128,39 +132,6 @@ class App extends Component {
     blocks.push(newB);
     this.setState({ blocks, nowId: newId, nowCount: newCount });
   };
-  // #endregion
-
-  // Delay property methods
-  // #region
-  handleChangeDelay = (e, b) => {
-    const blocks = { ...this.state.blocks };
-    const index = this.state.blocks.indexOf(b);
-    blocks[index] = { ...b };
-    blocks[index].delayTime = e.target.value;
-    this.setState({
-      blocks
-    });
-  };
-
-  handleChangeFeedback = e => {
-    this.setState({
-      feedback: e.target.value
-    });
-  };
-
-  handleKinect = e => {
-    const k = this.props.blocks.kinect;
-    this.setState({
-      kinect: !k
-    });
-  };
-
-  handleOsc = e => {
-    this.setState({
-      osc: e.target.value
-    });
-  };
-
   // #endregion
 
   render() {

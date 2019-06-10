@@ -46,29 +46,27 @@ class Delay extends Component {
             className="slider m-2"
             type="range"
             style={{ width: "12rem" }}
-            onChange={() => this.props.handleChangeDelay(this.props.block)}
+            onChange={this.handleChangeDelay}
             min={0}
             max={100}
-            value={this.props.block.delayTime}
+            value={this.state.delayTime}
             id="delayTime"
           />
           <label htmlFor="delayTime">
-            {"delay(ms): " + this.props.block.delayTime}
+            {"delay(ms): " + this.state.delayTime}
           </label>
           <input
             className="slider m-2"
             type="range"
             style={{ width: "12rem" }}
-            onChange={() => this.props.handleChangeFeedback(this.props.block)}
+            onChange={this.handleChangeFeedback}
             step={0.001}
             min={0}
             max={1}
-            value={this.props.block.feedback}
+            value={this.state.feedback}
             id="feedback"
           />
-          <label htmlFor="feedback">
-            {"feedback: " + this.props.block.feedback}
-          </label>
+          <label htmlFor="feedback">{"feedback: " + this.state.feedback}</label>
         </div>
         <div className="card-footer row">
           <span className="col-md-4">
@@ -77,7 +75,7 @@ class Delay extends Component {
               type="checkbox"
               className="m-2 "
               id="kinect"
-              onClick={() => this.props.handleKinect(this.props.block)}
+              onClick={this.handleKinect}
             />
             <label htmlFor="osc">OSC port:</label>
             <input
@@ -85,7 +83,7 @@ class Delay extends Component {
               className="m-2"
               style={{ height: "1.5rem", width: "4rem" }}
               id="osc"
-              onChange={() => this.props.handleOsc(this.props.block)}
+              onChange={this.handleOsc}
             />
           </span>
         </div>
