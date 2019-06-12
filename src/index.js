@@ -24,11 +24,60 @@ const block = (state, action) => {
       };
     case "CHANGE_BLOCK":
       if (state.id === action.id) {
-        state.collapse = !state.collapse;
+        // state.collapse = !state.collapse;
+        {
+          if (action.value === undefined) {
+            state[action.field] = !state[action.field];
+          } else {
+            state[action.field] = action.value;
+          }
+        }
         return state;
       } else {
         return state;
       }
+    // deal with breaking connections when blocks are deleted
+    case "DELETE_BLOCK":
+      console.log("here");
+      let newInNode;
+      let newOutNode;
+      if (
+        state.inNode !== undefined &&
+        action.blocks.filter(t => t.name === state.inNode).length === 0
+      ) {
+        console.log("checkpoint 1");
+        newInNode = undefined;
+      } else {
+        console.log("checkpoint 2");
+        newInNode = state.inNode;
+      }
+      if (
+        state.outNode !== undefined &&
+        action.blocks.filter(t => t.name === state.outNode).length === 0
+      ) {
+        console.log("checkpoint 3");
+        newOutNode = undefined;
+      } else {
+        console.log("checkpoint 4");
+        newOutNode = state.outNode;
+      }
+      return { ...state, inNode: newInNode, outNode: newOutNode };
+
+    case "CONNECTING_BLOCK":
+      if (state.name === action.nowIn) {
+        if (state.name === action.nowOut) {
+          return state;
+        } else {
+          return { ...state, inNode: action.nowOut };
+        }
+      } else {
+        if (state.name == action.nowOut) {
+          return { ...state, outNode: action.nowIn };
+        } else {
+          return state;
+        }
+      }
+
     default:
       return state;
   }
@@ -36,10 +85,16 @@ const block = (state, action) => {
 
 const allTypes = { Delay: 1, Transposer: 1, Pan: 1 };
 const blocks = (
-  state = { bs: [], nextBlockId: 1, nextTypeId: allTypes },
+  state = {
+    bs: [],
+    nextBlockId: 1,
+    nextTypeId: allTypes,
+    nowIn: undefined,
+    nowOut: undefined
+  },
   action
 ) => {
-  let { bs, nextBlockId, nextTypeId } = state;
+  let { bs, nextBlockId, nextTypeId, nowIn, nowOut } = state;
   switch (action.type) {
     case "ADD_BLOCK": {
       // add the count information into action, so block knows the count when newing
@@ -48,6 +103,8 @@ const blocks = (
       let newTypeId = typeIds[action.typeName]++;
       let newAction = { ...action, newId, newTypeId };
       return {
+        nowIn,
+        nowOut,
         bs: [...bs, block(undefined, newAction)],
         nextBlockId: newId + 1,
         nextTypeId: typeIds
@@ -55,10 +112,44 @@ const blocks = (
     }
     case "CHANGE_BLOCK":
       return {
-        bs: state.bs.map(t => block(t, action)),
         nextBlockId,
-        nextTypeId
+        nextTypeId,
+        nowIn,
+        nowOut,
+        bs: bs.map(t => block(t, action))
       };
+    case "DELETE_BLOCK":
+      let filteredBs = bs.filter(t => t.id !== action.id);
+      let newBs = filteredBs.map(t =>
+        block(t, { ...action, blocks: filteredBs })
+      );
+      return {
+        nextBlockId,
+        nextTypeId,
+        nowIn,
+        nowOut,
+        bs: newBs
+      };
+    case "CONNECTING_BLOCK":
+      let s = { ...state };
+      // in or out?
+      s[action.node] = action.value;
+      // if both nowIn and nowOut are assigned and the blocks exists
+      if (
+        s.nowIn !== undefined &&
+        s.nowOut !== undefined &&
+        s.bs.filter(t => t.name === s.nowIn).length === 1 &&
+        s.bs.filter(t => t.name === s.nowOut).length === 1
+      ) {
+        return {
+          ...s,
+          bs: s.bs.map(t =>
+            block(t, { ...action, nowIn: s.nowIn, nowOut: s.nowOut })
+          )
+        };
+      } else {
+        return s;
+      }
 
     default:
       return state;
@@ -115,7 +206,7 @@ const Block = ({ block, onClick, completed }) => {
   let { typeName, name, id, outNode, inNode, collapse } = block;
   return (
     <div
-      className="card text-white text-left my-2"
+      className="card text-left my-2"
       style={{
         width: "24rem",
         // backgroundColor: b.color,
@@ -126,9 +217,15 @@ const Block = ({ block, onClick, completed }) => {
         <button
           id="inButton"
           className="btn btn-warning m-1 btn-sm"
-          // onClick={() => this.props.onIn(this.props.block)}
+          onClick={() => {
+            store.dispatch({
+              type: "CONNECTING_BLOCK",
+              node: "nowIn",
+              value: name
+            });
+          }}
         >
-          {inNode === null ? "In" : inNode.name}
+          {inNode === undefined ? "In" : inNode}
         </button>
         <span className="m-2" id="blockName">
           {name}
@@ -143,7 +240,9 @@ const Block = ({ block, onClick, completed }) => {
             onClick={() =>
               store.dispatch({
                 type: "CHANGE_BLOCK",
-                id: id
+                id: id,
+                field: "collapse",
+                value: undefined
               })
             }
           >
@@ -153,7 +252,14 @@ const Block = ({ block, onClick, completed }) => {
           <button
             id="closeButton"
             className="btn btn-light m-1 btn-sm"
-            // onClick={() => this.props.onDelete(this.props.block.id)}
+            onClick={() =>
+              store.dispatch({
+                type: "DELETE_BLOCK",
+                id: id,
+                field: undefined,
+                value: undefined
+              })
+            }
           >
             <FaTimes />
           </button>
@@ -161,9 +267,15 @@ const Block = ({ block, onClick, completed }) => {
           <button
             id="outButton"
             className="btn btn-warning badge-right float-right m-1 btn-sm"
-            // onClick={() => this.props.onOut(this.props.block)}
+            onClick={() =>
+              store.dispatch({
+                type: "CONNECTING_BLOCK",
+                node: "nowOut",
+                value: name
+              })
+            }
           >
-            Out
+            {outNode === undefined ? "Out" : outNode}
           </button>
         </span>
       </div>
@@ -206,13 +318,13 @@ const AddBlock = () => {
                 typeName: "Delay",
                 // id: nextBlockId++,
                 values: {
-                  inNode: null,
-                  outNode: null,
-                  collpse: false,
+                  inNode: undefined,
+                  outNode: undefined,
+                  collapse: false,
                   delayTime: 76,
                   feedback: 0.119,
                   kinect: false,
-                  osc: 0
+                  osc: undefined
                 }
               })
             }
@@ -227,12 +339,12 @@ const AddBlock = () => {
                 typeName: "Transposer",
                 // id: nextBlockId++,
                 values: {
-                  inNode: null,
-                  outNode: null,
-                  collpse: false,
+                  inNode: undefined,
+                  outNode: undefined,
+                  collapse: false,
                   buttonCents: 0,
                   sliderCents: 0,
-                  osc: 0
+                  osc: undefined
                 }
               })
             }
@@ -247,12 +359,12 @@ const AddBlock = () => {
                 typeName: "Pan",
                 // id: nextBlockId++,
                 values: {
-                  inNode: null,
-                  outNode: null,
-                  collpse: false,
+                  inNode: undefined,
+                  outNode: undefined,
+                  collapse: false,
                   direction: 0,
                   kinect: false,
-                  osc: 0
+                  osc: undefined
                 }
               })
             }
@@ -297,12 +409,11 @@ const Footer = ({ visibilityFilter, onFilterClick }) => {
 // #endregion
 
 const BlockApp = ({ blocks, visibilityFilter }) => {
-  let { bs, nextBlockId, nextTypeId } = blocks;
+  let { bs, nextBlockId, nextTypeId, nowIn, nowOut } = blocks;
   return (
     <div>
       <AddBlock />
       <BlockList
-        // blocks={getVisibleBlocks(blocks, visibilityFilter)}
         blocks={bs}
         onBlockClick={id => {
           store.dispatch({
