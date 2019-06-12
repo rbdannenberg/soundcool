@@ -14,11 +14,11 @@ class App extends Component {
         Type: Delay,
         in: null,
         out: null,
-        collpse: false,
-        delayTime: 76,
-        feedback: 0.119,
-        kinect: false,
-        osc: 0
+        collpse: false
+        // delayTime: 76,
+        // feedback: 0.119,
+        // kinect: false,
+        // osc: 0
       },
       {
         id: 2,

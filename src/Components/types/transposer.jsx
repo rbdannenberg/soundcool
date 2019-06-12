@@ -57,7 +57,7 @@ class Transposer extends Component {
       <React.Fragment>
         <div className="card-body">
           <label htmlFor="cents" className="float-right">
-            {c}
+            {"Cents: " + c}
           </label>
           <div className="text-center">
             <input
