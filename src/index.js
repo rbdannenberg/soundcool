@@ -1,14 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+// import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import { Delay, Transposer, Pan } from "./Components/types/all";
-import { FaMinus, FaTimes } from "react-icons/fa";
-import { Collapse } from "reactstrap";
-
+// import { Delay, Transposer, Pan } from "./Components/types/all";
+import WithHeader from "../src/Components/withHeader";
 import { createStore, combineReducers } from "redux";
 
 // #region reducers
@@ -24,10 +22,11 @@ const block = (state, action) => {
       };
     case "CHANGE_BLOCK":
       if (state.id === action.id) {
-        // state.collapse = !state.collapse;
         {
           if (action.value === undefined) {
             state[action.field] = !state[action.field];
+          } else if (action.relative) {
+            state[action.field] = state[action.field] + action.value;
           } else {
             state[action.field] = action.value;
           }
@@ -45,20 +44,16 @@ const block = (state, action) => {
         state.inNode !== undefined &&
         action.blocks.filter(t => t.name === state.inNode).length === 0
       ) {
-        console.log("checkpoint 1");
         newInNode = undefined;
       } else {
-        console.log("checkpoint 2");
         newInNode = state.inNode;
       }
       if (
         state.outNode !== undefined &&
         action.blocks.filter(t => t.name === state.outNode).length === 0
       ) {
-        console.log("checkpoint 3");
         newOutNode = undefined;
       } else {
-        console.log("checkpoint 4");
         newOutNode = state.outNode;
       }
       return { ...state, inNode: newInNode, outNode: newOutNode };
@@ -71,7 +66,7 @@ const block = (state, action) => {
           return { ...state, inNode: action.nowOut };
         }
       } else {
-        if (state.name == action.nowOut) {
+        if (state.name === action.nowOut) {
           return { ...state, outNode: action.nowIn };
         } else {
           return state;
@@ -172,6 +167,7 @@ const blockApp = combineReducers({
 // #endregion
 
 const store = createStore(blockApp);
+export default store;
 
 const FilterLink = ({ filter, currentFilter, children, onClick }) => {
   if (filter === currentFilter) {
@@ -202,95 +198,12 @@ const getVisibleBlocks = (blocks, filter) => {
 };
 
 // #region rendering components
-const Block = ({ block, onClick, completed }) => {
-  let { typeName, name, id, outNode, inNode, collapse } = block;
-  return (
-    <div
-      className="card text-left my-2"
-      style={{
-        width: "24rem",
-        // backgroundColor: b.color,
-        textDecorationColor: "black"
-      }}
-    >
-      <div className="card-header">
-        <button
-          id="inButton"
-          className="btn btn-warning m-1 btn-sm"
-          onClick={() => {
-            store.dispatch({
-              type: "CONNECTING_BLOCK",
-              node: "nowIn",
-              value: name
-            });
-          }}
-        >
-          {inNode === undefined ? "In" : inNode}
-        </button>
-        <span className="m-2" id="blockName">
-          {name}
-        </span>
-        <span className="badge badge-secondary badge-pill m-1" id="typeName">
-          <h5>{typeName}</h5>
-        </span>
-        <span className="float-right">
-          <button
-            id="collapseButton"
-            className="btn btn-light m-1 btn-sm"
-            onClick={() =>
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "collapse",
-                value: undefined
-              })
-            }
-          >
-            <FaMinus />
-          </button>
-
-          <button
-            id="closeButton"
-            className="btn btn-light m-1 btn-sm"
-            onClick={() =>
-              store.dispatch({
-                type: "DELETE_BLOCK",
-                id: id,
-                field: undefined,
-                value: undefined
-              })
-            }
-          >
-            <FaTimes />
-          </button>
-
-          <button
-            id="outButton"
-            className="btn btn-warning badge-right float-right m-1 btn-sm"
-            onClick={() =>
-              store.dispatch({
-                type: "CONNECTING_BLOCK",
-                node: "nowOut",
-                value: name
-              })
-            }
-          >
-            {outNode === undefined ? "Out" : outNode}
-          </button>
-        </span>
-      </div>
-      <Collapse isOpen={collapse}>
-        <p style={{ backgroundColor: "black" }}>ggg</p>
-      </Collapse>
-    </div>
-  );
-};
 
 const BlockList = ({ blocks, onBlockClick }) => {
   return (
     <React.Fragment>
       {blocks.map(b => (
-        <Block key={b.id} block={b} onClick={() => onBlockClick(b.id)} />
+        <WithHeader key={b.id} blockInfo={b} />
       ))}
     </React.Fragment>
   );
@@ -409,7 +322,7 @@ const Footer = ({ visibilityFilter, onFilterClick }) => {
 // #endregion
 
 const BlockApp = ({ blocks, visibilityFilter }) => {
-  let { bs, nextBlockId, nextTypeId, nowIn, nowOut } = blocks;
+  let { bs } = blocks;
   return (
     <div>
       <AddBlock />
