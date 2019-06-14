@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Delay, Transposer, Pan } from "./types/all";
-import withHeader from "./withHeader";
+import withHeader from "./WithHeader";
 
 class Blocks extends Component {
   state = {};

@@ -8,6 +8,7 @@ import "bootstrap/dist/js/bootstrap.js";
 // import { Delay, Transposer, Pan } from "./Components/types/all";
 import WithHeader from "./Components/WithHeader";
 import AddBlock from "./Components/AddBlock";
+import SLButton from "./Components/SLButton";
 import blocks from "./reducers/blocks";
 import { createStore, combineReducers } from "redux";
 
@@ -106,6 +107,7 @@ const BlockApp = ({ blocks, visibilityFilter }) => {
   let { bs } = blocks;
   return (
     <div>
+      <SLButton />
       <AddBlock />
       <BlockList
         blocks={bs}

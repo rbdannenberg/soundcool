@@ -67,7 +67,12 @@ const blocks = (
       } else {
         return s;
       }
-
+    case "SAVE_STATE":
+      localStorage.setItem("myState", JSON.stringify(state));
+      return state;
+    case "LOAD_STATE":
+      let newState = localStorage.getItem("myState");
+      return JSON.parse(newState);
     default:
       return state;
   }
