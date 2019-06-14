@@ -1,6 +1,6 @@
-import Delay from "./delay";
-import Transposer from "./transposer";
-import Pan from "./pan";
+import Delay from "./Delay";
+import Transposer from "./Transposer";
+import Pan from "./Pan";
 
 export { Delay };
 export { Transposer };

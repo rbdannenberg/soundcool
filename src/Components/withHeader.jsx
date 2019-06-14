@@ -23,14 +23,14 @@ const eva = typeName => {
 };
 
 const WithHeader = ({ blockInfo }) => {
-  let { typeName, name, id, outNode, inNode, collapse } = blockInfo;
+  let { typeName, name, id, outNode, inNode, collapse, color } = blockInfo;
   const Block = eva(typeName);
   return (
     <div
       className="card text-left my-2"
       style={{
         width: "24rem",
-        // backgroundColor: b.color,
+        backgroundColor: color,
         textDecorationColor: "black"
       }}
     >
