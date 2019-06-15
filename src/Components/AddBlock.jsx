@@ -101,6 +101,28 @@ const AddBlock = () => {
           >
             Player
           </div>
+          <div
+            class="dropdown-item"
+            onClick={() =>
+              store.dispatch({
+                type: "ADD_BLOCK",
+                typeName: "SignalGen",
+                values: {
+                  inDisAbled: true,
+                  inNode: undefined,
+                  outNode: undefined,
+                  collapse: false,
+                  color: "mediumturquoise",
+                  frequency: 440,
+                  waveform: "Silence",
+                  kinect: false,
+                  osc: undefined
+                }
+              })
+            }
+          >
+            SignalGen
+          </div>
         </div>
       </div>
     </React.Fragment>
