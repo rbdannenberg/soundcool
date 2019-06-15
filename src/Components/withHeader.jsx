@@ -1,7 +1,15 @@
 import React from "react";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
-import { Delay, Transposer, Pan, Player, SignalGen } from "./types/all";
+import {
+  Delay,
+  Transposer,
+  Pan,
+  Player,
+  SignalGen,
+  Speaker,
+  DirectInput
+} from "./types/all";
 import store from "../index";
 
 const eva = typeName => {
@@ -21,6 +29,12 @@ const eva = typeName => {
       break;
     case "SignalGen":
       t = SignalGen;
+      break;
+    case "Speaker":
+      t = Speaker;
+      break;
+    case "DirectInput":
+      t = DirectInput;
       break;
     default:
       t = <span>No setup yet!</span>;

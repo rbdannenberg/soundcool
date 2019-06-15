@@ -10,8 +10,17 @@ const changeWaveform = (w, id) => {
   });
 };
 
+const changeMod = (w, id) => {
+  store.dispatch({
+    type: "CHANGE_BLOCK",
+    id: id,
+    field: "mod",
+    value: w
+  });
+};
+
 const SignalGen = ({ blockInfo }) => {
-  let { id, frequency, waveform } = blockInfo;
+  let { id, frequency, waveform, mod } = blockInfo;
   return (
     <React.Fragment>
       <div className="card-body">
@@ -34,58 +43,88 @@ const SignalGen = ({ blockInfo }) => {
         />
         <label htmlFor="frequency">{"Frequency(hz): " + frequency}</label>
 
-        <div class="dropdown">
-          <button
-            className="btn btn-info m-2 dropdown-toggle"
-            id="New Dropdown"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {waveform}
-          </button>
-          <div class="dropdown-menu" aria-labelledby="New Dropdown">
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Silence", id)}
+        <div className="row">
+          <div class="dropdown">
+            <button
+              className="btn btn-info m-2 dropdown-toggle"
+              id="waveform dropdown"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
             >
-              Silence
+              {waveform}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="waveform dropdown">
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Silence", id)}
+              >
+                Silence
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Sine Wave", id)}
+              >
+                Sine Wave
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Triangle", id)}
+              >
+                Triangle
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Square", id)}
+              >
+                Square
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Sawtooth", id)}
+              >
+                Sawtooth
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("White Noise", id)}
+              >
+                White Noise
+              </div>
+              <div
+                class="dropdown-item"
+                onClick={() => changeWaveform("Pink Noise", id)}
+              >
+                Pink Noise
+              </div>
             </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Sine Wave", id)}
+          </div>
+          <div class="dropdown">
+            <button
+              className="btn btn-info m-2 dropdown-toggle"
+              id="mod dropdown"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
             >
-              Sine Wave
-            </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Triangle", id)}
-            >
-              Triangle
-            </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Square", id)}
-            >
-              Square
-            </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Sawtooth", id)}
-            >
-              Sawtooth
-            </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("White Noise", id)}
-            >
-              White Noise
-            </div>
-            <div
-              class="dropdown-item"
-              onClick={() => changeWaveform("Pink Noise", id)}
-            >
-              Pink Noise
+              {mod}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="mod dropdown">
+              <div
+                class="dropdown-item"
+                onClick={() => changeMod("No Mod", id)}
+              >
+                No Mod
+              </div>
+              <div class="dropdown-item" onClick={() => changeMod("RM", id)}>
+                RM
+              </div>
+              <div class="dropdown-item" onClick={() => changeMod("AM", id)}>
+                AM
+              </div>
+              <div class="dropdown-item" onClick={() => changeMod("FM", id)}>
+                FM
+              </div>
             </div>
           </div>
         </div>

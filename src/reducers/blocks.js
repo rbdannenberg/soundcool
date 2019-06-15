@@ -1,6 +1,14 @@
 import block from "./block";
 
-const allTypes = { Delay: 1, Transposer: 1, Pan: 1, Player: 1, SignalGen: 1 };
+const allTypes = {
+  Delay: 1,
+  Transposer: 1,
+  Pan: 1,
+  Player: 1,
+  SignalGen: 1,
+  Speaker: 1,
+  DirectInput: 1
+};
 const blocks = (
   state = {
     bs: [],
