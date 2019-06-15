@@ -1,7 +1,7 @@
 import React from "react";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
-import { Delay, Transposer, Pan } from "./types/all";
+import { Delay, Transposer, Pan, Player } from "./types/all";
 import store from "../index";
 
 const eva = typeName => {
@@ -16,15 +16,71 @@ const eva = typeName => {
     case "Pan":
       t = Pan;
       break;
+    case "Player":
+      t = Player;
+      break;
     default:
-      t = Delay;
+      t = <span>No setup yet!</span>;
   }
   return t;
 };
 
 const WithHeader = ({ blockInfo }) => {
-  let { typeName, name, id, outNode, inNode, collapse, color } = blockInfo;
+  let {
+    typeName,
+    name,
+    id,
+    inDisabled,
+    outDisabled,
+    outNode,
+    inNode,
+    collapse,
+    color
+  } = blockInfo;
   const Block = eva(typeName);
+  let inButton;
+  let outButton;
+
+  if (inDisabled) {
+    inButton = <span />;
+  } else {
+    inButton = (
+      <button
+        id="inButton"
+        className="btn btn-warning m-1 btn-sm"
+        onClick={() => {
+          store.dispatch({
+            type: "CONNECTING_BLOCK",
+            node: "nowIn",
+            value: name
+          });
+        }}
+      >
+        {inNode === undefined ? "In" : inNode}
+      </button>
+    );
+  }
+
+  if (outDisabled) {
+    outButton = <span />;
+  } else {
+    outButton = (
+      <button
+        id="outButton"
+        className="btn btn-warning badge-right float-right m-1 btn-sm"
+        onClick={() =>
+          store.dispatch({
+            type: "CONNECTING_BLOCK",
+            node: "nowOut",
+            value: name
+          })
+        }
+      >
+        {outNode === undefined ? "Out" : outNode}
+      </button>
+    );
+  }
+
   return (
     <div
       className="card text-left my-2"
@@ -35,19 +91,7 @@ const WithHeader = ({ blockInfo }) => {
       }}
     >
       <div className="card-header">
-        <button
-          id="inButton"
-          className="btn btn-warning m-1 btn-sm"
-          onClick={() => {
-            store.dispatch({
-              type: "CONNECTING_BLOCK",
-              node: "nowIn",
-              value: name
-            });
-          }}
-        >
-          {inNode === undefined ? "In" : inNode}
-        </button>
+        {inButton}
         <span className="m-2" id="blockName">
           {name}
         </span>
@@ -84,20 +128,7 @@ const WithHeader = ({ blockInfo }) => {
           >
             <FaTimes />
           </button>
-
-          <button
-            id="outButton"
-            className="btn btn-warning badge-right float-right m-1 btn-sm"
-            onClick={() =>
-              store.dispatch({
-                type: "CONNECTING_BLOCK",
-                node: "nowOut",
-                value: name
-              })
-            }
-          >
-            {outNode === undefined ? "Out" : outNode}
-          </button>
+          {outButton}
         </span>
       </div>
       <Collapse isOpen={collapse}>

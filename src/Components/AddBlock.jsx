@@ -21,7 +21,6 @@ const AddBlock = () => {
               store.dispatch({
                 type: "ADD_BLOCK",
                 typeName: "Delay",
-                // id: nextBlockId++,
                 values: {
                   inNode: undefined,
                   outNode: undefined,
@@ -78,6 +77,29 @@ const AddBlock = () => {
             }
           >
             Pan
+          </div>
+          <div
+            class="dropdown-item"
+            onClick={() =>
+              store.dispatch({
+                type: "ADD_BLOCK",
+                typeName: "Player",
+                // id: nextBlockId++,
+                values: {
+                  inDisAbled: true,
+                  inNode: undefined,
+                  outNode: undefined,
+                  collapse: false,
+                  color: "lightcoral",
+                  playing: false,
+                  loop: false,
+                  kinect: false,
+                  osc: undefined
+                }
+              })
+            }
+          >
+            Player
           </div>
         </div>
       </div>
