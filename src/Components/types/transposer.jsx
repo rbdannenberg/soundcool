@@ -2,10 +2,11 @@ import React from "react";
 import store from "../../index";
 
 const circleStyle = {
-  width: "2rem",
-  height: "2rem",
+  width: "1.5rem",
+  height: "1.5rem",
   textAlign: "center",
-  fontSize: "12px",
+  fontSize: "10px",
+  textAlign: "center",
   lineHeight: 1.428571429,
   borderRadius: "1rem"
 };
@@ -15,15 +16,19 @@ const Transposer = ({ blockInfo }) => {
   const c = parseInt(buttonCents) + parseInt(sliderCents);
   return (
     <React.Fragment>
-      <div className="card-body">
-        <label htmlFor="cents" className="float-right">
+      <div className="">
+        <label
+          htmlFor="cents"
+          style={{ fontSize: "0.8rem" }}
+          className="float-right mx-2"
+        >
           {"Cents: " + c}
         </label>
         <div className="text-center">
           <input
-            className="slider m-2"
+            className="slider mx-2"
             type="range"
-            style={{ width: "20rem" }}
+            style={{ width: "15rem" }}
             onChange={e => {
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -37,13 +42,21 @@ const Transposer = ({ blockInfo }) => {
             value={c === 0 ? 0 : sliderCents}
             id="cents"
           />
-          <span className="float-left"> -50 </span>
-          <span className="float-center"> 0 </span>
-          <span className="float-right"> +50 </span>
+          <div className="mx-2">
+            <span className="float-left" style={{ fontSize: "0.8rem" }}>
+              -50
+            </span>
+            <span className="float-center" style={{ fontSize: "0.8rem" }}>
+              0
+            </span>
+            <span className="float-right" style={{ fontSize: "0.8rem" }}>
+              +50
+            </span>
+          </div>
         </div>
         <div className="text-center">
           <button
-            className="btn btn-light mx-4 my-2"
+            className="btn btn-light m-2"
             style={circleStyle}
             onClick={e => {
               let x = buttonCents - 100;
@@ -58,7 +71,7 @@ const Transposer = ({ blockInfo }) => {
             &#9837;
           </button>
           <button
-            className="btn btn-light btn-circle mx-4 my-2"
+            className="btn btn-light btn-circle m-2"
             style={circleStyle}
             onClick={() => {
               let x = 0 - sliderCents;
@@ -75,7 +88,7 @@ const Transposer = ({ blockInfo }) => {
             &#9838;
           </button>
           <button
-            className="btn btn-light btn-circle mx-4 my-2"
+            className="btn btn-light btn-circle m-2"
             style={circleStyle}
             onClick={e => {
               let x = buttonCents + 100;
@@ -91,13 +104,15 @@ const Transposer = ({ blockInfo }) => {
           </button>
         </div>
       </div>
-      <div className="card-footer">
-        <div className="col-md-8 row">
-          <label htmlFor="osc">OSC port:</label>
+      <div className="text-center row">
+        <div className="col-md-12">
+          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            OSC port:
+          </label>
           <input
             type="text"
             className="m-2"
-            style={{ height: "1.5rem", width: "4rem" }}
+            style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {
               store.dispatch({

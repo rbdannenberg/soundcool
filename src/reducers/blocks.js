@@ -7,7 +7,8 @@ const allTypes = {
   Player: 1,
   SignalGen: 1,
   Speaker: 1,
-  DirectInput: 1
+  DirectInput: 1,
+  Pitch: 1
 };
 const blocks = (
   state = {

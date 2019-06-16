@@ -5,11 +5,11 @@ const Delay = ({ blockInfo }) => {
   let { id, delayTime, feedback } = blockInfo;
   return (
     <React.Fragment>
-      <div className="card-body">
+      <div className="">
         <input
-          className="slider m-2"
+          className="slider mx-2 my-1"
           type="range"
-          style={{ width: "12rem" }}
+          style={{ width: "8rem" }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -23,11 +23,13 @@ const Delay = ({ blockInfo }) => {
           value={delayTime}
           id="delayTime"
         />
-        <label htmlFor="delayTime">{"delay(ms): " + delayTime}</label>
+        <label htmlFor="delayTime" style={{ fontSize: "0.8rem" }}>
+          {"delay(ms): " + delayTime}
+        </label>
         <input
-          className="slider m-2"
+          className="slider mx-2 my-1"
           type="range"
-          style={{ width: "12rem" }}
+          style={{ width: "8rem" }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -42,11 +44,15 @@ const Delay = ({ blockInfo }) => {
           value={feedback}
           id="feedback"
         />
-        <label htmlFor="feedback">{"feedback: " + feedback}</label>
+        <label htmlFor="feedback" style={{ fontSize: "0.8rem" }}>
+          {"feedback: " + feedback}
+        </label>
       </div>
-      <div className="card-footer row">
+      <div className="text-center row">
         <span className="col-md-4">
-          <label htmlFor="kinect">Kinect</label>
+          <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
+            Kinect
+          </label>
           <input
             type="checkbox"
             className="m-2 "
@@ -60,11 +66,13 @@ const Delay = ({ blockInfo }) => {
               });
             }}
           />
-          <label htmlFor="osc">OSC port:</label>
+          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            OSC port:
+          </label>
           <input
             type="text"
             className="m-2"
-            style={{ height: "1.5rem", width: "4rem" }}
+            style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {
               store.dispatch({

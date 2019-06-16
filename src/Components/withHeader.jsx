@@ -8,9 +8,15 @@ import {
   Player,
   SignalGen,
   Speaker,
-  DirectInput
+  DirectInput,
+  Pitch
 } from "./types/all";
 import store from "../index";
+
+const buttonStyle = {
+  width: "2rem",
+  height: "2rem"
+};
 
 const eva = typeName => {
   let t;
@@ -36,6 +42,9 @@ const eva = typeName => {
     case "DirectInput":
       t = DirectInput;
       break;
+    case "Pitch":
+      t = Pitch;
+      break;
     default:
       t = <span>No setup yet!</span>;
   }
@@ -58,13 +67,15 @@ const WithHeader = ({ blockInfo }) => {
   let inButton;
   let outButton;
 
+  // conditionally render in and out buttons in the header
   if (inDisabled) {
     inButton = <span />;
   } else {
     inButton = (
       <button
         id="inButton"
-        className="btn btn-warning m-1 btn-sm"
+        className="btn btn-warning btn-sm m-1"
+        style={{ width: "1.5rem", height: "1.5rem", fontSize: "0.8rem" }}
         onClick={() => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
@@ -84,7 +95,8 @@ const WithHeader = ({ blockInfo }) => {
     outButton = (
       <button
         id="outButton"
-        className="btn btn-warning badge-right float-right m-1 btn-sm"
+        className="btn btn-warning btn-sm text-center m-1"
+        style={{ width: "2.5rem", height: "1.5rem", fontSize: "0.8rem" }}
         onClick={() =>
           store.dispatch({
             type: "CONNECTING_BLOCK",
@@ -100,25 +112,30 @@ const WithHeader = ({ blockInfo }) => {
 
   return (
     <div
-      className="card text-left my-2"
+      className="text-left my-2"
       style={{
-        width: "24rem",
+        width: "17rem",
         backgroundColor: color,
         textDecorationColor: "black"
       }}
     >
-      <div className="card-header">
+      <div className="">
         {inButton}
-        <span className="m-2" id="blockName">
+        <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
           {name}
         </span>
-        <span className="badge badge-secondary badge-pill m-1" id="typeName">
-          <h5>{typeName}</h5>
+        <span
+          className="badge badge-secondary badge-pill m-1"
+          style={{ fontSize: "0.7rem" }}
+          id="typeName"
+        >
+          <h6>{typeName}</h6>
         </span>
         <span className="float-right">
           <button
             id="collapseButton"
             className="btn btn-light m-1 btn-sm"
+            style={{ width: "1.5rem", height: "1.5rem", fontSize: "1rem" }}
             onClick={() =>
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -128,12 +145,13 @@ const WithHeader = ({ blockInfo }) => {
               })
             }
           >
-            <FaMinus />
+            -{/* <FaMinus /> */}
           </button>
 
           <button
             id="closeButton"
             className="btn btn-light m-1 btn-sm"
+            style={{ width: "1.5rem", height: "1.5rem", fontSize: "1rem" }}
             onClick={() =>
               store.dispatch({
                 type: "DELETE_BLOCK",
@@ -143,7 +161,7 @@ const WithHeader = ({ blockInfo }) => {
               })
             }
           >
-            <FaTimes />
+            x{/* <FaTimes /> */}
           </button>
           {outButton}
         </span>

@@ -5,13 +5,13 @@ const Pan = ({ blockInfo }) => {
   let { id, direction } = blockInfo;
   return (
     <React.Fragment>
-      <div class="text-center card-body">
+      <div class="text-center">
         {/* <div className="row"> */}
-        <span>L</span>
+        <span style={{ fontSize: "0.8rem" }}>L</span>
         <input
           className="slider m-2"
           type="range"
-          style={{ width: "18rem" }}
+          style={{ width: "13rem" }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -25,12 +25,14 @@ const Pan = ({ blockInfo }) => {
           value={direction}
           id="direction"
         />
-        <span>R</span>
+        <span style={{ fontSize: "0.8rem" }}>R</span>
         {/* </div> */}
       </div>
-      <div className="card-footer row">
+      <div className="text-center row">
         <span className="col-md-4">
-          <label htmlFor="kinect">Kinect</label>
+          <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
+            Kinect
+          </label>
           <input
             type="checkbox"
             className="m-1"
@@ -44,7 +46,9 @@ const Pan = ({ blockInfo }) => {
               });
             }}
           />
-          <label htmlFor="osc">OSC port:</label>
+          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            OSC port:
+          </label>
           <input
             type="text"
             className="col-md-6 m-2"
