@@ -27,6 +27,8 @@ const specValues = {
     color: toHex(229, 119, 125),
     playing: false,
     loop: false,
+    volume: 60,
+    file: undefined,
     kinect: false,
     osc: undefined
   },
@@ -35,6 +37,7 @@ const specValues = {
     frequency: 440,
     waveform: "Silence",
     mod: "No Mod",
+    volume: 60,
     kinect: false,
     osc: undefined
   },
@@ -48,6 +51,7 @@ const specValues = {
     direction: 0,
     muted: false,
     channel: 1,
+    volume: 60,
     osc: undefined
   },
   Pitch: {

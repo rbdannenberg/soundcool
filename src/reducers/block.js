@@ -25,7 +25,6 @@ const block = (state, action) => {
       }
     // deal with breaking connections when blocks are deleted
     case "DELETE_BLOCK":
-      console.log("here");
       let newInNode;
       let newOutNode;
       if (

@@ -44,8 +44,8 @@ const Pitch = ({ blockInfo }) => {
           </div>
         </div>
       </div>
-      <div className="text-center row">
-        <div className="col-md-8">
+      <div className="text-center">
+        <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
           </label>
@@ -62,12 +62,14 @@ const Pitch = ({ blockInfo }) => {
               });
             }}
           />
+        </span>
+        <span className="col text-center">
           <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
             OSC port:
           </label>
           <input
             type="text"
-            className="m-2"
+            className=""
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {
@@ -75,12 +77,11 @@ const Pitch = ({ blockInfo }) => {
                 type: "CHANGE_BLOCK",
                 id: id,
                 field: "osc",
-                value: e.target.value,
-                relative: false
+                value: e.target.value
               });
             }}
           />
-        </div>
+        </span>
       </div>
     </React.Fragment>
   );

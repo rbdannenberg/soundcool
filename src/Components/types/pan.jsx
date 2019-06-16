@@ -28,8 +28,8 @@ const Pan = ({ blockInfo }) => {
         <span style={{ fontSize: "0.8rem" }}>R</span>
         {/* </div> */}
       </div>
-      <div className="text-center row">
-        <span className="col-md-4">
+      <div className="text-center">
+        <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
           </label>
@@ -46,13 +46,15 @@ const Pan = ({ blockInfo }) => {
               });
             }}
           />
+        </span>
+        <span className="col text-center">
           <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
             OSC port:
           </label>
           <input
             type="text"
-            className="col-md-6 m-2"
-            style={{ height: "1.5rem", width: "4rem" }}
+            className=""
+            style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {
               store.dispatch({

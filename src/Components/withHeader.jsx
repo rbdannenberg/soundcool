@@ -75,7 +75,7 @@ const WithHeader = ({ blockInfo }) => {
       <button
         id="inButton"
         className="btn btn-warning btn-sm m-1"
-        style={{ width: "1.5rem", height: "1.5rem", fontSize: "0.8rem" }}
+        style={{ width: "2rem", height: "2rem", fontSize: "0.8rem" }}
         onClick={() => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
@@ -96,7 +96,7 @@ const WithHeader = ({ blockInfo }) => {
       <button
         id="outButton"
         className="btn btn-warning btn-sm text-center m-1"
-        style={{ width: "2.5rem", height: "1.5rem", fontSize: "0.8rem" }}
+        style={{ width: "2.5rem", height: "2rem", fontSize: "0.8rem" }}
         onClick={() =>
           store.dispatch({
             type: "CONNECTING_BLOCK",
