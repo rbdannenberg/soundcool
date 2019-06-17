@@ -1,0 +1,19 @@
+{
+  "name": "soundcool",
+  "version": "1.0.0",
+  "description": "Port of Soundcool to Web Audio",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "\"\""
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}
