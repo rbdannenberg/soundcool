@@ -59,6 +59,14 @@ const specValues = {
     cents: 0,
     kinect: false,
     osc: undefined
+  },
+  VSTHost: {
+    color: toHex(136, 179, 95),
+    file: undefined,
+    module: true,
+    version: "to Soundcool 3.1.1",
+    channel: 1,
+    osc: undefined
   }
 };
 

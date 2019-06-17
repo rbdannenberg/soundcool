@@ -53,6 +53,9 @@ const AddBlock = () => {
           <div class="dropdown-item" onClick={() => addBlock("Pitch")}>
             Pitch
           </div>
+          <div class="dropdown-item" onClick={() => addBlock("VSTHost")}>
+            VSTHost
+          </div>
         </div>
       </div>
     </React.Fragment>

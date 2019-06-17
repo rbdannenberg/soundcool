@@ -9,7 +9,8 @@ import {
   SignalGen,
   Speaker,
   DirectInput,
-  Pitch
+  Pitch,
+  VSTHost
 } from "./types/all";
 import store from "../index";
 
@@ -44,6 +45,9 @@ const eva = typeName => {
       break;
     case "Pitch":
       t = Pitch;
+      break;
+    case "VSTHost":
+      t = VSTHost;
       break;
     default:
       t = <span>No setup yet!</span>;
@@ -114,7 +118,7 @@ const WithHeader = ({ blockInfo }) => {
     <div
       className="text-left my-2"
       style={{
-        width: "17rem",
+        width: "18rem",
         backgroundColor: color,
         textDecorationColor: "black"
       }}

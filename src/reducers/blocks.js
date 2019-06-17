@@ -8,7 +8,8 @@ const allTypes = {
   SignalGen: 1,
   Speaker: 1,
   DirectInput: 1,
-  Pitch: 1
+  Pitch: 1,
+  VSTHost: 1
 };
 const blocks = (
   state = {

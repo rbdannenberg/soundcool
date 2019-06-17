@@ -6,6 +6,7 @@ import SignalGen from "./SignalGen";
 import Speaker from "./Speaker";
 import DirectInput from "./DirectInput";
 import Pitch from "./Pitch";
+import VSTHost from "./VSTHost";
 
 export { Delay };
 export { Transposer };
@@ -15,6 +16,7 @@ export { SignalGen };
 export { Speaker };
 export { DirectInput };
 export { Pitch };
+export { VSTHost };
 
 // export * from './delay';
 // export * from './transposer';
