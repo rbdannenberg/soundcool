@@ -7,6 +7,8 @@ import Speaker from "./Speaker";
 import DirectInput from "./DirectInput";
 import Pitch from "./Pitch";
 import VSTHost from "./VSTHost";
+import Routing from "./Routing";
+import Mixer from "./Mixer";
 
 export { Delay };
 export { Transposer };
@@ -17,6 +19,8 @@ export { Speaker };
 export { DirectInput };
 export { Pitch };
 export { VSTHost };
+export { Routing };
+export { Mixer };
 
 // export * from './delay';
 // export * from './transposer';

@@ -9,7 +9,9 @@ const allTypes = {
   Speaker: 1,
   DirectInput: 1,
   Pitch: 1,
-  VSTHost: 1
+  VSTHost: 1,
+  Routing: 1,
+  Mixer: 1
 };
 const blocks = (
   state = {
@@ -48,6 +50,8 @@ const blocks = (
     case "DELETE_BLOCK":
       let filteredBs = bs.filter(t => t.id !== action.id);
       let newBs = filteredBs.map(t =>
+        // pass in the block, so we can check for each connection that
+        // whether the block still exist
         block(t, { ...action, blocks: filteredBs })
       );
       return {
@@ -65,10 +69,11 @@ const blocks = (
       if (
         s.nowIn !== undefined &&
         s.nowOut !== undefined &&
-        s.bs.filter(t => t.name === s.nowIn).length === 1 &&
-        s.bs.filter(t => t.name === s.nowOut).length === 1
+        s.bs.filter(t => t.name === s.nowIn.slice(0, -1)).length === 1 &&
+        s.bs.filter(t => t.name === s.nowOut.slice(0, -1)).length === 1
       ) {
         return {
+          // go to each block and change the inNode and outNode for the connected block
           ...s,
           bs: s.bs.map(t =>
             block(t, { ...action, nowIn: s.nowIn, nowOut: s.nowOut })

@@ -1,6 +1,5 @@
 import React from "react";
 import store from "../../index";
-import { ProgressBar } from "react-bootstrap";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 
 const circleStyle = {
@@ -31,7 +30,16 @@ const Player = ({ blockInfo }) => {
                   L
                 </div>
                 <div className="col-7">
-                  <ProgressBar now={60} style={{ width: "8rem" }} />
+                  <div className="progress" style={{ width: "8rem" }}>
+                    <div
+                      className="progress-bar"
+                      role="progressbar"
+                      aria-valuenow="60"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style={{ width: "60%" }}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="row">
@@ -39,7 +47,16 @@ const Player = ({ blockInfo }) => {
                   R
                 </div>
                 <div className="col-7">
-                  <ProgressBar now={60} style={{ width: "8rem" }} />
+                  <div className="progress" style={{ width: "8rem" }}>
+                    <div
+                      className="progress-bar "
+                      role="progressbar"
+                      aria-valuenow="60"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style={{ width: "60%" }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

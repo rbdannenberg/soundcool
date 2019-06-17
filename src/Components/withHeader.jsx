@@ -1,6 +1,5 @@
 import React from "react";
 import { Collapse } from "reactstrap";
-import { FaMinus, FaTimes } from "react-icons/fa";
 import {
   Delay,
   Transposer,
@@ -10,14 +9,11 @@ import {
   Speaker,
   DirectInput,
   Pitch,
-  VSTHost
+  VSTHost,
+  Routing,
+  Mixer
 } from "./types/all";
 import store from "../index";
-
-const buttonStyle = {
-  width: "2rem",
-  height: "2rem"
-};
 
 const eva = typeName => {
   let t;
@@ -48,6 +44,12 @@ const eva = typeName => {
       break;
     case "VSTHost":
       t = VSTHost;
+      break;
+    case "Routing":
+      t = Routing;
+      break;
+    case "Mixer":
+      t = Mixer;
       break;
     default:
       t = <span>No setup yet!</span>;
@@ -84,11 +86,11 @@ const WithHeader = ({ blockInfo }) => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowIn",
-            value: name
+            value: name + "0"
           });
         }}
       >
-        {inNode === undefined ? "In" : inNode}
+        {inNode[0] === undefined ? "In" : inNode[0]}
       </button>
     );
   }
@@ -105,11 +107,11 @@ const WithHeader = ({ blockInfo }) => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowOut",
-            value: name
+            value: name + "0"
           })
         }
       >
-        {outNode === undefined ? "Out" : outNode}
+        {outNode[0] === undefined ? "Out" : outNode[0]}
       </button>
     );
   }

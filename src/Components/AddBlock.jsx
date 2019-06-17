@@ -7,8 +7,9 @@ const addBlock = typeName => {
     type: "ADD_BLOCK",
     typeName,
     values: {
-      inNode: undefined,
-      outNode: undefined,
+      // inNode and outNode are a list, since a block can have multiple input and output
+      inNode: [],
+      outNode: [],
       collapse: false,
       ...specValues[typeName]
     }
@@ -55,6 +56,12 @@ const AddBlock = () => {
           </div>
           <div class="dropdown-item" onClick={() => addBlock("VSTHost")}>
             VSTHost
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Routing")}>
+            Routing
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Mixer")}>
+            Mixer
           </div>
         </div>
       </div>

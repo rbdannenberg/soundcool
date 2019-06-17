@@ -27,34 +27,39 @@ const block = (state, action) => {
     case "DELETE_BLOCK":
       let newInNode;
       let newOutNode;
-      if (
-        state.inNode !== undefined &&
-        action.blocks.filter(t => t.name === state.inNode).length === 0
-      ) {
-        newInNode = undefined;
-      } else {
-        newInNode = state.inNode;
-      }
-      if (
-        state.outNode !== undefined &&
-        action.blocks.filter(t => t.name === state.outNode).length === 0
-      ) {
-        newOutNode = undefined;
-      } else {
-        newOutNode = state.outNode;
-      }
+      // if the connected block no longer exist, we change the
+      // entry back to undefined
+      newInNode = state.inNode.map(n => {
+        return action.blocks.filter(t => t.name === n).length === 0
+          ? undefined
+          : n;
+      });
+      newOutNode = state.outNode.map(n => {
+        return action.blocks.filter(t => t.name === n).length === 0
+          ? undefined
+          : n;
+      });
       return { ...state, inNode: newInNode, outNode: newOutNode };
 
     case "CONNECTING_BLOCK":
-      if (state.name === action.nowIn) {
-        if (state.name === action.nowOut) {
+      let n1 = action.nowIn.slice(0, -1);
+      let n2 = action.nowOut.slice(0, -1);
+      let i1 = action.nowIn.slice(-1);
+      let i2 = action.nowOut.slice(-1);
+      if (state.name === n1) {
+        if (state.name === n2) {
+          // don't connect to itself, except Routing
           return state;
         } else {
-          return { ...state, inNode: action.nowOut };
+          let newInNode = [...state.inNode];
+          newInNode[i1] = n2;
+          return { ...state, inNode: newInNode };
         }
       } else {
-        if (state.name === action.nowOut) {
-          return { ...state, outNode: action.nowIn };
+        if (state.name === n2) {
+          let newOutNode = [...state.outNode];
+          newOutNode[i2] = n1;
+          return { ...state, outNode: newOutNode };
         } else {
           return state;
         }

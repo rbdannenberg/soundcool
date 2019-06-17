@@ -1,7 +1,6 @@
 import React from "react";
 import store from "../../index";
 import "../../index.css";
-import { ProgressBar } from "react-bootstrap";
 import { FaPlay, FaSquare } from "react-icons/fa";
 
 const circleStyle = {
@@ -14,7 +13,7 @@ const circleStyle = {
 };
 
 const Player = ({ blockInfo }) => {
-  let { id, speed, volume, file } = blockInfo;
+  let { id, speed, volume } = blockInfo;
   return (
     <React.Fragment>
       <div className="row">
@@ -50,7 +49,16 @@ const Player = ({ blockInfo }) => {
             </span>
           </div>
 
-          <ProgressBar now={60} style={{ width: "10rem" }} className="mx-2" />
+          <div className="progress mx-2" style={{ width: "10rem" }}>
+            <div
+              className="progress-bar "
+              role="progressbar"
+              aria-valuenow="60"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              style={{ width: "60%" }}
+            />
+          </div>
 
           <label htmlFor="loop" style={{ fontSize: "0.8rem" }}>
             Loop

@@ -6,7 +6,6 @@ const circleStyle = {
   height: "1.5rem",
   textAlign: "center",
   fontSize: "10px",
-  textAlign: "center",
   lineHeight: 1.428571429,
   borderRadius: "1rem"
 };

@@ -67,6 +67,31 @@ const specValues = {
     version: "to Soundcool 3.1.1",
     channel: 1,
     osc: undefined
+  },
+  Routing: {
+    color: toHex(58, 82, 221),
+    inDisabled: true,
+    outDisabled: true,
+    off1: true,
+    output11: false,
+    output21: false,
+    off2: true,
+    output12: false,
+    output22: false
+  },
+  Mixer: {
+    color: toHex(103, 227, 229),
+    inDisabled: true,
+    volumeMaster: 60,
+    volume1: 60,
+    volume2: 60,
+    volume3: 60,
+    volume4: 60,
+    volume5: 60,
+    volume6: 60,
+    volume7: 60,
+    volume8: 60,
+    osc: undefined
   }
 };
 
