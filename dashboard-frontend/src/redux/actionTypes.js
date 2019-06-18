@@ -1,0 +1,2 @@
+export const ADD_SOUND_FILE = 'ADD_SOUND_FILE';
+export const REMOVE_SOUND_FILE = 'REMOVE_SOUND_FILE';
