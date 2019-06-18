@@ -42,7 +42,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[0] === undefined ? "In" : inNode[0]}
+                      {inNode[0] === undefined ? "In" : inNode[0][0]}
                     </button>
                   </div>
                   <div className="row" style={{ padding: "2px" }}>
@@ -116,7 +116,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[1] === undefined ? "In" : inNode[1]}
+                      {inNode[1] === undefined ? "In" : inNode[1][0]}
                     </button>
                   </div>
                   <div className="row">
@@ -190,7 +190,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[2] === undefined ? "In" : inNode[2]}
+                      {inNode[2] === undefined ? "In" : inNode[2][0]}
                     </button>
                   </div>
                   <div className="row">
@@ -264,7 +264,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[3] === undefined ? "In" : inNode[3]}
+                      {inNode[3] === undefined ? "In" : inNode[3][0]}
                     </button>
                   </div>
                   <div className="row">
@@ -340,7 +340,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[4] === undefined ? "In" : inNode[4]}
+                      {inNode[4] === undefined ? "In" : inNode[4][0]}
                     </button>
                   </div>
                   <div className="row" style={{ padding: "2px" }}>
@@ -414,7 +414,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[5] === undefined ? "In" : inNode[5]}
+                      {inNode[5] === undefined ? "In" : inNode[5][0]}
                     </button>
                   </div>
                   <div className="row">
@@ -488,7 +488,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[6] === undefined ? "In" : inNode[6]}
+                      {inNode[6] === undefined ? "In" : inNode[6][0]}
                     </button>
                   </div>
                   <div className="row">
@@ -562,7 +562,7 @@ const Mixer = ({ blockInfo }) => {
                         });
                       }}
                     >
-                      {inNode[7] === undefined ? "In" : inNode[7]}
+                      {inNode[7] === undefined ? "In" : inNode[7][0]}
                     </button>
                   </div>
                   <div className="row">
