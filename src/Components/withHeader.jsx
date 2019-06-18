@@ -1,5 +1,6 @@
 import React from "react";
 import { Collapse } from "reactstrap";
+import Background from "../bg.png";
 import {
   Delay,
   Transposer,
@@ -57,7 +58,7 @@ const eva = typeName => {
   return t;
 };
 
-const WithHeader = ({ blockInfo }) => {
+const WithHeader = ({ blockInfo, nowOut }) => {
   let {
     typeName,
     name,
@@ -80,20 +81,45 @@ const WithHeader = ({ blockInfo }) => {
     inButton = (
       <button
         id="inButton"
-        className="btn btn-warning btn-sm m-1"
+        className="btn btn-light btn-sm m-1"
         style={{ width: "2rem", height: "2rem", fontSize: "0.8rem" }}
         onClick={() => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowIn",
-            value: name + "0"
+            value: [name, "0", id]
           });
         }}
       >
-        {inNode[0] === undefined ? "In" : inNode[0]}
+        {inNode[0] === undefined ? "In" : inNode[0][0]}
       </button>
     );
   }
+
+  const style1 = {
+    backgroundColor: "white",
+    width: "2.5rem",
+    height: "2rem",
+    fontSize: "0.8rem"
+  };
+  const style2 = {
+    backgroundColor: "yellow",
+    width: "2.5rem",
+    height: "2rem",
+    fontSize: "0.8rem"
+  };
+  const circleStyle = {
+    width: "2.5rem",
+    height: "2rem",
+    textAlign: "center",
+    fontSize: "10px",
+    lineHeight: 1.428571429,
+    borderRadius: "1.5rem",
+    borderColor: "black",
+    backgroundColor: "white"
+  };
+
+  const outId = nowOut === undefined ? undefined : nowOut[2];
 
   if (outDisabled) {
     outButton = <span />;
@@ -101,17 +127,17 @@ const WithHeader = ({ blockInfo }) => {
     outButton = (
       <button
         id="outButton"
-        className="btn btn-warning btn-sm text-center m-1"
-        style={{ width: "2.5rem", height: "2rem", fontSize: "0.8rem" }}
+        className="btn btn-sm text-center m-1"
+        style={outId === id ? circleStyle : style1}
         onClick={() =>
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowOut",
-            value: name + "0"
+            value: [name, "0", id]
           })
         }
       >
-        {outNode[0] === undefined ? "Out" : outNode[0]}
+        {outNode[0] === undefined ? "Out" : outNode[0][0]}
       </button>
     );
   }

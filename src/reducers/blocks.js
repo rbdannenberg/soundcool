@@ -18,8 +18,8 @@ const blocks = (
     bs: [],
     nextBlockId: 1,
     nextTypeId: allTypes,
-    nowIn: undefined,
-    nowOut: undefined
+    nowIn: [],
+    nowOut: []
   },
   action
 ) => {
@@ -67,17 +67,19 @@ const blocks = (
       s[action.node] = action.value;
       // if both nowIn and nowOut are assigned and the blocks exists
       if (
-        s.nowIn !== undefined &&
-        s.nowOut !== undefined &&
-        s.bs.filter(t => t.name === s.nowIn.slice(0, -1)).length === 1 &&
-        s.bs.filter(t => t.name === s.nowOut.slice(0, -1)).length === 1
+        s.nowIn[0] !== undefined &&
+        s.nowOut[0] !== undefined &&
+        s.bs.filter(t => t.id === s.nowIn[2]).length === 1 &&
+        s.bs.filter(t => t.id === s.nowOut[2]).length === 1
       ) {
         return {
           // go to each block and change the inNode and outNode for the connected block
           ...s,
           bs: s.bs.map(t =>
             block(t, { ...action, nowIn: s.nowIn, nowOut: s.nowOut })
-          )
+          ),
+          nowIn: [],
+          nowOut: []
         };
       } else {
         return s;

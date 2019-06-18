@@ -30,35 +30,37 @@ const block = (state, action) => {
       // if the connected block no longer exist, we change the
       // entry back to undefined
       newInNode = state.inNode.map(n => {
-        return action.blocks.filter(t => t.name === n).length === 0
+        return action.blocks.filter(t => t.id === n[1]).length === 0
           ? undefined
           : n;
       });
       newOutNode = state.outNode.map(n => {
-        return action.blocks.filter(t => t.name === n).length === 0
+        return action.blocks.filter(t => t.id === n[1]).length === 0
           ? undefined
           : n;
       });
       return { ...state, inNode: newInNode, outNode: newOutNode };
 
     case "CONNECTING_BLOCK":
-      let n1 = action.nowIn.slice(0, -1);
-      let n2 = action.nowOut.slice(0, -1);
-      let i1 = action.nowIn.slice(-1);
-      let i2 = action.nowOut.slice(-1);
-      if (state.name === n1) {
-        if (state.name === n2) {
+      let nameIn = action.nowIn[0];
+      let nameOut = action.nowOut[0];
+      let indexIn = action.nowIn[1];
+      let indexOut = action.nowOut[1];
+      let idIn = action.nowIn[2];
+      let idOut = action.nowOut[2];
+      if (state.id === idIn) {
+        if (state.id === idOut) {
           // don't connect to itself, except Routing
           return state;
         } else {
           let newInNode = [...state.inNode];
-          newInNode[i1] = n2;
+          newInNode[indexIn] = [nameOut, idOut];
           return { ...state, inNode: newInNode };
         }
       } else {
-        if (state.name === n2) {
+        if (state.id === idOut) {
           let newOutNode = [...state.outNode];
-          newOutNode[i2] = n1;
+          newOutNode[indexOut] = [nameIn, idIn];
           return { ...state, outNode: newOutNode };
         } else {
           return state;

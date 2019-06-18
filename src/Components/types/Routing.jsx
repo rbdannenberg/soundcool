@@ -19,7 +19,7 @@ const Routing = ({ blockInfo }) => {
                     store.dispatch({
                       type: "CONNECTING_BLOCK",
                       node: "nowIn",
-                      value: name + "0"
+                      value: [name, "0", id]
                     });
                   }}
                 >
@@ -118,7 +118,7 @@ const Routing = ({ blockInfo }) => {
                     store.dispatch({
                       type: "CONNECTING_BLOCK",
                       node: "nowOut",
-                      value: name + "0"
+                      value: [name, "0", id]
                     });
                   }}
                 >
@@ -137,7 +137,7 @@ const Routing = ({ blockInfo }) => {
                     store.dispatch({
                       type: "CONNECTING_BLOCK",
                       node: "nowIn",
-                      value: name + "1"
+                      value: [name, "1", id]
                     });
                   }}
                 >
@@ -236,7 +236,7 @@ const Routing = ({ blockInfo }) => {
                     store.dispatch({
                       type: "CONNECTING_BLOCK",
                       node: "nowOut",
-                      value: name + "1"
+                      value: [name, "1", id]
                     });
                   }}
                 >

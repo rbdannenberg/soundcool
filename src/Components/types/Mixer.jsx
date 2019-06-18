@@ -38,7 +38,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "0"
+                          value: [name, "0", id]
                         });
                       }}
                     >
@@ -112,7 +112,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "1"
+                          value: [name, "1", id]
                         });
                       }}
                     >
@@ -186,7 +186,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "2"
+                          value: [name, "2", id]
                         });
                       }}
                     >
@@ -260,7 +260,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "3"
+                          value: [name, "3", id]
                         });
                       }}
                     >
@@ -336,7 +336,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "4"
+                          value: [name, "4", id]
                         });
                       }}
                     >
@@ -410,7 +410,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "5"
+                          value: [name, "5", id]
                         });
                       }}
                     >
@@ -484,7 +484,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "6"
+                          value: [name, "6", id]
                         });
                       }}
                     >
@@ -558,7 +558,7 @@ const Mixer = ({ blockInfo }) => {
                         store.dispatch({
                           type: "CONNECTING_BLOCK",
                           node: "nowIn",
-                          value: name + "7"
+                          value: [name, "7", id]
                         });
                       }}
                     >

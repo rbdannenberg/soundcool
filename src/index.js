@@ -62,11 +62,11 @@ const getVisibleBlocks = (blocks, filter) => {
 
 // #region rendering components
 
-const BlockList = ({ blocks, onBlockClick }) => {
+const BlockList = ({ blocks, nowOut }) => {
   return (
     <React.Fragment>
       {blocks.map(b => (
-        <WithHeader key={b.id} blockInfo={b} />
+        <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
       ))}
     </React.Fragment>
   );
@@ -104,20 +104,12 @@ const Footer = ({ visibilityFilter, onFilterClick }) => {
 // #endregion
 
 const BlockApp = ({ blocks, visibilityFilter }) => {
-  let { bs } = blocks;
+  let { bs, nowOut } = blocks;
   return (
     <div>
       <SLButton />
       <AddBlock />
-      <BlockList
-        blocks={bs}
-        onBlockClick={id => {
-          store.dispatch({
-            type: "TOGGLE_BLOCK",
-            id
-          });
-        }}
-      />
+      <BlockList blocks={bs} nowOut={nowOut} />
       {/* <Footer
         visibilityFilter={visibilityFilter}
         onFilterClick={filter =>
