@@ -1,5 +1,6 @@
 import React from "react";
 import { Collapse } from "reactstrap";
+import { FaMinus, FaTimes } from "react-icons/fa";
 import Background from "../bg.png";
 import {
   Delay,
@@ -81,8 +82,8 @@ const WithHeader = ({ blockInfo, nowOut }) => {
     inButton = (
       <button
         id="inButton"
-        className="btn btn-light btn-sm m-1"
-        style={{ width: "2rem", height: "2rem", fontSize: "0.8rem" }}
+        className="btn btn-light btn-sm m-1 text-center"
+        style={{ width: "1.5rem", height: "1.5rem", fontSize: "0.8rem" }}
         onClick={() => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
@@ -91,30 +92,26 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           });
         }}
       >
-        {inNode[0] === undefined ? "In" : inNode[0][0]}
+        <div style={{ marginLeft: "-2px", marginTop: "-1px" }}>
+          {inNode[0] === undefined ? "In" : inNode[0][0]}
+        </div>
       </button>
     );
   }
 
   const style1 = {
     backgroundColor: "white",
-    width: "2.5rem",
-    height: "2rem",
-    fontSize: "0.8rem"
-  };
-  const style2 = {
-    backgroundColor: "yellow",
-    width: "2.5rem",
-    height: "2rem",
+    width: "1.5rem",
+    height: "1.5rem",
     fontSize: "0.8rem"
   };
   const circleStyle = {
-    width: "2.5rem",
-    height: "2rem",
+    width: "1.5rem",
+    height: "1.5rem",
     textAlign: "center",
-    fontSize: "10px",
+    fontSize: "0.8rem",
     lineHeight: 1.428571429,
-    borderRadius: "1.5rem",
+    borderRadius: "0.5rem",
     borderColor: "black",
     backgroundColor: "white"
   };
@@ -137,7 +134,9 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           })
         }
       >
-        {outNode[0] === undefined ? "Out" : outNode[0][0]}
+        <div style={{ marginLeft: "-8px", marginTop: "-1px" }}>
+          {outNode[0] === undefined ? "Out" : outNode[0][0]}
+        </div>
       </button>
     );
   }
@@ -158,16 +157,20 @@ const WithHeader = ({ blockInfo, nowOut }) => {
         </span>
         <span
           className="badge badge-secondary badge-pill m-1"
-          style={{ fontSize: "0.7rem" }}
+          style={{ fontSize: "0.8rem" }}
           id="typeName"
         >
-          <h6>{typeName}</h6>
+          {typeName}
         </span>
         <span className="float-right">
           <button
             id="collapseButton"
-            className="btn btn-light m-1 btn-sm"
-            style={{ width: "1.5rem", height: "1.5rem", fontSize: "1rem" }}
+            className="btn btn-light btn-sm m-1 text-center"
+            style={{
+              width: "1.5rem",
+              height: "1.5rem",
+              fontSize: "0.4rem"
+            }}
             onClick={() =>
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -177,13 +180,17 @@ const WithHeader = ({ blockInfo, nowOut }) => {
               })
             }
           >
-            -{/* <FaMinus /> */}
+            <FaMinus style={{ marginLeft: "-1px" }} />
           </button>
 
           <button
             id="closeButton"
-            className="btn btn-light m-1 btn-sm"
-            style={{ width: "1.5rem", height: "1.5rem", fontSize: "1rem" }}
+            className="btn btn-light btn-sm m-1 text-center"
+            style={{
+              width: "1.5rem",
+              height: "1.5rem",
+              fontSize: "0.4rem"
+            }}
             onClick={() =>
               store.dispatch({
                 type: "DELETE_BLOCK",
@@ -193,7 +200,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
               })
             }
           >
-            x{/* <FaTimes /> */}
+            <FaTimes style={{ marginLeft: "-1px" }} />
           </button>
           {outButton}
         </span>
