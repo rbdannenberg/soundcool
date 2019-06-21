@@ -37,6 +37,8 @@ const specValues = {
     frequency: 440,
     waveform: "Silence",
     mod: "No Mod",
+    MI: 0,
+    FD: 0,
     volume: 60,
     kinect: false,
     osc: undefined

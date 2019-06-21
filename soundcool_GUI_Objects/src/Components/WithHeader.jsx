@@ -83,7 +83,12 @@ const WithHeader = ({ blockInfo, nowOut }) => {
       <button
         id="inButton"
         className="btn btn-light btn-sm m-1 text-center"
-        style={{ width: "1.5rem", height: "1.5rem", fontSize: "0.8rem" }}
+        style={{
+          width: "1.5rem",
+          height: "1.5rem",
+          fontSize: "0.8rem",
+          padding: "0px"
+        }}
         onClick={() => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
@@ -92,15 +97,15 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           });
         }}
       >
-        <div style={{ marginLeft: "-2px", marginTop: "-1px" }}>
-          {inNode[0] === undefined ? "In" : inNode[0][0]}
-        </div>
+        <div>{inNode[0] === undefined ? "In" : inNode[0][0]}</div>
       </button>
     );
   }
 
   const style1 = {
     backgroundColor: "white",
+    textAlign: "center",
+    padding: "0px",
     width: "1.5rem",
     height: "1.5rem",
     fontSize: "0.8rem"
@@ -110,6 +115,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
     height: "1.5rem",
     textAlign: "center",
     fontSize: "0.8rem",
+    padding: "0px",
     lineHeight: 1.428571429,
     borderRadius: "0.5rem",
     borderColor: "black",
@@ -134,9 +140,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           })
         }
       >
-        <div style={{ marginLeft: "-8px", marginTop: "-1px" }}>
-          {outNode[0] === undefined ? "Out" : outNode[0][0]}
-        </div>
+        <div>{outNode[0] === undefined ? "Out" : outNode[0][0]}</div>
       </button>
     );
   }
@@ -203,6 +207,16 @@ const WithHeader = ({ blockInfo, nowOut }) => {
             <FaTimes style={{ marginLeft: "-1px" }} />
           </button>
           {outButton}
+          {/* <button
+            style={{
+              textAlign: "center",
+              width: "1.5rem",
+              height: "1.5rem",
+              padding: "0px"
+            }}
+          >
+            try
+          </button> */}
         </span>
       </div>
       <Collapse isOpen={collapse}>

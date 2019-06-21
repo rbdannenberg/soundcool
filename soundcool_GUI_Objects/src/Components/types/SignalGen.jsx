@@ -20,15 +20,34 @@ const changeMod = (w, id) => {
 };
 
 const SignalGen = ({ blockInfo }) => {
-  let { id, frequency, waveform, mod, volume } = blockInfo;
+  let { id, frequency, waveform, mod, volume, MI, FD } = blockInfo;
+  let modParam;
+  if (mod === "No Mod" || mod === "RM") {
+    modParam = "Not Applicable";
+  } else {
+    modParam = mod === "AM" ? "MI for AM: " + MI : "FD for FM: " + FD;
+  }
   return (
     <React.Fragment>
       <div className="row">
-        <div className="text-center col" style={{ width: "14rem" }}>
+        <div
+          className="text-center "
+          style={{ width: "14rem", marginTop: "-10px" }}
+        >
+          <label
+            htmlFor="frequency"
+            style={{
+              fontSize: "0.8rem",
+              marginBottom: "-10px",
+              padding: "0px"
+            }}
+          >
+            {"Frequency(hz): " + frequency}
+          </label>
           <input
-            className="slider mx-2 my-3"
             type="range"
-            style={{ width: "10rem" }}
+            className="slider"
+            style={{ width: "10rem", marginBottom: "-50px" }}
             onChange={e => {
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -42,11 +61,44 @@ const SignalGen = ({ blockInfo }) => {
             value={frequency}
             id="frequency"
           />
-          <label htmlFor="frequency" style={{ fontSize: "0.8rem" }}>
-            {"Frequency(hz): " + frequency}
-          </label>
 
-          <div className="row text-center my-2">
+          <label
+            htmlFor="param"
+            style={{
+              fontSize: "0.8rem",
+              marginBottom: "-10px",
+              marginTop: "-50px",
+              padding: "0px"
+            }}
+          >
+            {modParam}
+          </label>
+          <input
+            className="slider"
+            type="range"
+            style={{
+              width: "10rem"
+            }}
+            onChange={e => {
+              if (mod === "No Mod" || mod === "RM") {
+                return;
+              } else {
+                store.dispatch({
+                  type: "CHANGE_BLOCK",
+                  id: id,
+                  field: mod === "AM" ? "MI" : "FD",
+                  value: e.target.value
+                });
+              }
+            }}
+            min={0}
+            max={mod === "AM" ? 20 : 1000}
+            step={mod === "AM" ? 0.1 : 1}
+            value={modParam === "Not applicable" ? 0 : mod === "AM" ? MI : FD}
+            id="param"
+          />
+
+          <div className="row text-center my-1">
             <div class="dropdown col">
               <button
                 className="btn btn-info dropdown-toggle l-6 "
@@ -58,7 +110,11 @@ const SignalGen = ({ blockInfo }) => {
               >
                 {waveform}
               </button>
-              <div class="dropdown-menu" aria-labelledby="waveform dropdown">
+              <div
+                class="dropdown-menu"
+                style={{ fontSize: "0.7rem" }}
+                aria-labelledby="waveform dropdown"
+              >
                 <div
                   class="dropdown-item"
                   onClick={() => changeWaveform("Silence", id)}
@@ -114,7 +170,11 @@ const SignalGen = ({ blockInfo }) => {
               >
                 {mod}
               </button>
-              <div class="dropdown-menu" aria-labelledby="mod dropdown">
+              <div
+                class="dropdown-menu"
+                style={{ fontSize: "0.7rem" }}
+                aria-labelledby="mod dropdown"
+              >
                 <div
                   class="dropdown-item"
                   onClick={() => changeMod("No Mod", id)}

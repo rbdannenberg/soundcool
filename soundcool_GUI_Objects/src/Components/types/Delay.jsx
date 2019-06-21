@@ -5,11 +5,19 @@ const Delay = ({ blockInfo }) => {
   let { id, delayTime, feedback } = blockInfo;
   return (
     <React.Fragment>
-      <div className="">
+      <div
+        className=""
+        style={{ width: "288px", height: "48px", position: "relative" }}
+      >
         <input
-          className="slider mx-2 my-1"
+          className="slider"
           type="range"
-          style={{ width: "8rem" }}
+          style={{
+            width: "128px",
+            position: "absolute",
+            top: "6px",
+            left: "6px"
+          }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -23,13 +31,26 @@ const Delay = ({ blockInfo }) => {
           value={delayTime}
           id="delayTime"
         />
-        <label htmlFor="delayTime" style={{ fontSize: "0.8rem" }}>
+        <label
+          htmlFor="delayTime"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "4px",
+            left: "144px"
+          }}
+        >
           {"delay(ms): " + delayTime}
         </label>
         <input
-          className="slider mx-2 my-1"
+          className="slider "
           type="range"
-          style={{ width: "8rem" }}
+          style={{
+            width: "128px",
+            position: "absolute",
+            top: "24px",
+            left: "6px"
+          }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -44,9 +65,17 @@ const Delay = ({ blockInfo }) => {
           value={feedback}
           id="feedback"
         />
-        <label htmlFor="feedback" style={{ fontSize: "0.8rem" }}>
+        <span
+          htmlFor="feedback"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "22px",
+            left: "144px"
+          }}
+        >
           {"feedback: " + feedback}
-        </label>
+        </span>
       </div>
       <div className="text-center">
         <span className="col text-center">

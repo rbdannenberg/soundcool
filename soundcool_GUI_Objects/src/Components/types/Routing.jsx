@@ -23,7 +23,7 @@ const Routing = ({ blockInfo }) => {
                     });
                   }}
                 >
-                  {inNode[0] === undefined ? "In" : inNode[0]}
+                  {inNode[0] === undefined ? "In" : inNode[0][0]}
                 </button>
               </div>
               <div className="">
@@ -122,7 +122,7 @@ const Routing = ({ blockInfo }) => {
                     });
                   }}
                 >
-                  {outNode[0] === undefined ? "Out" : outNode[0]}
+                  {outNode[0] === undefined ? "Out" : outNode[0][0]}
                 </button>
               </div>
             </div>
@@ -141,7 +141,7 @@ const Routing = ({ blockInfo }) => {
                     });
                   }}
                 >
-                  {inNode[1] === undefined ? "In" : inNode[1]}
+                  {inNode[1] === undefined ? "In" : inNode[1][0]}
                 </button>
               </div>
               <div className="">
@@ -240,7 +240,7 @@ const Routing = ({ blockInfo }) => {
                     });
                   }}
                 >
-                  {outNode[1] === undefined ? "Out" : outNode[1]}
+                  {outNode[1] === undefined ? "Out" : outNode[1][0]}
                 </button>
               </div>
             </div>
