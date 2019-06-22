@@ -1,5 +1,5 @@
 import React from "react";
-import store from "../../index";
+import changeBlock from "../../handlers";
 import "../../index.css";
 import { FaPlay, FaSquare } from "react-icons/fa";
 
@@ -7,161 +7,220 @@ const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
   textAlign: "center",
+  padding: "0px",
   fontSize: "10px",
-  lineHeight: 1.428571429,
-  borderRadius: "1rem"
+  // lineHeight: 1.428571429,
+  borderRadius: "1rem",
+  borderColor: "black"
 };
 
 const Player = ({ blockInfo }) => {
-  let { id, speed, volume } = blockInfo;
+  let { id, speed, volume, hour, minute, second } = blockInfo;
   return (
     <React.Fragment>
-      <div className="row">
-        <div className="text-center col" style={{ width: "14rem" }}>
-          <div style={{ fontSize: "0.8rem" }}>Speed</div>
-          <input
-            className="slider mx-1 my-2 text-center"
-            type="range"
-            style={{ width: "10rem" }}
-            onChange={e => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "speed",
-                value: e.target.value
-              });
-            }}
-            min={0}
-            max={2}
-            step={0.1}
-            value={speed}
-            id="speed"
+      <div className="" style={{ position: "relative", height: "140px" }}>
+        <div style={{ fontSize: "0.8rem", position: "absolute", left: "10px" }}>
+          Speed
+        </div>
+        <input
+          className="slider mx-1 my-2 text-center"
+          type="range"
+          style={{
+            width: "190px",
+            position: "absolute",
+            left: "5px",
+            top: "12px"
+          }}
+          onChange={e => changeBlock(id, "speed", e.target.value)}
+          min={0}
+          max={2}
+          step={0.1}
+          value={speed}
+          id="speed"
+        />
+        <div
+          className="text-center mx-1"
+          style={{ fontSize: "0.8rem", position: "absolute", top: "36px" }}
+        >
+          <span
+            className="float-left"
+            style={{ position: "absolute", left: "5px" }}
+          >
+            x0
+          </span>
+          <span
+            className="float-center"
+            style={{ position: "absolute", left: "92px" }}
+          >
+            x1
+          </span>
+          <span
+            className="float-right"
+            style={{ position: "absolute", left: "180px" }}
+          >
+            x2
+          </span>
+        </div>
+
+        <div
+          className="progress"
+          style={{
+            width: "190px",
+            position: "absolute",
+            left: "8px",
+            top: "60px",
+            backgroundColor: "black"
+          }}
+        >
+          <div
+            className="progress-bar "
+            role="progressbar"
+            aria-valuenow="60"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style={{ width: "60%", backgroundColor: "green" }}
           />
-          <div className="text-center mx-1">
-            <span className="float-left" style={{ fontSize: "0.8rem" }}>
-              x0
-            </span>
-            <span className="float-center" style={{ fontSize: "0.8rem" }}>
-              x1
-            </span>
-            <span className="float-right" style={{ fontSize: "0.8rem" }}>
-              x2
-            </span>
-          </div>
+        </div>
 
-          <div className="progress mx-2" style={{ width: "10rem" }}>
-            <div
-              className="progress-bar "
-              role="progressbar"
-              aria-valuenow="60"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style={{ width: "60%" }}
-            />
-          </div>
+        <div
+          style={{
+            fontSize: "0.8rem",
+            textAlign: "right",
+            position: "absolute",
+            top: "80px",
+            right: "85px"
+          }}
+        >
+          {hour + ":" + minute + ":" + second}
+        </div>
 
-          <label htmlFor="loop" style={{ fontSize: "0.8rem" }}>
+        <span
+          className="text-center"
+          style={{ position: "absolute", top: "100px" }}
+        >
+          <label
+            htmlFor="loop"
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              left: "10px",
+              top: "4px"
+            }}
+          >
             Loop
           </label>
           <input
             type="checkbox"
-            className="m-1"
+            className=""
             id="loop"
-            onClick={() => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "loop",
-                value: undefined
-              });
+            style={{
+              position: "absolute",
+              left: "45px",
+              top: "5px",
+              height: "20px",
+              width: "20px"
             }}
+            onClick={() => changeBlock(id, "loop", undefined)}
           />
 
-          <span className="text-center">
-            <button
-              className="btn btn-light m-1"
-              style={circleStyle}
-              onClick={e => {
-                store.dispatch({
-                  type: "CHANGE_BLOCK",
-                  id: id,
-                  field: "playing",
-                  value: undefined
-                });
-              }}
-            >
-              <FaPlay style={{ fontSize: "0.5rem" }} />
-            </button>
-            <button
-              className="btn btn-light btn-circle m-1"
-              style={circleStyle}
-              onClick={() => {
-                // let x = 0 - sliderCents;
-                store.dispatch({
-                  type: "CHANGE_BLOCK",
-                  id: id,
-                  field: "playing",
-                  value: undefined
-                  // relative: false
-                });
-              }}
-            >
-              <FaSquare style={{ fontSize: "0.5rem" }} />
-            </button>
-            <button
-              className="btn btn-light btn-circle m-1"
-              style={circleStyle}
-              onClick={e => {
-                // let x = buttonCents + 100;
-                store.dispatch({
-                  type: "CHANGE_BLOCK",
-                  id: id,
-                  field: "playing",
-                  value: undefined
-                });
-              }}
-            >
-              <FaPlay style={{ fontSize: "0.5rem" }} />
-            </button>
-          </span>
-        </div>
-        <div className="col" style={{ width: "2rem" }}>
-          <div style={{ fontSize: "0.8rem" }}>{"Vol. " + volume} </div>
-          <input
-            className="slider text-center"
-            orient="vertical"
-            type="range"
-            style={{ width: "1.5rem", height: "7rem" }}
-            onChange={e => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "volume",
-                value: e.target.value
-              });
+          <button
+            className="btn btn-light m-1"
+            style={{
+              ...circleStyle,
+              position: "absolute",
+              left: "78px"
             }}
-            min={0}
-            max={100}
-            step={1}
-            value={volume}
-            id="volume"
+            onClick={() => changeBlock(id, "playing", undefined)}
+          >
+            <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
+          </button>
+          <button
+            className="btn btn-light btn-circle m-1"
+            style={{
+              ...circleStyle,
+              position: "absolute",
+              left: "120px"
+            }}
+            onClick={() => changeBlock(id, "playing", undefined)}
+          >
+            <FaSquare style={{ fontSize: "12px" }} />
+          </button>
+          <button
+            className="btn btn-light btn-circle m-1"
+            style={{
+              ...circleStyle,
+              position: "absolute",
+              left: "160px"
+            }}
+            onClick={() => changeBlock(id, "reversed", undefined)}
+          >
+            <FaPlay
+              style={{
+                fontSize: "12px",
+                marginLeft: "-2px",
+                transform: "scaleX(-1)"
+              }}
+            />
+          </button>
+        </span>
+
+        <div
+          className="progress progress-bar-vertical"
+          style={{
+            position: "absolute",
+            left: "220px",
+            top: "25px",
+            height: "110px",
+            width: "15px",
+            backgroundColor: "black"
+          }}
+        >
+          <div
+            className="progress-bar "
+            role="progressbar"
+            aria-valuenow="60"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style={{ height: "60%", backgroundColor: "green" }}
           />
         </div>
+
+        <div
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            left: "230px",
+            top: "5px"
+          }}
+        >
+          {"Vol. " + volume}{" "}
+        </div>
+        <input
+          className="slider text-center"
+          orient="vertical"
+          type="range"
+          style={{
+            width: "1.5rem",
+            height: "110px",
+            position: "absolute",
+            left: "248px",
+            top: "26px"
+          }}
+          onChange={e => changeBlock(id, "volume", e.target.value)}
+          min={0}
+          max={100}
+          step={1}
+          value={volume}
+          id="volume"
+        />
       </div>
-      <div className="text-center">
+      <div className="text-center" style={{ backgroundColor: "grey" }}>
         <div className="row">
           <input
-            className="mx-4"
+            className="mx-4 my-1"
             style={{ fontSize: "0.8rem" }}
             type="file"
-            onChange={e => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id,
-                field: "file",
-                value: e.target.files[0]
-              });
-            }}
+            onChange={e => changeBlock(id, "file", e.target.files[0])}
           />
         </div>
         <span className="col text-center">
@@ -172,14 +231,7 @@ const Player = ({ blockInfo }) => {
             type="checkbox"
             className="m-1"
             id="kinect"
-            onClick={() => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "kinect",
-                value: undefined
-              });
-            }}
+            onClick={() => changeBlock(id, "kinect", undefined)}
           />
         </span>
         <span className="col text-center">
@@ -191,14 +243,7 @@ const Player = ({ blockInfo }) => {
             className=""
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
-            onChange={e => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "osc",
-                value: e.target.value
-              });
-            }}
+            onChange={e => changeBlock(id, "osc", e.target.value)}
           />
         </span>
       </div>

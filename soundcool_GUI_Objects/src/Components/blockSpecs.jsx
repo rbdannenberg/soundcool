@@ -26,8 +26,12 @@ const specValues = {
     inDisabled: true,
     color: toHex(229, 119, 125),
     playing: false,
+    reversed: false,
     loop: false,
     volume: 60,
+    hour: 0,
+    minute: 0,
+    second: 0,
     file: undefined,
     kinect: false,
     osc: undefined

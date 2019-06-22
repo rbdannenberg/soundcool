@@ -5,13 +5,30 @@ const Pan = ({ blockInfo }) => {
   let { id, direction } = blockInfo;
   return (
     <React.Fragment>
-      <div class="text-center">
+      <div
+        class="text-center"
+        style={{ width: "288px", height: "40px", position: "relative" }}
+      >
         {/* <div className="row"> */}
-        <span style={{ fontSize: "0.8rem" }}>L</span>
+        <span
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            left: "20px",
+            top: "10px"
+          }}
+        >
+          L
+        </span>
         <input
-          className="slider m-2"
+          className="slider mx-2"
           type="range"
-          style={{ width: "13rem" }}
+          style={{
+            width: "208px",
+            position: "absolute",
+            left: "24px",
+            top: "12px"
+          }}
           onChange={e => {
             store.dispatch({
               type: "CHANGE_BLOCK",
@@ -25,10 +42,22 @@ const Pan = ({ blockInfo }) => {
           value={direction}
           id="direction"
         />
-        <span style={{ fontSize: "0.8rem" }}>R</span>
+        <span
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            left: "244px",
+            top: "10px"
+          }}
+        >
+          R
+        </span>
         {/* </div> */}
       </div>
-      <div className="text-center">
+      <div
+        className="text-center"
+        style={{ backgroundColor: "grey", height: "30px" }}
+      >
         <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
@@ -53,7 +82,7 @@ const Pan = ({ blockInfo }) => {
           </label>
           <input
             type="text"
-            className=""
+            className="my-1"
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {

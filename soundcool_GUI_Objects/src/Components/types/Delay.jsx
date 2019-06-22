@@ -7,7 +7,7 @@ const Delay = ({ blockInfo }) => {
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "48px", position: "relative" }}
+        style={{ width: "288px", height: "44px", position: "relative" }}
       >
         <input
           className="slider"
@@ -77,7 +77,10 @@ const Delay = ({ blockInfo }) => {
           {"feedback: " + feedback}
         </span>
       </div>
-      <div className="text-center">
+      <div
+        className="text-center"
+        style={{ backgroundColor: "grey", height: "30px" }}
+      >
         <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
@@ -102,7 +105,7 @@ const Delay = ({ blockInfo }) => {
           </label>
           <input
             type="text"
-            className=""
+            className="my-1"
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {

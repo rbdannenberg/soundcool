@@ -77,7 +77,18 @@ const WithHeader = ({ blockInfo, nowOut }) => {
 
   // conditionally render in and out buttons in the header
   if (inDisabled) {
-    inButton = <span />;
+    inButton = (
+      // nothing, placeholder
+      <div
+        className="btn btn-sm m-1 text-center"
+        style={{
+          // width: "1.5rem",
+          height: "1.5rem",
+          fontSize: "0.8rem",
+          padding: "0px"
+        }}
+      />
+    );
   } else {
     inButton = (
       <button
@@ -151,7 +162,9 @@ const WithHeader = ({ blockInfo, nowOut }) => {
       style={{
         width: "18rem",
         backgroundColor: color,
-        textDecorationColor: "black"
+        borderColor: "grey",
+        borderStyle: "solid",
+        borderWidth: "2px"
       }}
     >
       <div className="">
