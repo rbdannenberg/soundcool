@@ -32,34 +32,6 @@ const blockApp = combineReducers({
 const store = createStore(blockApp);
 export default store;
 
-const FilterLink = ({ filter, currentFilter, children, onClick }) => {
-  if (filter === currentFilter) {
-    return <span>{children}</span>;
-  }
-  return (
-    <a
-      href="#"
-      onClick={e => {
-        e.preventDefault();
-        onClick(filter);
-      }}
-    >
-      {children}
-    </a>
-  );
-};
-
-const getVisibleBlocks = (blocks, filter) => {
-  switch (filter) {
-    case "SHOW_ACTIVE":
-      return blocks.filter(t => !t.completed);
-    case "SHOW_COMPLETED":
-      return blocks.filter(t => t.completed);
-    default:
-      return blocks;
-  }
-};
-
 // #region rendering components
 
 const BlockList = ({ blocks, nowOut }) => {
@@ -72,38 +44,9 @@ const BlockList = ({ blocks, nowOut }) => {
   );
 };
 
-const Footer = ({ visibilityFilter, onFilterClick }) => {
-  return (
-    <p>
-      Show:{" "}
-      <FilterLink
-        filter="SHOW_ALL"
-        currentFilter={visibilityFilter}
-        onClick={onFilterClick}
-      >
-        ALL
-      </FilterLink>{" "}
-      <FilterLink
-        filter="SHOW_ACTIVE"
-        currentFilter={visibilityFilter}
-        onClick={onFilterClick}
-      >
-        Active
-      </FilterLink>{" "}
-      <FilterLink
-        filter="SHOW_COMPLETED"
-        currentFilter={visibilityFilter}
-        onClick={onFilterClick}
-      >
-        Completed
-      </FilterLink>
-    </p>
-  );
-};
-
 // #endregion
 
-const BlockApp = ({ blocks, visibilityFilter }) => {
+const BlockApp = ({ blocks }) => {
   let { bs, nowOut } = blocks;
   return (
     <div>

@@ -1,6 +1,7 @@
 import React from "react";
 import store from "../../index";
 import changeBlock from "../../handlers";
+// import oscDemo from "../../player-module";
 
 const changeWaveform = (w, id) => {
   store.dispatch({
@@ -134,7 +135,15 @@ const SignalGen = ({ blockInfo }) => {
           >
             <div
               class="dropdown-item"
-              onClick={() => changeWaveform("Silence", id)}
+              onClick={() => {
+                // let modConfig = {
+                //   mod: mod,
+                //   waveType: waveform,
+                //   freq: freq
+                // };
+                changeWaveform("Silence", id);
+                // oscDemo(modConfig, carrConfig);
+              }}
             >
               Silence
             </div>

@@ -110,7 +110,6 @@ const Transposer = ({ blockInfo }) => {
                 id: id,
                 field: "buttonCents",
                 value: x
-                // relative: false
               });
             }}
           >
@@ -151,8 +150,7 @@ const Transposer = ({ blockInfo }) => {
                 type: "CHANGE_BLOCK",
                 id: id,
                 field: "osc",
-                value: e.target.value,
-                relative: false
+                value: e.target.value
               });
             }}
           />

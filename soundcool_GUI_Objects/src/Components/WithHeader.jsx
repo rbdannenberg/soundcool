@@ -64,6 +64,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
     typeName,
     name,
     id,
+    audioObj,
     inDisabled,
     outDisabled,
     outNode,
@@ -104,7 +105,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowIn",
-            value: [name, "0", id]
+            value: [name, "0", id, audioObj]
           });
         }}
       >
@@ -147,7 +148,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
           store.dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowOut",
-            value: [name, "0", id]
+            value: [name, "0", id, audioObj]
           })
         }
       >
