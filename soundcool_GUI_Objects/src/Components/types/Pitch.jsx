@@ -5,11 +5,19 @@ const Pitch = ({ blockInfo }) => {
   let { id, cents } = blockInfo;
   return (
     <React.Fragment>
-      <div className="text-center">
+      <div
+        className=""
+        style={{ width: "288px", height: "62px", position: "relative" }}
+      >
         <label
           htmlFor="cents"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            right: "24px",
+            top: "4px"
+          }}
           className="float-right mx-2"
-          style={{ fontSize: "0.8rem" }}
         >
           {"Cents: " + cents}
         </label>
@@ -17,7 +25,12 @@ const Pitch = ({ blockInfo }) => {
           <input
             className="slider mx-2"
             type="range"
-            style={{ width: "15rem" }}
+            style={{
+              width: "15rem",
+              position: "absolute",
+              left: "10px",
+              top: "20px"
+            }}
             onChange={e => {
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -26,25 +39,41 @@ const Pitch = ({ blockInfo }) => {
                 value: e.target.value
               });
             }}
-            min={-50}
-            max={50}
+            min={-400}
+            max={400}
             value={cents}
             id="cents"
           />
-          <div className="mx-2">
-            <span className="float-left" style={{ fontSize: "0.8rem" }}>
+          <div
+            className="mx-2"
+            style={{ fontSize: "0.8rem", position: "absolute", top: "36px" }}
+          >
+            <span
+              className="float-left"
+              style={{ position: "absolute", left: "5px" }}
+            >
               -400
             </span>
-            <span className="float-center" style={{ fontSize: "0.8rem" }}>
+            <span
+              className="float-center"
+              style={{ position: "absolute", left: "126px" }}
+            >
               0
             </span>
-            <span className="float-right" style={{ fontSize: "0.8rem" }}>
+            <span
+              className="float-right"
+              style={{ position: "absolute", left: "235px" }}
+            >
               +400
             </span>
           </div>
         </div>
       </div>
-      <div className="text-center">
+
+      <div
+        className="text-center"
+        style={{ backgroundColor: "grey", height: "30px" }}
+      >
         <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
@@ -69,7 +98,7 @@ const Pitch = ({ blockInfo }) => {
           </label>
           <input
             type="text"
-            className=""
+            className="my-1"
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
             onChange={e => {

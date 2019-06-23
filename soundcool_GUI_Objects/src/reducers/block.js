@@ -68,7 +68,9 @@ const block = (state, action) => {
           } else {
             state[action.field] = action.value;
             // also update the audioObj (will ignore if there is no such field in object)
-            state.audioObj[action.field] = action.value;
+            if (state.audioObj !== undefined) {
+              state.audioObj[action.field] = action.value;
+            }
           }
         }
         return state;

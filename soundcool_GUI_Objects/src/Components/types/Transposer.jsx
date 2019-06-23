@@ -132,6 +132,7 @@ const Transposer = ({ blockInfo }) => {
           </button>
         </div>
       </div>
+
       <div
         className="text-center"
         style={{ height: "30px", backgroundColor: "grey" }}
