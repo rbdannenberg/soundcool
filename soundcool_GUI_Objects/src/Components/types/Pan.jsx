@@ -9,7 +9,6 @@ const Pan = ({ blockInfo }) => {
         class="text-center"
         style={{ width: "288px", height: "40px", position: "relative" }}
       >
-        {/* <div className="row"> */}
         <span
           style={{
             fontSize: "0.8rem",
@@ -52,7 +51,6 @@ const Pan = ({ blockInfo }) => {
         >
           R
         </span>
-        {/* </div> */}
       </div>
       <div
         className="text-center"

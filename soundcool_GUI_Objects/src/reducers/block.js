@@ -1,6 +1,52 @@
 import scContext from "../audio/sc-context";
 import ScSignalGen from "../audio/sc-signalgen";
 import ScSpeakers from "../audio/sc-speakers";
+import ScDelay from "../audio/sc-delay";
+import ScDirectIn from "../audio/sc-directin";
+import ScPlayer from "../audio/sc-player";
+import ScPan from "../audio/sc-pan";
+
+const eva = typeName => {
+  let t;
+  switch (typeName) {
+    case "Delay":
+      t = new ScDelay(scContext);
+      break;
+    // case "Transposer":
+    //   t = new ScTransposer(scContext);
+    //   break;
+    case "Pan":
+      t = new ScPan(scContext);
+      break;
+    case "Player":
+      t = new ScPlayer(scContext);
+      break;
+    case "SignalGen":
+      t = new ScSignalGen(scContext);
+      break;
+    case "Speaker":
+      t = new ScSpeakers(scContext);
+      break;
+    case "DirectInput":
+      t = new ScDirectIn(scContext);
+      break;
+    // case "Pitch":
+    //   t = new ScPitch(scContext);
+    //   break;
+    // case "VSTHost":
+    //   t = new ScVSTHost(scContext);
+    //   break;
+    // case "Routing":
+    //   t = new ScRouting(scContext);
+    //   break;
+    // case "Mixer":
+    //   t = new ScMixer(scContext);
+    //   break;
+    default:
+      t = undefined;
+  }
+  return t;
+};
 
 const block = (state, action) => {
   switch (action.type) {
@@ -9,10 +55,7 @@ const block = (state, action) => {
         typeName: action.typeName,
         id: action.newId,
         name: action.typeName.charAt(0) + action.newTypeId,
-        audioObj:
-          action.typeName === "SignalGen"
-            ? new ScSignalGen(scContext)
-            : new ScSpeakers(scContext),
+        audioObj: eva(action.typeName),
         // contains generic values like in, out, collapse and also personal values
         ...action.values
       };
@@ -24,7 +67,7 @@ const block = (state, action) => {
             state[action.field] = !state[action.field];
           } else {
             state[action.field] = action.value;
-            // also update the audioObj
+            // also update the audioObj (will ignore if there is no such field in object)
             state.audioObj[action.field] = action.value;
           }
         }

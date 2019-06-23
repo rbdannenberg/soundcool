@@ -6,7 +6,7 @@ const circleStyle = {
   width: "2rem",
   height: "2rem",
   textAlign: "center",
-  fontSize: "12px",
+  fontSize: "15px",
   lineHeight: 1.428571429,
   borderRadius: "0.5rem"
 };
@@ -21,69 +21,96 @@ const Player = ({ blockInfo }) => {
   }
   return (
     <React.Fragment>
-      <div class="text-center">
-        <div className="container my-2">
-          <div className="row">
-            <div className="col-8">
-              <div className="row">
-                <div className="col-1" style={{ fontSize: "0.8rem" }}>
-                  L
-                </div>
-                <div className="col-7">
-                  <div className="progress" style={{ width: "8rem" }}>
-                    <div
-                      className="progress-bar"
-                      role="progressbar"
-                      aria-valuenow="60"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                      style={{ width: "60%" }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-1" style={{ fontSize: "0.8rem" }}>
-                  R
-                </div>
-                <div className="col-7">
-                  <div className="progress" style={{ width: "8rem" }}>
-                    <div
-                      className="progress-bar "
-                      role="progressbar"
-                      aria-valuenow="60"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                      style={{ width: "60%" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-4">
-              <button
-                className="btn btn-light "
-                style={circleStyle}
-                onClick={() => {
-                  store.dispatch({
-                    type: "CHANGE_BLOCK",
-                    id: id,
-                    field: "muted",
-                    value: undefined
-                  });
-                }}
-              >
-                {playButton}
-              </button>
-            </div>
-          </div>
+      <div class="text-center" style={{ position: "relative", height: "48px" }}>
+        <div
+          className=""
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "3px",
+            left: "6px"
+          }}
+        >
+          L
         </div>
+        <div
+          className="progress"
+          style={{
+            width: "200px",
+            position: "absolute",
+            top: "5px",
+            left: "20px",
+            backgroundColor: "black"
+          }}
+        >
+          <div
+            className="progress-bar"
+            role="progressbar"
+            aria-valuenow="60"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style={{ width: "60%", backgroundColor: "green" }}
+          />
+        </div>
+
+        <div
+          className=""
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "23px",
+            left: "6px"
+          }}
+        >
+          R
+        </div>
+        <div
+          className="progress"
+          style={{
+            width: "200px",
+            position: "absolute",
+            top: "25px",
+            left: "20px",
+            backgroundColor: "black"
+          }}
+        >
+          <div
+            className="progress-bar "
+            role="progressbar"
+            aria-valuenow="60"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            style={{ width: "60%", backgroundColor: "green" }}
+          />
+        </div>
+
+        <button
+          className="btn btn-light "
+          style={{
+            ...circleStyle,
+            position: "absolute",
+            padding: "0px",
+            top: "5px",
+            left: "230px",
+            backgroundColor: "transparent"
+          }}
+          onClick={() => {
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id: id,
+              field: "muted",
+              value: undefined
+            });
+          }}
+        >
+          {playButton}
+        </button>
       </div>
 
-      <div className="text-center">
+      <div className="text-center" style={{ backgroundColor: "grey" }}>
         <span className="col-md-4">
           <button
-            className="btn btn-light mx-2 my-1"
+            className="badge-pill badge-light badge-sm mx-2 my-1"
             style={{ fontSize: "0.8rem" }}
             // onClick={e => {
             //   store.dispatch({

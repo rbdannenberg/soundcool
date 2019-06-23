@@ -31,7 +31,7 @@ const SignalGen = ({ blockInfo }) => {
   }
   return (
     <React.Fragment>
-      <div className="" style={{ position: "relative", height: "140px" }}>
+      <div className="" style={{ position: "relative", height: "134px" }}>
         <label
           htmlFor="frequency"
           style={{
@@ -258,7 +258,10 @@ const SignalGen = ({ blockInfo }) => {
         />
       </div>
 
-      <div className="text-center" style={{ backgroundColor: "grey" }}>
+      <div
+        className="text-center"
+        style={{ backgroundColor: "grey", height: "32px" }}
+      >
         <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect
