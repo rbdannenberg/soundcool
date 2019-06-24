@@ -40,7 +40,7 @@ const specValues = {
     color: toHex(89, 199, 198),
     frequency: 440,
     waveform: "Silence",
-    mod: "No Mod",
+    modulation: "No Mod",
     MI: 0,
     FD: 0,
     volume: 60,

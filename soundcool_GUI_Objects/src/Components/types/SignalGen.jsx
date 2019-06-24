@@ -16,18 +16,18 @@ const changeMod = (w, id) => {
   store.dispatch({
     type: "CHANGE_BLOCK",
     id: id,
-    field: "mod",
+    field: "modulation",
     value: w
   });
 };
 
 const SignalGen = ({ blockInfo }) => {
-  let { id, frequency, waveform, mod, volume, MI, FD } = blockInfo;
+  let { id, frequency, waveform, modulation, volume, MI, FD } = blockInfo;
   let modParam;
-  if (mod === "No Mod" || mod === "RM") {
+  if (modulation === "No Mod" || modulation === "RM") {
     modParam = "Not Applicable";
   } else {
-    modParam = mod === "AM" ? "MI for AM: " + MI : "FD for FM: " + FD;
+    modParam = modulation === "AM" ? "MI for AM: " + MI : "FD for FM: " + FD;
   }
   return (
     <React.Fragment>
@@ -60,7 +60,7 @@ const SignalGen = ({ blockInfo }) => {
               value: e.target.value
             });
           }}
-          min={139}
+          min={0}
           max={15000}
           value={frequency}
           id="frequency"
@@ -87,21 +87,23 @@ const SignalGen = ({ blockInfo }) => {
             top: "58px"
           }}
           onChange={e => {
-            if (mod === "No Mod" || mod === "RM") {
+            if (modulation === "No Mod" || modulation === "RM") {
               return;
             } else {
               store.dispatch({
                 type: "CHANGE_BLOCK",
                 id: id,
-                field: mod === "AM" ? "MI" : "FD",
+                field: modulation === "AM" ? "MI" : "FD",
                 value: e.target.value
               });
             }
           }}
           min={0}
-          max={mod === "AM" ? 20 : 1000}
-          step={mod === "AM" ? 0.1 : 1}
-          value={modParam === "Not applicable" ? 0 : mod === "AM" ? MI : FD}
+          max={modulation === "AM" ? 20 : 1000}
+          step={modulation === "AM" ? 0.1 : 1}
+          value={
+            modParam === "Not applicable" ? 0 : modulation === "AM" ? MI : FD
+          }
           id="param"
         />
 
@@ -136,13 +138,7 @@ const SignalGen = ({ blockInfo }) => {
             <div
               class="dropdown-item"
               onClick={() => {
-                // let modConfig = {
-                //   mod: mod,
-                //   waveType: waveform,
-                //   freq: freq
-                // };
                 changeWaveform("Silence", id);
-                // oscDemo(modConfig, carrConfig);
               }}
             >
               Silence
@@ -206,7 +202,7 @@ const SignalGen = ({ blockInfo }) => {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            {mod}
+            {modulation}
           </button>
           <div
             class="dropdown-menu"
