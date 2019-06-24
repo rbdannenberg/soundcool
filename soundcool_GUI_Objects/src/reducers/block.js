@@ -117,7 +117,9 @@ const block = (state, action) => {
       } else {
         if (state.id === idOut) {
           // connect the audio objects together
-          state.audioObj.connectTo(audioObjIn);
+          if (state.audioObj !== undefined) {
+            state.audioObj.connectTo(audioObjIn);
+          }
           // then update the ui information
           let newOutNode = [...state.outNode];
           newOutNode[indexOut] = [nameIn, idIn];
