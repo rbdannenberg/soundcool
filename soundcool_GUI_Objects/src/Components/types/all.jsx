@@ -9,6 +9,7 @@ import Pitch from "./Pitch";
 import VSTHost from "./VSTHost";
 import Routing from "./Routing";
 import Mixer from "./Mixer";
+import Record from "./Record";
 
 export { Delay };
 export { Transposer };
@@ -21,6 +22,7 @@ export { Pitch };
 export { VSTHost };
 export { Routing };
 export { Mixer };
+export { Record };
 
 // export * from './delay';
 // export * from './transposer';

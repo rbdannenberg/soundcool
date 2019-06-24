@@ -1,5 +1,6 @@
 import React from "react";
 import store from "../../index";
+import changeBlock from "../../handlers";
 
 const Delay = ({ blockInfo }) => {
   let { id, delayTime, feedback } = blockInfo;
@@ -18,16 +19,9 @@ const Delay = ({ blockInfo }) => {
             top: "6px",
             left: "6px"
           }}
-          onChange={e => {
-            store.dispatch({
-              type: "CHANGE_BLOCK",
-              id: id,
-              field: "delayTime",
-              value: e.target.value
-            });
-          }}
+          onChange={e => changeBlock(id, "delayTime", e.target.value)}
           min={0}
-          max={100}
+          max={1000}
           value={delayTime}
           id="delayTime"
         />
@@ -40,8 +34,22 @@ const Delay = ({ blockInfo }) => {
             left: "144px"
           }}
         >
-          {"delay(ms): " + delayTime}
+          {"delay(ms): "}
         </label>
+        <input
+          type="number"
+          value={delayTime}
+          style={{
+            position: "absolute",
+            width: "40px",
+            height: "16px",
+            left: "210px",
+            top: "5px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e => changeBlock(id, "delayTime", e.target.value)}
+        />
+
         <input
           className="slider "
           type="range"
@@ -51,14 +59,7 @@ const Delay = ({ blockInfo }) => {
             top: "24px",
             left: "6px"
           }}
-          onChange={e => {
-            store.dispatch({
-              type: "CHANGE_BLOCK",
-              id: id,
-              field: "feedback",
-              value: e.target.value
-            });
-          }}
+          onChange={e => changeBlock(id, "feedback", e.target.value)}
           step={0.001}
           min={0}
           max={1}
@@ -74,8 +75,21 @@ const Delay = ({ blockInfo }) => {
             left: "144px"
           }}
         >
-          {"feedback: " + feedback}
+          {"feedback: "}
         </span>
+        <input
+          type="number"
+          value={feedback}
+          style={{
+            position: "absolute",
+            width: "40px",
+            height: "16px",
+            left: "210px",
+            top: "24px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e => changeBlock(id, "feedback", e.target.value)}
+        />
       </div>
       <div
         className="text-center"

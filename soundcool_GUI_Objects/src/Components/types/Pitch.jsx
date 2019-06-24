@@ -1,4 +1,5 @@
 import React from "react";
+import changeBlock from "../../handlers";
 import store from "../../index";
 
 const Pitch = ({ blockInfo }) => {
@@ -14,13 +15,28 @@ const Pitch = ({ blockInfo }) => {
           style={{
             fontSize: "0.8rem",
             position: "absolute",
-            right: "24px",
+            right: "34px",
             top: "4px"
           }}
           className="float-right mx-2"
         >
-          {"Cents: " + cents}
+          {"Cents: "}
         </label>
+
+        <input
+          type="number"
+          value={cents}
+          style={{
+            position: "absolute",
+            width: "30px",
+            height: "16px",
+            right: "10px",
+            top: "5px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e => changeBlock(id, "cents", e.target.value)}
+        />
+
         <div className="text-center">
           <input
             className="slider mx-2"

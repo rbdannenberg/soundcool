@@ -13,7 +13,8 @@ import {
   Pitch,
   VSTHost,
   Routing,
-  Mixer
+  Mixer,
+  Record
 } from "./types/all";
 import store from "../index";
 
@@ -52,6 +53,9 @@ const eva = typeName => {
       break;
     case "Mixer":
       t = Mixer;
+      break;
+    case "Record":
+      t = Record;
       break;
     default:
       t = <span>No setup yet!</span>;
@@ -221,21 +225,10 @@ const WithHeader = ({ blockInfo, nowOut }) => {
             <FaTimes style={{ marginLeft: "-1px" }} />
           </button>
           {outButton}
-          {/* <button
-            style={{
-              textAlign: "center",
-              width: "1.5rem",
-              height: "1.5rem",
-              padding: "0px"
-            }}
-          >
-            try
-          </button> */}
         </span>
       </div>
       <Collapse isOpen={collapse}>
         <Block blockInfo={blockInfo} />
-        {/* <p style={{ backgroundColor: "black" }}>ggg</p> */}
       </Collapse>
     </div>
   );

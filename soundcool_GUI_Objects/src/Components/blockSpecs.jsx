@@ -98,6 +98,15 @@ const specValues = {
     volume7: 60,
     volume8: 60,
     osc: undefined
+  },
+  Record: {
+    color: toHex(159, 125, 119),
+    outDisabled: true,
+    module: false,
+    fileName: undefined,
+    recording: false,
+    volume: 60,
+    timer: 0
   }
 };
 

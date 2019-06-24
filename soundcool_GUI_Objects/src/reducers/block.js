@@ -70,9 +70,6 @@ const block = (state, action) => {
             // also update the audioObj (will ignore if there is no such field in object)
             if (state.audioObj !== undefined) {
               state.audioObj[action.field] = action.value;
-              if (action.field === "mod") {
-                console.log("modded!");
-              }
             }
           }
         }

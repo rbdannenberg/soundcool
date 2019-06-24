@@ -13,7 +13,8 @@ const allTypes = {
   Pitch: 1,
   VSTHost: 1,
   Routing: 1,
-  Mixer: 1
+  Mixer: 1,
+  Record: 1
 };
 const blocks = (
   state = {
