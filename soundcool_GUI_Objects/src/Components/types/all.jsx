@@ -12,6 +12,11 @@ import Mixer from "./Mixer";
 import Record from "./Record";
 import Spectralscope from "./Spectralscope";
 import Oscilloscope from "./Oscilloscope";
+import Envelope from "./Envelope";
+import Filter from "./Filter";
+import Keyboard from "./Keyboard";
+import SamplePlayer from "./SamplePlayer";
+import Sequencer from "./Sequencer";
 
 export { Delay };
 export { Transposer };
@@ -27,6 +32,11 @@ export { Mixer };
 export { Record };
 export { Spectralscope };
 export { Oscilloscope };
+export { Envelope };
+export { Filter };
+export { Keyboard };
+export { SamplePlayer };
+export { Sequencer };
 
 // export * from './delay';
 // export * from './transposer';

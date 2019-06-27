@@ -1,7 +1,6 @@
 import React from "react";
 import store from "../../index";
 import changeBlock from "../../handlers";
-import { ProgressBar } from "react-bootstrap";
 
 const DirectInput = ({ blockInfo }) => {
   let { id, direction, volume } = blockInfo;

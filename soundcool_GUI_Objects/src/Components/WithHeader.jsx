@@ -17,7 +17,12 @@ import {
   Mixer,
   Record,
   Spectralscope,
-  Oscilloscope
+  Oscilloscope,
+  Envelope,
+  Filter,
+  Keyboard,
+  SamplePlayer,
+  Sequencer
   // #endregion
 } from "./types/all";
 import store from "../index";
@@ -66,6 +71,21 @@ const eva = typeName => {
       break;
     case "Oscilloscope":
       t = Oscilloscope;
+      break;
+    case "Envelope":
+      t = Envelope;
+      break;
+    case "Filter":
+      t = Filter;
+      break;
+    case "Keyboard":
+      t = Keyboard;
+      break;
+    case "SamplePlayer":
+      t = SamplePlayer;
+      break;
+    case "Sequencer":
+      t = Sequencer;
       break;
     default:
       t = <span>No setup yet!</span>;

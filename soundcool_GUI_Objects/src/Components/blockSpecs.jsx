@@ -115,6 +115,25 @@ const specValues = {
   Oscilloscope: {
     color: toHex(141, 104, 133),
     outDisabled: true
+  },
+  Envelope: {
+    color: toHex(80, 174, 55)
+  },
+  Filter: {
+    color: toHex(144, 81, 57)
+  },
+  Sequencer: {
+    color: toHex(202, 240, 253),
+    inDisabled: true,
+    outDisabled: true
+  },
+  SamplePlayer: {
+    color: toHex(229, 119, 125),
+    inDisabled: true
+  },
+  Keyboard: {
+    color: toHex(89, 162, 179),
+    inDisabled: true
   }
 };
 

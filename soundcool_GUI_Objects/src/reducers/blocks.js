@@ -16,7 +16,12 @@ const allTypes = {
   Mixer: 1,
   Record: 1,
   Spectralscope: 1,
-  Oscilloscope: 1
+  Oscilloscope: 1,
+  Envelope: 1,
+  Filter: 1,
+  Keyboard: 1,
+  SamplePlayer: 1,
+  Sequencer: 1
 };
 const blocks = (
   state = {

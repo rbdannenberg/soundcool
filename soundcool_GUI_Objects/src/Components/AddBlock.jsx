@@ -72,6 +72,21 @@ const AddBlock = () => {
           <div class="dropdown-item" onClick={() => addBlock("Oscilloscope")}>
             Oscilloscope
           </div>
+          <div class="dropdown-item" onClick={() => addBlock("Envelope")}>
+            Envelope
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Filter")}>
+            Filter
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Keyboard")}>
+            Keyboard
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("SamplePlayer")}>
+            SamplePlayer
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Sequencer")}>
+            Sequencer
+          </div>
         </div>
       </div>
     </React.Fragment>
