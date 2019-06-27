@@ -66,6 +66,12 @@ const AddBlock = () => {
           <div class="dropdown-item" onClick={() => addBlock("Record")}>
             Record
           </div>
+          <div class="dropdown-item" onClick={() => addBlock("Spectralscope")}>
+            Spectralscope
+          </div>
+          <div class="dropdown-item" onClick={() => addBlock("Oscilloscope")}>
+            Oscilloscope
+          </div>
         </div>
       </div>
     </React.Fragment>

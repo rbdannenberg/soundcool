@@ -14,7 +14,9 @@ const allTypes = {
   VSTHost: 1,
   Routing: 1,
   Mixer: 1,
-  Record: 1
+  Record: 1,
+  Spectralscope: 1,
+  Oscilloscope: 1
 };
 const blocks = (
   state = {

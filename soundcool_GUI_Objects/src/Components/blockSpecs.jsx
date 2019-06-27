@@ -107,6 +107,14 @@ const specValues = {
     recording: false,
     volume: 60,
     timer: 0
+  },
+  Spectralscope: {
+    color: toHex(141, 104, 133),
+    outDisabled: true
+  },
+  Oscilloscope: {
+    color: toHex(141, 104, 133),
+    outDisabled: true
   }
 };
 

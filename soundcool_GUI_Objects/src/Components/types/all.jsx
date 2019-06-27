@@ -10,6 +10,8 @@ import VSTHost from "./VSTHost";
 import Routing from "./Routing";
 import Mixer from "./Mixer";
 import Record from "./Record";
+import Spectralscope from "./Spectralscope";
+import Oscilloscope from "./Oscilloscope";
 
 export { Delay };
 export { Transposer };
@@ -23,6 +25,8 @@ export { VSTHost };
 export { Routing };
 export { Mixer };
 export { Record };
+export { Spectralscope };
+export { Oscilloscope };
 
 // export * from './delay';
 // export * from './transposer';

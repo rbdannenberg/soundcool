@@ -3,6 +3,7 @@ import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
 import Background from "../bg.png";
 import {
+  // #region all types
   Delay,
   Transposer,
   Pan,
@@ -14,7 +15,10 @@ import {
   VSTHost,
   Routing,
   Mixer,
-  Record
+  Record,
+  Spectralscope,
+  Oscilloscope
+  // #endregion
 } from "./types/all";
 import store from "../index";
 
@@ -56,6 +60,12 @@ const eva = typeName => {
       break;
     case "Record":
       t = Record;
+      break;
+    case "Spectralscope":
+      t = Spectralscope;
+      break;
+    case "Oscilloscope":
+      t = Oscilloscope;
       break;
     default:
       t = <span>No setup yet!</span>;
