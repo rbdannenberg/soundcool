@@ -1,28 +1,403 @@
 import React from "react";
+import "../../index.css";
+import changeBlock from "../../handlers";
 import store from "../../index";
+import {
+  FaArrowRight,
+  FaArrowLeft,
+  FaExchangeAlt,
+  FaRetweet
+} from "react-icons/fa";
+import { Knob } from "react-rotary-knob";
+
+const changeWaveform = (w, id, num) => {
+  store.dispatch({
+    type: "CHANGE_BLOCK",
+    id: id,
+    field: "waveforms",
+    num: num - 1,
+    value: w
+  });
+};
+
+const changeMod = (w, id, num) => {
+  store.dispatch({
+    type: "CHANGE_BLOCK",
+    id: id,
+    field: "modulations",
+    num: num - 1,
+    value: w
+  });
+};
+
+const getNote = x => {
+  const noteList = [
+    "C",
+    "•",
+    "C#",
+    "•",
+    "D",
+    "•",
+    "D#",
+    "•",
+    "E",
+    "•",
+    "F",
+    "•",
+    "F#",
+    "•",
+    "G",
+    "•",
+    "G#",
+    "•",
+    "A",
+    "•",
+    "A#",
+    "•",
+    "B"
+  ];
+  return noteList[x];
+};
+
+const Beat = ({
+  id,
+  num,
+  note,
+  modValue,
+  select,
+  skip,
+  waveform,
+  octave,
+  mod,
+  duration,
+  modulation
+}) => {
+  return (
+    <div style={{ position: "absolute", width: "70px", height: "160px" }}>
+      <div style={{ position: "absolute", width: "70px", height: "100px" }}>
+        {/* <Knob /> */}
+        <Knob
+          style={{
+            position: "absolute",
+            left: "5px",
+            width: "40px",
+            height: "40px"
+          }}
+          min={0}
+          max={23}
+          onChange={e =>
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id: id,
+              field: "notes",
+              num: num - 1,
+              value: Math.floor(e)
+            })
+          }
+        />
+        <div style={{ position: "absolute", top: "40px", left: "18px" }}>
+          {getNote(note)}
+        </div>
+        <Knob
+          style={{
+            position: "absolute",
+            left: "42px",
+            top: "30px",
+            width: "40px",
+            height: "40px"
+          }}
+          min={0}
+          max={1000}
+          onChange={e =>
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id: id,
+              field: "modulationValues",
+              num: num - 1,
+              value: e
+            })
+          }
+        />
+        <input
+          type="number"
+          value={duration}
+          style={{
+            position: "absolute",
+            width: "35px",
+            height: "16px",
+            left: "48px",
+            top: "5px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e =>
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id: id,
+              field: "duration",
+              num: num - 1,
+              value: e.target.value
+            })
+          }
+        />
+      </div>
+      <div style={{ position: "absolute", top: "80px" }}>
+        {/* Select and Skip */}
+        <div
+          class="btn btn-small btn-light"
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: "2px",
+            width: "45px",
+            height: "20px",
+            fontSize: "0.7rem",
+            padding: "0px"
+          }}
+        >
+          Select
+        </div>
+        <div
+          class="btn btn-small btn-light"
+          style={{
+            position: "absolute",
+            left: "55px",
+            top: "2px",
+            width: "30px",
+            height: "20px",
+            fontSize: "0.7rem",
+            padding: "0px"
+          }}
+        >
+          Skip
+        </div>
+
+        {/* Waveform dropdown */}
+        <div
+          class="dropdown"
+          style={{
+            position: "absolute",
+            top: "23px",
+            left: "5px"
+          }}
+        >
+          <button
+            className="btn-sm btn-light dropdown-toggle l-6 "
+            style={{
+              fontSize: "0.7rem",
+              padding: "0px",
+              width: "80px",
+              height: "22px"
+            }}
+            id="waveform dropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {waveform}
+          </button>
+          <div
+            class="dropdown-menu"
+            style={{ fontSize: "0.8rem" }}
+            aria-labelledby="waveform dropdown"
+          >
+            <div
+              class="dropdown-item"
+              onClick={() => {
+                changeWaveform("Silence", id, num);
+              }}
+            >
+              Silence
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("Sine Wave", id, num)}
+            >
+              Sine Wave
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("Triangle", id, num)}
+            >
+              Triangle
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("Square", id, num)}
+            >
+              Square
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("Sawtooth", id, num)}
+            >
+              Sawtooth
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("White Noise", id, num)}
+            >
+              White Noise
+            </div>
+            <div
+              class="dropdown-item"
+              onClick={() => changeWaveform("Pink Noise", id, num)}
+            >
+              Pink Noise
+            </div>
+          </div>
+        </div>
+        {/* Mods dropdown */}
+        <div
+          class="dropdown"
+          style={{
+            position: "absolute",
+            top: "48px",
+            left: "5px"
+          }}
+        >
+          <button
+            className="btn-sm btn-light dropdown-toggle"
+            style={{
+              fontSize: "0.7rem",
+              padding: "0px",
+              width: "80px",
+              height: "22px"
+            }}
+            id="mod dropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {modulation}
+          </button>
+          <div
+            class="dropdown-menu"
+            style={{ fontSize: "0.8rem" }}
+            aria-labelledby="mod dropdown"
+          >
+            <div
+              class="dropdown-item"
+              onClick={() => changeMod("No Mod", id, num)}
+            >
+              No Mod
+            </div>
+            <div class="dropdown-item" onClick={() => changeMod("RM", id, num)}>
+              RM
+            </div>
+            <div class="dropdown-item" onClick={() => changeMod("AM", id, num)}>
+              AM
+            </div>
+            <div class="dropdown-item" onClick={() => changeMod("FM", id, num)}>
+              FM
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Sequencer = ({ blockInfo }) => {
-  let {} = blockInfo;
+  let { id, waveforms, modulations, notes, durations } = blockInfo;
   return (
     <React.Fragment>
       <div
         className=""
         style={{
           width: "288px",
-          height: "188px",
+          height: "360px",
           position: "relative"
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            width: "263px",
-            height: "168px",
-            top: "10px",
-            left: "10px",
-            backgroundColor: "#DCDEE0"
-          }}
-        />
+        <div style={{ position: "absolute", top: "2px" }}>
+          <label
+            htmlFor="signalGenId"
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              left: "6px",
+              width: "80px"
+            }}
+          >
+            {"signalGen Id: "}
+          </label>
+          <input
+            type="number"
+            style={{
+              position: "absolute",
+              width: "30px",
+              height: "16px",
+              left: "88px",
+              top: "2px",
+              fontSize: "0.7rem"
+            }}
+            onChange={e => changeBlock(id, "signalGenId", e.target.value)}
+          />
+          <label
+            htmlFor="envId"
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              left: "125px",
+              width: "50px"
+            }}
+          >
+            {"Env Id: "}
+          </label>
+          <input
+            type="number"
+            style={{
+              position: "absolute",
+              width: "30px",
+              height: "16px",
+              left: "170px",
+              top: "2px",
+              fontSize: "0.7rem"
+            }}
+            onChange={e => changeBlock(id, "envId", e.target.value)}
+          />
+          `
+          <FaArrowRight
+            style={{
+              position: "absolute",
+              left: "210px",
+              top: "2px"
+            }}
+          />
+          <FaArrowLeft
+            style={{
+              position: "absolute",
+              left: "230px",
+              top: "2px"
+            }}
+          />
+          <FaExchangeAlt
+            style={{
+              position: "absolute",
+              left: "252px",
+              top: "2px"
+            }}
+          />
+          <FaRetweet
+            style={{
+              position: "absolute",
+              left: "276px",
+              top: "0px",
+              fontSize: "1.2rem"
+            }}
+          />
+        </div>
+
+        <div style={{ position: "absolute", top: "30px" }}>
+          <Beat
+            id={id}
+            num={1}
+            waveform={waveforms[0]}
+            modulation={modulations[0]}
+            duration={durations[0]}
+            note={notes[0]}
+          />
+        </div>
       </div>
     </React.Fragment>
   );

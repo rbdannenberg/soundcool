@@ -125,7 +125,32 @@ const specValues = {
   Sequencer: {
     color: toHex(202, 240, 253),
     inDisabled: true,
-    outDisabled: true
+    outDisabled: true,
+    waveforms: [
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence"
+    ],
+    modulations: [
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod"
+    ],
+    modulationValues: [0, 0, 0, 0, 0, 0, 0, 0],
+    notes: [0, 4, 8, 10, 14, 18, 22, 0],
+    durations: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]
   },
   SamplePlayer: {
     color: toHex(229, 119, 125),

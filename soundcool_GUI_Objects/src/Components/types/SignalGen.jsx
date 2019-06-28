@@ -130,6 +130,7 @@ const SignalGen = ({ blockInfo }) => {
           id="param"
         />
 
+        {/* Two Dropdowns */}
         <div
           class="dropdown"
           style={{

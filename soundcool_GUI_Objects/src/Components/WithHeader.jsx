@@ -195,7 +195,7 @@ const WithHeader = ({ blockInfo, nowOut }) => {
     <div
       className="text-left my-2"
       style={{
-        width: "18rem",
+        width: "20rem",
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",

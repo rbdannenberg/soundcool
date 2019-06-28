@@ -65,12 +65,18 @@ const block = (state, action) => {
           // boolean flip change, no values
           if (action.value === undefined) {
             state[action.field] = !state[action.field];
+            // also update the audioObj (will ignore if there is no such field in object)
+            if (state.audioObj !== undefined) {
+              state.audioObj[action.field] = !state.audioObj[action.field];
+            }
+          } else if (action.num !== undefined) {
+            // action.field is an array, only update one of the element
+            state[action.field][action.num] = action.value;
           } else {
             state[action.field] = action.value;
             // also update the audioObj (will ignore if there is no such field in object)
             if (state.audioObj !== undefined) {
               state.audioObj[action.field] = action.value;
-              console.log("ankit: " + action.field);
             }
           }
         }
