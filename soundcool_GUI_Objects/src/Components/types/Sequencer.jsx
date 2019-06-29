@@ -9,13 +9,14 @@ import {
   FaRetweet
 } from "react-icons/fa";
 import { Knob } from "react-rotary-knob";
+import { stringLiteral } from "@babel/types";
 
 const changeWaveform = (w, id, num) => {
   store.dispatch({
     type: "CHANGE_BLOCK",
     id: id,
     field: "waveforms",
-    num: num - 1,
+    num: num,
     value: w
   });
 };
@@ -25,7 +26,7 @@ const changeMod = (w, id, num) => {
     type: "CHANGE_BLOCK",
     id: id,
     field: "modulations",
-    num: num - 1,
+    num: num,
     value: w
   });
 };
@@ -60,17 +61,19 @@ const getNote = x => {
 };
 
 const Beat = ({
+  // #region props
   id,
   num,
   note,
   modValue,
-  select,
-  skip,
+  selected,
+  skipped,
   waveform,
   octave,
   mod,
   duration,
   modulation
+  // #endregion
 }) => {
   return (
     <div style={{ position: "absolute", width: "70px", height: "160px" }}>
@@ -83,6 +86,8 @@ const Beat = ({
             width: "40px",
             height: "40px"
           }}
+          preciseMode={false}
+          value={note}
           min={0}
           max={23}
           onChange={e =>
@@ -90,7 +95,7 @@ const Beat = ({
               type: "CHANGE_BLOCK",
               id: id,
               field: "notes",
-              num: num - 1,
+              num: num,
               value: Math.floor(e)
             })
           }
@@ -106,6 +111,8 @@ const Beat = ({
             width: "40px",
             height: "40px"
           }}
+          preciseMode={false}
+          value={modValue}
           min={0}
           max={1000}
           onChange={e =>
@@ -113,7 +120,7 @@ const Beat = ({
               type: "CHANGE_BLOCK",
               id: id,
               field: "modulationValues",
-              num: num - 1,
+              num: num,
               value: e
             })
           }
@@ -133,17 +140,20 @@ const Beat = ({
             store.dispatch({
               type: "CHANGE_BLOCK",
               id: id,
-              field: "duration",
-              num: num - 1,
+              field: "durations",
+              num: num,
               value: e.target.value
             })
           }
         />
       </div>
+
       <div style={{ position: "absolute", top: "80px" }}>
         {/* Select and Skip */}
         <div
-          class="btn btn-small btn-light"
+          className={
+            selected ? "btn btn-small btn-secondary" : "btn btn-small btn-light"
+          }
           style={{
             position: "absolute",
             left: "5px",
@@ -153,11 +163,22 @@ const Beat = ({
             fontSize: "0.7rem",
             padding: "0px"
           }}
+          onClick={e =>
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id,
+              field: "selecteds",
+              num: num,
+              value: undefined
+            })
+          }
         >
           Select
         </div>
         <div
-          class="btn btn-small btn-light"
+          className={
+            skipped ? "btn btn-small btn-secondary" : "btn btn-small btn-light"
+          }
           style={{
             position: "absolute",
             left: "55px",
@@ -167,6 +188,15 @@ const Beat = ({
             fontSize: "0.7rem",
             padding: "0px"
           }}
+          onClick={e =>
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id,
+              field: "skippeds",
+              num: num,
+              value: undefined
+            })
+          }
         >
           Skip
         </div>
@@ -293,19 +323,60 @@ const Beat = ({
           </div>
         </div>
       </div>
+
+      {/* notelength slider */}
+      <input
+        className="slider text-center"
+        orient="vertical"
+        type="range"
+        style={{
+          width: "1rem",
+          height: "150px",
+          position: "absolute",
+          left: "85px",
+          top: "2px"
+        }}
+        onChange={e => {
+          store.dispatch({
+            type: "CHANGE_BLOCK",
+            id: id,
+            field: "durations",
+            num: num,
+            value: e.target.value
+          });
+        }}
+        min={0}
+        max={10000}
+        step={1}
+        value={duration}
+      />
     </div>
   );
 };
 
 const Sequencer = ({ blockInfo }) => {
-  let { id, waveforms, modulations, notes, durations } = blockInfo;
+  let {
+    // #region props
+    id,
+    waveforms,
+    modulations,
+    modulationValues,
+    notes,
+    durations,
+    selecteds,
+    skippeds,
+    looping,
+    playStyle
+    // #endregion
+  } = blockInfo;
+  let l = [0, 1, 2, 3, 4, 5, 6, 7];
   return (
     <React.Fragment>
       <div
         className=""
         style={{
           width: "288px",
-          height: "360px",
+          height: "520px",
           position: "relative"
         }}
       >
@@ -356,48 +427,76 @@ const Sequencer = ({ blockInfo }) => {
             }}
             onChange={e => changeBlock(id, "envId", e.target.value)}
           />
-          `
+
           <FaArrowRight
             style={{
               position: "absolute",
               left: "210px",
-              top: "2px"
+              top: "2px",
+              backgroundColor:
+                playStyle === "forward" ? "darkgrey" : "transparent"
             }}
+            onClick={() => changeBlock(id, "playStyle", "forward")}
           />
           <FaArrowLeft
             style={{
               position: "absolute",
               left: "230px",
-              top: "2px"
+              top: "2px",
+              backgroundColor:
+                playStyle === "backward" ? "darkgrey" : "transparent"
             }}
+            onClick={() => changeBlock(id, "playStyle", "backward")}
           />
           <FaExchangeAlt
             style={{
               position: "absolute",
               left: "252px",
-              top: "2px"
+              top: "2px",
+              backgroundColor:
+                playStyle === "exchange" ? "darkgrey" : "transparent"
             }}
+            onClick={() => changeBlock(id, "playStyle", "exchange")}
           />
           <FaRetweet
             style={{
               position: "absolute",
               left: "276px",
               top: "0px",
-              fontSize: "1.2rem"
+              fontSize: "1.2rem",
+              backgroundColor: looping ? "darkgrey" : "transparent"
             }}
+            onClick={() => changeBlock(id, "looping", undefined)}
           />
         </div>
 
-        <div style={{ position: "absolute", top: "30px" }}>
-          <Beat
-            id={id}
-            num={1}
-            waveform={waveforms[0]}
-            modulation={modulations[0]}
-            duration={durations[0]}
-            note={notes[0]}
-          />
-        </div>
+        {/* all 8 notes */}
+        {l.map(x => {
+          let top = Math.floor(x / 3) * 160 + 30 + "px";
+          let left = (x % 3) * 105 + "px";
+          return (
+            <div
+              key={x}
+              style={{
+                position: "absolute",
+                top: top,
+                left: left
+              }}
+            >
+              <Beat
+                id={id}
+                num={x}
+                waveform={waveforms[x]}
+                modulation={modulations[x]}
+                modValue={modulationValues[x]}
+                duration={durations[x]}
+                note={notes[x]}
+                selected={selecteds[x]}
+                skipped={skippeds[x]}
+              />
+            </div>
+          );
+        })}
       </div>
     </React.Fragment>
   );

@@ -150,7 +150,11 @@ const specValues = {
     ],
     modulationValues: [0, 0, 0, 0, 0, 0, 0, 0],
     notes: [0, 4, 8, 10, 14, 18, 22, 0],
-    durations: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]
+    durations: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+    selecteds: [true, true, true, true, true, true, true, true],
+    skippeds: [false, false, false, false, false, false, false, false],
+    looping: false,
+    playStyle: "None"
   },
   SamplePlayer: {
     color: toHex(229, 119, 125),
