@@ -42,22 +42,13 @@ const Player = ({ blockInfo }) => {
           className="text-center mx-1"
           style={{ fontSize: "0.8rem", position: "absolute", top: "36px" }}
         >
-          <span
-            className="float-left"
-            style={{ position: "absolute", left: "5px" }}
-          >
+          <span className="" style={{ position: "absolute", left: "5px" }}>
             x0
           </span>
-          <span
-            className="float-center"
-            style={{ position: "absolute", left: "92px" }}
-          >
+          <span className="" style={{ position: "absolute", left: "92px" }}>
             x1
           </span>
-          <span
-            className="float-right"
-            style={{ position: "absolute", left: "180px" }}
-          >
+          <span className="" style={{ position: "absolute", left: "180px" }}>
             x2
           </span>
         </div>
@@ -94,6 +85,7 @@ const Player = ({ blockInfo }) => {
           {hour + ":" + minute + ":" + second}
         </div>
 
+        {/* check and buttons */}
         <span
           className="text-center"
           style={{ position: "absolute", top: "100px" }}
@@ -223,6 +215,7 @@ const Player = ({ blockInfo }) => {
             onChange={e => changeBlock(id, "file", e.target.files[0])}
           />
         </div>
+
         <span className="col text-center">
           <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
             Kinect

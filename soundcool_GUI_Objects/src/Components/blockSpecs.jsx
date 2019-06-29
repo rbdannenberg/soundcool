@@ -28,6 +28,7 @@ const specValues = {
     playing: false,
     reversed: false,
     loop: false,
+    speed: 1,
     volume: 60,
     hour: 0,
     minute: 0,
@@ -158,7 +159,42 @@ const specValues = {
   },
   SamplePlayer: {
     color: toHex(229, 119, 125),
-    inDisabled: true
+    inDisabled: true,
+    random: false,
+    loop: false,
+    speed: 1,
+    reversed: false,
+    kinect: false,
+    osc: undefined,
+    playings: [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    files: [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ],
+    masterVolume: 60
   },
   Keyboard: {
     color: toHex(89, 162, 179),
