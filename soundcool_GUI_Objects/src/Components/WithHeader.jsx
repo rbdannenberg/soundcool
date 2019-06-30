@@ -1,7 +1,6 @@
 import React from "react";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
-import Background from "../bg.png";
 import {
   // #region all types
   Delay,
