@@ -16,7 +16,7 @@ const Oscilloscope = ({ blockInfo }) => {
         <div
           style={{
             position: "absolute",
-            width: "263px",
+            width: "293px",
             height: "168px",
             top: "10px",
             left: "10px",

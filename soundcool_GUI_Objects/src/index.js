@@ -5,7 +5,6 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-// import { Delay, Transposer, Pan } from "./Components/types/all";
 import WithHeader from "./Components/WithHeader";
 import AddBlock from "./Components/AddBlock";
 import SLButton from "./Components/SLButton";
@@ -14,18 +13,8 @@ import { createStore, combineReducers } from "redux";
 
 // #region reducers
 
-const visibilityFilter = (state = "SHOW_ALL", action) => {
-  switch (action.type) {
-    case "SET_VISIBILITY_FILTER":
-      return action.filter;
-    default:
-      return state;
-  }
-};
-
 const blockApp = combineReducers({
-  blocks,
-  visibilityFilter
+  blocks
 });
 // #endregion
 
@@ -53,15 +42,6 @@ const BlockApp = ({ blocks }) => {
       <SLButton />
       <AddBlock />
       <BlockList blocks={bs} nowOut={nowOut} />
-      {/* <Footer
-        visibilityFilter={visibilityFilter}
-        onFilterClick={filter =>
-          store.dispatch({
-            type: "SET_VISIBILITY_FILTER",
-            filter
-          })
-        }
-      /> */}
     </div>
   );
 };

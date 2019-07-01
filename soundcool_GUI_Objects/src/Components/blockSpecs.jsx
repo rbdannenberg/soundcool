@@ -18,7 +18,7 @@ const specValues = {
   },
   Pan: {
     color: toHex(136, 179, 95),
-    direction: 0,
+    panVal: 0,
     kinect: false,
     osc: undefined
   },

@@ -126,6 +126,7 @@ const Record = ({ blockInfo }) => {
 
         {recordButton}
 
+        {/* Progress Bars */}
         <div
           className=""
           style={{
@@ -140,7 +141,7 @@ const Record = ({ blockInfo }) => {
         <div
           className="progress"
           style={{
-            width: "250px",
+            width: "270px",
             height: "15px",
             position: "absolute",
             top: "30px",
@@ -172,7 +173,7 @@ const Record = ({ blockInfo }) => {
         <div
           className="progress"
           style={{
-            width: "250px",
+            width: "270px",
             height: "15px",
             position: "absolute",
             top: "50px",
@@ -190,11 +191,12 @@ const Record = ({ blockInfo }) => {
           />
         </div>
 
+        {/* Volume Slider */}
         <input
           className="slider"
           type="range"
           style={{
-            width: "15rem",
+            width: "270px",
             position: "absolute",
             left: "20px",
             top: "70px"

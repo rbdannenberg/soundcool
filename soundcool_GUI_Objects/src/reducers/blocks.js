@@ -1,6 +1,4 @@
 import block from "./block";
-import scContext from "../audio/sc-context";
-import ScSignalGen from "../audio/sc-signalgen";
 
 const allTypes = {
   Delay: 1,

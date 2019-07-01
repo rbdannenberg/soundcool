@@ -12,7 +12,7 @@ const DirectInput = ({ blockInfo }) => {
             fontSize: "0.8rem",
             position: "absolute",
             top: "0px",
-            left: "100px"
+            left: "125px"
           }}
         >
           Pan
@@ -31,9 +31,9 @@ const DirectInput = ({ blockInfo }) => {
           className="slider"
           type="range"
           style={{
-            width: "178px",
+            width: "218px",
             position: "absolute",
-            left: "26px",
+            left: "28px",
             top: "20px"
           }}
           onChange={e => {
@@ -53,17 +53,18 @@ const DirectInput = ({ blockInfo }) => {
           style={{
             fontSize: "0.8rem",
             position: "absolute",
-            left: "214px",
+            left: "254px",
             top: "18px"
           }}
         >
           R
         </span>
 
+        {/* Progress Bar */}
         <div
           className="progress"
           style={{
-            width: "200px",
+            width: "250px",
             position: "absolute",
             top: "42px",
             left: "15px",
@@ -80,6 +81,7 @@ const DirectInput = ({ blockInfo }) => {
           />
         </div>
 
+        {/* Mute and Channel */}
         <div
           className="text-center"
           style={{ position: "absolute", top: "68px" }}
@@ -89,7 +91,7 @@ const DirectInput = ({ blockInfo }) => {
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              left: "15px",
+              left: "35px",
               top: "2px"
             }}
           >
@@ -99,7 +101,7 @@ const DirectInput = ({ blockInfo }) => {
             type="checkbox"
             className="my-1"
             id="muted"
-            style={{ position: "absolute", left: "55px" }}
+            style={{ position: "absolute", left: "80px" }}
             onClick={() => {
               store.dispatch({
                 type: "CHANGE_BLOCK",
@@ -114,7 +116,7 @@ const DirectInput = ({ blockInfo }) => {
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              left: "75px",
+              left: "125px",
               top: "2px"
             }}
           >
@@ -127,7 +129,7 @@ const DirectInput = ({ blockInfo }) => {
               height: "1.5rem",
               width: "3rem",
               position: "absolute",
-              left: "130px"
+              left: "190px"
             }}
             id="channel"
             onChange={e => {
@@ -140,16 +142,8 @@ const DirectInput = ({ blockInfo }) => {
             }}
           />
         </div>
-        {/* <div
-          style={{
-            fontSize: "0.8rem",
-            position: "absolute",
-            left: "230px",
-            top: "5px"
-          }}
-        >
-          {"Vol: " + volume}{" "}
-        </div> */}
+
+        {/* Volume Slider */}
         <input
           className="slider text-center"
           orient="vertical"
@@ -158,7 +152,7 @@ const DirectInput = ({ blockInfo }) => {
             width: "1.5rem",
             height: "90px",
             position: "absolute",
-            left: "248px",
+            left: "278px",
             top: "5px"
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
@@ -170,7 +164,10 @@ const DirectInput = ({ blockInfo }) => {
         />
       </div>
 
-      <div className="" style={{ backgroundColor: "grey", height: "32px" }}>
+      <div
+        className="text-center"
+        style={{ backgroundColor: "grey", height: "32px" }}
+      >
         <button
           className="badge-pill badge-light badge-sm mx-2 my-1"
           style={{ fontSize: "0.8rem" }}

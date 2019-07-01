@@ -69,7 +69,7 @@ const SignalGen = ({ blockInfo }) => {
           type="range"
           className="slider"
           style={{
-            width: "230px",
+            width: "250px",
             position: "absolute",
             left: "5px",
             top: "24px"
@@ -104,7 +104,7 @@ const SignalGen = ({ blockInfo }) => {
           className="slider"
           type="range"
           style={{
-            width: "230px",
+            width: "250px",
             position: "absolute",
             left: "5px",
             top: "58px"
@@ -117,15 +117,19 @@ const SignalGen = ({ blockInfo }) => {
                 type: "CHANGE_BLOCK",
                 id: id,
                 field: modulation === "AM" ? "MI" : "FD",
-                value: e.target.value
+                value: Math.floor(Math.pow(Math.E, e.target.value))
               });
             }
           }}
           min={0}
-          max={modulation === "AM" ? 20 : 1000}
-          step={modulation === "AM" ? 0.1 : 1}
+          max={modulation === "AM" ? 20 : 10}
+          step={modulation === "AM" ? 0.1 : 0.01}
           value={
-            modParam === "Not applicable" ? 0 : modulation === "AM" ? MI : FD
+            modParam === "Not applicable"
+              ? 0
+              : modulation === "AM"
+              ? MI
+              : Math.log(FD)
           }
           id="param"
         />
@@ -248,11 +252,12 @@ const SignalGen = ({ blockInfo }) => {
           </div>
         </div>
 
+        {/* Volume Slider */}
         <div
           style={{
             fontSize: "0.8rem",
             position: "absolute",
-            left: "230px",
+            left: "260px",
             top: "5px"
           }}
         >
@@ -266,7 +271,7 @@ const SignalGen = ({ blockInfo }) => {
             width: "1.5rem",
             height: "100px",
             position: "absolute",
-            left: "248px",
+            left: "275px",
             top: "26px"
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}

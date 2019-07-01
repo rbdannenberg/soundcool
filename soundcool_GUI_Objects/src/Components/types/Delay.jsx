@@ -10,11 +10,12 @@ const Delay = ({ blockInfo }) => {
         className=""
         style={{ width: "288px", height: "44px", position: "relative" }}
       >
+        {/* Delay Time */}
         <input
           className="slider"
           type="range"
           style={{
-            width: "128px",
+            width: "178px",
             position: "absolute",
             top: "6px",
             left: "6px"
@@ -31,7 +32,7 @@ const Delay = ({ blockInfo }) => {
             fontSize: "0.8rem",
             position: "absolute",
             top: "4px",
-            left: "144px"
+            left: "194px"
           }}
         >
           {"delay(ms): "}
@@ -43,18 +44,19 @@ const Delay = ({ blockInfo }) => {
             position: "absolute",
             width: "40px",
             height: "16px",
-            left: "210px",
+            left: "260px",
             top: "5px",
             fontSize: "0.7rem"
           }}
           onChange={e => changeBlock(id, "delayTime", e.target.value)}
         />
 
+        {/* Feedback */}
         <input
           className="slider "
           type="range"
           style={{
-            width: "128px",
+            width: "178px",
             position: "absolute",
             top: "24px",
             left: "6px"
@@ -72,7 +74,7 @@ const Delay = ({ blockInfo }) => {
             fontSize: "0.8rem",
             position: "absolute",
             top: "22px",
-            left: "144px"
+            left: "194px"
           }}
         >
           {"feedback: "}
@@ -84,7 +86,7 @@ const Delay = ({ blockInfo }) => {
             position: "absolute",
             width: "40px",
             height: "16px",
-            left: "210px",
+            left: "260px",
             top: "24px",
             fontSize: "0.7rem"
           }}

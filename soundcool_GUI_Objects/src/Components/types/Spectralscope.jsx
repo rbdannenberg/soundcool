@@ -8,7 +8,7 @@ const Spectralscope = ({ blockInfo }) => {
       <div
         className=""
         style={{
-          width: "288px",
+          width: "308px",
           height: "188px",
           position: "relative"
         }}
@@ -16,7 +16,7 @@ const Spectralscope = ({ blockInfo }) => {
         <div
           style={{
             position: "absolute",
-            width: "263px",
+            width: "293px",
             height: "168px",
             top: "10px",
             left: "10px",

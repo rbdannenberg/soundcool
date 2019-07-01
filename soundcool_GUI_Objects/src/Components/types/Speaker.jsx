@@ -15,20 +15,21 @@ const Player = ({ blockInfo }) => {
   let { id, muted } = blockInfo;
   let playButton;
   if (muted) {
-    playButton = <FaVolumeUp />;
-  } else {
     playButton = <FaVolumeMute />;
+  } else {
+    playButton = <FaVolumeUp />;
   }
   return (
     <React.Fragment>
       <div class="text-center" style={{ position: "relative", height: "48px" }}>
+        {/* L and R Progress Bars */}
         <div
           className=""
           style={{
             fontSize: "0.8rem",
             position: "absolute",
             top: "3px",
-            left: "6px"
+            left: "12px"
           }}
         >
           L
@@ -36,10 +37,10 @@ const Player = ({ blockInfo }) => {
         <div
           className="progress"
           style={{
-            width: "200px",
+            width: "230px",
             position: "absolute",
             top: "5px",
-            left: "20px",
+            left: "30px",
             backgroundColor: "black"
           }}
         >
@@ -59,7 +60,7 @@ const Player = ({ blockInfo }) => {
             fontSize: "0.8rem",
             position: "absolute",
             top: "23px",
-            left: "6px"
+            left: "12px"
           }}
         >
           R
@@ -67,10 +68,10 @@ const Player = ({ blockInfo }) => {
         <div
           className="progress"
           style={{
-            width: "200px",
+            width: "230px",
             position: "absolute",
             top: "25px",
-            left: "20px",
+            left: "30px",
             backgroundColor: "black"
           }}
         >
@@ -84,6 +85,7 @@ const Player = ({ blockInfo }) => {
           />
         </div>
 
+        {/* speaker icon button */}
         <button
           className="btn btn-light "
           style={{
@@ -91,7 +93,7 @@ const Player = ({ blockInfo }) => {
             position: "absolute",
             padding: "0px",
             top: "5px",
-            left: "230px",
+            left: "270px",
             backgroundColor: "transparent"
           }}
           onClick={() => {
@@ -112,14 +114,6 @@ const Player = ({ blockInfo }) => {
           <button
             className="badge-pill badge-light badge-sm mx-2 my-1"
             style={{ fontSize: "0.8rem" }}
-            // onClick={e => {
-            //   store.dispatch({
-            //     type: "CHANGE_BLOCK",
-            //     id: id,
-            //     field: "muted",
-            //     value: undefined
-            //   });
-            // }}
           >
             Audio Settings
           </button>
