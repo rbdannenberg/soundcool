@@ -198,7 +198,28 @@ const specValues = {
   },
   Keyboard: {
     color: toHex(89, 162, 179),
-    inDisabled: true
+    inDisabled: true,
+    instrument: "1 Acoustic Grand Piano",
+    channel: 1,
+    viewNames: false,
+    volume: 60,
+    module: false,
+    octave: "C3",
+    noteOn: [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
   }
 };
 

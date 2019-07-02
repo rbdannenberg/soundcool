@@ -93,6 +93,8 @@ const Delay = ({ blockInfo }) => {
           onChange={e => changeBlock(id, "feedback", e.target.value)}
         />
       </div>
+
+      {/* Footer */}
       <div
         className="text-center"
         style={{ backgroundColor: "grey", height: "30px" }}
