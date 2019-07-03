@@ -37,30 +37,38 @@ This is the folder that contains the GUI Objects such as Delay, Transposer, Spea
     - Same as nowIn, also an array of four with the same information.
 
 ```
-Give examples
+![Screenshot1](Screenshot1.png)
+![Screenshot2](Screenshot2.png)
 ```
 
 ## What each file does
 
-Files to ignore (probably will be useful so I keep them): - App.js - App.css - App.test.js
+- Files to ignore (probably will be useful so I keep them):
 
-Audio folder: - Webaudio objects from backend, called when addblock action is triggered. (Imported and used in /reducers/block.js)
+  - App.js
+  - App.css
+  - App.test.js
 
-    Reducers folder:
-    - blocks.js
-        - As explained in section 1, Reducers are the method that does (old state, action) => new state. This method case on different type of actions like “ADD_BLOCK”, “CHANGE_BLOCK”, “CONNECTING_BLOCK”, etc. Since block list “bs” is a list, usually it pass the action down to the reducer for individual block “block.js” by a mapping.
-    - block.js
-        - Similar to blocks.js but it only works on the information of individual block instead of a block list. Think about it as just a helper of blocks.js.
+- Audio folder:
 
-    Components folder
-    - types folder
-        - A folder contains all types of components. Note that each component is just a function since Redux already takes care of the information processing. Component doesn’t contain any local information or do any processing, it just renders the information that being passed to it. /All.jsx import and export them all.
-    - WithHeader.jsx
-        - A high order functional component. Since the header (the bar at the top that has the collapse or delete button) is almost generic to all the blocks, there is no need to repeat in each component definition. WithHeader takes in a component of a specific type and add header on it.
-    - blockSpecs.jsx
-        - The default values of all the block type-specific fields (like the delayTime of Delay, speed of Player). Imported and used in /AddBlock.jsx, when an ADD_BLOCK action is triggered, these values are bing sent along with the action.
-    - AddBlock.jsx
-    - SLButton.jsx
+  - Webaudio objects from backend, called when addblock action is triggered. (Imported and used in /reducers/block.js)
+
+- Reducers folder:
+
+  - blocks.js
+    - As explained in section 1, Reducers are the method that does (old state, action) => new state. This method case on different type of actions like “ADD_BLOCK”, “CHANGE_BLOCK”, “CONNECTING_BLOCK”, etc. Since block list “bs” is a list, usually it pass the action down to the reducer for individual block “block.js” by a mapping.
+  - block.js
+    - Similar to blocks.js but it only works on the information of individual block instead of a block list. Think about it as just a helper of blocks.js.
+
+- Components folder
+  - types folder
+    - A folder contains all types of components. Note that each component is just a function since Redux already takes care of the information processing. Component doesn’t contain any local information or do any processing, it just renders the information that being passed to it. /All.jsx import and export them all.
+  - WithHeader.jsx
+    - A high order functional component. Since the header (the bar at the top that has the collapse or delete button) is almost generic to all the blocks, there is no need to repeat in each component definition. WithHeader takes in a component of a specific type and add header on it.
+  - blockSpecs.jsx
+    - The default values of all the block type-specific fields (like the delayTime of Delay, speed of Player). Imported and used in /AddBlock.jsx, when an ADD_BLOCK action is triggered, these values are bing sent along with the action.
+  - AddBlock.jsx
+  - SLButton.jsx
 
 <!-- ## Running the tests
 
