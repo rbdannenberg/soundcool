@@ -36,10 +36,12 @@ This is the folder that contains the GUI Objects such as Delay, Transposer, Spea
   - nowOut:
     - Same as nowIn, also an array of four with the same information.
 
-```
+<!-- ``` -->
+
 ![Screenshot1](Screenshot1.png)
 ![Screenshot2](Screenshot2.png)
-```
+
+<!-- ``` -->
 
 ## What each file does
 
