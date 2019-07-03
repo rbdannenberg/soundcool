@@ -21,6 +21,7 @@ This is the folder that contains the GUI Objects such as Delay, Transposer, Spea
 ## My Redux State (important!)
 
 - reducer blocks (in /reducer/blocks.js) contains a state of all the informations of blocks.
+
   - {bs, nextBlockId, nextStateId, nowIn, nowOut} are the five elements in this state.
   - bs: a list of all the blocks. Each block is represented as an object. Fields like id are common to all types of block, but other informations are specific to the type of block, like frequency of signalGen, speed of player. A complete documentation of these can be found in /Components/blockSpecs.jsx, which documents default values of all types of blocks.
     - Example of a Delay block:
@@ -36,9 +37,12 @@ This is the folder that contains the GUI Objects such as Delay, Transposer, Spea
   - nowOut:
     - Same as nowIn, also an array of four with the same information.
 
+- As demonstrated in the chrome React plugin, you can see the structure of my state.
+
 <!-- ``` -->
 
 ![Screenshot1](Screenshot1.png)
+
 ![Screenshot2](Screenshot2.png)
 
 <!-- ``` -->
