@@ -4,8 +4,8 @@ class ScModule {
         this.context = context;
         this.inputs = [];
         this.outputs = [];
-        this.inNode;
-        this.outNode;
+        // this.inNode;
+        // this.outNode;
         var connReady, connFailed;
         this.connPromise = new Promise((resolve, reject) => {
             connReady = resolve;
