@@ -1,5 +1,6 @@
 import React from "react";
 import store from "../../index";
+import {canvas} from "react-canvas"
 
 const Envelope = ({ blockInfo }) => {
   let {} = blockInfo;

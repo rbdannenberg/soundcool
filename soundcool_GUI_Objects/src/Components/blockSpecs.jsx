@@ -58,7 +58,7 @@ const specValues = {
     direction: 0,
     muted: false,
     channel: 1,
-    volume: 60,
+    volume: 6,
     osc: undefined
   },
   Pitch: {
@@ -118,7 +118,12 @@ const specValues = {
     outDisabled: true
   },
   Envelope: {
-    color: toHex(80, 174, 55)
+    color: toHex(80, 174, 55),
+    envelope: [],
+    loop: false,
+    style: "line",
+    dur: 2,
+    osc: undefined
   },
   Filter: {
     color: toHex(144, 81, 57)

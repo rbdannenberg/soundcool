@@ -157,8 +157,8 @@ const DirectInput = ({ blockInfo }) => {
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
-          max={100}
-          step={1}
+          max={10}
+          step={0.1}
           value={volume}
           id="volume"
         />
