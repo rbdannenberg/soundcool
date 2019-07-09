@@ -2,7 +2,7 @@ import React from "react";
 import store from "../../../index";
 
 const Pan = ({ blockInfo }) => {
-  let { id, direction } = blockInfo;
+  let { id, panVal } = blockInfo;
   return (
     <React.Fragment>
       <div
@@ -32,14 +32,14 @@ const Pan = ({ blockInfo }) => {
             store.dispatch({
               type: "CHANGE_BLOCK",
               id: id,
-              field: "direction",
+              field: "panVal",
               value: e.target.value
             });
           }}
           min={-50}
           max={50}
-          value={direction}
-          id="direction"
+          value={panVal}
+          id="panVal"
         />
         <span
           style={{

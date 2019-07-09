@@ -1,6 +1,4 @@
 import block from "./block";
-import scContext from "../../audio/sc-context";
-import ScSignalGen from "../../audio/sc-signalgen";
 
 const allTypes = {
   Delay: 1,
@@ -13,7 +11,15 @@ const allTypes = {
   Pitch: 1,
   VSTHost: 1,
   Routing: 1,
-  Mixer: 1
+  Mixer: 1,
+  Record: 1,
+  Spectralscope: 1,
+  Oscilloscope: 1,
+  Envelope: 1,
+  Filter: 1,
+  Keyboard: 1,
+  SamplePlayer: 1,
+  Sequencer: 1
 };
 const blocks = (
   state = {

@@ -1,6 +1,7 @@
 import React from "react";
 import store from "../../../index";
 import changeBlock from "../../../handlers";
+import "../../../index.css";
 // import oscDemo from "../../player-module";
 
 const changeWaveform = (w, id) => {
@@ -32,6 +33,7 @@ const SignalGen = ({ blockInfo }) => {
   return (
     <React.Fragment>
       <div className="" style={{ position: "relative", height: "134px" }}>
+        {/* frequency slider */}
         <label
           htmlFor="frequency"
           style={{
@@ -41,13 +43,33 @@ const SignalGen = ({ blockInfo }) => {
             top: "5px"
           }}
         >
-          {"Frequency(hz): " + frequency}
+          {"Frequency(hz): "}
         </label>
+        <input
+          type="number"
+          value={frequency}
+          style={{
+            position: "absolute",
+            width: "40px",
+            height: "16px",
+            left: "110px",
+            top: "7px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e => {
+            store.dispatch({
+              type: "CHANGE_BLOCK",
+              id: id,
+              field: "frequency",
+              value: e.target.value
+            });
+          }}
+        />
         <input
           type="range"
           className="slider"
           style={{
-            width: "230px",
+            width: "250px",
             position: "absolute",
             left: "5px",
             top: "24px"
@@ -66,6 +88,7 @@ const SignalGen = ({ blockInfo }) => {
           id="frequency"
         />
 
+        {/* modParam slider */}
         <label
           htmlFor="param"
           style={{
@@ -81,7 +104,7 @@ const SignalGen = ({ blockInfo }) => {
           className="slider"
           type="range"
           style={{
-            width: "230px",
+            width: "250px",
             position: "absolute",
             left: "5px",
             top: "58px"
@@ -94,19 +117,24 @@ const SignalGen = ({ blockInfo }) => {
                 type: "CHANGE_BLOCK",
                 id: id,
                 field: modulation === "AM" ? "MI" : "FD",
-                value: e.target.value
+                value: Math.floor(Math.pow(Math.E, e.target.value))
               });
             }
           }}
           min={0}
-          max={modulation === "AM" ? 20 : 1000}
-          step={modulation === "AM" ? 0.1 : 1}
+          max={modulation === "AM" ? 20 : 10}
+          step={modulation === "AM" ? 0.1 : 0.01}
           value={
-            modParam === "Not applicable" ? 0 : modulation === "AM" ? MI : FD
+            modParam === "Not applicable"
+              ? 0
+              : modulation === "AM"
+              ? MI
+              : Math.log(FD)
           }
           id="param"
         />
 
+        {/* Two Dropdowns */}
         <div
           class="dropdown"
           style={{
@@ -121,7 +149,7 @@ const SignalGen = ({ blockInfo }) => {
               fontSize: "0.8rem",
               padding: "0px",
               width: "100px",
-              height: "30px"
+              height: "25px"
             }}
             id="waveform dropdown"
             data-toggle="dropdown"
@@ -194,8 +222,8 @@ const SignalGen = ({ blockInfo }) => {
             style={{
               fontSize: "0.8rem",
               padding: "0px",
-              width: "100px",
-              height: "30px"
+              width: "80px",
+              height: "25px"
             }}
             id="mod dropdown"
             data-toggle="dropdown"
@@ -224,11 +252,12 @@ const SignalGen = ({ blockInfo }) => {
           </div>
         </div>
 
+        {/* Volume Slider */}
         <div
           style={{
             fontSize: "0.8rem",
             position: "absolute",
-            left: "230px",
+            left: "260px",
             top: "5px"
           }}
         >
@@ -242,7 +271,7 @@ const SignalGen = ({ blockInfo }) => {
             width: "1.5rem",
             height: "100px",
             position: "absolute",
-            left: "248px",
+            left: "275px",
             top: "26px"
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}

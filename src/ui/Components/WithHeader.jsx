@@ -1,8 +1,8 @@
 import React from "react";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
-import Background from "../../bg.png";
 import {
+  // #region all types
   Delay,
   Transposer,
   Pan,
@@ -13,7 +13,16 @@ import {
   Pitch,
   VSTHost,
   Routing,
-  Mixer
+  Mixer,
+  Record,
+  Spectralscope,
+  Oscilloscope,
+  Envelope,
+  Filter,
+  Keyboard,
+  SamplePlayer,
+  Sequencer
+  // #endregion
 } from "./types/all";
 import store from "../../index";
 
@@ -53,16 +62,39 @@ const eva = typeName => {
     case "Mixer":
       t = Mixer;
       break;
+    case "Record":
+      t = Record;
+      break;
+    case "Spectralscope":
+      t = Spectralscope;
+      break;
+    case "Oscilloscope":
+      t = Oscilloscope;
+      break;
+    case "Envelope":
+      t = Envelope;
+      break;
+    case "Filter":
+      t = Filter;
+      break;
+    case "Keyboard":
+      t = Keyboard;
+      break;
+    case "SamplePlayer":
+      t = SamplePlayer;
+      break;
+    case "Sequencer":
+      t = Sequencer;
+      break;
     default:
       t = <span>No setup yet!</span>;
   }
   return t;
 };
 
-const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
+const WithHeader = ({ blockInfo, nowOut }) => {
   let {
     typeName,
-    // typeId,
     name,
     id,
     audioObj,
@@ -162,7 +194,7 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
     <div
       className="text-left my-2"
       style={{
-        width: "18rem",
+        width: "20rem",
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",
@@ -210,35 +242,22 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
               height: "1.5rem",
               fontSize: "0.4rem"
             }}
-            onClick={
-            //     () => store.dispatch({
-            //     type: "DELETE_BLOCK",
-            //     id: id,
-            //     field: undefined,
-            //     value: undefined
-            //   })
-              handleDelete
-
+            onClick={() =>
+              store.dispatch({
+                type: "DELETE_BLOCK",
+                id: id,
+                field: undefined,
+                value: undefined
+              })
             }
           >
             <FaTimes style={{ marginLeft: "-1px" }} />
           </button>
           {outButton}
-          {/* <button
-            style={{
-              textAlign: "center",
-              width: "1.5rem",
-              height: "1.5rem",
-              padding: "0px"
-            }}
-          >
-            try
-          </button> */}
         </span>
       </div>
       <Collapse isOpen={collapse}>
         <Block blockInfo={blockInfo} />
-        {/* <p style={{ backgroundColor: "black" }}>ggg</p> */}
       </Collapse>
     </div>
   );

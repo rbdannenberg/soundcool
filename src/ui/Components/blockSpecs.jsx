@@ -18,7 +18,7 @@ const specValues = {
   },
   Pan: {
     color: toHex(136, 179, 95),
-    direction: 0,
+    panVal: 0,
     kinect: false,
     osc: undefined
   },
@@ -28,6 +28,7 @@ const specValues = {
     playing: false,
     reversed: false,
     loop: false,
+    speed: 1,
     volume: 60,
     hour: 0,
     minute: 0,
@@ -57,7 +58,7 @@ const specValues = {
     direction: 0,
     muted: false,
     channel: 1,
-    volume: 60,
+    volume: 6,
     osc: undefined
   },
   Pitch: {
@@ -98,6 +99,134 @@ const specValues = {
     volume7: 60,
     volume8: 60,
     osc: undefined
+  },
+  Record: {
+    color: toHex(159, 125, 119),
+    outDisabled: true,
+    module: false,
+    fileName: undefined,
+    recording: false,
+    volume: 60,
+    timer: 0
+  },
+  Spectralscope: {
+    color: toHex(141, 104, 133),
+    outDisabled: true
+  },
+  Oscilloscope: {
+    color: toHex(141, 104, 133),
+    outDisabled: true
+  },
+  Envelope: {
+    color: toHex(80, 174, 55),
+    envelope: [],
+    loop: false,
+    style: "line",
+    dur: 2,
+    osc: undefined
+  },
+  Filter: {
+    color: toHex(144, 81, 57)
+  },
+  Sequencer: {
+    color: toHex(202, 240, 253),
+    inDisabled: true,
+    outDisabled: true,
+    waveforms: [
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence",
+      "Silence"
+    ],
+    modulations: [
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod",
+      "No Mod"
+    ],
+    modulationValues: [0, 0, 0, 0, 0, 0, 0, 0],
+    notes: [0, 4, 8, 10, 14, 18, 22, 0],
+    durations: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000],
+    selecteds: [true, true, true, true, true, true, true, true],
+    skippeds: [false, false, false, false, false, false, false, false],
+    looping: false,
+    playStyle: "None"
+  },
+  SamplePlayer: {
+    color: toHex(229, 119, 125),
+    inDisabled: true,
+    random: false,
+    loop: false,
+    speed: 1,
+    reversed: false,
+    kinect: false,
+    osc: undefined,
+    playings: [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    files: [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ],
+    masterVolume: 60
+  },
+  Keyboard: {
+    color: toHex(89, 162, 179),
+    inDisabled: true,
+    instrument: "1 Acoustic Grand Piano",
+    channel: 1,
+    viewNames: false,
+    volume: 60,
+    module: false,
+    octave: "3",
+    //
+    noteOn: [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    midiMessage: undefined
   }
 };
 
