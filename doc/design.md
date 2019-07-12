@@ -13,6 +13,12 @@ The system has 4 main parts (at least):
 
 - The **back end** allows users to save, retrieve and manage projects and media.
 
+This document also contains other topics, including
+
+- OSC connections
+
+- Local server support
+
 ## Audio Components
 
 ## GUI Components
@@ -41,6 +47,31 @@ Here is a summary:
 
 - Uploads are simpler: they are always permitted, but the upload is stored in the media collection of the logged-in user.
 
+# OSC Connections
+
+We want to be compatible with existing Soundcool apps on IOs and Android. These use OSC to connect to a Soundcool process running on a laptop. OSC uses UDP, which is not possible in a browser, so we cannot emulate this behavior directly using Javascript in a browser. (Nor do we want to write or maintain a browser plug-in, which creates security risks and a lot of push-back from browser makers.)
+
+The obvious solution is WebSockets, which requires a local server to receive UDP messages and relay them over WebSockets to the local browser. Note that Soundcool apps use OSC in both directions to get a confirmation from the main laptop application, so we need to support that.
+
+There are two possible approaches:
+
+## node.js approach
+
+We could add an OSC handler to a local node.js server. This is pretty straightforward, but if the "main" server is cloud-based, we need both the cloud service *and* a local installation of node.js. This could be confusing. What if the user intends to connect to the cloud but gets confused and connects to the local server instead? Or vice versa? Do we want to run *two* node.js servers? One to support the Soundcool back-end and one to relay OSC messages?
+
+## Serpent approach
+
+Serpent already has a simple web server that will allow a browser to send/receive OSC over web sockets. This is based on O2, so that eventually, the Soundcool mobile apps could use discovery to find Soundcool and select processing modules by name rather than having users type in IP addresses and port numbers. But unfortunately, a missing link is O2 running on an app -- it has not been ported to IOs or Android, and the Soundcool apps would have to be modified to use O2. Some wireless networks (including CMU) do not allow broadcast messages except to certain registered ports, so there are limits to O2 discovery in some wireless environments.
+
+In the long term, I would like to see if this is possible: Use Bonjour to find the local laptop Serpent server. In the mobile device browser, visit http://name.local:8080. This would download a Soundcool app written in HTML5. (The Serpent server currently has a minimal support for serving files as web pages, so this is ready.) The HTML5 would present the same interface as the current Soundcool app (or we could extend it, make it look more like Web Audio Soundcool, etc.), but it would talk to the Serpent server over a WebSocket. We could go through O2 or just bypass and go websocket-to-websocket through the server and into the local browser on the laptop.
+
+# Local Server Support
+
+We need to allow both cloud-based Soundcool and local Soundcool. Local will be better for classrooms -- they need a local machine for audio computation, so the resource is there, and they may not have high-speed Internet for downloading big audio files, so local servers should out-perform cloud servers.
+
+The challenge will be to make a local server installer that avoids having to learn about system administration. It should also be cross-platform, supporting Windows, Mac OS, and Linux.
+
+Functionally, the cloud and local systems should be identical, meaning local users will still have accounts, IDs, passwords, permissions, etc. Of course, a classroom can set up user ID "musicclass" and share the password so that class projects can be accessed by whoever is sitting at the laptop. (This does *not* mean we want multiple students logged on to the same account at the same time. We should take steps to prevent that since we would then have to do a huge amount of work to support concurrent editing of projects.)
 
 
 
