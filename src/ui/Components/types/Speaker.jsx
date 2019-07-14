@@ -1,5 +1,6 @@
 import React from "react";
 import store from "../../../index";
+import changeBlock from "../../../handlers";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 
 const circleStyle = {
@@ -11,116 +12,170 @@ const circleStyle = {
   borderRadius: "0.5rem"
 };
 
-const Player = ({ blockInfo }) => {
-  let { id, muted } = blockInfo;
-  let playButton;
-  if (muted) {
-    playButton = <FaVolumeMute />;
-  } else {
-    playButton = <FaVolumeUp />;
+class Speaker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.canvasLRef = React.createRef();
+    this.canvasRRef = React.createRef();
   }
-  return (
-    <React.Fragment>
-      <div class="text-center" style={{ position: "relative", height: "48px" }}>
-        {/* L and R Progress Bars */}
+
+  randomMeter = () => {
+    // console.log("I am being called");
+    let x = Math.random();
+    return x;
+  };
+
+  // render function
+  renderAudioL = () => {
+    let { audioObj } = this.props.blockInfo;
+    console.log("renderAudioL");
+    let canvasL = this.canvasLRef.current;
+    let canvasLCtx = canvasL.getContext("2d");
+    let renderCtx = canvasLCtx;
+    let data = audioObj.getAudioData()[0];
+
+    renderCtx.clearRect(0, 0, 230, 140);
+    renderCtx.fillStyle = "green";
+    console.log("left: " + (data - 40) * 40);
+    renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
+  };
+
+  // render function
+  renderAudioR = () => {
+    let { audioObj } = this.props.blockInfo;
+    console.log("renderAudioR");
+    let canvasR = this.canvasRRef.current;
+    let canvasRCtx = canvasR.getContext("2d");
+    let renderCtx = canvasRCtx;
+    let data = audioObj.getAudioData()[1];
+
+    renderCtx.clearRect(0, 0, 230, 140);
+    renderCtx.fillStyle = "green";
+    console.log("right: " + (data - 40) * 40);
+    renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
+  };
+
+  // bindtocanvas
+  componentDidMount = () => {
+    let { audioObj, renderRate } = this.props.blockInfo;
+    let rendererL = setInterval(this.renderAudioL.bind(this), 100);
+    let rendererR = setInterval(this.renderAudioR.bind(this), 100);
+  };
+
+  // let useEffect = () => {
+  //   let renderer = setInterval(randomMeter, 3000);
+  // };
+
+  // useEffect();
+
+  render() {
+    let { id, muted } = this.props.blockInfo;
+    let playButton;
+    if (muted) {
+      playButton = <FaVolumeMute />;
+    } else {
+      playButton = <FaVolumeUp />;
+    }
+    return (
+      <React.Fragment>
         <div
-          className=""
-          style={{
-            fontSize: "0.8rem",
-            position: "absolute",
-            top: "3px",
-            left: "12px"
-          }}
+          class="text-center"
+          style={{ position: "relative", height: "48px" }}
         >
-          L
-        </div>
-        <div
-          className="progress"
-          style={{
-            width: "230px",
-            position: "absolute",
-            top: "5px",
-            left: "30px",
-            backgroundColor: "black"
-          }}
-        >
+          {/* L and R Progress Bars */}
           <div
-            className="progress-bar"
-            role="progressbar"
-            aria-valuenow="60"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            style={{ width: "60%", backgroundColor: "green" }}
-          />
-        </div>
-
-        <div
-          className=""
-          style={{
-            fontSize: "0.8rem",
-            position: "absolute",
-            top: "23px",
-            left: "12px"
-          }}
-        >
-          R
-        </div>
-        <div
-          className="progress"
-          style={{
-            width: "230px",
-            position: "absolute",
-            top: "25px",
-            left: "30px",
-            backgroundColor: "black"
-          }}
-        >
-          <div
-            className="progress-bar "
-            role="progressbar"
-            aria-valuenow="60"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            style={{ width: "60%", backgroundColor: "green" }}
-          />
-        </div>
-
-        {/* speaker icon button */}
-        <button
-          className="btn btn-light "
-          style={{
-            ...circleStyle,
-            position: "absolute",
-            padding: "0px",
-            top: "5px",
-            left: "270px",
-            backgroundColor: "transparent"
-          }}
-          onClick={() => {
-            store.dispatch({
-              type: "CHANGE_BLOCK",
-              id: id,
-              field: "muted",
-              value: undefined
-            });
-          }}
-        >
-          {playButton}
-        </button>
-      </div>
-
-      <div className="text-center" style={{ backgroundColor: "grey" }}>
-        <span className="col-md-4">
-          <button
-            className="badge-pill badge-light badge-sm mx-2 my-1"
-            style={{ fontSize: "0.8rem" }}
+            className=""
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              top: "3px",
+              left: "12px"
+            }}
           >
-            Audio Settings
-          </button>
-        </span>
-      </div>
-    </React.Fragment>
-  );
-};
+            L
+          </div>
+          <div
+            className="progress"
+            style={{
+              width: "230px",
+              position: "absolute",
+              top: "5px",
+              left: "30px",
+              backgroundColor: "black"
+            }}
+          >
+            <canvas ref={this.canvasLRef} />
+            {/* <div
+              className="progress-bar"
+              role="progressbar"
+              aria-valuenow={meterL}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              style={{ width: meterL + "%", backgroundColor: "green" }}
+            /> */}
+          </div>
 
-export default Player;
+          <div
+            className=""
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              top: "23px",
+              left: "12px"
+            }}
+          >
+            R
+          </div>
+          <div
+            className="progress"
+            style={{
+              width: "230px",
+              position: "absolute",
+              top: "25px",
+              left: "30px",
+              backgroundColor: "black"
+            }}
+          >
+            <canvas ref={this.canvasRRef} />
+          </div>
+
+          {/* speaker icon button */}
+          <button
+            className="btn btn-light "
+            style={{
+              ...circleStyle,
+              position: "absolute",
+              padding: "0px",
+              top: "5px",
+              left: "270px",
+              backgroundColor: "transparent"
+            }}
+            onClick={() => {
+              store.dispatch({
+                type: "CHANGE_BLOCK",
+                id: id,
+                field: "muted",
+                value: undefined
+              });
+            }}
+          >
+            {playButton}
+          </button>
+        </div>
+
+        <div className="text-center" style={{ backgroundColor: "grey" }}>
+          <span className="col-md-4">
+            <button
+              className="badge-pill badge-light badge-sm mx-2 my-1"
+              style={{ fontSize: "0.8rem" }}
+            >
+              Audio Settings
+            </button>
+          </span>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
+
+export default Speaker;

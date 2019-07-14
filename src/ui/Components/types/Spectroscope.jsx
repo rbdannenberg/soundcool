@@ -10,7 +10,9 @@ class Spectroscope extends React.Component {
   // render function
   renderAudio = () => {
     let { audioObj } = this.props.blockInfo;
-    let renderCtx = audioObj.renderCtx;
+    let canvas = this.canvasRef.current;
+    let canvasCtx = canvas.getContext("2d");
+    let renderCtx = canvasCtx;
     let data = audioObj.getAudioData();
     let length = data.length;
     let fftSize = audioObj.options.fftSize;
@@ -36,15 +38,21 @@ class Spectroscope extends React.Component {
 
   // bindtocanvas
   componentDidMount = () => {
-    let { audioObj } = this.props.blockInfo;
-    let canvas = this.canvasRef.current;
-    let canvasCtx = canvas.getContext("2d");
-    audioObj.renderCtx = canvasCtx;
+    let { audioObj, renderRate } = this.props.blockInfo;
     audioObj.renderer = setInterval(
       this.renderAudio.bind(audioObj),
-      audioObj.options.renderRate
+      renderRate
     );
   };
+
+  // Stop the setInterval process
+  unbindCanvas() {
+    let { audioObj } = this.props.blockInfo;
+    // let W = audioObj.renderCtx.canvas.width;
+    // let H = audioObj.renderCtx.canvas.height;
+    // audioObj.renderCtx.clearRect(0,0,W,H);
+    clearInterval(audioObj.renderer);
+  }
 
   render() {
     return (

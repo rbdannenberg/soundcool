@@ -50,7 +50,9 @@ const specValues = {
   },
   Speaker: {
     color: toHex(240, 254, 199),
-    muted: false
+    muted: false,
+    meterL: 60,
+    meterR: 60
   },
   DirectInput: {
     inDisabled: true,
@@ -111,11 +113,13 @@ const specValues = {
   },
   Spectroscope: {
     color: toHex(141, 104, 133),
-    outDisabled: true
+    outDisabled: true,
+    renderRate: 1000
   },
   Oscilloscope: {
     color: toHex(141, 104, 133),
-    outDisabled: true
+    outDisabled: true,
+    renderRate: 1000
   },
   Envelope: {
     color: toHex(80, 174, 55),
