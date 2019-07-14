@@ -1,7 +1,7 @@
 import React from "react";
 import store from "../../../index";
 
-class Oscilloscope extends React.Component {
+class Spectroscope extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
@@ -13,19 +13,25 @@ class Oscilloscope extends React.Component {
     let renderCtx = audioObj.renderCtx;
     let data = audioObj.getAudioData();
     let length = data.length;
+    let fftSize = audioObj.options.fftSize;
     let W = renderCtx.canvas.width;
     let H = renderCtx.canvas.height;
+    let minDb = audioObj.analyzerNode.analyzer.minDecibels;
+    let maxDb = audioObj.analyzerNode.analyzer.maxDecibels;
     let scaleY = function(y) {
-      return (y / 128.0) * (H / 2);
+      y = (y - minDb) / (maxDb - minDb);
+      return (1 - y) * H;
     };
     renderCtx.clearRect(0, 0, W, H);
     renderCtx.beginPath();
-    renderCtx.strokeStyle = "rgba(0,255,0,0.8)";
-    renderCtx.moveTo(0, scaleY(data[0]));
-    for (let i = 0; i < length; ++i) {
-      renderCtx.lineTo((W * i) / length, scaleY(data[i]));
+    renderCtx.fillStyle = "rgba(0,0,0,.4)";
+    renderCtx.moveTo(0, H);
+    let range = fftSize;
+    for (let i = 0; i <= fftSize; i++) {
+      renderCtx.lineTo(i, scaleY(data[i]));
     }
-    renderCtx.stroke();
+    renderCtx.lineTo(W, H);
+    renderCtx.fill();
   };
 
   // bindtocanvas
@@ -69,4 +75,4 @@ class Oscilloscope extends React.Component {
   }
 }
 
-export default Oscilloscope;
+export default Spectroscope;

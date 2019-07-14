@@ -109,7 +109,7 @@ const specValues = {
     volume: 60,
     timer: 0
   },
-  Spectralscope: {
+  Spectroscope: {
     color: toHex(141, 104, 133),
     outDisabled: true
   },

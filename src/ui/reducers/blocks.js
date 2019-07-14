@@ -13,7 +13,7 @@ const allTypes = {
   Routing: 1,
   Mixer: 1,
   Record: 1,
-  Spectralscope: 1,
+  Spectroscope: 1,
   Oscilloscope: 1,
   Envelope: 1,
   Filter: 1,

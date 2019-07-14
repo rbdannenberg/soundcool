@@ -15,7 +15,7 @@ import {
   Routing,
   Mixer,
   Record,
-  Spectralscope,
+  Spectroscope,
   Oscilloscope,
   Envelope,
   Filter,
@@ -65,8 +65,8 @@ const eva = typeName => {
     case "Record":
       t = Record;
       break;
-    case "Spectralscope":
-      t = Spectralscope;
+    case "Spectroscope":
+      t = Spectroscope;
       break;
     case "Oscilloscope":
       t = Oscilloscope;

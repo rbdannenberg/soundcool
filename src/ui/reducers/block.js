@@ -5,6 +5,8 @@ import ScDelay from "../../audio/sc-delay";
 import ScDirectIn from "../../audio/sc-directin";
 import ScPlayer from "../../audio/sc-player";
 import ScPan from "../../audio/sc-pan";
+import ScOscilloscope from "../../audio/sc-oscilloscope";
+import ScSpectroscope from "../../audio/sc-spectroscope";
 
 const eva = typeName => {
   let t;
@@ -22,7 +24,12 @@ const eva = typeName => {
       t = new ScPlayer(scContext);
       break;
     case "SignalGen":
-      t = new ScSignalGen(scContext);
+      t = new ScSignalGen(scContext, {
+        waveType: "Silence",
+        freq: 440,
+        mod: "No Mod",
+        modParam: 1.0
+      });
       break;
     case "Speaker":
       t = new ScSpeakers(scContext);
@@ -42,6 +49,12 @@ const eva = typeName => {
     // case "Mixer":
     //   t = new ScMixer(scContext);
     //   break;
+    case "Oscilloscope":
+      t = new ScOscilloscope(scContext);
+      break;
+    case "Spectroscope":
+      t = new ScSpectroscope(scContext);
+      break;
     default:
       t = undefined;
   }
@@ -54,6 +67,7 @@ const block = (state, action) => {
       return {
         typeName: action.typeName,
         id: action.newId,
+        typeId: action.newTypeId,
         name: action.typeName.charAt(0) + action.newTypeId,
         audioObj: eva(action.typeName),
         // contains generic values like in, out, collapse and also personal values
