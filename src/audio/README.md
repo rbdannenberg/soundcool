@@ -10,8 +10,8 @@ import ScModule from './sc-module.js';
 
 class ScDelay extends ScModule { ... 
 ```
-Inheriting allows us to reuse generic method like `connectTo`. There are some helper classes like `ScOscillator` and `ScAnalyzer` that do not inherit ScModule but are used by other higher level classes.
-* Implement a `constructor`:
+Inheriting allows us to reuse generic attributes and methods (like `connectTo`). There are some helper classes like `ScOscillator` and `ScAnalyzer` that do not inherit ScModule but are used by other higher level classes.
+* Implement a `constructor` with the following signature:
 ```js
     constructor(context, options={}){
         super(context);
@@ -26,7 +26,7 @@ Constructor should take `context` as the input argument so that all modules shar
     }
 ```
 
-* All the parameters that can be controlled for a ScModule is stored in the `options` attribute for that class. This is a JS object refered as `this.options`. The idea is to have it serializable so that a audio synthesis pipeline can be dumped and restored. Each option that a class understands should have a reasonable default value that is set in the constructor if not passed in `options` explicitly. For example:
+* All the parameters that can be controlled for a ScModule is stored in the `options` attribute for that class. This is a JS object refered as `this.options`. The idea is to have it serializable so that a audio synthesis pipeline can be dumped and restored. Each option that a class understands should have a reasonable default value that is set in the constructor if not passed in `options` explicitly. For example `delayTime` and `feedback` are two options supported by ScDelay:
 ```js
 class ScDelay extends ScModule {
 
@@ -37,7 +37,7 @@ class ScDelay extends ScModule {
     }
     ...
 ```
-* Define a setter for each ScModule option that can be tweaked from user interface. It should change the value for the option in the `options` and actually set the value of Web Audio node parameter. Following setter for example sets `delayFeedback` in `ScDelay`:
+* Define a setter for each ScModule option that can be tweaked from user interface.  It should change the value for the option in the `options` and actually set the value of Web Audio node parameter. Following setter for example sets `delayFeedback` in `ScDelay`:
 ```js
     set delayFeedback(val) {
         this.options.feedback = val;
