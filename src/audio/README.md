@@ -50,11 +50,12 @@ class ScDelay extends ScModule {
 
 ## Notes / Conventions
 * There is no need to implement `connectTo` / `disconnect` method for classes inherited from `ScModule`. `ScModule` implementation is generic for all modules that it inherits.
+
 * The convention adopted for file naming is `sc-{}.js` that defines a class `Sc{}` (camel cased) for a given soundcool module (where `{}` is a placeholder for a soundcool module). For example: `sc-pan.js` defines `ScPan`; `sc-player.js` defines `ScPlayer`.
 
 * Most ScModules have `setupNodes` method for spinning up the Web Audio nodes and connect them. Every ScModule should have an `inNode` and `outNode` that will be used to `connectTo` any two instantiated ScModule objects (refer to ScModule's `connectTo` method).
 
-* Some input sources like `ScDirectIn` and `ScPlayer` are asynchronous. ScDirectIn waits for user permissions; ScPlayer makes an HTTP request to load audio. For example:
+* Some input sources like `ScDirectIn` and `ScPlayer` are asynchronous. ScDirectIn waits for user permissions; ScPlayer makes an HTTP request to load audio. To handle this async events, these classes resolve a promise refered as `connPromise` when it is ready for connections. Following example shows how to chain a `ScDirectIn` to `ScSpeaker` object if/when granted the permission from browser:
 ```js
 let mic = new ScDirectIn(scContext);
 let speakers = new ScSpeakers(scContext);
