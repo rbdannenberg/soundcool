@@ -40,6 +40,12 @@ export const sidebar1 = [
     typeName: "Pan",
     image: "/assets/images/Pan.png",
     lastIndex: 1
+  },
+  {
+    id: "Player",
+    typeName: "Player",
+    image: "/assets/images/Player.png",
+    lastIndex: 1
   }
 ];
 

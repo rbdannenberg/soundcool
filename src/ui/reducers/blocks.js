@@ -57,6 +57,12 @@ const blocks = (
       };
     case "DELETE_BLOCK":
       let filteredBs = bs.filter(t => t.id !== action.id);
+      // let deletedBlock = bs.filter(t => t.id === action.id)[0];
+      // console.log("hello: " + deletedBlock.unbindCanvas);
+      // deletedBlock.unbindCanvas();
+      // deletedBlock.unbindCanvas === undefined
+      //   ? pass
+      //   : deletedBlock.unbindCanvas();
       let newBs = filteredBs.map(t =>
         // pass in the block, so we can check for each connection that
         // whether the block still exist

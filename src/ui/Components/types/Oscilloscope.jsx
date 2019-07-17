@@ -5,12 +5,18 @@ class Oscilloscope extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.renderer = undefined;
   }
 
   // render function
   renderAudio = () => {
     let { audioObj } = this.props.blockInfo;
     let canvas = this.canvasRef.current;
+    if (canvas === null) {
+      clearInterval(this.renderer);
+      return;
+    }
+
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
     let data = audioObj.getAudioData();
@@ -22,7 +28,7 @@ class Oscilloscope extends React.Component {
     };
     renderCtx.clearRect(0, 0, W, H);
     renderCtx.beginPath();
-    renderCtx.strokeStyle = "rgba(0,255,0,0.8)";
+    renderCtx.strokeStyle = "rgba(93,168,60,0.8)";
     renderCtx.moveTo(0, scaleY(data[0]));
     for (let i = 0; i < length; ++i) {
       renderCtx.lineTo((W * i) / length, scaleY(data[i]));
@@ -33,20 +39,8 @@ class Oscilloscope extends React.Component {
   // bindtocanvas
   componentDidMount = () => {
     let { audioObj, renderRate } = this.props.blockInfo;
-    audioObj.renderer = setInterval(
-      this.renderAudio.bind(audioObj),
-      renderRate
-    );
+    this.renderer = setInterval(this.renderAudio.bind(audioObj), renderRate);
   };
-
-  // Stop the setInterval process
-  unbindCanvas() {
-    let { audioObj } = this.props.blockInfo;
-    // let W = audioObj.renderCtx.canvas.width;
-    // let H = audioObj.renderCtx.canvas.height;
-    // audioObj.renderCtx.clearRect(0,0,W,H);
-    clearInterval(audioObj.renderer);
-  }
 
   render() {
     return (
@@ -69,7 +63,10 @@ class Oscilloscope extends React.Component {
               backgroundColor: "#DCDEE0"
             }}
           >
-            <canvas ref={this.canvasRef} />
+            <canvas
+              ref={this.canvasRef}
+              style={{ position: "absolute", width: "293px", height: "168px" }}
+            />
           </div>
         </div>
       </React.Fragment>

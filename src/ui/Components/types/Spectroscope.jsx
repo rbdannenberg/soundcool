@@ -5,18 +5,23 @@ class Spectroscope extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.renderer = undefined;
   }
 
   // render function
   renderAudio = () => {
     let { audioObj } = this.props.blockInfo;
     let canvas = this.canvasRef.current;
+    if (canvas === null) {
+      clearInterval(this.renderer);
+      return;
+    }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
     let data = audioObj.getAudioData();
     let length = data.length;
     let fftSize = audioObj.options.fftSize;
-    let W = renderCtx.canvas.width;
+    let W = renderCtx.canvas.width - 6;
     let H = renderCtx.canvas.height;
     let minDb = audioObj.analyzerNode.analyzer.minDecibels;
     let maxDb = audioObj.analyzerNode.analyzer.maxDecibels;
@@ -39,20 +44,8 @@ class Spectroscope extends React.Component {
   // bindtocanvas
   componentDidMount = () => {
     let { audioObj, renderRate } = this.props.blockInfo;
-    audioObj.renderer = setInterval(
-      this.renderAudio.bind(audioObj),
-      renderRate
-    );
+    this.renderer = setInterval(this.renderAudio.bind(audioObj), renderRate);
   };
-
-  // Stop the setInterval process
-  unbindCanvas() {
-    let { audioObj } = this.props.blockInfo;
-    // let W = audioObj.renderCtx.canvas.width;
-    // let H = audioObj.renderCtx.canvas.height;
-    // audioObj.renderCtx.clearRect(0,0,W,H);
-    clearInterval(audioObj.renderer);
-  }
 
   render() {
     return (
@@ -75,7 +68,10 @@ class Spectroscope extends React.Component {
               backgroundColor: "#DCDEE0"
             }}
           >
-            <canvas ref={this.canvasRef} />
+            <canvas
+              ref={this.canvasRef}
+              style={{ position: "absolute", height: "168px", width: "293px" }}
+            />
           </div>
         </div>
       </React.Fragment>

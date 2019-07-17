@@ -92,7 +92,7 @@ const eva = typeName => {
   return t;
 };
 
-const WithHeader = ({ blockInfo, nowOut }) => {
+const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
   let {
     typeName,
     name,
@@ -242,14 +242,13 @@ const WithHeader = ({ blockInfo, nowOut }) => {
               height: "1.5rem",
               fontSize: "0.4rem"
             }}
-            onClick={() =>
+            onClick={() => {
+              handleDelete();
               store.dispatch({
                 type: "DELETE_BLOCK",
-                id: id,
-                field: undefined,
-                value: undefined
-              })
-            }
+                id: id
+              });
+            }}
           >
             <FaTimes style={{ marginLeft: "-1px" }} />
           </button>

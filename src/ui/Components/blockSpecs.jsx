@@ -44,7 +44,7 @@ const specValues = {
     modulation: "No Mod",
     MI: 0,
     FD: 0,
-    volume: 60,
+    volume: 0.6,
     kinect: false,
     osc: undefined
   },
@@ -52,7 +52,8 @@ const specValues = {
     color: toHex(240, 254, 199),
     muted: false,
     meterL: 60,
-    meterR: 60
+    meterR: 60,
+    renderRate: 100
   },
   DirectInput: {
     inDisabled: true,
@@ -114,12 +115,12 @@ const specValues = {
   Spectroscope: {
     color: toHex(141, 104, 133),
     outDisabled: true,
-    renderRate: 1000
+    renderRate: 100
   },
   Oscilloscope: {
     color: toHex(141, 104, 133),
     outDisabled: true,
-    renderRate: 1000
+    renderRate: 100
   },
   Envelope: {
     color: toHex(80, 174, 55),
