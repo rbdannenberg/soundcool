@@ -13,9 +13,9 @@ For the UI, we use React style of Single Page Application in which different com
 The UI of the soundcool application is expected to have an initial login page and an option to Sign-up. 
 Once a user logs in, he can navigate across various components such as
 - AboutUs Page 
-- ContactUs Page  
-- SoundMenu Page  
-- Project Page  
+- ContactUs Page
+- SoundMenu Page
+- Project Page
 
 The driver of this code is the MainComponent which calls the other components and makes use of Routing to render different components based on the path. Here we have  `<Switch> ... </Switch>` which decides which of the component is rendered similar, to switch statements in other programming languages (like C++). Once the path matches, the component requested is rendered. Functions can also be passed as props here as shown in Fig 1.
 
@@ -48,11 +48,11 @@ Let us call the each module in the center a “block”. So essentially, a proje
 #### What happens when a module is dropped from the sidebar to the center?
 
 When dragging an icon is completed, the onDragEnd function is triggered. This implements  application behavior on completion of a drag. For example, if a block is dragged to the sidebar, nothing should happen. Details are in this function.
-Once a module is dropped to the center, we need to just add an object to one of the two lists. This is done in 2 steps. 
+Once a module is dropped to the center, we need to create an instance of the appropriate class. The constructor will create an `id` field with a unique string name for object, e.g. `SignalGen1`.
 
-The addBlock function is an Action in redux which adds the information of the block to a blockList that is present in the redux store. The blockList is a single list of all the blocks that are present in the current project. Each Block is assigned an ID when being stored in the store.
+Next, the addBlock function is an Action in redux which adds the object to a blockList that is present in the redux store. The blockList is a single list of all the blocks that are present in the current project. Blocks are identified or referenced by their `id` fields.
 
-The ProjectComponent is a stateful component i.e it stores information as shown in Fig 3. Everytime we add, move, or reorder a block, we alter these 4 arrays. (FIXME:) Note that the array does not store any information about the object but that required for its identification only. The details regarding its properties such as the frequency for a SignalGen block is stored in the redux Store. The state here just stores a reference to that block in the store.
+The ProjectComponent is a stateful component i.e it stores information as shown in Fig 3. Everytime we add, move, or reorder a block, we alter these 4 arrays.  Note that the array does not store actual objects but instead store `id` strings that serve as references to the objects in the redux store. 
 
 | ![Fig 3](imagesDoc/fig3.PNG) |
 |:--:| 
@@ -60,7 +60,8 @@ The ProjectComponent is a stateful component i.e it stores information as shown 
 
 #### What is an Action and store in redux?
 
-An action is just a function. In redux terminology, we use functions to alter the redux store. A redux store holds the whole state of the application. Broadly speaking, a redux store contains data in a global variable that can be accessed throughout the React Application. The technical details on how to handle it are well documented in their official documentation here. (FIXME)     
+An action is just a function. In redux terminology, we use functions to alter the redux store. A redux store holds the whole state of the application. Broadly speaking, a redux store contains data in a global variable that can be accessed throughout the React Application. The technical details on how to handle it are well documented in their [official documentation here](https://redux.js.org/api/store).
+
 
 #### How do we delete a block from the project?
 Block deletion is implemented in the handleDelete function. This function identifies the list from which the object is removed and updates the state of the list accordingly. An action is also dispatched that removes the block from the redux store. 
