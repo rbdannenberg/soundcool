@@ -43,7 +43,7 @@ A project consists of module instances, parameter settings, and interconnections
 |:--:| 
 |Fig 2: The ProjectComponent display showing icons at left and module instances in the two columns to the right.|
 
-Let us call the each module in the center a “block”. So essentially, a project is just two lists of blocks. Within the code, blocks are represented as an object and the lists are an array of these objects. Moving the objects and reordering them just requires splicing of arrays and manipulating them. We make use of the move and reorder functions to assist us in implementing module moving and reordering within and between lists. 
+Let us call the each module in the center a “block”. (Note: The proper name is "Module", so at some point, we need to globally fix all the code and documentation to be consistent with the Soundcoool world.) So essentially, a project is just two lists of blocks. Within the code, blocks are represented as an object and the lists are an array of these objects. Moving the objects and reordering them just requires splicing of arrays and manipulating them. We make use of the move and reorder functions to assist us in implementing module moving and reordering within and between lists. 
 
 #### What happens when a module is dropped from the sidebar to the center?
 
@@ -72,7 +72,11 @@ The following keywords will be useful to understand the code better. However, th
 - `<Draggable />` - What can be dragged around
 - `Innerref`- Our `<Draggable />` and `<Droppable />` components both require a HTMLElement to be provided to them. This is done using the innerRef property on the `DraggableProvided` and `DroppableProvided` objects.
 
-The projectComponent has been kept separate from the rest of the UI as the design for the remaining UI has not been finalized and is open to alterations. 
+The projectComponent has been kept separate from the rest of the UI as the design for the remaining UI has not been finalized and is open to alterations.
+
+### The UI for Blocks
+
+For now, see "GUI objects documentation" in the github soundcool wiki for more details on Redux and managing the GUI for blocks.
 
 ## Audio Components
 
