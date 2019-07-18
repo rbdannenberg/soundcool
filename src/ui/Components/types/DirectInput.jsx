@@ -3,6 +3,9 @@ import store from "../../../index";
 import changeBlock from "../../../handlers";
 
 const DirectInput = ({ blockInfo }) => {
+  // catch
+  // store.dispatch('delete')
+
   let { id, direction, volume } = blockInfo;
   return (
     <React.Fragment>

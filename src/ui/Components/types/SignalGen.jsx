@@ -276,8 +276,8 @@ const SignalGen = ({ blockInfo }) => {
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
-          max={100}
-          step={1}
+          max={1}
+          step={0.01}
           value={volume}
           id="volume"
         />

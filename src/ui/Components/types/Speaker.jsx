@@ -17,10 +17,11 @@ class Speaker extends React.Component {
     super(props);
     this.canvasLRef = React.createRef();
     this.canvasRRef = React.createRef();
+    this.rendererL = undefined;
+    this.rendererR = undefined;
   }
 
   randomMeter = () => {
-    // console.log("I am being called");
     let x = Math.random();
     return x;
   };
@@ -28,45 +29,43 @@ class Speaker extends React.Component {
   // render function
   renderAudioL = () => {
     let { audioObj } = this.props.blockInfo;
-    console.log("renderAudioL");
     let canvasL = this.canvasLRef.current;
+    if (canvasL === null) {
+      clearInterval(this.rendererL);
+      return;
+    }
     let canvasLCtx = canvasL.getContext("2d");
     let renderCtx = canvasLCtx;
     let data = audioObj.getAudioData()[0];
 
     renderCtx.clearRect(0, 0, 230, 140);
     renderCtx.fillStyle = "green";
-    console.log("left: " + (data - 40) * 40);
     renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
   };
 
   // render function
   renderAudioR = () => {
     let { audioObj } = this.props.blockInfo;
-    console.log("renderAudioR");
     let canvasR = this.canvasRRef.current;
+    if (canvasR === null) {
+      clearInterval(this.rendererR);
+      return;
+    }
     let canvasRCtx = canvasR.getContext("2d");
     let renderCtx = canvasRCtx;
     let data = audioObj.getAudioData()[1];
 
     renderCtx.clearRect(0, 0, 230, 140);
     renderCtx.fillStyle = "green";
-    console.log("right: " + (data - 40) * 40);
     renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
   };
 
   // bindtocanvas
   componentDidMount = () => {
-    let { audioObj, renderRate } = this.props.blockInfo;
-    let rendererL = setInterval(this.renderAudioL.bind(this), 100);
-    let rendererR = setInterval(this.renderAudioR.bind(this), 100);
+    let { renderRate } = this.props.blockInfo;
+    this.rendererL = setInterval(this.renderAudioL.bind(this), renderRate);
+    this.rendererR = setInterval(this.renderAudioR.bind(this), renderRate);
   };
-
-  // let useEffect = () => {
-  //   let renderer = setInterval(randomMeter, 3000);
-  // };
-
-  // useEffect();
 
   render() {
     let { id, muted } = this.props.blockInfo;
@@ -150,14 +149,7 @@ class Speaker extends React.Component {
               left: "270px",
               backgroundColor: "transparent"
             }}
-            onClick={() => {
-              store.dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "muted",
-                value: undefined
-              });
-            }}
+            onClick={() => changeBlock(id, "muted", undefined)}
           >
             {playButton}
           </button>

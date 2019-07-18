@@ -127,7 +127,7 @@ class NavigationBar extends React.Component {
             nowOut={nowOut}
             handleDelete={() => this.handleDelete(param)}
           />
-          {/* <button onClick={() => this.handleDelete(param)} >x</button>  */}
+          {/* <button onClick={() => this.handleDelete(param)}>x</button> */}
         </div>
       );
     }
