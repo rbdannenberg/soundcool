@@ -70,13 +70,15 @@ Operations on user's media:
 
 # Suggested Database Tables
 #### User Table Fields 
-````userID 
+````
+userID 
 name 
 password 
 email 
 ````
 #### Project Table Fields
-````projectID
+````
+projectID
 ownerID (a userID)
 name
 public (true/false)
@@ -84,18 +86,21 @@ json (the entire project as JSON)
 ````
 
 #### Media Table Fields
-````mediaID
+````
+mediaID
 ownerID (a userID)
 path (from media root to file, begins with userID)
 ````
 
 #### Project Sharing Table Fields
-````projectID
+````
+projectID
 sharerID (a userID)
 ````
 
 #### Media Sharing Table Fields
-````ownerID (a userID)
+````
+ownerID (a userID)
 sharerID (a userID who is allowed to access all of owner's media files)
 ````
 
