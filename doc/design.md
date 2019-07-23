@@ -32,12 +32,6 @@ An important design decision is how projects, media, sharing, and permissions wo
 Here is a summary:
 
 - The system supports multiple users. Each user has an ID and password to login.
-####User Table Fields
-````userID
-name
-password
-email
-````
 
 - Each user can have multiple projects. A project is typically small, consisting of just a collection of modules and their connections and parameter settings. Projects do not include audio files or other media. We expect projects will be copied often to create different versions, e.g. a project might be copied and modified slightly for a one-time performance to avoid disturbing the "master" version.
 
@@ -52,6 +46,59 @@ email
 - To access media, permissions must be checked. E.g. to access the media file "rbd/sound.wav" the server must check that either rbd is the logged-in user or rbd's media collection is *public*, or rbd's media collection is shared with the logged-in user.
 
 - Uploads are simpler: they are always permitted, but the upload is stored in the media collection of the logged-in user.
+
+### Project Page
+Displays logged in user's projects and all projects shared with user.
+
+Operations on user's projects:
+* open (for edit/run),
+* copy - asks for new name, copies project into new project (media are referenced in the project but not copied)
+* delete - asks for confirmation, removes project, does not remove any media)
+* share - asks for user name to share with, enters projectID and sharerID into Project Sharing Table, adds sharerID to Media Sharing Table if not there already,
+* unshare - Prints "Note: Unsharing this project will not remove any copies that have already been made. Do you want to continue sharing media with <USER>? (Yes or No)." If user selects "No", another message appears: "Warning: Unsharing media with <USER> will block access to your media from *all* other projects that are shared with <USER> (if any)." (Of course user now gets a choice: "Continue sharing media with <USER>" or "Confirm: unshare all media with <USER>")
+* private/public - changes public field in Project Table
+
+### Media Page
+Displays media files owned by user.
+
+Operations on user's media:
+* replace (per file) - allows file upload
+* upload new - prompts for name, allows file upload
+* delete (per file)
+* share (all media) - prompts for user name to share with
+* unshare (all media) - prompts for user name to unshare with. Prints "Note this will also unshare all projects shared with <USER>." User clicks Confirm or Cancel. Confirm removes sharer from Media Sharing Table and removes all rows of Project Sharing Table where sharerID == <USER>.
+
+# Suggested Database Tables
+#### User Table Fields 
+````userID 
+name 
+password 
+email 
+````
+#### Project Table Fields
+````projectID
+ownerID (a userID)
+name
+public (true/false)
+json (the entire project as JSON)
+````
+
+#### Media Table Fields
+````mediaID
+ownerID (a userID)
+path (from media root to file, begins with userID)
+````
+
+#### Project Sharing Table Fields
+````projectID
+sharerID (a userID)
+````
+
+#### Media Sharing Table Fields
+````ownerID (a userID)
+sharerID (a userID who is allowed to access all of owner's media files)
+````
+
 
 # OSC Connections
 
