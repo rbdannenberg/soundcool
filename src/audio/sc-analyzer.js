@@ -16,6 +16,7 @@ class ScAnalyzer {
     setupNodes() {
         this.analyzer = this.context.createAnalyser();
         this.inNode = this.analyzer;
+        this.analyzer.smoothingTimeConstant = 0;
         switch (this.options.type) {
             case 'waveform':
                 this.array = new Uint8Array(this.options.arraySize);
