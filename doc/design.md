@@ -32,6 +32,11 @@ An important design decision is how projects, media, sharing, and permissions wo
 Here is a summary:
 
 - The system supports multiple users. Each user has an ID and password to login.
+> **User Table Fields**
+> userID
+> name
+> password
+> email
 
 - Each user can have multiple projects. A project is typically small, consisting of just a collection of modules and their connections and parameter settings. Projects do not include audio files or other media. We expect projects will be copied often to create different versions, e.g. a project might be copied and modified slightly for a one-time performance to avoid disturbing the "master" version.
 
