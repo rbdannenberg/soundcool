@@ -39,14 +39,14 @@ class NavigationBar extends React.Component {
     // console.log(this.state["major1"]);
     // const list;
     let list;
-    if (this.state["major1"].filter(a => a.id == id).length) {
+    if (this.state["major1"].filter(a => a.id === id).length) {
       list = "major1";
     }
-    if (this.state["major2"].filter(a => a.id == id).length) {
+    if (this.state["major2"].filter(a => a.id === id).length) {
       list = "major2";
     }
     // console.log();
-    this.setState({ [list]: this.getList(list).filter(a => a.id != id) });
+    this.setState({ [list]: this.getList(list).filter(a => a.id !== id) });
     // console.log(this.state["major1"].filter(a => a.id!=id));
     // this.setState([list]: );
   };
@@ -93,9 +93,10 @@ class NavigationBar extends React.Component {
     // console.log(source.droppableId);
     // console.log(destination.droppableId);
     if (
-      (source.droppableId == "sidebar1" || source.droppableId == "sidebar2") &&
-      (destination.droppableId == "major1" ||
-        destination.droppableId == "major2")
+      (source.droppableId === "sidebar1" ||
+        source.droppableId === "sidebar2") &&
+      (destination.droppableId === "major1" ||
+        destination.droppableId === "major2")
     ) {
       addBlock(result.draggableId);
     }
@@ -114,7 +115,7 @@ class NavigationBar extends React.Component {
       let { bs, nowOut } = blocks;
       var b = bs.filter(block => {
         return (
-          block.typeName == item.typeName && block.typeId == item.lastIndex
+          block.typeName === item.typeName && block.typeId === item.lastIndex
         );
       })[0];
       const param = b.typeName + b.typeId;

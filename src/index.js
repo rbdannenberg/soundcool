@@ -6,7 +6,6 @@ import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 // import { Delay, Transposer, Pan } from "./Components/types/all";
-import WithHeader from "./ui/Components/WithHeader";
 // import AddBlock from "./ui/Components/AddBlock";
 // import SLButton from "./ui/Components/SLButton";
 import blocks from "./ui/reducers/blocks";
@@ -34,35 +33,15 @@ export default store;
 
 // #region rendering components
 
-const BlockList = ({ blocks, nowOut }) => {
-  return (
-    <React.Fragment>
-      {blocks.map(b => (
-        <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
-      ))}
-    </React.Fragment>
-  );
-};
-
 // #endregion
 
 const BlockApp = ({ blocks }) => {
-  let { bs, nowOut } = blocks;
+  // let {} = blocks;
   return (
     <div>
       {/* <SLButton /> */}
       {/* <AddBlock /> */}
-      <NavigationBar/>
-      {/* <BlockList blocks={bs} nowOut={nowOut} /> */}
-      {/* <Footer
-        visibilityFilter={visibilityFilter}
-        onFilterClick={filter =>
-          store.dispatch({
-            type: "SET_VISIBILITY_FILTER",
-            filter
-          })
-        }
-      /> */}
+      <NavigationBar />
     </div>
   );
   // return (<NavigationBar/>)

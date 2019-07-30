@@ -1,5 +1,4 @@
 import React from "react";
-import store from "../../../index";
 
 class Spectroscope extends React.Component {
   constructor(props) {
@@ -19,7 +18,7 @@ class Spectroscope extends React.Component {
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
     let data = audioObj.getAudioData();
-    let length = data.length;
+    // let length = data.length;
     let fftSize = audioObj.options.fftSize;
     let W = renderCtx.canvas.width - 6;
     let H = renderCtx.canvas.height;
@@ -33,7 +32,7 @@ class Spectroscope extends React.Component {
     renderCtx.beginPath();
     renderCtx.fillStyle = "rgba(0,0,0,.4)";
     renderCtx.moveTo(0, H);
-    let range = fftSize;
+    // let range = fftSize;
     for (let i = 0; i <= fftSize; i++) {
       renderCtx.lineTo(i, scaleY(data[i]));
     }
