@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 
+// TODO: you should store it in environment variable!!
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",

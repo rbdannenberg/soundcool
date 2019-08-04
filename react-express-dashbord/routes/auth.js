@@ -8,10 +8,6 @@ router.post("/", (req, res) => {
   // console.log(req);
   const { email, password } = req.body;
 
-  // const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
-  //   email +
-  //   '"'} AND password = ${'"' + password + '"'}`;
-
   const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
     email +
     '"'} `;

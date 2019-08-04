@@ -10,21 +10,11 @@ import "bootstrap/dist/js/bootstrap.js";
 // import SLButton from "./ui/Components/SLButton";
 import blocks from "./ui/reducers/blocks";
 import { createStore, combineReducers } from "redux";
-import NavigationBar from "./ui/component_pp/Navbar";
+import ProjectPage from "./ui/component_pp/ProjectPage";
 // #region reducers
 
-const visibilityFilter = (state = "SHOW_ALL", action) => {
-  switch (action.type) {
-    case "SET_VISIBILITY_FILTER":
-      return action.filter;
-    default:
-      return state;
-  }
-};
-
 const blockApp = combineReducers({
-  blocks,
-  visibilityFilter
+  blocks
 });
 // #endregion
 
@@ -41,7 +31,7 @@ const BlockApp = ({ blocks }) => {
     <div>
       {/* <SLButton /> */}
       {/* <AddBlock /> */}
-      <NavigationBar />
+      <ProjectPage />
     </div>
   );
   // return (<NavigationBar/>)

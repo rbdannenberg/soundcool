@@ -72,6 +72,17 @@ export default class Header extends Component {
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
                 <NavItem>
+                  <span className="nav-link">
+                    <a
+                      href="http://localhost:5000/project-editor"
+                      className="fa fa-home fa-lg"
+                    >
+                      Create!
+                    </a>
+                  </span>
+                </NavItem>
+
+                <NavItem>
                   <NavLink className="nav-link" to="/home">
                     <span className="fa fa-home fa-lg" /> Home
                   </NavLink>

@@ -13,7 +13,9 @@ import { Link } from "react-router-dom";
 function RenderProjectMenuItem({ project_id, name }) {
   return (
     <Card>
-      <Link to={`/projectmenu/${project_id}`}>
+      {/* <Link to={`/project/${project_id}`}> */}
+      {/* <Link to={`/project-editor`}> */}
+      <a href="http://localhost:5000/project-editor">
         <CardImg
           width="100%"
           src={"/assets/images/sampleproject.jpg"}
@@ -22,7 +24,8 @@ function RenderProjectMenuItem({ project_id, name }) {
         <CardImgOverlay>
           <CardTitle>{name}</CardTitle>
         </CardImgOverlay>
-      </Link>
+        {/* </Link> */}
+      </a>
     </Card>
   );
 }

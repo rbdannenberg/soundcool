@@ -26,6 +26,9 @@ app.use("/api/projects", projects);
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, "client2/build")));
+
 app.listen(PORT);
 
 if (app.get("env") === "development") {
@@ -61,4 +64,9 @@ app.get("/contact", (req, res) => {
 
 app.get("/api", (req, res) => {
   res.send("Go to /sounds to see sounds, go to /projects to see projects ");
+});
+
+// for project-editor, send out the project app from client2
+app.get("/project-editor", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client2/build/index.html"));
 });
