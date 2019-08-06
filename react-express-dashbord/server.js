@@ -67,6 +67,6 @@ app.get("/api", (req, res) => {
 });
 
 // for project-editor, send out the project app from client2
-app.get("/project-editor", (req, res) => {
+app.get("/project-editor*", (req, res) => {
   res.sendFile(path.join(__dirname + "/client2/build/index.html"));
 });

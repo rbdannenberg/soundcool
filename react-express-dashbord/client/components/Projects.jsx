@@ -10,19 +10,25 @@ import {
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-function RenderProjectMenuItem({ project_id, name }) {
+function RenderProjectMenuItem({ project }) {
+  const setContent = () => {
+    localStorage.setItem("project" + project.project_id, project.content);
+  };
+  const url = "http://localhost:5000/project-editor/" + project.project_id;
+  console.log(url);
   return (
     <Card>
       {/* <Link to={`/project/${project_id}`}> */}
       {/* <Link to={`/project-editor`}> */}
-      <a href="http://localhost:5000/project-editor">
+      {/* Issue with open window in new tab */}
+      <a href={url} onClick={setContent}>
         <CardImg
           width="100%"
           src={"/assets/images/sampleproject.jpg"}
-          alt={name}
+          alt={project.name}
         />
         <CardImgOverlay>
-          <CardTitle>{name}</CardTitle>
+          <CardTitle>{project.name}</CardTitle>
         </CardImgOverlay>
         {/* </Link> */}
       </a>
@@ -52,6 +58,7 @@ class Projects extends Component {
 
   projectmenu = projects =>
     projects.map(project => {
+      console.log(project);
       return (
         <div key={project.project_id} className="col-12 col-md-5 m-1">
           <RenderProjectMenuItem project={project} />

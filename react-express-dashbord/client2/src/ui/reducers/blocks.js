@@ -102,8 +102,14 @@ const blocks = (
       localStorage.setItem("myState", JSON.stringify(state));
       return state;
     case "LOAD_STATE":
-      let newState = localStorage.getItem("myState");
-      return JSON.parse(newState);
+      let newState = localStorage.getItem("project" + action.id);
+      // TODO: validation to check the state
+      if (newState && JSON.parse(newState) !== null) {
+        return JSON.parse(newState);
+      } else {
+        console.log("here");
+        return state;
+      }
     default:
       return state;
   }

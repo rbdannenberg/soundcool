@@ -5,8 +5,8 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-// import { Delay, Transposer, Pan } from "./Components/types/all";
-// import AddBlock from "./ui/Components/AddBlock";
+import WithHeader from "../src/ui/Components/WithHeader";
+import AddBlock from "./ui/Components/AddBlock";
 import SLButton from "./ui/Components/SLButton";
 import blocks from "./ui/reducers/blocks";
 import { createStore, combineReducers } from "redux";
@@ -21,21 +21,49 @@ const blockApp = combineReducers({
 const store = createStore(blockApp);
 export default store;
 
-// #region rendering components
-
-// #endregion
-
-const BlockApp = ({ blocks }) => {
-  // let {} = blocks;
+const BlockList = ({ blocks, nowOut }) => {
   return (
-    <div>
-      <SLButton />
-      {/* <AddBlock /> */}
-      <ProjectPage />
-    </div>
+    <React.Fragment>
+      {blocks.map(b => (
+        <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+      ))}
+    </React.Fragment>
   );
-  // return (<NavigationBar/>)
 };
+
+class BlockApp extends React.Component {
+  // { bs, nowOut } = this.props.blocks;
+
+  componentDidMount() {
+    console.log(window.location.href + "");
+    console.log(window.location.href.toString());
+    console.log(window.location.href.toString().substring(37));
+
+    const projectId = window.location.href.toString().substring(37);
+
+    store.dispatch({
+      type: "LOAD_STATE",
+      id: projectId
+    });
+  }
+
+  render() {
+    console.log(this.props);
+    return (
+      <div>
+        {/* <SLButton />
+      <ProjectPage /> */}
+
+        {/* <SLButton /> */}
+        <AddBlock />
+        <BlockList
+          blocks={this.props.blocks.bs}
+          nowOut={this.props.blocks.nowOut}
+        />
+      </div>
+    );
+  }
+}
 
 const render = () => {
   ReactDOM.render(

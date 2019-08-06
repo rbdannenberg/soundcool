@@ -1,5 +1,5 @@
 import React from "react";
-import store from "../index";
+import store from "../../index";
 import specValues from "./blockSpecs";
 
 const addBlock = typeName => {

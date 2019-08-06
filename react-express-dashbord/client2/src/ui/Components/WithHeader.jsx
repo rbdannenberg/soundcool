@@ -243,7 +243,7 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
               fontSize: "0.4rem"
             }}
             onClick={() => {
-              handleDelete();
+              // handleDelete();
               store.dispatch({
                 type: "DELETE_BLOCK",
                 id: id
