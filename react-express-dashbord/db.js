@@ -1,6 +1,8 @@
 const mysql = require("mysql");
 
-// TODO: you should store it in environment variable!!
+// TODO: all of them should be environment variable and
+// should be inside and .env file that's not being distributed!
+// it's very dangerous to expose all these informations here!
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
