@@ -54,7 +54,7 @@ class BlockApp extends React.Component {
         {/* <SLButton />
       <ProjectPage /> */}
 
-        {/* <SLButton /> */}
+        <SLButton />
         <AddBlock />
         <BlockList
           blocks={this.props.blocks.bs}

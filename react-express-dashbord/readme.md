@@ -34,11 +34,25 @@ As you may noticed, both the create-react-app and server-side-rendering frontend
 require you to compile the react codes into a bundle and serve it when running the app.
 Without recompiling them, you will find that none of your changes are shown.
 
-- Anytime you make changes in the folder client2 (the create-react-app)
-  - call `npm run build` in client2 folder.
-- If you are making changes in the folder client (the server-side-rendering dashboard)
-  - call `npm run webpack`. You don't need to call this every time, since webpack
+- Anytime you make changes in the folder `client2` (the create-react-app)
+  - call `npm run build` in `client2` folder.
+- If you are making changes in the folder `client` (the server-side-rendering dashboard)
+  - call `npm run webpack` in the root folder. You don't need to call this every time, since webpack
     is watching you and automatically recompile when you make changes.
 - Any changes you make in terms of the server (anything outside of both client folders)
   will be automatically updated by `nodemon`. As you can see it's nodemon instead of node
   running when you starts the server.
+
+## What do we currently have
+
+- A simple login scheme.
+  - Please check the database for the table of user, projects and sounds.
+    If you login as user1@outlook.com or user2@gmail.com, they will have projects and
+    sound associated.
+  - There is authorization scheme so that you can only access the projects or sounds
+    when you logged in as a user.
+- Register
+
+For what needs to be implemented, please refer to the Issues page which contains TODOs.
+For new contributors, each issue is tagged with classification, and I recommend starting from
+the purple tag `good first issue`.

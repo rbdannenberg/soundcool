@@ -15,7 +15,7 @@ const SLButton = () => {
       >
         Save
       </button>
-      <button
+      {/* <button
         className="btn btn-info m-2"
         onClick={() => {
           store.dispatch({
@@ -25,7 +25,7 @@ const SLButton = () => {
         }}
       >
         Load
-      </button>
+      </button> */}
     </React.Fragment>
   );
 };
