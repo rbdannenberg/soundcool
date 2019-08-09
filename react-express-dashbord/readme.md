@@ -5,7 +5,7 @@ along with react frontend and mysql database.
 
 ## How to run
 
-There are three steps.
+If you are running the whole project, there are three steps.
 
 - **Step 1**: build the soundcool project app.
   - Go to client2 folder.
@@ -16,6 +16,7 @@ There are three steps.
   - Go back to the root folder (react-express-dashboard)
   - run `npm i`
   - run `npm start`
+  - Go to http://localhost:5000 to see the project!
 - **Step 3**: Configure the MySQL database. (If you are familiar
   with MySQL, feel free to use your own tool.)
   - Download MySQL community server from www.mysql.com and install.
@@ -27,6 +28,14 @@ There are three steps.
   - In order to access the database from express backend, change the connection
     information in `db.js` as yours. In the future we should set them as environment
     variables.
+
+Alternatively, if you are only developing the project editor and just want to
+run the project editor without going through dashboard and users, you can just
+
+- Go to client2 folder.
+- run `npm i`
+- run `npm start`
+- It will start the project editor in http://localhost:3000
 
 ## How to develop
 
