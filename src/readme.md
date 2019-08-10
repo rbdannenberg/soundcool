@@ -20,14 +20,19 @@ If you are running the whole project, there are three steps.
 - **Step 3**: Configure the MySQL database. (If you are familiar
   with MySQL, feel free to use your own tool.)
   - Download MySQL community server from www.mysql.com and install.
-  - Also download the MySQL workbench from the same website and install,
-    it's a graphical tool to help you manage your database.
+  - (Optional) You can download MySQL workbench from the same website and install,it's a graphical tool to help you manage your database.
   - In MySQL workbench, open the `database/create-soundcool-db.sql` file.
     Execute the scripts by clicking the lighening button on the interface. This should create
     the same database on your machine so that you can run with user information.
-  - In order to access the database from express backend, change the connection
-    information in `backend/db.js` as information of your local database.
-    In the future we should set them as environment variables.
+  - To connect express to your mysql server
+    - Create a .env file in current directory
+    - Enter the following lines
+    ```
+      MYSQL_HOST= <hostname> #it's localhost if you running it locally
+      MYSQL_USER= <your_sql_server_username> 
+      MYSQL_PASS= <your_sql_server_password>
+      MYSQL_DB= soundcool
+    ```
 
 Alternatively, if you are only developing the project editor and just want to
 run the project editor without going through dashboard and users, you can just

@@ -4,10 +4,10 @@ const mysql = require("mysql");
 // should be inside and .env file that's not being distributed!
 // it's very dangerous to expose all these informations here!
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "5WA8C1XE",
-  database: "soundcool"
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASS,
+  database: process.env.MYSQL_DB
 });
 
 connection.connect(err => {

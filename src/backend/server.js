@@ -1,4 +1,4 @@
-const config = require("config");
+require('dotenv').config()
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
@@ -31,7 +31,6 @@ app.use(
   express.static(path.join(__dirname, "../frontend/project-editor/build"))
 );
 
-app.listen(PORT);
 
 if (app.get("env") === "development") {
 }
@@ -74,3 +73,5 @@ app.get("/project-editor*", (req, res) => {
     path.join(__dirname, "../frontend/project-editor/build/index.html")
   );
 });
+
+app.listen(PORT);
