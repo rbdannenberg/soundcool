@@ -3,7 +3,7 @@
 This is the place where you run (locally) the express backend
 along with react frontend and mysql database.
 
-## How to Prerequisites
+## Prerequisites
 - Prerequisites
   - Node 10.16.0+ 
   - NPM 6.10.0+
