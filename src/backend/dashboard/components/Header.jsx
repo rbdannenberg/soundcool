@@ -49,13 +49,13 @@ export default class Header extends Component {
   }
 
   handleLogout() {
-    localStorage.removeItem("token");
+    localStorage.clear();
     window.location = "/login";
   }
 
   render() {
     const { user } = this.props;
-    console.log(user);
+    // console.log(user);
     return (
       <React.Fragment>
         <Navbar dark expand="md">
@@ -63,7 +63,7 @@ export default class Header extends Component {
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
               <img
-                src="assets/images/logo.jpg"
+                src="/assets/images/logo.jpg"
                 height="42"
                 width="54"
                 alt="SoundCool"
@@ -71,15 +71,10 @@ export default class Header extends Component {
             </NavbarBrand>
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
-                <NavItem>
-                  <span className="nav-link">
-                    <a
-                      href="http://localhost:5000/project-editor"
-                      className="fa fa-home fa-lg"
-                    >
-                      Create!
-                    </a>
-                  </span>
+              <NavItem>
+                  <NavLink className="nav-link" to="/project-editor/new">
+                    <span className="fa fa-home fa-lg" /> Create Project
+                  </NavLink>
                 </NavItem>
 
                 <NavItem>

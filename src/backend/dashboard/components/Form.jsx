@@ -17,19 +17,16 @@ class Form extends Component {
 
     const errors = {};
     result.error.details.map(item => (errors[item.path[0]] = item.message));
-    console.log(errors);
     return errors;
   };
 
   handleSubmit = e => {
     e.preventDefault();
-
     const errors = this.validate();
     if (errors) {
       this.setState({ errors });
       return;
     }
-
     this.doSubmit();
   };
 

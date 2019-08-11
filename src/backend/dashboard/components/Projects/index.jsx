@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 import {
   Card,
   CardImg,
@@ -9,19 +10,21 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { fetchUserProjects } from './actions';
 
 function RenderProjectMenuItem({ project }) {
   const setContent = () => {
     localStorage.setItem("project" + project.project_id, project.content);
+
   };
-  const url = "http://localhost:5000/project-editor/" + project.project_id;
-  console.log(url);
+  const url = "/project-editor/" + project.project_id;
+  // console.log(url);
   return (
     <Card>
       {/* <Link to={`/project/${project_id}`}> */}
       {/* <Link to={`/project-editor`}> */}
       {/* Issue with open window in new tab */}
-      <a href={url} onClick={setContent}>
+      <NavLink onClick={setContent} to={url}>
         <CardImg
           width="100%"
           src={"/assets/images/sampleproject.jpg"}
@@ -31,12 +34,11 @@ function RenderProjectMenuItem({ project }) {
           <CardTitle>{project.name}</CardTitle>
         </CardImgOverlay>
         {/* </Link> */}
-      </a>
+      </NavLink>
     </Card>
   );
 }
 
-const apiEndpoint = "http://localhost:5000/api/projects";
 
 class Projects extends Component {
   state = {
@@ -47,10 +49,13 @@ class Projects extends Component {
     // case on the user, if there is no user logged in, then no
     // project get displayed
     if (this.props.user) {
-      const { data } = await axios.get(apiEndpoint, {
-        headers: { user_id: this.props.user.id }
+      fetchUserProjects()
+      .then(data=>
+        this.setState({ projects: data.data })
+      )
+      .catch(error => {
+        showToastrError(error);
       });
-      this.setState({ projects: data.data });
     } else {
       return;
     }
@@ -58,7 +63,7 @@ class Projects extends Component {
 
   projectmenu = projects =>
     projects.map(project => {
-      console.log(project);
+      // console.log(project);
       return (
         <div key={project.project_id} className="col-12 col-md-5 m-1">
           <RenderProjectMenuItem project={project} />

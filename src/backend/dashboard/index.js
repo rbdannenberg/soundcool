@@ -5,8 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-social/bootstrap-social.css";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App.jsx";
-
+import App from "./components/soundcool";
 render(
   <BrowserRouter>
     <App />

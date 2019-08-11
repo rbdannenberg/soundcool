@@ -5,7 +5,7 @@ import axios from "axios";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 
-const apiEndpoint = "http://localhost:5000/api/users";
+const apiEndpoint = "/api/users";
 
 class Register extends Form {
   state = {

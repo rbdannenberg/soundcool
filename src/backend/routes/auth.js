@@ -5,8 +5,7 @@ const connection = require("../db");
 const bcrypt = require("bcrypt");
 
 router.post("/", (req, res) => {
-  // console.log(req);
-  const { email, password } = req.body;
+  const { email, password } = req.body.user;
 
   const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
     email +
@@ -26,7 +25,9 @@ router.post("/", (req, res) => {
         if (bcrypt.compare(password, user.password)) {
           // JSON web token
           const token = jwt.sign({ id: user.user_id }, "jwtPrivateKey");
-          res.send(token);
+          res.json({
+           token
+        });
           console.log("Login successful");
         } else {
           console.log("Invalid email and password combination.");

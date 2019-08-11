@@ -22,56 +22,21 @@ app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use("/api/sounds", sounds);
-app.use("/api/projects", projects);
+app.use("/api/v1/projects/get", projects.getProject);
+app.use("/api/v1/projects/updateContent", projects.updateContent);
 app.use("/api/users", users);
-app.use("/api/auth", auth);
-
-// Serve static files from the React frontend app
-app.use(
-  express.static(path.join(__dirname, "../frontend/project-editor/build"))
-);
+app.use("/api/v1/users/sign_in", auth);
 
 
 if (app.get("env") === "development") {
 }
 
-app.get("/login", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/register", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/home", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/projects", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/sounds", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/about", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
-app.get("/contact", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
-});
-
 app.get("/api", (req, res) => {
   res.send("Go to /sounds to see sounds, go to /projects to see projects ");
 });
 
-// for project-editor, send out the project app from project-editor
-app.get("/project-editor*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../frontend/project-editor/build/index.html")
-  );
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname + "/public/index.html"));
 });
 
 app.listen(PORT);

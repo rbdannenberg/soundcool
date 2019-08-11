@@ -3,35 +3,43 @@
 This is the place where you run (locally) the express backend
 along with react frontend and mysql database.
 
+## How to Prerequisites
+- Prerequisites
+  - Node 10.16.0+ 
+  - NPM 6.10.0+
+  - MySQL 8.0+
+
 ## How to run
 
-If you are running the whole project, there are three steps.
+If you are running the whole project, there are four steps.
 
-- **Step 1**: build the soundcool project app.
-  - Go to `frontend/project-editor` folder.
-  - run `npm i` to install all the dependendies. (if you don't have npm,
-    please install Node.js and npm will come with it)
-  - run `npm run build`
-- **Step 2**: run the express backend with dashboard.
-  - Go to the `backend` folder
-  - run `npm i`
-  - run `npm start`
+- **Step 1**: Install all dependencies
+  - Go to `backend` folder.
+  - Run `npm i` to install all the dependendies.
+  
+- **Step 2**: Start webpack to build and watch the project.
+  - Run `npm run webpack`
+  
+- **Step 3**: Start server
+  - Run `npm start`
   - Go to http://localhost:5000 to see the project!
-- **Step 3**: Configure the MySQL database. (If you are familiar
-  with MySQL, feel free to use your own tool.)
-  - Download MySQL community server from www.mysql.com and install.
-  - (Optional) You can download MySQL workbench from the same website and install,it's a graphical tool to help you manage your database.
-  - In MySQL workbench, open the `database/create-soundcool-db.sql` file.
+  
+- **Step 4**: Import `database/create-soundcool-db.sql` into local mysql server
+  - If using mysql comand line, you can import database using
+    ```sql
+    mysql -u <user_name> -p<Password> soundcool > <file_location>
+    ```
+  - If using MySQL workbench, open the `database/create-soundcool-db.sql` file.
     Execute the scripts by clicking the lighening button on the interface. This should create
     the same database on your machine so that you can run with user information.
   - To connect express to your mysql server
     - Create a .env file in current directory
     - Enter the following lines
-    ```
-      MYSQL_HOST= <hostname> #it's localhost if you running it locally
-      MYSQL_USER= <your_sql_server_username> 
-      MYSQL_PASS= <your_sql_server_password>
-      MYSQL_DB= soundcool
+    ```ruby
+      export MYSQL_HOST= <hostname> #it's localhost if you running it locally
+      export MYSQL_USER= <your_sql_server_username> 
+      export MYSQL_PASS= <your_sql_server_password>
+      export MYSQL_DB= soundcool
     ```
 
 Alternatively, if you are only developing the project editor and just want to

@@ -33,7 +33,7 @@ function RenderSoundMenuItem({ sound_id, name }) {
   );
 }
 
-const apiEndpoint = "http://localhost:5000/api/sounds";
+const apiEndpoint = "/api/sounds";
 
 class Sounds extends React.Component {
   state = {
