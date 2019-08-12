@@ -23,7 +23,8 @@ app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use("/api/sounds", sounds);
 app.use("/api/v1/projects/get", projects.getProject);
-app.use("/api/v1/projects/updateContent", projects.updateContent);
+app.use("/api/v1/projects/update", projects.update);
+app.use("/api/v1/project/new", projects.new);
 app.use("/api/users", users);
 app.use("/api/v1/users/sign_in", auth);
 

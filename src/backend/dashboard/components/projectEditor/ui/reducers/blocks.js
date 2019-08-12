@@ -1,33 +1,4 @@
 import block from "./block";
-import { isUserLoggedIn, showToastr, showToastrError } from "../../../common";
-import { updateProjectContent } from "./actions";
-const emptyState = {
-  bs: [],
-  nextBlockId: 1,
-  nextTypeId: {
-    Delay: 1,
-    Transposer: 1,
-    Pan: 1,
-    Player: 1,
-    SignalGen: 1,
-    Speaker: 1,
-    DirectInput: 1,
-    Pitch: 1,
-    VSTHost: 1,
-    Routing: 1,
-    Mixer: 1,
-    Record: 1,
-    Spectroscope: 1,
-    Oscilloscope: 1,
-    Envelope: 1,
-    Filter: 1,
-    Keyboard: 1,
-    SamplePlayer: 1,
-    Sequencer: 1
-  },
-  nowIn: [],
-  nowOut: []
-};
 const allTypes = {
   Delay: 1,
   Transposer: 1,
@@ -48,6 +19,13 @@ const allTypes = {
   Keyboard: 1,
   SamplePlayer: 1,
   Sequencer: 1
+};
+const emptyState = {
+  bs: [],
+  nextBlockId: 1,
+  nextTypeId: allTypes,
+  nowIn: [],
+  nowOut: []
 };
 const blocks = (
   state = {
@@ -127,24 +105,13 @@ const blocks = (
         return s;
       }
     case "SAVE_STATE":
-      if (isUserLoggedIn() && action.id != "new")
-        updateProjectContent({
-          projectId: action.id,
-          content: JSON.stringify(state)
-        })
-          .then(() => {
-            showToastr("success", "Project successfully updated");
-            localStorage.setItem("project" + action.id, JSON.stringify(state));
-          })
-          .catch(error => {
-            showToastrError(error);
-          });
-      localStorage.setItem("project" + action.id, JSON.stringify(state));
+      let project = JSON.parse(localStorage.getItem("project" + action.id));
+      project.content = JSON.stringify(state);
+      localStorage.setItem("project" + action.id, JSON.stringify(project));
       return state;
 
     case "LOAD_STATE":
-      let newState = localStorage.getItem("project" + action.id);
-      console.log(newState);
+      let newState = localStorage.getItem("project" + action.id) ? JSON.parse(localStorage.getItem("project" + action.id)).content : undefined;
       if (newState && JSON.parse(newState) !== null) {
         return JSON.parse(newState);
       } else {

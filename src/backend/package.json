@@ -42,6 +42,7 @@
     "postcss-loader": "^3.0.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^11.0.5",
+    "react-bootstrap": "^1.0.0-beta.11",
     "react-dom": "^16.8.6",
     "react-icons": "^3.7.0",
     "react-rotary-knob": "^1.1.5",

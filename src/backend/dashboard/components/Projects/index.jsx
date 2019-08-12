@@ -13,9 +13,9 @@ import { Link } from "react-router-dom";
 import { fetchUserProjects } from './actions';
 
 function RenderProjectMenuItem({ project }) {
-  const setContent = () => {
-    localStorage.setItem("project" + project.project_id, project.content);
 
+  const setContent = () => {
+    localStorage.setItem("project" + project.project_id, JSON.stringify(project));
   };
   const url = "/project-editor/" + project.project_id;
   // console.log(url);
