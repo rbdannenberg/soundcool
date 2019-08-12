@@ -1,7 +1,7 @@
 const path = require("path");
 const BUILD_DIR = path.resolve(__dirname, "./public/build");
 const APP_DIR = path.resolve(__dirname, "dashboard");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require("autoprefixer");
 
 module.exports = {
@@ -27,12 +27,25 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      }
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: true,
+            },
+          },
+          'css-loader',
+        ],
+      },
     ],
   },
   resolve: {
     extensions: ['.js', '.jsx'],
   },
-  plugins: [new ExtractTextPlugin("bundle.css")]
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'bundle.css',
+      chunkFilename: '[id].css',
+    }),
+  ],
 };
