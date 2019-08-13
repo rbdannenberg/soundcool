@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { isUserLoggedIn} from "./common";
 import {
   Navbar,
   NavbarBrand,
@@ -8,13 +9,6 @@ import {
   Collapse,
   Jumbotron,
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Form,
-  FormGroup,
-  Input,
-  Label
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
@@ -88,26 +82,28 @@ export default class Header extends Component {
                     <span className="fa fa-info fa-lg" /> About us
                   </NavLink>
                 </NavItem>
-
+                {isUserLoggedIn() && (
                 <NavItem>
                   <NavLink className="nav-link" to="/projects">
                     <span className="fa fa-list fa-lg" /> Projects
                   </NavLink>
                 </NavItem>
 
+                )}
+                {isUserLoggedIn() && (
                 <NavItem>
                   <NavLink className="nav-link" to="/sounds">
                     <span className="fa fa-list fa-lg" /> Sounds
                   </NavLink>
                 </NavItem>
-
+                )}
                 <NavItem>
                   <NavLink className="nav-link" to="/contact">
                     <span className="fa fa-address-card fa-lg" /> Contact us
                   </NavLink>
                 </NavItem>
 
-                {!user && (
+                {!isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link" to="/login">
                       <span className="fa fa-address-card fa-lg" /> Login
@@ -115,7 +111,7 @@ export default class Header extends Component {
                   </NavItem>
                 )}
               </Nav>
-              <Nav className="ml-auto" navbar>
+              {isUserLoggedIn() && (<Nav className="ml-auto" navbar>
                 <NavItem>
                   <Button>
                     <NavLink
@@ -128,6 +124,7 @@ export default class Header extends Component {
                   </Button>
                 </NavItem>
               </Nav>
+              )}
             </Collapse>
           </div>
         </Navbar>

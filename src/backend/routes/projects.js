@@ -6,12 +6,12 @@ const connection = require("../db");
 const SELECT_ALL_PROJECTS_QUERY = "SELECT * FROM projects ";
 const UPDATE_PROJECT_CONTENT = "UPDATE projects SET content = ";
 
-exports.getProject = router.get("/", (req, res) => {
+router.get("/get", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   // do the query case on the user
   const QUERY = user_id
-    ? SELECT_ALL_PROJECTS_QUERY + `WHERE user = ${user_id}`
+    ? SELECT_ALL_PROJECTS_QUERY + `WHERE user = '${user_id}'`
     : SELECT_ALL_PROJECTS_QUERY;
   connection.query(QUERY, (err, results) => {
     if (err) {
@@ -25,11 +25,11 @@ exports.getProject = router.get("/", (req, res) => {
   });
 });
 
-exports.update = router.patch("/", (req, res) => {
+router.patch("/update", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   const { content, projectId } = req.body;
-  const UPDATE_PROJECT_CONTENT = `UPDATE projects SET content = '${content}' WHERE user = ${user_id} and project_id = ${projectId}`;
+  const UPDATE_PROJECT_CONTENT = `UPDATE projects SET content = '${content}' WHERE user = '${user_id}' and project_id = '${projectId}'`;
   // do the query case on the user
   const QUERY = UPDATE_PROJECT_CONTENT;
   connection.query(QUERY, (err, results) => {
@@ -44,11 +44,11 @@ exports.update = router.patch("/", (req, res) => {
   });
 });
 
-exports.new = router.post("/", (req, res) => {
+router.post("/new", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   const { projectName, projectDescription, content } = req.body;
-  const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values(${user_id},${projectName},${projectDescription},'${content}')`;
+  const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
   // do the query case on the user
   const QUERY = CREATE_NEW_PROJECT;
   connection.query(QUERY, (err, results) => {
@@ -67,3 +67,5 @@ exports.new = router.post("/", (req, res) => {
     }
   });
 });
+
+module.exports = router;

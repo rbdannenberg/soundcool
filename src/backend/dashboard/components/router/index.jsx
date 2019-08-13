@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import Home from "../Home.jsx";
 import Login from "../login";
-import Register from "../Register.jsx";
+import Register from "../register";
 import Header from "../Header.jsx";
 import Projects from "../Projects";
 import Sounds from "../Sounds.jsx";

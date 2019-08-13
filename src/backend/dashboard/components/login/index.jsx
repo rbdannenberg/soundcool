@@ -10,23 +10,13 @@ import { showToastr, showToastrError } from '../common';
 import { Store } from '../store';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
+import LoginForm from "./form"
 class Login extends Form {
-
-  state = {
-    email: "",
-    password: ""
-  };
-
-
-  handleOnChange = (name, value) => {
-    const params = { [name]: value };
-    this.setState(params);
-  };
   
-  signInUser = event => {
+  signInUser = (data) => {
     event.preventDefault();
 
-    const { email, password } = this.state;
+    const { email, password } = data;
     let payload = {
       user: {
         email,
@@ -47,7 +37,6 @@ class Login extends Form {
     redirectToRoot();
   };
   render() {
-    const { email, password } = this.state;
     return (
       <div className="container">
         <div className="row">
@@ -58,35 +47,10 @@ class Login extends Form {
             <BreadcrumbItem active>Login</BreadcrumbItem>
           </Breadcrumb>
         </div>
-        <div>
-          <form id="user_login" method="post">
-          <FormInput
-                    className="form-control"
-                    type="email"
-                    name="email"
-                    required={true}
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={this.handleOnChange}
-                    autoFocus
-                  />
-                  <br/>
-           <FormInput
-                    className="form-control"
-                    type="password"
-                    name="password"
-                    required={true}
-                    placeholder="Password"
-                    value={password}
-                    onChange={this.handleOnChange}
-                  />
-                  <br/>
-            <button onClick={this.signInUser} className="btn btn-primary">
-              Login
-            </button>
-          </form>
-          <Link to="/register">New user? Register</Link>
-        </div>
+        <LoginForm
+          handleSubmit={this.signInUser}
+        />
+        <Link to="/register">New user? Register</Link>
       </div>
     );
   }

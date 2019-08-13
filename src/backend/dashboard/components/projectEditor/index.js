@@ -1,22 +1,22 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/bootstrap.js";
 import WithHeader from "./ui/Components/WithHeader";
+import "bootstrap/dist/js/bootstrap.js";
+import RegisterForm from "../register/form";
 import AddBlock from "./ui/Components/AddBlock";
+import { Store } from "../store"
 import { isUserLoggedIn, showToastr, showToastrError } from "../common";
 import { updateProject, createProject } from "./actions";
 import blocks from "./ui/reducers/blocks";
 import { createStore, combineReducers } from "redux";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
+import Modal from "react-bootstrap/Modal";
 const blockApp = combineReducers({
   blocks
 });
-import { FormInput } from '../form';
+import { FormInput } from "../form";
 // #endregion
 
 export const store = createStore(blockApp);
-const BlockList = ({ blocks, nowOut , handleShow, handleClose,isModalOpen}) => {
+const BlockList = ({ blocks, nowOut }) => {
   return (
     <React.Fragment>
       {blocks.map(b => (
@@ -28,13 +28,19 @@ const BlockList = ({ blocks, nowOut , handleShow, handleClose,isModalOpen}) => {
 
 class ProjectEditor extends React.Component {
   // { bs, nowOut } = this.props.blocks;
-toggleModal = () => this.setState({isModalOpen:!this.state.isModalOpen});
   constructor(props) {
     super(props);
     store.subscribe(() => {
       this.setState({ ...store.getState() });
     });
-    this.state = { ...store.getState(), projectId: this.props.match.params.id,projectName: "",projectDescription:"",isModalOpen:false};
+    this.state = {
+      ...store.getState(),
+      projectId: this.props.match.params.id,
+      projectName: "",
+      projectDescription: "",
+      isModalOpen: false,
+      isRegisterModalOpen: false
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -44,24 +50,53 @@ toggleModal = () => this.setState({isModalOpen:!this.state.isModalOpen});
       });
   }
 
+  componentDidMount() {
+    this.loadState();
+  }
+
+  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+  toggleRegisterModal = () =>
+    this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
+
   loadState() {
     store.dispatch({
       type: "LOAD_STATE",
       id: this.state.projectId
     });
-    let project = localStorage.getItem("project" + this.state.projectId)
-    console.log(JSON.parse(project));
-    if(project)
+    let project = localStorage.getItem("project" + this.state.projectId);
+    if (project)
       this.setState({
-        projectName:JSON.parse(project).name,
-        projectDescription:JSON.parse(project).description
-      })
-  }
-  componentDidMount() {
-    this.loadState();
+        projectName: JSON.parse(project).name,
+        projectDescription: JSON.parse(project).description
+      });
   }
 
-  updateProject(payload){
+  afterRegister = () => {
+    const token = localStorage.getItem("token");
+    Store.populateFromProps({userToken:{email:undefined,token:token}})
+    showToastr("success", "Please enter project details");
+    this.toggleRegisterModal();
+    this.toggleModal();
+  };
+
+  handleOnChange = (name, value) => {
+    const params = { [name]: value };
+    this.setState(params);
+  };
+  
+
+  saveProject = () => {
+    if (isUserLoggedIn())
+      if (this.state.projectId != "new")
+        this.updateProject({
+          projectId: this.state.projectId,
+          content: JSON.stringify(this.state.blocks)
+        });
+      else this.toggleModal();
+    else this.toggleRegisterModal();
+  };
+
+  updateProject(payload) {
     updateProject(payload)
       .then(() => {
         showToastr("success", "Project successfully updated");
@@ -74,23 +109,8 @@ toggleModal = () => this.setState({isModalOpen:!this.state.isModalOpen});
         showToastrError(error);
       });
   }
-  saveProject = () => {
-    if (isUserLoggedIn())
-    if(this.state.projectId != "new")
-      this.updateProject({
-        projectId: this.state.projectId,
-        content: JSON.stringify(this.state.blocks)
-      })
-    else
-    this.toggleModal()
-  }
 
-  handleOnChange = (name, value) => {
-    const params = { [name]: value };
-    this.setState(params);
-  };
   createProject = event => {
-    this.toggleModal()
     event.preventDefault();
 
     const { projectName, projectDescription, blocks } = this.state;
@@ -101,15 +121,17 @@ toggleModal = () => this.setState({isModalOpen:!this.state.isModalOpen});
     };
 
     createProject(payload)
-      .then(data=>{
-        showToastr('success', 'Project created successfully');
-        localStorage.setItem("project" + data.project_id,JSON.stringify(data));
-        window.location = "/project-editor/"+data.project_id;
+      .then(data => {
+        this.setState({projectName:"", projectDescription:""})
+        showToastr("success", "Project created successfully");
+        localStorage.setItem("project" + data.project_id, JSON.stringify(data));
+        window.location = "/project-editor/" + data.project_id;
       })
       .catch(error => {
         showToastrError(error);
       });
   };
+
   render() {
     const { projectName, projectDescription } = this.state;
     return (
@@ -117,55 +139,69 @@ toggleModal = () => this.setState({isModalOpen:!this.state.isModalOpen});
         {/* <SLButton />
       <ProjectPage /> */}
 
-      <button
-        className="btn btn-info m-2"
-        onClick={this.saveProject}
-      >
-        {this.state.projectId=="new"?"Create":"Save"}
-      </button>
+        <button className="btn btn-info m-2" onClick={this.saveProject}>
+          {isUserLoggedIn()
+            ? this.state.projectId == "new"
+              ? "Create"
+              : "Save"
+            : "Register to save"}
+        </button>
         <AddBlock />
         <BlockList
-        blocks={this.state.blocks.bs}
+          blocks={this.state.blocks.bs}
           nowOut={this.state.blocks.nowOut}
         />
 
-      <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
-      <form id="project_create" method="post">
-        <Modal.Header closeButton>
-          <Modal.Title>Create new project</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <FormInput
-                    className="form-control"
-                    type="text"
-                    name="projectName"
-                    required={true}
-                    placeholder="Project Name"
-                    value={projectName}
-                    onChange={this.handleOnChange}
-                    autoFocus
-                  />
-                  <br/>
-           <FormInput
-                    className="form-control"
-                    type="text"
-                    name="projectDescription"
-                    required={true}
-                    placeholder="Project Description"
-                    value={projectDescription}
-                    onChange={this.handleOnChange}
-                  />
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-warn" onClick={this.toggleModal}>
-            Close
-          </button>
-          <button onClick={this.createProject} className="btn btn-primary">
-            Create
-          </button>
-        </Modal.Footer>
-        </form>
-      </Modal>
+        <Modal
+          centered
+          show={this.state.isRegisterModalOpen}
+          onHide={this.toggleRegisterModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Create new account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegisterForm afterRegister={this.afterRegister} />
+          </Modal.Body>
+        </Modal>
+
+        <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
+          <form id="project_create" method="post">
+            <Modal.Header closeButton>
+              <Modal.Title>Create new project</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <FormInput
+                className="form-control"
+                type="text"
+                name="projectName"
+                required={true}
+                placeholder="Project Name"
+                value={projectName}
+                onChange={this.handleOnChange}
+                autoFocus
+              />
+              <br />
+              <FormInput
+                className="form-control"
+                type="text"
+                name="projectDescription"
+                required={true}
+                placeholder="Project Description"
+                value={projectDescription}
+                onChange={this.handleOnChange}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <button className="btn btn-warn" onClick={this.toggleModal}>
+                Close
+              </button>
+              <button onClick={this.createProject} className="btn btn-primary">
+                Create
+              </button>
+            </Modal.Footer>
+          </form>
+        </Modal>
       </div>
     );
   }
