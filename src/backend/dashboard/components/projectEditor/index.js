@@ -3,7 +3,7 @@ import WithHeader from "./ui/Components/WithHeader";
 import "bootstrap/dist/js/bootstrap.js";
 import RegisterForm from "../register/form";
 import AddBlock from "./ui/Components/AddBlock";
-import { Store } from "../store"
+import { Store } from "../store";
 import { isUserLoggedIn, showToastr, showToastrError } from "../common";
 import { updateProject, createProject } from "./actions";
 import blocks from "./ui/reducers/blocks";
@@ -73,7 +73,7 @@ class ProjectEditor extends React.Component {
 
   afterRegister = () => {
     const token = localStorage.getItem("token");
-    Store.populateFromProps({userToken:{email:undefined,token:token}})
+    Store.populateFromProps({ userToken: { email: undefined, token: token } });
     showToastr("success", "Please enter project details");
     this.toggleRegisterModal();
     this.toggleModal();
@@ -83,7 +83,6 @@ class ProjectEditor extends React.Component {
     const params = { [name]: value };
     this.setState(params);
   };
-  
 
   saveProject = () => {
     if (isUserLoggedIn())
@@ -109,6 +108,28 @@ class ProjectEditor extends React.Component {
         showToastrError(error);
       });
   }
+  exportProject = event => {
+    event.preventDefault();
+    const { projectName, projectDescription, blocks } = this.state;
+    this.downloadFile({
+      projectName,
+      projectDescription,
+      blocks
+    });
+  };
+
+  downloadFile = async myData => {
+    const fileName = myData.projectName;
+    const json = JSON.stringify(myData, null, "\t");
+    const blob = new Blob([json], { type: "application/json" });
+    const href = await URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   createProject = event => {
     event.preventDefault();
@@ -122,7 +143,7 @@ class ProjectEditor extends React.Component {
 
     createProject(payload)
       .then(data => {
-        this.setState({projectName:"", projectDescription:""})
+        this.setState({ projectName: "", projectDescription: "" });
         showToastr("success", "Project created successfully");
         localStorage.setItem("project" + data.project_id, JSON.stringify(data));
         window.location = "/project-editor/" + data.project_id;
@@ -146,6 +167,14 @@ class ProjectEditor extends React.Component {
               : "Save"
             : "Register to save"}
         </button>
+        {isUserLoggedIn() && this.state.projectId != "new" && (
+          <button
+            className="btn btn-warning m-2 float-right"
+            onClick={this.exportProject}
+          >
+            Export Project
+          </button>
+        )}
         <AddBlock />
         <BlockList
           blocks={this.state.blocks.bs}

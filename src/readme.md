@@ -36,10 +36,10 @@ If you are running the whole project, there are four steps.
     - Create a .env file in current directory
     - Enter the following lines
     ```ruby
-      export MYSQL_HOST= <hostname> #it's localhost if you running it locally
-      export MYSQL_USER= <your_sql_server_username> 
-      export MYSQL_PASS= <your_sql_server_password>
-      export MYSQL_DB= soundcool
+      MYSQL_HOST= <hostname> #it's localhost if you running it locally
+      MYSQL_USER= <your_sql_server_username> 
+      MYSQL_PASS= <your_sql_server_password>
+      MYSQL_DB= soundcool
     ```
 
 Alternatively, if you are only developing the project editor and just want to
