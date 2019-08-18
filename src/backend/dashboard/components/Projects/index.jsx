@@ -75,7 +75,7 @@ class Projects extends Component {
   render() {
     let fileReader;
     const handleFileRead = e => {
-      const content = JSON.parse(fileReader.result);
+      const content = JSON.parse(fileReader.result); 
       let payload = {
         projectName:content.projectName,
         projectDescription:content.projectDescription,

@@ -21,6 +21,7 @@ app.use(cors());
 // static middleware, serve the static files and  render the index.html
 app.use(express.static(__dirname + "/public"));
 app.use(helmet());
+app.use("/api/v1/sounds", sounds);
 app.use("/api/sounds", sounds);
 app.use("/api/v1/projects", projects);
 app.use("/api/users", users);
@@ -36,5 +37,6 @@ app.get("/api", (req, res) => {
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname + "/public/index.html"));
 });
+
 
 app.listen(PORT);
