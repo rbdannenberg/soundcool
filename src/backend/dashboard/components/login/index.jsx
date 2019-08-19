@@ -1,15 +1,10 @@
 import React, { Component } from "react";
-import Joi from "joi-browser";
 import Form from "../Form.jsx";
-import axios from "axios";
-import { FormInput } from '../form';
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { loginUser, redirectToRoot } from './actions';
 import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from '../common';
-import { Store } from '../store';
 import Cookies from 'universal-cookie';
-const cookies = new Cookies();
 import LoginForm from "./form"
 class Login extends Form {
   

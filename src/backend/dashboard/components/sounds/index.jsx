@@ -1,40 +1,16 @@
-import React, { Component } from "react";
-import {uploadSound} from "./actions";
+import React from "react";
+import { removeAudio, uploadSound, fetchAudio } from "./actions";
+import ReactAudioPlayer from "react-audio-player";
+import { showToastr, showToastrError } from "../common";
 import {
   Card,
-  CardImg,
-  CardImgOverlay,
-  CardText,
-  CardBody,
   CardTitle,
   Breadcrumb,
   BreadcrumbItem,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  Row,
-  Col,
-  Label
+  Button
 } from "reactstrap";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
-function RenderSoundMenuItem({ sound_id, name }) {
-  return (
-    <Card>
-      {/* <Link to={`/soundmenu/${sound_id}`}> */}
-        <CardImg width="100%" src="/assets/images/samplewave.jpg" alt={name} />
-        <CardImgOverlay>
-          <CardTitle>{sound_id}</CardTitle>
-          <CardTitle>{name}</CardTitle>
-        </CardImgOverlay>
-      {/* </Link> */}
-    </Card>
-  );
-}
-
-const apiEndpoint = "/api/sounds";
 
 class Sounds extends React.Component {
   state = {
@@ -45,55 +21,88 @@ class Sounds extends React.Component {
     }
   };
 
-  componentDidMount = async () => {
-    // case on the user, if there is no user logged in, then no
-    // sound get displayed
+  componentDidMount = () => {
     if (this.props.user) {
-      const { data } = await axios.get(apiEndpoint, {
-        headers: { user_id: this.props.user.id }
-      });
-      this.setState({ sounds: data.data });
-      console.log(data.data);
-    } else {
-      return;
+      fetchAudio()
+        .then(data => {
+          this.setState({ sounds: data.data });
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
     }
   };
 
-  menu = sounds =>sounds.map(sound => {
-      let { sound_id,fileLocation } = sound;
+  RenderSoundMenuItem({ name, sound_id, fileLocation }) {
+    return (
+      <Card
+        body
+        inverse
+        style={{ backgroundColor: "#333", borderColor: "#333", width: "100%" }}
+      >
+        <CardTitle>{name}</CardTitle>
+        {/* <Link to={`/soundmenu/${sound_id}`}> */}
+        <ReactAudioPlayer
+          style={{ width: "100%", borderColor: "#333" }}
+          src={fileLocation}
+          autoPlay={false}
+          controls
+        />
+        <br />
+        <Button
+          className="btn btn-warning"
+          onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}
+        >
+          Delete Audio
+        </Button>
+        {/* </Link> */}
+      </Card>
+    );
+  }
+
+  handleRemoveAudio(soundId, fileLocation) {
+    removeAudio({ soundId, fileLocation })
+      .then(data => {
+        showToastr("success", "Audio deleted successfully");
+        this.setState({
+          sounds: this.state.sounds.filter(function(sound) {
+            console.log(sound, sound.sound_id, soundId);
+            return sound.sound_id !== soundId;
+          })
+        });
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
+
+  menu = sounds =>
+    sounds.map(sound => {
+      let { sound_id } = sound;
       return (
         <div className="row col-12 col-md-6">
           <div key={sound_id} className="col-12 col-md-8 m-1 mb-3">
-            {RenderSoundMenuItem(sound)}
-          </div>
-          <div>
-            <Button className="mt-5 mr-2" onClick={ () => new Audio(fileLocation).play() } color="primary" size="sm">
-              Play
-            </Button>
-            <Button
-              className="mt-5"
-              color="secondary"
-              size="sm"
-              // onClick={() => this.props.removeSoundFile(sound.sound_id)}
-            >
-              Delete
-            </Button>
+            {this.RenderSoundMenuItem(sound)}
           </div>
         </div>
       );
     });
-    
 
   render() {
-    var audio = [];
     const handleFileChosen = file => {
       const data = new FormData();
       data.append("file", file);
-      axios.post('/api/v1/sounds/upload', data)
-      .then(response => this.upload.value="")
-      .catch(error => console.log(error));
+      uploadSound(data)
+        .then(data => {
+          showToastr("success", "Audio added successfully");
+          this.upload.value = "";
+          this.setState({ sounds: [...this.state.sounds, data] });
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
     };
-    const { sounds} = this.state;
+    const { sounds } = this.state;
     return (
       <div className="container">
         <div className="row">

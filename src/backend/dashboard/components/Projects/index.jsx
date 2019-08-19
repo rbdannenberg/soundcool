@@ -10,7 +10,6 @@ import {
   Breadcrumb,
   BreadcrumbItem
 } from "reactstrap";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { fetchUserProjects } from "./actions";
 

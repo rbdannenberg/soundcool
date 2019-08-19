@@ -16,22 +16,17 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "autoprefixer": "^9.6.1",
-    "axios": "^0.19.0",
     "babel-loader": "^8.0.5",
     "babel-preset-react-app": "^9.0.0",
     "bcrypt": "^3.0.6",
     "bootstrap": "^4.3.1",
     "bootstrap-social": "5.1.1",
-    "config": "^3.2.2",
     "cors": "^2.8.5",
     "css-loader": "^3.1.0",
-    "debug": "^4.1.1",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "file-loader": "^4.1.0",
     "font-awesome": "4.7.0",
     "helmet": "^3.20.0",
-    "html-webpack-plugin": "^3.2.0",
     "joi-browser": "^13.4.0",
     "jquery": "^3.4.1",
     "jsonwebtoken": "^8.5.1",
@@ -40,22 +35,20 @@
     "multer": "^1.4.2",
     "mysql": "^2.17.1",
     "nodemon": "^1.19.1",
-    "postcss-loader": "^3.0.0",
     "react": "^16.8.6",
+    "react-audio-player": "^0.11.1",
     "react-beautiful-dnd": "^11.0.5",
     "react-bootstrap": "^1.0.0-beta.11",
     "react-dom": "^16.8.6",
+    "react-hot-loader": "^4.12.11",
     "react-icons": "^3.7.0",
     "react-rotary-knob": "^1.1.5",
     "react-router-dom": "^5.0.1",
     "react-toastify": "^5.3.2",
-    "react-transition-group": "^4.2.2",
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
-    "style-loader": "^0.23.1",
     "universal-cookie": "^4.0.2",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.6"
+    "webpack": "^4.29.6"
   },
   "babel": {
     "presets": [
@@ -64,5 +57,8 @@
     "plugins": [
       "@babel/plugin-proposal-class-properties"
     ]
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.7"
   }
 }
