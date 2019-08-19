@@ -21,7 +21,8 @@ const upload = multer({ storage });
 const SELECT_ALL_SOUNDS_QUERY = "SELECT * FROM sounds ";
 
 router.get("/get", (req, res) => {
-  const user_id = req.headers.user_id;
+  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  const user_id = user.id;
   // do the query case on the user
   const QUERY = user_id
     ? SELECT_ALL_SOUNDS_QUERY + `WHERE user = ${user_id}`
@@ -39,7 +40,8 @@ router.get("/get", (req, res) => {
 });
 
 router.post("/upload", upload.single("file"), (req, res) => {
-  const user_id = 71;
+  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  const user_id = user.id;
   const fileLocation =
     "/assets/sounds/" + cTimeStamp + "-" + req.file.originalname;
   updateTimeStamp();

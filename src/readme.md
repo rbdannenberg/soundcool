@@ -59,7 +59,7 @@ Without recompiling them, you will find that none of your changes are shown.
 - Anytime you make changes in the folder `frontend/project-editor` (the create-react-app)
   - call `npm run build`.
 - If you are making changes in the folder `backend/dashboard` (the server-side-rendering dashboard)
-  - call `npm run webpack` in the `baekend` folder. You don't need to call this every time, since webpack is watching you and automatically recompile when you make changes.
+  - call `npm run webpack` in the `backend` folder. You don't need to call this every time, since webpack is watching you and automatically recompile when you make changes.
 - Any changes you make in terms of the server (anything outside of both client folders)
   will be automatically updated by `nodemon`. As you can see it's nodemon instead of node
   running when you starts the server.
@@ -68,7 +68,7 @@ Without recompiling them, you will find that none of your changes are shown.
 
 - A simple login scheme.
   - Please check the database for the table of user, projects and sounds.
-    If you login as user1@outlook.com or user2@gmail.com, they will have projects and
+    If you login as user1@welcome.com or user2@welcome.com, they will have projects and
     sound associated.
   - There is authorization scheme so that you can only access the projects or sounds
     when you logged in as a user.
