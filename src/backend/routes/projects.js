@@ -25,6 +25,7 @@ router.get("/get", (req, res) => {
   });
 });
 
+
 router.patch("/update", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
@@ -63,6 +64,25 @@ router.post("/new", (req, res) => {
         } else {
           return res.json(results[0]);
         }
+      });
+    }
+  });
+});
+
+router.patch("/remove", (req, res) => {
+  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  const user_id = user.id;
+  const {projectId } = req.body;
+  const DELETE_PROJECT = `DELETE FROM projects WHERE user = '${user_id}' and project_id = '${projectId}'`;
+  // do the query case on the user
+  const QUERY = DELETE_PROJECT;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      console.log("come to error");
+      return res.send(err);
+    } else {
+      return res.json({
+        message: "Project Removed successfully"
       });
     }
   });

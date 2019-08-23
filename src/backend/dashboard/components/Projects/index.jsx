@@ -11,7 +11,7 @@ import {
   BreadcrumbItem
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { fetchUserProjects } from "./actions";
+import { removeProject, fetchUserProjects } from "./actions";
 
 class Projects extends Component {
   state = {
@@ -31,32 +31,61 @@ class Projects extends Component {
       return;
     }
   };
-
+  removeProject(payload) {
+    removeProject(payload)
+      .then(() => {
+        showToastr("success", "Project removed successfully");
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
   renderProjects = projects =>
-    projects.map((project,index) => {
+    projects.map((project, index) => {
+      let { project_id, name, description } = project;
       localStorage.setItem(
         "project" + project.project_id,
         JSON.stringify(project)
       );
       return (
         <tr>
-      <th scope="row">{index+1}</th>
-      <td>{project.project_id}</td>
-      <td>{project.name}</td>
-      <td>{project.description}</td>
-      <td></td>
-      <td><button className="btn btn-primary" onClick={()=>{window.location="project-editor/"+project.project_id}}><i class="fas fa-edit" aria-hidden="true"></i></button>&nbsp;<button className="btn btn-info"><i class="fas fa-share-alt" aria-hidden="true"></i></button>&nbsp;<button className="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i></button></td>
-    </tr>
+          <th scope="row">{index + 1}</th>
+          <td>{project_id}</td>
+          <td>{name}</td>
+          <td>{description}</td>
+          <td></td>
+          <td>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                window.location = "project-editor/" + project_id;
+              }}
+            >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+            </button>
+            &nbsp;
+            <button className="btn btn-info">
+              <i class="fas fa-share-alt" aria-hidden="true"></i>
+            </button>
+            &nbsp;
+            <button
+              className="btn btn-danger"
+              onClick={()=>this.removeProject({projectId:project_id})}
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
       );
     });
 
   render() {
     let fileReader;
     const handleFileRead = e => {
-      const content = JSON.parse(fileReader.result); 
+      const content = JSON.parse(fileReader.result);
       let payload = {
-        projectName:content.projectName,
-        projectDescription:content.projectDescription,
+        projectName: content.projectName,
+        projectDescription: content.projectDescription,
         content: JSON.stringify(content.blocks)
       };
       createProject(payload)
@@ -110,22 +139,20 @@ class Projects extends Component {
           </div>
         </div>
         <div class="table-responsive">
-        <table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Id</th>
-      <th scope="col">Name</th>
-      <th scope="col">Description</th>
-      <th scope="col">Shared With</th>
-      <th scope="col">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {this.renderProjects(projects)}
-  </tbody>
-</table>
-</div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Shared With</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>{this.renderProjects(projects)}</tbody>
+          </table>
+        </div>
       </div>
     );
   }
