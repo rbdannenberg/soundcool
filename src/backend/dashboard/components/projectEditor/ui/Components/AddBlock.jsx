@@ -19,7 +19,7 @@ const addBlock = typeName => {
 const AddBlock = () => {
   return (
     <React.Fragment>
-      <div className="dropdown">
+      <div style={{display: 'inline-block'}} className="dropdown">
         <button
           className="btn btn-info m-2 dropdown-toggle"
           id="New Dropdown"

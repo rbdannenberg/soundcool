@@ -13,35 +13,6 @@ import {
 import { Link } from "react-router-dom";
 import { fetchUserProjects } from "./actions";
 
-function RenderProjectMenuItem({ project }) {
-  const setContent = () => {
-    localStorage.setItem(
-      "project" + project.project_id,
-      JSON.stringify(project)
-    );
-  };
-  const url = "/project-editor/" + project.project_id;
-  // console.log(url);
-  return (
-    <Card>
-      {/* <Link to={`/project/${project_id}`}> */}
-      {/* <Link to={`/project-editor`}> */}
-      {/* Issue with open window in new tab */}
-      <NavLink onClick={setContent} to={url}>
-        <CardImg
-          width="100%"
-          src={"/assets/images/sampleproject.jpg"}
-          alt={project.name}
-        />
-        <CardImgOverlay>
-          <CardTitle>{project.name}</CardTitle>
-        </CardImgOverlay>
-        {/* </Link> */}
-      </NavLink>
-    </Card>
-  );
-}
-
 class Projects extends Component {
   state = {
     projects: []
@@ -61,13 +32,21 @@ class Projects extends Component {
     }
   };
 
-  projectmenu = projects =>
-    projects.map(project => {
-      // console.log(project);
+  renderProjects = projects =>
+    projects.map((project,index) => {
+      localStorage.setItem(
+        "project" + project.project_id,
+        JSON.stringify(project)
+      );
       return (
-        <div key={project.project_id} className="col-12 col-md-5 m-1">
-          <RenderProjectMenuItem project={project} />
-        </div>
+        <tr>
+      <th scope="row">{index+1}</th>
+      <td>{project.project_id}</td>
+      <td>{project.name}</td>
+      <td>{project.description}</td>
+      <td></td>
+      <td><button className="btn btn-primary" onClick={()=>{window.location="project-editor/"+project.project_id}}><i class="fas fa-edit" aria-hidden="true"></i></button>&nbsp;<button className="btn btn-info"><i class="fas fa-share-alt" aria-hidden="true"></i></button>&nbsp;<button className="btn btn-danger"><i class="fas fa-trash" aria-hidden="true"></i></button></td>
+    </tr>
       );
     });
 
@@ -111,7 +90,7 @@ class Projects extends Component {
           </Breadcrumb>
           <div className="col-12">
             <h3>
-              Project Menu
+              Projects
               <input
                 style={{ display: "none" }}
                 ref={ref => (this.upload = ref)}
@@ -128,11 +107,25 @@ class Projects extends Component {
                 Import project
               </button>
             </h3>
-            <hr />
           </div>
         </div>
-        <div className="row">{this.projectmenu(projects)}</div>
-        {/* <div className="row">{projects.map(<div>HELLLLo</div>)}</div> */}
+        <div class="table-responsive">
+        <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Shared With</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {this.renderProjects(projects)}
+  </tbody>
+</table>
+</div>
       </div>
     );
   }

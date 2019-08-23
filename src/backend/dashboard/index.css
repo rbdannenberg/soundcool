@@ -3,3 +3,14 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+.breadcrumb {
+  margin: 5px;
+  padding: 5px 5px 5px 5px;
+  margin-bottom: 1rem;
+  list-style: none;
+  background-color: #e9ecef;
+  border-radius: .25rem;
+}
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}

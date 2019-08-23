@@ -11,7 +11,6 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
-
 class Sounds extends React.Component {
   state = {
     sounds: [],
@@ -33,33 +32,6 @@ class Sounds extends React.Component {
     }
   };
 
-  RenderSoundMenuItem({ name, sound_id, fileLocation }) {
-    return (
-      <Card
-        body
-        inverse
-        style={{ backgroundColor: "#333", borderColor: "#333", width: "100%" }}
-      >
-        <CardTitle>{name}</CardTitle>
-        {/* <Link to={`/soundmenu/${sound_id}`}> */}
-        <ReactAudioPlayer
-          style={{ width: "100%", borderColor: "#333" }}
-          src={fileLocation}
-          autoPlay={false}
-          controls
-        />
-        <br />
-        <Button
-          className="btn btn-warning"
-          onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}
-        >
-          Delete Audio
-        </Button>
-        {/* </Link> */}
-      </Card>
-    );
-  }
-
   handleRemoveAudio(soundId, fileLocation) {
     removeAudio({ soundId, fileLocation })
       .then(data => {
@@ -76,15 +48,33 @@ class Sounds extends React.Component {
       });
   }
 
-  menu = sounds =>
-    sounds.map(sound => {
-      let { sound_id } = sound;
+  renderSounds = sounds =>
+    sounds.map((sound, index) => {
+      let { sound_id, name, fileLocation } = sound;
       return (
-        <div className="row col-12 col-md-6">
-          <div key={sound_id} className="col-12 col-md-8 m-1 mb-3">
-            {this.RenderSoundMenuItem(sound)}
-          </div>
-        </div>
+        <tr>
+          <th scope="row">{index + 1}</th>
+          <td>{sound_id}</td>
+          <td>{name}</td>
+          <td>
+            <ReactAudioPlayer
+              style={{ width: "100%", borderColor: "#333", minWidth: "200px" }}
+              src={fileLocation}
+              autoPlay={false}
+              controls
+            />
+          </td>
+          <td></td>
+          <td>
+            <button className="btn btn-info">
+              <i class="fas fa-share-alt" aria-hidden="true"></i>
+            </button>
+            &nbsp;
+            <button className="btn btn-danger" onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}>
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
       );
     });
 
@@ -110,7 +100,7 @@ class Sounds extends React.Component {
             <BreadcrumbItem>
               <Link to="/home">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>SoundMenu</BreadcrumbItem>
+            <BreadcrumbItem active>Sounds</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
             <h3>
@@ -129,14 +119,25 @@ class Sounds extends React.Component {
                 className="btn btn-info float-right"
                 onClick={e => this.upload.click()}
               >
-                Add Sound
+                Import Sound
               </button>
             </h3>
             <hr />
           </div>
         </div>
-        {/* <div className="row">{sounds.map(this.renderSounds)}</div> */}
-        <div className="row">{this.menu(sounds)}</div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Id</th>
+              <th scope="col">Name</th>
+              <th scope="col">Controls</th>
+              <th scope="col">Shared With</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>{this.renderSounds(sounds)}</tbody>
+        </table>
       </div>
     );
   }

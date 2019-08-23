@@ -26,13 +26,6 @@ a.active {
   margin: 0px auto;
   padding: 10px 0px 10px 0px;
 }
-.jumbotron {
-  padding: 40px 30px 40px 30px;
-  margin: 0px auto;
-  background: #9575cd;
-  color: floralwhite;
-  border-radius: 0;
-}
 
 address {
   font-size: 80%;

@@ -7,7 +7,6 @@ import {
   NavbarToggler,
   NavItem,
   Collapse,
-  Jumbotron,
   Button,
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
@@ -52,7 +51,7 @@ export default class Header extends Component {
     // console.log(user);
     return (
       <React.Fragment>
-        <Navbar dark expand="md">
+        <Navbar dark expand="md" style={{padding:'0'}}>
           <div className="container">
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
@@ -67,25 +66,25 @@ export default class Header extends Component {
               <Nav navbar>
               <NavItem>
                   <NavLink className="nav-link" to="/project-editor/new">
-                    <span className="fa fa-home fa-lg" /> Create Project
+                    <span className="fa fa-home " /> Create Project
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
                   <NavLink className="nav-link" to="/home">
-                    <span className="fa fa-home fa-lg" /> Home
+                    <span className="fa fa-home " /> Home
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
                   <NavLink className="nav-link" to="/about">
-                    <span className="fa fa-info fa-lg" /> About us
+                    <span className="fa fa-info " /> About us
                   </NavLink>
                 </NavItem>
                 {isUserLoggedIn() && (
                 <NavItem>
                   <NavLink className="nav-link" to="/projects">
-                    <span className="fa fa-list fa-lg" /> Projects
+                    <span className="fa fa-list " /> Projects
                   </NavLink>
                 </NavItem>
 
@@ -93,51 +92,39 @@ export default class Header extends Component {
                 {isUserLoggedIn() && (
                 <NavItem>
                   <NavLink className="nav-link" to="/sounds">
-                    <span className="fa fa-list fa-lg" /> Sounds
+                    <span className="fa fa-list " /> Sounds
                   </NavLink>
                 </NavItem>
                 )}
                 <NavItem>
                   <NavLink className="nav-link" to="/contact">
-                    <span className="fa fa-address-card fa-lg" /> Contact us
+                    <span className="fa fa-address-card " /> Contact us
                   </NavLink>
                 </NavItem>
 
                 {!isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link" to="/login">
-                      <span className="fa fa-address-card fa-lg" /> Login
+                      <span className="fa fa-address-card " /> Login
                     </NavLink>
                   </NavItem>
                 )}
               </Nav>
               {isUserLoggedIn() && (<Nav className="ml-auto" navbar>
                 <NavItem>
-                  <Button>
                     <NavLink
-                      className="nav-link"
+                      className="nav-link btn btn-secondary"
                       to="/login"
                       onClick={this.handleLogout}
                     >
-                      <span className="fa fa-sign-out fa-lg">Logout</span>
+                      <span className="fa fa-sign-out ">Logout</span>
                     </NavLink>
-                  </Button>
                 </NavItem>
               </Nav>
               )}
             </Collapse>
           </div>
         </Navbar>
-        <Jumbotron>
-          <div className="container">
-            <div className="row row-header">
-              <div className="col-12 col-sm-6">
-                <h1>SoundCool</h1>
-                <p>We take inspiration from the knowledge shared</p>
-              </div>
-            </div>
-          </div>
-        </Jumbotron>
       </React.Fragment>
     );
   }

@@ -160,7 +160,7 @@ class ProjectEditor extends React.Component {
         {/* <SLButton />
       <ProjectPage /> */}
 
-        <button className="btn btn-info m-2" onClick={this.saveProject}>
+        <button className="btn btn-success m-2" onClick={this.saveProject}>
           {isUserLoggedIn()
             ? this.state.projectId == "new"
               ? "Create"
