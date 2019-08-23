@@ -11,7 +11,7 @@ import {
   BreadcrumbItem
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { removeProject, fetchUserProjects } from "./actions";
+import { removeProject, fetchUserProjects, shareProject } from "./actions";
 
 class Projects extends Component {
   state = {
@@ -31,6 +31,15 @@ class Projects extends Component {
       return;
     }
   };
+  shareProject(payload) {
+    shareProject(payload)
+      .then(() => {
+        showToastr("success", "Project shared successfully");
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
   removeProject(payload) {
     removeProject(payload)
       .then(() => {
@@ -42,7 +51,7 @@ class Projects extends Component {
   }
   renderProjects = projects =>
     projects.map((project, index) => {
-      let { project_id, name, description } = project;
+      let { project_id, name, description, sharedUsers } = project;
       localStorage.setItem(
         "project" + project.project_id,
         JSON.stringify(project)
@@ -53,7 +62,7 @@ class Projects extends Component {
           <td>{project_id}</td>
           <td>{name}</td>
           <td>{description}</td>
-          <td></td>
+          <td>{sharedUsers}</td>
           <td>
             <button
               className="btn btn-primary"
@@ -64,7 +73,11 @@ class Projects extends Component {
               <i class="fas fa-edit" aria-hidden="true"></i>
             </button>
             &nbsp;
-            <button className="btn btn-info">
+            <button className="btn btn-info" onClick={()=>{
+              var userId = prompt("Please enter your partner User Id:", 0);
+              if(userId != 0)
+              this.shareProject({userId:userId, projectId: project_id});
+            }}  >
               <i class="fas fa-share-alt" aria-hidden="true"></i>
             </button>
             &nbsp;

@@ -11,7 +11,7 @@ router.get("/get", (req, res) => {
   const user_id = user.id;
   // do the query case on the user
   const QUERY = user_id
-    ? SELECT_ALL_PROJECTS_QUERY + `WHERE user = '${user_id}'`
+    ? SELECT_ALL_PROJECTS_QUERY + `WHERE user = '${user_id}' or sharedUsers LIKE '${user_id}'`
     : SELECT_ALL_PROJECTS_QUERY;
   connection.query(QUERY, (err, results) => {
     if (err) {
@@ -24,7 +24,6 @@ router.get("/get", (req, res) => {
     }
   });
 });
-
 
 router.patch("/update", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
@@ -72,7 +71,7 @@ router.post("/new", (req, res) => {
 router.patch("/remove", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
-  const {projectId } = req.body;
+  const { projectId } = req.body;
   const DELETE_PROJECT = `DELETE FROM projects WHERE user = '${user_id}' and project_id = '${projectId}'`;
   // do the query case on the user
   const QUERY = DELETE_PROJECT;
@@ -83,6 +82,36 @@ router.patch("/remove", (req, res) => {
     } else {
       return res.json({
         message: "Project Removed successfully"
+      });
+    }
+  });
+});
+
+router.patch("/share", (req, res) => {
+  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  const user_id = user.id;
+  const { userId, projectId } = req.body;
+  const QUERY = `select sharedUsers from projects WHERE project_id = ${projectId}`;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      var sharedUsers = results[0]["sharedUsers"];
+      if (sharedUsers) {
+        sharedUsers += ",";
+        sharedUsers += userId;
+      } else {
+        sharedUsers = userId;
+      }
+      const QUERY = `UPDATE projects SET sharedUsers = ${sharedUsers} WHERE project_id = ${projectId}`;
+      connection.query(QUERY, (err, results) => {
+        if (err) {
+          return res.send(err);
+        } else {
+          return res.json({
+            message: "Project Shared successfully"
+          });
+        }
       });
     }
   });
