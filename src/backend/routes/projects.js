@@ -10,9 +10,7 @@ router.get("/get", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   // do the query case on the user
-  const QUERY = user_id
-    ? SELECT_ALL_PROJECTS_QUERY + `WHERE user = '${user_id}' or sharedUsers LIKE '${user_id}'`
-    : SELECT_ALL_PROJECTS_QUERY;
+  const QUERY = `select *,(CASE WHEN user=${user_id} THEN "true" ELSE user END)as isOwner from projects where user=${user_id} or sharedUsers like '%"user_id":${user_id}%' or isPublic =true`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log("come to error");
@@ -87,31 +85,91 @@ router.patch("/remove", (req, res) => {
   });
 });
 
-router.patch("/share", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
-  const user_id = user.id;
-  const { userId, projectId } = req.body;
-  const QUERY = `select sharedUsers from projects WHERE project_id = ${projectId}`;
+router.patch("/addShare", (req, res) => {
+  const { userId, projectId, userEmail } = req.body;
+  let QUERY;
+  if (userId) QUERY = `select * from users WHERE user_id = ${userId}`;
+  else QUERY = `select * from users WHERE email = '${userEmail}'`;
+  connection.query(QUERY, (err, users) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      if (users[0]) {
+        const QUERY = `select user,sharedUsers from projects WHERE project_id = ${projectId}`;
+        connection.query(QUERY, (err, results) => {
+          if (err) {
+            return res.send(err);
+          } else {
+            if(results[0]['user'] != users[0]['user_id'])
+            {
+              var sharedUsers = results[0]["sharedUsers"];
+              if (sharedUsers) {
+                sharedUsers = JSON.parse(sharedUsers);
+              } else {
+                sharedUsers = { users: [] };
+              }
+              sharedUsers["users"].push({
+                user_id: users[0].user_id,
+                name: users[0].name,
+                email: users[0].email
+              });
+              sharedUsers = JSON.stringify(sharedUsers);
+              const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
+              connection.query(QUERY, (err, results) => {
+                if (err) {
+                  return res.send(err);
+                } else {
+                  return res.json({
+                    data: sharedUsers,
+                    message: "Project Shared successfully"
+                  });
+                }
+              });
+            }
+            else
+            {
+              return res.json({
+                message: "User is the owner of the project"
+              });
+            }
+            
+          }
+        });
+      } else {
+        return res.json({
+          message: "User not found"
+        });
+      }
+    }
+  });
+});
+
+router.patch("/removeShare", (req, res) => {
+  const { projectId, sharedUsers } = req.body;
+  const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.send(err);
     } else {
-      var sharedUsers = results[0]["sharedUsers"];
-      if (sharedUsers) {
-        sharedUsers += ",";
-        sharedUsers += userId;
-      } else {
-        sharedUsers = userId;
-      }
-      const QUERY = `UPDATE projects SET sharedUsers = ${sharedUsers} WHERE project_id = ${projectId}`;
-      connection.query(QUERY, (err, results) => {
-        if (err) {
-          return res.send(err);
-        } else {
-          return res.json({
-            message: "Project Shared successfully"
-          });
-        }
+      return res.json({
+        data: sharedUsers,
+        message: "User removed successfully"
+      });
+    }
+  });
+});
+
+router.patch("/setPublic", (req, res) => {
+  const { projectId, isPublic } = req.body;
+  const QUERY = `UPDATE projects SET isPublic = ${isPublic} WHERE project_id = ${projectId}`;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        message: isPublic
+          ? "Project visibility is set to public"
+          : "Project visibility is set to shared only"
       });
     }
   });

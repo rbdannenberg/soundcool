@@ -3,11 +3,8 @@ import { removeAudio, uploadSound, fetchAudio } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../common";
 import {
-  Card,
-  CardTitle,
   Breadcrumb,
   BreadcrumbItem,
-  Button
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
