@@ -33,17 +33,21 @@ Here is a summary:
 
 - The system supports multiple users. Each user has an ID and password to login.
 
-- Each user can have multiple projects. A project is typically small, consisting of just a collection of modules and their connections and parameter settings. Projects do not include audio files or other media. We expect projects will be copied often to create different versions, e.g. a project might be copied and modified slightly for a one-time performance to avoid disturbing the "master" version.
+- Each user can have multiple projects. A project is typically small, consisting of just a collection of modules and their connections and parameter settings. Projects do not include copies of audio files or other media. We expect projects will be copied often to create different versions, e.g. a project might be copied and modified slightly for a one-time performance to avoid disturbing the "master" version.
 
-- Each user can have a collection of media. Media files are typically medium-to-large files of audio or video. Projects access media *by reference*, so when a project is copied, we do not need to copy the associated media files.
+- Each user can have a collection of media. Media files are typically medium-to-large files of audio or video. Projects access media *by reference*, so when a project is copied, we do not copy the associated media files.
 
 - Users can mark projects as *private* or *public*. Users can also share projects with a set of other users specified by user IDs. If there is at least one sharer and the project is not *public*, the project is considered *shared*.
 
-- Similarly, media as a whole can be *private*, *shared*, or *public*. Users do not have control over individual media. Shared or public media are read-only to others. Users cannot add media files to another user's media, even if that media collection is shared or public.
+- Similarly, media as a whole can be *private*, *shared*, or *public*. Shared or public media are read-only to others. Users cannot add media files to another user's media, even if that media collection is shared or public.
 
-- When projects are copied by other users, media references are copied too, so media references must include the user ID as well as the media file name, and media are shared. If the files are altered by the original owner, the changes will be "seen" by the sharer as a side effect since the sharer only has references to the file. (This is considered a feature in spite of obvious cases where this is not desirable behavior. Perhaps the UI should allow a user to make all media in a project local to the user, in which case media owned by others would be copied to the user's media collection and project references would be updated to the local copies.)
+- In addition, if a media file is included in a shared project, the media file is readable by anyone that shares the project. It follows that there should be a table containing sharers of projects and another table containing media files referenced by projects.
 
-- To access media, permissions must be checked. E.g. to access the media file "rbd/sound.wav" the server must check that either rbd is the logged-in user or rbd's media collection is *public*, or rbd's media collection is shared with the logged-in user.
+- Transitivity is tricky. Suppose A shares a project with B and B shares it with C. Does C get access to A's files? If so, can A revoke access to C? This gets very complicated, so the rule is that projects with references to media owned by other users *cannot* be copied. (They might be marked as "shared" or "public", but attempts to copy will fail. A user can take a "snapshot" of the project to make private copies of the media files and then sharing will work.)
+
+- When projects are copied by other users, media references are copied too, so media references must include the user ID as well as the media file name, and media are shared. If the files are altered by the original owner, the changes will be "seen" by the sharer as a side effect since the sharer only has references to the file. (This is considered a feature in spite of obvious cases where this is not desirable behavior. The UI should allow a user to make all media in a project local to the user, called taking a "snapshot," in which case media owned by others is copied to the user's media collection and project references are updated to the local copies.)
+
+- To access media, permissions must be checked. E.g. to access the media file "rbd/sound.wav" the server must check that either rbd is the logged-in user or rbd's media collection is *public*, or rbd's media collection is shared with the logged-in user. This check must be made for each access, because sharing can be revoked (of course, sharers can use "snapshot" or use downloads to make copies, so revoked sharing does not delete copies, it only prevents future access to the original file.)
 
 - Uploads are simpler: they are always permitted, but the upload is stored in the media collection of the logged-in user.
 
