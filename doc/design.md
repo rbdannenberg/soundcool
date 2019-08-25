@@ -43,9 +43,11 @@ Here is a summary:
 
 - In addition, if a media file is included in a shared project, the media file is readable by anyone that shares the project. It follows that there should be a table containing sharers of projects and another table containing media files referenced by projects.
 
-- Transitivity is tricky. Suppose A shares a project with B and B shares it with C. Does C get access to A's files? If so, can A revoke access to C? This gets very complicated, so the rule is that projects with references to media owned by other users *cannot* be copied. (They might be marked as "shared" or "public", but attempts to copy will fail. A user can take a "snapshot" of the project to make private copies of the media files and then sharing will work.)
+- Transitivity is tricky. Suppose A shares a project with B and B shares it with C. Does C get access to A's files? If so, can A revoke access to C? This gets very complicated, so the rule is that projects with references to *non-public* media owned by other users *cannot* be copied. (The project might be marked as "shared" or "public", but attempts to copy will fail. A user can take a "snapshot" of the project to make private copies of the media files and then sharing will work.)
 
 - Revocation is tricky. Suppose A shared a project with B and then removes B from the list of sharers. (This should be possible.) Then, in the future, B cannot make a copy of A's project. But if B has already copied A's project (and possibly edited it and possibly is using it), then A cannot deny B access to B's current copy of the project. In addition, B's copy may be sharing media files that belong to A. Since A cannot deny B access to B's project, we also stipulate that A cannot deny B access to A's media files that were referenced when B copied A's project. Since media files are shared, A can still delete the media or replace them with silence. These changes will affect B. However, B can preemptively avoid any revocation by taking a "snapshot" to replace all of A's files with copies that belong to B, or B can do both: make a copy with references and another copy as a "snapshot" version.
+
+- Another tricky aspect of revocation. Suppose A's project references public media owned by C. A shares the project with B. This is allowed. Now, C changes his media to *private*. Does B still have access? Yes, because B copied the project when C's files were public, C cannot revoke access. However, like the case of sharing, C can delete the media or modify the media to remove access to the shared files, but B can make copies before the files are modified.
 
 - When projects are copied by other users, media references are copied too, so media references must include the user ID as well as the media file name, and media are shared. If the files are altered by the original owner, the changes will be "seen" by the sharer as a side effect since the sharer only has references to the file. (This is considered a feature in spite of obvious cases where this is not desirable behavior. The UI should allow a user to make all media in a project local to the user, called taking a "snapshot," in which case media owned by others is copied to the user's media collection and project references are updated to the local copies.)
 
@@ -59,37 +61,43 @@ Here is a summary:
 
 Since sharing is complicated, I will describe how I think this will work operationally:
 
-To save a project:
+**To save a project:**
 
 - Clear all file references associated with the project in the project-media table. Upload the project. Identify all media files referenced in the new version of the project. Store these current references into the table. (In other words, we just bring the table up-to-date since all the files in the project might be added, deleted, or replaced.)
 
-To copy a project from User A to User B
+**To copy a project from User A to User B**
 
 - Make sure the project is either public or shared with B, the user who is making the copy. (Normally, B would not even be able to *find* or *name* the project if it is not shared, but let's assume a mild attack where B invents a name and fabricates a copy request -- the server must check access permissions to guard against this attack.)
 
-- Check that the project references only files that belong to A, the owner of the project, or to B, the copier of the project. This is facilitated by doing a query to the project-media table that's updated whenever the project is stored. (Implementation note: If you wanted to avoid the table, you could read and search the project to extract the file references.) If there are other references, the copy fails.
+- Check that the project references only files that belong to A, the owner of the project, or to B, the copier of the project, or to a user whose media files are (all) public. This is facilitated by doing a query to the project-media table that's updated whenever the project is stored. (Implementation note: If you wanted to avoid the table, you could read and search the project to extract the file references.) If there are other references, the copy fails.
 
 - Make a copy of the project and store it in the projects of B.
 
-- Mark each media file in the project that belongs to A with B, giving B read access to the file. (Probably there is a file read access table that lists permissions as pairs of (filename, reader). Probably, we can store a users file in their own directory, and a user implicitly has read/write/delete access to all files in his/her own directory.)
+- Mark each media file in the project that does not belong to B with B, giving B explicit read access to the file. This is done for files that belong to A and are implicitly shared with B because they are in the shared project. This is also done for public media. (Probably there is a file read access table that lists permissions as pairs of (filename, reader). Probably, we can store a users file in their own directory, and a user implicitly has read/write/delete access to all files in his/her own directory.)
 
-To access a media file:
+**To access a media file:**
 
 - If the file is in the user's own directory, serve the file.
 
-- If the file belongs to another user, check the permissions table for (filename, reader) where reader is the current user. If you find the file there, serve the file.
+- If the file belongs to another user, check the permissions table for (filename, reader) where reader is the current user. If you find the file there, serve the file. Otherwise, if the other user's media files are (all) public, serve the file. Otherwise, do not serve the file; the access fails.
 
-To delete a media file:
+**To delete a media file:**
 
 - delete the file from the file system.
 
 - Remove all pairs (filename, reader) from the permissions table. Thus, deleting a file and recreating it will revoke access to anyone holding read permissions.
 
-To rename a media file:
+**To rename a media file:**
 
 - Renaming is equivalent to copying and deleting. Copying creates a new copy with a new name and no one else has access rights (unless the user's media are marked "public"). Thus, when you rename a file, you must remove all pairs (old-filename, reader) from the permissions table.
 
 It follows that you can revoke shared access to any file by renaming it to a new name and then renaming it back to the original name. This will flush all the permissions in the permissions table.
+
+**To share a project:**
+
+- To mark a project *public*, first check if there are references to media files owned by other users whose media files are not (all) public. If there are, then fail with the message: "You cannot make this file project public because it references files owned by other users. Use "snapshot" to make private copies of those files if you want to make this project public."
+
+- For user A to share a project with user B, make sure all references to media files in the project are owned by either A or B or by another user whose media files are public.
 
 ### Project Page
 Displays logged in user's projects and all projects shared with user.
@@ -150,7 +158,7 @@ projectID (the project referencing media file)
 mediaID 
 ````
 
-Note: Instead of a Project Sharing Table and a Project File Table, I think we could just put a "sharers" field and a "media" field in the Project Table -- each field would have to be a *list* of IDs.
+Note: Instead of a Project Sharing Table and a Project File Table, I think we could just put a "media" field in the Project Table and a "sharers" field in the Media Table -- each field would have to be a *list* of IDs.
 
 #### Media Sharing Table Fields
 ````
