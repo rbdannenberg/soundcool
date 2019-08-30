@@ -1,11 +1,13 @@
 import React from "react";
-import { removeAudio, uploadSound, fetchAudio } from "./actions";
+import {
+  removeAudio,
+  uploadSound,
+  fetchAudio,
+  toggleAudioSharing
+} from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../common";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-} from "reactstrap";
+import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 
 class Sounds extends React.Component {
@@ -14,14 +16,15 @@ class Sounds extends React.Component {
     sound: {
       name: "",
       description: ""
-    }
+    },
+    audioSharing:false
   };
 
   componentDidMount = () => {
     if (this.props.user) {
       fetchAudio()
         .then(data => {
-          this.setState({ sounds: data.data });
+          this.setState({ sounds: data.audios, audioSharing: data.sharing });
         })
         .catch(error => {
           showToastrError(error);
@@ -67,7 +70,10 @@ class Sounds extends React.Component {
               <i class="fas fa-share-alt" aria-hidden="true"></i>
             </button>
             &nbsp;
-            <button className="btn btn-danger" onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}>
+            <button
+              className="btn btn-danger"
+              onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}
+            >
               <i class="fas fa-trash" aria-hidden="true"></i>
             </button>
           </td>
@@ -76,6 +82,18 @@ class Sounds extends React.Component {
     });
 
   render() {
+    const toggleAudioS = () => {
+      toggleAudioSharing({sharing:!this.state.audioSharing})
+        .then(data => {
+          data.sharing
+            ? showToastr("success", "Audio sharing turned on")
+            : showToastr("success", "Audio sharing turned off");
+          this.setState({ audioSharing: data.sharing });
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    };
     const handleFileChosen = file => {
       const data = new FormData();
       data.append("file", file);
@@ -84,6 +102,7 @@ class Sounds extends React.Component {
           showToastr("success", "Audio added successfully");
           this.upload.value = "";
           this.setState({ sounds: [...this.state.sounds, data] });
+          console.log({ sounds: [...this.state.sounds, data] });
         })
         .catch(error => {
           showToastrError(error);
@@ -100,8 +119,8 @@ class Sounds extends React.Component {
             <BreadcrumbItem active>Sounds</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
-            <h3>
-              Menu
+            <h3>Menu</h3>
+            <div className="float-right">
               <input
                 style={{ display: "none" }}
                 ref={ref => (this.upload = ref)}
@@ -110,16 +129,22 @@ class Sounds extends React.Component {
                 name="sound"
                 accept=".wav"
                 onChange={e => handleFileChosen(e.target.files[0])}
-                className="btn btn-info float-right"
+                className="btn btn-info"
               />
               <button
-                className="btn btn-info float-right"
+                className="btn btn-warning"
+                onClick={toggleAudioS}
+              >
+                Audio Sharing :{this.state.audioSharing? " On" : " Off"}
+              </button>
+              &nbsp;
+              <button
+                className="btn btn-info"
                 onClick={e => this.upload.click()}
               >
                 Import Sound
               </button>
-            </h3>
-            <hr />
+            </div>
           </div>
         </div>
         <table class="table table-hover">

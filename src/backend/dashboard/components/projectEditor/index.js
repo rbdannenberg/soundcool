@@ -17,6 +17,7 @@ import { FormInput } from "../form";
 
 export const store = createStore(blockApp);
 const BlockList = ({ blocks, nowOut }) => {
+  console.log(blocks);
   return (
     <React.Fragment>
       {blocks.map(b => (

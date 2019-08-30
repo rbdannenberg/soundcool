@@ -4,7 +4,6 @@ export const fetchUserProjectURL = () => `${BASE_URL}/projects/get`;
 export const uploadSoundUrl = () => `${BASE_URL}/sounds/upload`;
 export const removeAudioUrl = () => `${BASE_URL}/sounds/remove`;
 export const fetchAudioUrl = () => `${BASE_URL}/sounds/get`;
-export const toggleAudioSharingUrl = () => `${BASE_URL}/sounds/toggleAudioSharing`;
 
 export const fetchUserProjects = () => {
     return getRequest(fetchUserProjectURL());
@@ -20,10 +19,6 @@ export const fetchUserProjects = () => {
   export const fetchAudio = () => {
     const url = fetchAudioUrl();
     return getRequest(url);
-  };
-  export const toggleAudioSharing = (payload) => {
-    const url = toggleAudioSharingUrl();
-    return postRequest(url,payload);
   };
 
 

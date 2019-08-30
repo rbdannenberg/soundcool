@@ -9,7 +9,8 @@ import {
   fetchUserProjects,
   addSharedUser,
   removeSharedUser,
-  setProjectPublic
+  setProjectPublic,
+  cloneProject
 } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import { FormInput } from "../form";
@@ -98,7 +99,27 @@ class Projects extends Component {
         showToastrError(error);
       });
   }
-
+  cloneProject(projectId) {
+    cloneProject({projectId})
+      .then(data => {
+        if(data.error){
+          showToastr("success", "Project can't be cloned");
+        }
+        else
+        {
+          showToastr("success", "Project cloned successfully");
+          localStorage.setItem(
+            "project" + data.project_id,
+            JSON.stringify(data)
+          );
+          this.setState({ projects: [...this.state.projects, data] });
+          console.log([...this.state.projects, data]);
+        }
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
   addSharedUser() {
     let { userId, userEmail, projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
@@ -215,7 +236,7 @@ class Projects extends Component {
           <th scope="row">{index + 1}</th>
           <td>{name}</td>
           <td>{description}</td>
-          <td>{isOwner == "true" ? "You" : isOwner}</td>
+          <td>{isOwner ? isOwner : "You"}</td>
           <td>{isPublic ? "Everyone" : sUsers}</td>
           <td>
             <button
@@ -234,12 +255,20 @@ class Projects extends Component {
               <i class="fas fa-share-alt" aria-hidden="true"></i>
             </button>
             &nbsp;
-            {isOwner == "true" && (
+            {!isOwner && (
               <button
                 className="btn btn-danger"
                 onClick={() => this.removeProject(project_id, index)}
               >
                 <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            )}
+            {isOwner != 0 && isOwner && (
+              <button
+                className="btn btn-primary"
+                onClick={() => this.cloneProject(project_id)}
+              >
+                <i class="fas fa-clone" aria-hidden="true"></i>
               </button>
             )}
           </td>
