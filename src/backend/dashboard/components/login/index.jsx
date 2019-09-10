@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Form from "../Form.jsx";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import { loginUser, redirectToRoot } from './actions';
+import { loginUser, redirectToHome } from './actions';
 import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from '../common';
 import Cookies from 'universal-cookie';
@@ -29,7 +29,7 @@ class Login extends Form {
   afterSignin = ({token}) => {
     showToastr('success', 'Logged in successfully.');
     localStorage.setItem("token", token);
-    redirectToRoot();
+    redirectToHome();
   };
   render() {
     return (

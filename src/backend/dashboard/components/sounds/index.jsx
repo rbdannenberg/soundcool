@@ -3,7 +3,8 @@ import {
   removeAudio,
   uploadSound,
   fetchAudio,
-  toggleAudioSharing
+  toggleAudioSharing,
+  serveAudio
 } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../common";
@@ -24,6 +25,7 @@ class Sounds extends React.Component {
     if (this.props.user) {
       fetchAudio()
         .then(data => {
+          console.log(data.audios);
           this.setState({ sounds: data.audios, audioSharing: data.sharing });
         })
         .catch(error => {
@@ -32,8 +34,8 @@ class Sounds extends React.Component {
     }
   };
 
-  handleRemoveAudio(soundId, fileLocation) {
-    removeAudio({ soundId, fileLocation })
+  handleRemoveAudio(soundId) {
+    removeAudio({ soundId})
       .then(data => {
         showToastr("success", "Audio deleted successfully");
         this.setState({
@@ -50,7 +52,7 @@ class Sounds extends React.Component {
 
   renderSounds = sounds =>
     sounds.map((sound, index) => {
-      let { sound_id, name, fileLocation } = sound;
+      let { sound_id, name} = sound;
       return (
         <tr>
           <th scope="row">{index + 1}</th>
@@ -59,12 +61,11 @@ class Sounds extends React.Component {
           <td>
             <ReactAudioPlayer
               style={{ width: "100%", borderColor: "#333", minWidth: "200px" }}
-              src={fileLocation}
+              src={serveAudio(sound_id)}
               autoPlay={false}
               controls
             />
           </td>
-          <td></td>
           <td>
             <button className="btn btn-info">
               <i class="fas fa-share-alt" aria-hidden="true"></i>
@@ -72,7 +73,7 @@ class Sounds extends React.Component {
             &nbsp;
             <button
               className="btn btn-danger"
-              onClick={() => this.handleRemoveAudio(sound_id, fileLocation)}
+              onClick={() => this.handleRemoveAudio(sound_id)}
             >
               <i class="fas fa-trash" aria-hidden="true"></i>
             </button>
@@ -102,7 +103,6 @@ class Sounds extends React.Component {
           showToastr("success", "Audio added successfully");
           this.upload.value = "";
           this.setState({ sounds: [...this.state.sounds, data] });
-          console.log({ sounds: [...this.state.sounds, data] });
         })
         .catch(error => {
           showToastrError(error);
@@ -154,7 +154,6 @@ class Sounds extends React.Component {
               <th scope="col">Id</th>
               <th scope="col">Name</th>
               <th scope="col">Controls</th>
-              <th scope="col">Shared With</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>

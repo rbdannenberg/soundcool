@@ -117,7 +117,7 @@ export default class Header extends Component {
                       to="/login"
                       onClick={this.handleLogout}
                     >
-                      <span className="fa fa-sign-out ">Logout</span>
+                      <span className="fa fa-sign-out-alt ">&nbsp;Logout</span>
                     </NavLink>
                 </NavItem>
               </Nav>

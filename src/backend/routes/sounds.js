@@ -24,7 +24,7 @@ router.get("/get", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   // do the query case on the user
-  let QUERY = SELECT_ALL_SOUNDS_QUERY + ` WHERE user = ${user_id}`;
+  let QUERY = `select sound_id,user,name from sounds WHERE user = ${user_id}`;
   let shared = false;
   connection.query(QUERY, (err, audios) => {
     if (err) {
@@ -56,18 +56,22 @@ router.post("/upload", upload.single("file"), (req, res) => {
   const fileLocation =
     "/assets/sounds/" + cTimeStamp + "::-::" + req.file.originalname;
   updateTimeStamp();
-  const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'${req.file.originalname}','${fileLocation}')`;
+  const QUERY = `insert into sounds(user,name) values(${user_id},'${req.file.originalname}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.send(err);
     } else {
-      const QUERY =
-        SELECT_ALL_SOUNDS_QUERY + `WHERE sound_id = ${results.insertId}`;
+      const soundId = results.insertId;
+      const QUERY = `insert into soundsLocation values(${soundId},'${fileLocation}')`;
       connection.query(QUERY, (err, results) => {
         if (err) {
           return res.send(err);
         } else {
-          return res.json(results[0]);
+          return res.json({
+            sound_id:soundId,
+            user: user_id,
+            name:req.file.originalname
+          });
         }
       });
     }
@@ -77,19 +81,28 @@ router.post("/upload", upload.single("file"), (req, res) => {
 router.post("/remove", upload.single("file"), (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
-  const { soundId, fileLocation } = req.body;
-  fs.unlinkSync("./public" + fileLocation);
-  const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
-  connection.query(QUERY, (err, results) => {
+  const { soundId } = req.body;
+  const QUERY = `select fileLocation from soundsLocation where sound_id = ${soundId}`;
+  connection.query(QUERY, (err, result) => {
     if (err) {
       console.log(err);
       return res.send(err);
     } else {
-      return res.json({
-        data: results
+      const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
+      connection.query(QUERY, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.send(err);
+        } else {
+          fs.unlinkSync("./public" + result[0]['fileLocation']);
+          return res.json({
+            data: results
+          });
+        }
       });
     }
   });
+
 });
 
 router.post("/toggleAudioSharing", (req, res) => {
@@ -126,6 +139,56 @@ router.post("/permission", (req, res) => {
       return res.json({
         sharing: results[0]["sharing"]
       });
+    }
+  });
+});
+
+router.get('/serveAudio/:audioId/:token', function(req, res) {
+
+  var audioId = req.params.audioId;
+  var user = jwt.verify(req.params.token, "jwtPrivateKey");
+  console.log(user);
+  const QUERY = `select fileLocation from soundsLocation where sound_id= ${audioId};`;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.send(err);
+    } else {
+      var music = './public'+results[0]['fileLocation'];
+
+      var stat = fs.statSync(music);
+      range = req.headers.range;
+      var readStream;
+    
+      if (range !== undefined) {
+          var parts = range.replace(/bytes=/, "").split("-");
+    
+          var partial_start = parts[0];
+          var partial_end = parts[1];
+    
+          if ((isNaN(partial_start) && partial_start.length > 1) || (isNaN(partial_end) && partial_end.length > 1)) {
+              return res.sendStatus(500);
+          }
+    
+          var start = parseInt(partial_start, 10);
+          var end = partial_end ? parseInt(partial_end, 10) : stat.size - 1;
+          var content_length = (end - start) + 1;
+    
+          res.status(206).header({
+              'Content-Type': 'audio/mpeg',
+              'Content-Length': content_length,
+              'Content-Range': "bytes " + start + "-" + end + "/" + stat.size
+          });
+    
+          readStream = fs.createReadStream(music, {start: start, end: end});
+      } else {
+          res.header({
+              'Content-Type': 'audio/mpeg',
+              'Content-Length': stat.size
+          });
+          readStream = fs.createReadStream(music);
+      }
+      readStream.pipe(res);
     }
   });
 });

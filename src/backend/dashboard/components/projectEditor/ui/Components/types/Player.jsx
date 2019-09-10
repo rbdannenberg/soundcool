@@ -4,6 +4,7 @@ import { FaPlay, FaSquare } from "react-icons/fa";
 import AddSound from "../../../../addSound";
 import { checkAudioPermission } from "../../../actions";
 import { showToastr } from "../../../../common";
+import { serveAudio } from "../../../../sounds/actions";
 
 const circleStyle = {
   width: "1.5rem",
@@ -34,7 +35,7 @@ class Player extends React.Component {
     } = this.props.blockInfo;
     let audio;
     if(file){
-      audio = new Audio(file.fileLocation);
+      audio = new Audio(serveAudio(file.sound_id));
     }
     const onSoundSelect = audio_id => {
       changeBlock(id, "file", audio_id);

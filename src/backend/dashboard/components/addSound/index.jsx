@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import { fetchAudio } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
+import { serveAudio } from "../sounds/actions";
 
 class AddSound extends Component {
   constructor(props) {
@@ -31,14 +32,14 @@ class AddSound extends Component {
 
   renderSounds = sounds =>
     sounds.map((sound) => {
-      let {name, fileLocation } = sound;
+      let {name, sound_id } = sound;
       return (
         <tr>
           <td>{name}</td>
           <td>
             <ReactAudioPlayer
               style={{ width: "100%", borderColor: "#333", minWidth: "200px" }}
-              src={fileLocation}
+              src={serveAudio(sound_id)}
               autoPlay={false}
               controls
             />
