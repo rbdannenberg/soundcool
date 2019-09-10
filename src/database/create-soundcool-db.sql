@@ -24,6 +24,30 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `soundcool` /*!40100 DEFAULT CHARACTER 
 USE `soundcool`;
 
 --
+-- Table structure for table `audioSharing`
+--
+
+DROP TABLE IF EXISTS `audioSharing`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `audioSharing` (
+  `user_id` int(11) NOT NULL,
+  `sharing` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `audioSharing`
+--
+
+LOCK TABLES `audioSharing` WRITE;
+/*!40000 ALTER TABLE `audioSharing` DISABLE KEYS */;
+INSERT INTO `audioSharing` VALUES (1,0),(2,0);
+/*!40000 ALTER TABLE `audioSharing` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `projects`
 --
 
@@ -40,7 +64,7 @@ CREATE TABLE `projects` (
   `sharedUsers` varchar(500) DEFAULT NULL,
   `isPublic` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +73,6 @@ CREATE TABLE `projects` (
 
 LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-INSERT INTO `projects` VALUES (52,1,'Project 1','2019-08-25 05:48:32','Sample Project','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":2,\"Transposer\":1,\"Pan\":2,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Delay\",\"id\":1,\"typeId\":1,\"name\":\"D1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"feedback\":0.119,\"kinect\":false},{\"typeName\":\"Pan\",\"id\":2,\"typeId\":1,\"name\":\"P1\",\"collapse\":false,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"panVal\":0},\"outNode\":{},\"inNode\":{}},\"inNode\":[],\"outNode\":[],\"color\":\"#88b35f\",\"panVal\":0,\"kinect\":false}]}',NULL,0),(53,1,'Project 2','2019-08-25 05:49:22','Shared Project','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":2,\"Transposer\":2,\"Pan\":1,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Transposer\",\"id\":1,\"typeId\":1,\"name\":\"T1\",\"collapse\":true,\"inNode\":[],\"outNode\":[],\"color\":\"#c185c8\",\"buttonCents\":0,\"sliderCents\":0},{\"typeName\":\"Delay\",\"id\":2,\"typeId\":1,\"name\":\"D1\",\"collapse\":false,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{}},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"feedback\":0.119,\"kinect\":false}]}','{\"users\":[{\"user_id\":2,\"name\":\"Sample user 2\",\"email\":\"user2@welcome.com\"}]}',0),(54,1,'Project 3','2019-08-25 05:50:00','Public Project','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":3,\"Transposer\":1,\"Pan\":1,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Delay\",\"id\":1,\"typeId\":1,\"name\":\"D1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"feedback\":0.119,\"kinect\":false},{\"typeName\":\"Delay\",\"id\":2,\"typeId\":2,\"name\":\"D2\",\"collapse\":false,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{}},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"feedback\":0.119,\"kinect\":false}]}',NULL,1),(55,2,'Project 6','2019-08-25 05:50:59','Project user 2','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":2,\"Transposer\":1,\"Pan\":1,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":2,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Delay\",\"id\":1,\"typeId\":1,\"name\":\"D1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"feedback\":0.119,\"kinect\":false},{\"typeName\":\"Mixer\",\"id\":2,\"typeId\":1,\"name\":\"M1\",\"collapse\":true,\"inNode\":[],\"outNode\":[],\"color\":\"#67e3e5\",\"inDisabled\":true,\"volumeMaster\":60,\"volume1\":60,\"volume2\":60,\"volume3\":60,\"volume4\":60,\"volume5\":60,\"volume6\":60,\"volume7\":60,\"volume8\":60}]}',NULL,0);
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,9 +88,8 @@ CREATE TABLE `sounds` (
   `user` int(11) DEFAULT NULL,
   `name` varchar(500) DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `fileLocation` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`sound_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,8 +98,30 @@ CREATE TABLE `sounds` (
 
 LOCK TABLES `sounds` WRITE;
 /*!40000 ALTER TABLE `sounds` DISABLE KEYS */;
-INSERT INTO `sounds` VALUES (43,1,'file_example_WAV_1MG.wav','2019-08-25 05:50:15','/assets/sounds/1566691159597-file_example_WAV_1MG.wav'),(44,2,'file_example_WAV_1MG.wav','2019-08-25 05:51:10','/assets/sounds/1566692415164-file_example_WAV_1MG.wav');
 /*!40000 ALTER TABLE `sounds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `soundsLocation`
+--
+
+DROP TABLE IF EXISTS `soundsLocation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `soundsLocation` (
+  `sound_id` int(11) DEFAULT NULL,
+  `fileLocation` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `soundsLocation`
+--
+
+LOCK TABLES `soundsLocation` WRITE;
+/*!40000 ALTER TABLE `soundsLocation` DISABLE KEYS */;
+INSERT INTO `soundsLocation` VALUES (69,'/assets/sounds/1568153335040::-::file_example_WAV_1MG.wav'),(70,'/assets/sounds/1568153577150::-::file_example_WAV_1MG.wav'),(71,'/assets/sounds/1568153593032::-::file_example_WAV_1MG.wav'),(72,'/assets/sounds/1568153880326::-::file_example_WAV_1MG.wav');
+/*!40000 ALTER TABLE `soundsLocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -103,7 +147,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Sample user 1','welcome','user1@welcome.com'),(2,'Sample user 2','welcome','user2@welcome.com');
+INSERT INTO `users` VALUES (1,'Sample user 1','welcome','user1@welcome.com'),(2,'Sample user 2','welcome','user2@welcome.com'),(3,'Amit','welcome','amitmeena094@gmail.com');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -116,4 +160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-25  5:52:10
+-- Dump completed on 2019-09-11  5:15:45
