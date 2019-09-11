@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "webpack": "./node_modules/.bin/webpack -w",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "cd frontend/project-editor && npm install && npm run build"
+    "webpack": "webpack -w",
+    "build": "webpack"
+  },
+  "engines": {
+    "node": "10.16.0",
+    "npm": "6.10.0"
   },
   "author": "",
   "license": "ISC",
