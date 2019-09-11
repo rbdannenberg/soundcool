@@ -35,29 +35,21 @@ class ScPitch extends ScModule {
         let gCurve = this.gainCurve();
         this.lfo1 = new ScPhasor(this.context, {rampStart : 0.});
         this.lfo1Mul = this.context.createGain();
-        this.lfo1Mul.gain.value = this.options.winSize;
+        this.lfo1Mul.gain.value = 1;
         this.lfo1Add = this.context.createConstantSource();
         this.lfo1Add.start(0);
         this.lfo1Add.offset.value = 0;
         this.lfo1Out = this.context.createGain();
-        //this.scale1 = this.context.createWaveShaper();
-        //this.scale1.curve = gCurve;
-        //this.lfo1.outNode.connect(this.scale1);
-        //this.scale1.connect(this.lfo1Mul);
         this.lfo1.outNode.connect(this.lfo1Mul);
         this.lfo1Mul.connect(this.lfo1Out);
         this.lfo1Add.connect(this.lfo1Out);
         this.lfo2 = new ScPhasor(this.context, {rampStart : 0.5});
         this.lfo2Mul = this.context.createGain();
-        this.lfo2Mul.gain.value = this.options.winSize;
+        this.lfo2Mul.gain.value = 1;
         this.lfo2Add = this.context.createConstantSource();
         this.lfo2Add.start(0);
         this.lfo2Add.offset.value = 0;
         this.lfo2Out = this.context.createGain();
-        //this.scale2 = this.context.createWaveShaper();
-        //this.scale2.curve = gCurve;
-        //this.lfo2.outNode.connect(this.scale2);
-        //this.scale2.connect(this.lfo2Mul);
         this.lfo2.outNode.connect(this.lfo2Mul);
         this.lfo2Mul.connect(this.lfo2Out);
         this.lfo2Add.connect(this.lfo2Out);
@@ -106,7 +98,7 @@ class ScPitch extends ScModule {
     set pitch(cents) {
         let interval = cents / 100;
         let ratio = Math.pow(2, (interval/12));
-        let slope = 1.2 * Math.abs(1 - ratio) / this.frequency.offset.value;
+        let slope = Math.abs(1 - ratio) / this.frequency.offset.value;
         console.log('slope: ', slope);
         if (interval < 0) {
             this.lfo1Mul.gain.value = slope;
