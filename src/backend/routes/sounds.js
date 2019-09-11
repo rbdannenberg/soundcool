@@ -88,15 +88,23 @@ router.post("/remove", upload.single("file"), (req, res) => {
       console.log(err);
       return res.send(err);
     } else {
-      const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
+      const QUERY = `delete from soundsLocation where sound_id = ${soundId}`;
       connection.query(QUERY, (err, results) => {
         if (err) {
           console.log(err);
           return res.send(err);
         } else {
-          fs.unlinkSync("./public" + result[0]['fileLocation']);
-          return res.json({
-            data: results
+          const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
+          connection.query(QUERY, (err, results) => {
+            if (err) {
+              console.log(err);
+              return res.send(err);
+            } else {
+              fs.unlinkSync("./public" + result[0]['fileLocation']);
+              return res.json({
+                data: results
+              });
+            }
           });
         }
       });
