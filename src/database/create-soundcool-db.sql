@@ -64,7 +64,7 @@ CREATE TABLE `projects` (
   `sharedUsers` varchar(500) DEFAULT NULL,
   `isPublic` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,6 +73,7 @@ CREATE TABLE `projects` (
 
 LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
+INSERT INTO `projects` VALUES (78,1,'Project 1','2019-09-11 06:07:48','Player','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"collapse\":true,\"file\":{\"sound_id\":75,\"user\":1,\"name\":\"file_example_WAV_1MG.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"file\":{\"sound_id\":75,\"user\":1,\"name\":\"file_example_WAV_1MG.wav\"},\"kinect\":false}]}',NULL,0),(79,2,'Project 1','2019-09-11 06:08:40','Player','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"collapse\":true,\"file\":{\"sound_id\":77,\"user\":2,\"name\":\"file_example_WAV_1MG.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"file\":{\"sound_id\":77,\"user\":2,\"name\":\"file_example_WAV_1MG.wav\"},\"kinect\":false}]}',NULL,0);
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -89,7 +90,7 @@ CREATE TABLE `sounds` (
   `name` varchar(500) DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`sound_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +99,7 @@ CREATE TABLE `sounds` (
 
 LOCK TABLES `sounds` WRITE;
 /*!40000 ALTER TABLE `sounds` DISABLE KEYS */;
+INSERT INTO `sounds` VALUES (75,1,'file_example_WAV_1MG.wav','2019-09-11 06:07:29'),(77,2,'file_example_WAV_1MG.wav','2019-09-11 06:08:24');
 /*!40000 ALTER TABLE `sounds` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +122,7 @@ CREATE TABLE `soundsLocation` (
 
 LOCK TABLES `soundsLocation` WRITE;
 /*!40000 ALTER TABLE `soundsLocation` DISABLE KEYS */;
-INSERT INTO `soundsLocation` VALUES (69,'/assets/sounds/1568153335040::-::file_example_WAV_1MG.wav'),(70,'/assets/sounds/1568153577150::-::file_example_WAV_1MG.wav'),(71,'/assets/sounds/1568153593032::-::file_example_WAV_1MG.wav'),(72,'/assets/sounds/1568153880326::-::file_example_WAV_1MG.wav');
+INSERT INTO `soundsLocation` VALUES (75,'/assets/sounds/1568162175466::-::file_example_WAV_1MG.wav'),(77,'/assets/sounds/1568162282458::-::file_example_WAV_1MG.wav');
 /*!40000 ALTER TABLE `soundsLocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +149,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Sample user 1','welcome','user1@welcome.com'),(2,'Sample user 2','welcome','user2@welcome.com'),(3,'Amit','welcome','amitmeena094@gmail.com');
+INSERT INTO `users` VALUES (1,'Sample user 1','welcome','user1@welcome.com'),(2,'Sample user 2','welcome','user2@welcome.com');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -160,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-11  5:15:45
+-- Dump completed on 2019-09-11  6:09:27
