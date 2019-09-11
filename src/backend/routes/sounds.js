@@ -123,25 +123,6 @@ router.post("/toggleAudioSharing", (req, res) => {
   });
 });
 
-router.post("/permission", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
-  const sUser = req.body.user;
-  if (sUser == user.id)
-    return res.json({
-      sharing: true
-    });
-  const QUERY = `select sharing from audioSharing where user_id=${sUser}`;
-  connection.query(QUERY, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.send(err);
-    } else {
-      return res.json({
-        sharing: results[0]["sharing"]
-      });
-    }
-  });
-});
 
 router.get('/serveAudio/:audioId/:token', function(req, res) {
 

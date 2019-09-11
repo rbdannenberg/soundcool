@@ -8,6 +8,7 @@ import {
 } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../common";
+import ReactTooltip from "react-tooltip";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -18,7 +19,7 @@ class Sounds extends React.Component {
       name: "",
       description: ""
     },
-    audioSharing:false
+    audioSharing: false
   };
 
   componentDidMount = () => {
@@ -35,24 +36,26 @@ class Sounds extends React.Component {
   };
 
   handleRemoveAudio(soundId) {
-    removeAudio({ soundId})
-      .then(data => {
-        showToastr("success", "Audio deleted successfully");
-        this.setState({
-          sounds: this.state.sounds.filter(function(sound) {
-            console.log(sound, sound.sound_id, soundId);
-            return sound.sound_id !== soundId;
-          })
+    var r = confirm("Do you want to delete media " + soundId);
+    if (r == true) {
+      removeAudio({ soundId })
+        .then(data => {
+          showToastr("success", "Audio deleted successfully");
+          this.setState({
+            sounds: this.state.sounds.filter(function(sound) {
+              console.log(sound, sound.sound_id, soundId);
+              return sound.sound_id !== soundId;
+            })
+          });
+        })
+        .catch(error => {
+          showToastrError(error);
         });
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
+    }
   }
-
   renderSounds = sounds =>
     sounds.map((sound, index) => {
-      let { sound_id, name} = sound;
+      let { sound_id, name } = sound;
       return (
         <tr>
           <th scope="row">{index + 1}</th>
@@ -67,24 +70,22 @@ class Sounds extends React.Component {
             />
           </td>
           <td>
-            <button className="btn btn-info">
-              <i class="fas fa-share-alt" aria-hidden="true"></i>
-            </button>
-            &nbsp;
             <button
+              data-tip="Delete media"
               className="btn btn-danger"
               onClick={() => this.handleRemoveAudio(sound_id)}
             >
               <i class="fas fa-trash" aria-hidden="true"></i>
             </button>
           </td>
+          <ReactTooltip place="top" type="dark" effect="float" />
         </tr>
       );
     });
 
   render() {
     const toggleAudioS = () => {
-      toggleAudioSharing({sharing:!this.state.audioSharing})
+      toggleAudioSharing({ sharing: !this.state.audioSharing })
         .then(data => {
           data.sharing
             ? showToastr("success", "Audio sharing turned on")
@@ -131,11 +132,8 @@ class Sounds extends React.Component {
                 onChange={e => handleFileChosen(e.target.files[0])}
                 className="btn btn-info"
               />
-              <button
-                className="btn btn-warning"
-                onClick={toggleAudioS}
-              >
-                Audio Sharing :{this.state.audioSharing? " On" : " Off"}
+              <button className="btn btn-warning" onClick={toggleAudioS}>
+              Make Media Public :{this.state.audioSharing ? " Yes" : " No"}
               </button>
               &nbsp;
               <button

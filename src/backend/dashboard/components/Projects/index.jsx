@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { createProject } from "../projectEditor/actions";
 import { showToastr, showToastrError } from "../common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
+import ReactTooltip from "react-tooltip";
 import { Link } from "react-router-dom";
 import Switch from "react-switch";
 import {
@@ -100,13 +101,11 @@ class Projects extends Component {
       });
   }
   cloneProject(projectId) {
-    cloneProject({projectId})
+    cloneProject({ projectId })
       .then(data => {
-        if(data.error){
+        if (data.error) {
           showToastr("success", "Project can't be cloned");
-        }
-        else
-        {
+        } else {
           showToastr("success", "Project cloned successfully");
           localStorage.setItem(
             "project" + data.project_id,
@@ -170,18 +169,21 @@ class Projects extends Component {
     }
   }
   removeProject(projectId, index) {
-    removeProject({ projectId })
-      .then(res => {
-        showToastr("success", res.message);
-        let projects = this.state.projects;
-        projects.splice(index, 1);
-        this.setState({
-          projects
+    var r = confirm("Do you want to delete project " + projectId);
+    if (r == true) {
+      removeProject({ projectId })
+        .then(res => {
+          showToastr("success", res.message);
+          let projects = this.state.projects;
+          projects.splice(index, 1);
+          this.setState({
+            projects
+          });
+        })
+        .catch(error => {
+          showToastrError(error);
         });
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
+    }
   }
   filterProjects = project => {
     let qry = this.state.search;
@@ -225,11 +227,18 @@ class Projects extends Component {
       );
       let sUsers = [],
         multiple = false;
+      let countt = 0;
       if (sharedUsers)
-        JSON.parse(sharedUsers)["users"].forEach(user => {
+        JSON.parse(sharedUsers)["users"].every(user => {
           if (multiple) sUsers.push(", ");
-          sUsers.push(user.email);
+          sUsers.push(user.user_id);
           multiple = true;
+          countt++;
+          if(countt > 2) {
+            sUsers.push(" , ... ")
+            return false;
+          }
+          return true;
         });
       return (
         <tr>
@@ -240,6 +249,7 @@ class Projects extends Component {
           <td>{isPublic ? "Everyone" : sUsers}</td>
           <td>
             <button
+              data-tip="Edit Project"
               className="btn btn-primary"
               onClick={() => {
                 window.location = "project-editor/" + project_id;
@@ -249,6 +259,7 @@ class Projects extends Component {
             </button>
             &nbsp;
             <button
+              data-tip="Share Project"
               className="btn btn-info"
               onClick={() => this.handleSharing(project)}
             >
@@ -257,6 +268,7 @@ class Projects extends Component {
             &nbsp;
             {!isOwner && (
               <button
+                data-tip="Delete Project"
                 className="btn btn-danger"
                 onClick={() => this.removeProject(project_id, index)}
               >
@@ -265,6 +277,7 @@ class Projects extends Component {
             )}
             {isOwner != 0 && isOwner && (
               <button
+                data-tip="Clone Project"
                 className="btn btn-primary"
                 onClick={() => this.cloneProject(project_id)}
               >
@@ -272,6 +285,8 @@ class Projects extends Component {
               </button>
             )}
           </td>
+
+          <ReactTooltip place="top" type="dark" effect="float" />
         </tr>
       );
     });
@@ -348,6 +363,7 @@ class Projects extends Component {
             </div>
           </div>
         </div>
+
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
@@ -405,7 +421,7 @@ class Projects extends Component {
                     (user, index) => {
                       return (
                         <p>
-                          {user.email}
+                          User Id : {user.user_id}
                           <button
                             onClick={() => {
                               let arr = JSON.parse(

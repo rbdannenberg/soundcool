@@ -2,7 +2,6 @@ import React from "react";
 import changeBlock from "../../../handlers";
 import { FaPlay, FaSquare } from "react-icons/fa";
 import AddSound from "../../../../addSound";
-import { checkAudioPermission } from "../../../actions";
 import { showToastr } from "../../../../common";
 import { serveAudio } from "../../../../sounds/actions";
 
@@ -41,10 +40,7 @@ class Player extends React.Component {
       changeBlock(id, "file", audio_id);
     };
     const playMusic = () => {
-      checkAudioPermission({user: file.user}).then(data => {
-        if (data.sharing) audio.play();
-        else showToastr("success", "You don't have enough permission");
-      });
+      audio.play();
     };
     return (
       <React.Fragment>
