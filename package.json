@@ -1,0 +1,17 @@
+{
+  "name": "react-express",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd src/backend/ && npm start",
+    "webpack": "webpack -w",
+    "build": "cd src/backend && npm install && ./node_modules/webpack-cli/bin/cli.js"
+  },
+  "engines": {
+    "node": "10.16.0",
+    "npm": "6.10.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
