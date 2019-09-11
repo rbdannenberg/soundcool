@@ -53,7 +53,8 @@
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
     "universal-cookie": "^4.0.2",
-    "webpack": "^4.29.6"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.7"
   },
   "babel": {
     "presets": [
@@ -62,8 +63,5 @@
     "plugins": [
       "@babel/plugin-proposal-class-properties"
     ]
-  },
-  "devDependencies": {
-    "webpack-cli": "^3.3.7"
   }
 }
