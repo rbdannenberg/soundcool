@@ -32,6 +32,7 @@ class Main extends Component {
           <Route path="/project-editor/:id" component={ProjectEditor}/>
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />
+          <Route path="/" component={Home} />
           <Route
             exact
             path="/projects"
