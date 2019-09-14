@@ -85,6 +85,8 @@ class ScPitch extends ScModule {
         this.crossfade.fader.offset.setValueAtTime(0, 0);
         this.scale3.connect(this.crossfade.fader.offset);
 
+        this.inNode.connect(this.this.delayNode1);
+        this.inNode.connect(this.this.delayNode2);
         this.delayNode1.connect(this.crossfade.inNode1);
         this.delayNode2.connect(this.crossfade.inNode2);
         this.lfo1.osc.frequency.cancelScheduledValues(0);
