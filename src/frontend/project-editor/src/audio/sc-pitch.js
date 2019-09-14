@@ -25,8 +25,9 @@ class ScPitch extends ScModule {
     }
 
     setupNodes() {
-        this.inNode1 = this.context.createDelay(1);
-        this.inNode2 = this.context.createDelay(1);
+        this.inNode = this.context.createGain();
+        this.delayNode1 = this.context.createDelay(1);
+        this.delayNode2 = this.context.createDelay(1);
         this.outNode = this.context.createGain();
         this.frequency = this.context.createConstantSource();
         this.frequency.start(0);
@@ -72,20 +73,20 @@ class ScPitch extends ScModule {
         this.scale3.curve = gCurve;
         this.clfo.outNode.connect(this.scale3);
 
-        this.inNode1.delayTime.cancelScheduledValues(0);
-        this.inNode1.delayTime.setValueAtTime(0, 0);
-        this.inNode2.delayTime.cancelScheduledValues(0);
-        this.inNode2.delayTime.setValueAtTime(0, 0);
-        this.lfo1Out.connect(this.inNode1.delayTime);
-        this.lfo2Out.connect(this.inNode2.delayTime);
+        this.delayNode1.delayTime.cancelScheduledValues(0);
+        this.delayNode1.delayTime.setValueAtTime(0, 0);
+        this.delayNode2.delayTime.cancelScheduledValues(0);
+        this.delayNode2.delayTime.setValueAtTime(0, 0);
+        this.lfo1Out.connect(this.delayNode1.delayTime);
+        this.lfo2Out.connect(this.delayNode2.delayTime);
 
         this.crossfade = new ScCrossFade(this.context);
         this.crossfade.fader.offset.cancelScheduledValues(0);
         this.crossfade.fader.offset.setValueAtTime(0, 0);
         this.scale3.connect(this.crossfade.fader.offset);
 
-        this.inNode1.connect(this.crossfade.inNode1);
-        this.inNode2.connect(this.crossfade.inNode2);
+        this.delayNode1.connect(this.crossfade.inNode1);
+        this.delayNode2.connect(this.crossfade.inNode2);
         this.lfo1.osc.frequency.cancelScheduledValues(0);
         this.lfo1.osc.frequency.setValueAtTime(0, 0);
         this.lfo2.osc.frequency.cancelScheduledValues(0);
@@ -109,7 +110,8 @@ class ScPitch extends ScModule {
     set pitch(cents) {
         let interval = cents / 100;
         let ratio = Math.pow(2, (interval/12));
-        let slope = 1.2 * Math.abs(1 - ratio) / this.frequency.offset.value;
+        //let slope = 1.2 * Math.abs(1 - ratio) / this.frequency.offset.value;
+        let slope = Math.abs(1 - ratio) / this.frequency.offset.value;
         console.log('slope: ', slope);
         if (interval < 0) {
             this.lfo1Mul.gain.value = slope;
