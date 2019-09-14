@@ -12,7 +12,7 @@ import Modal from "react-bootstrap/Modal";
 const blockApp = combineReducers({
   blocks
 });
-import { FormInput } from "../form";
+import FormInput from "../form/FormInput";
 // #endregion
 
 export const store = createStore(blockApp);

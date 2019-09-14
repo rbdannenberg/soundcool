@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { FormInput } from "../form";
-import { registerUser } from './actions';
-import { showToastr, showToastrError } from '../common';
+import FormInput from "../form/FormInput.jsx";
+import { registerUser } from "./actions";
+import { showToastr, showToastrError } from "../common";
 
 class RegisterForm extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class RegisterForm extends Component {
         else {
           showToastr("success", "User registered successfully");
           localStorage.setItem("token", data.token);
-          if(this.props.afterRegister) this.props.afterRegister();
+          if (this.props.afterRegister) this.props.afterRegister();
         }
       })
       .catch(error => {

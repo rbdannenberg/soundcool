@@ -13,7 +13,7 @@ import {
   cloneProject
 } from "./actions";
 import Modal from "react-bootstrap/Modal";
-import { FormInput } from "../form";
+import FormInput from "../form/FormInput.jsx";
 
 class Projects extends Component {
   constructor() {
@@ -100,13 +100,11 @@ class Projects extends Component {
       });
   }
   cloneProject(projectId) {
-    cloneProject({projectId})
+    cloneProject({ projectId })
       .then(data => {
-        if(data.error){
+        if (data.error) {
           showToastr("success", "Project can't be cloned");
-        }
-        else
-        {
+        } else {
           showToastr("success", "Project cloned successfully");
           localStorage.setItem(
             "project" + data.project_id,
