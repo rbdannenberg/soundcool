@@ -76,8 +76,8 @@ class ScPitch extends ScModule {
 
         this.inNode.connect(this.delayNode1);
         this.inNode.connect(this.delayNode2);
-        this.delayNode1.connect(this.crossfade.delayNode1);
-        this.delayNode2.connect(this.crossfade.delayNode2);
+        this.delayNode1.connect(this.crossfade.inNode1);
+        this.delayNode2.connect(this.crossfade.inNode2);
         this.lfo1.node.playbackRate.cancelScheduledValues(0);
         this.lfo1.node.playbackRate.setValueAtTime(0, 0);
         this.lfo2.node.playbackRate.cancelScheduledValues(0);
