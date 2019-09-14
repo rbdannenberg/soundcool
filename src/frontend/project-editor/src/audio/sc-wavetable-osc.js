@@ -21,6 +21,7 @@ class WaveTableOscillator {
         let imag = new Float32Array(periodicWaveSize);
         this._partialCount = 0;
         this._partials = [];
+        let partialCount = 0;
         for (let n = 1; n < periodicWaveSize; ++n){
             let piFactor = 2 / (n * Math.PI);
             let b;
