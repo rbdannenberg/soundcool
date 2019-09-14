@@ -5,7 +5,7 @@ class ScSignalGen extends ScModule {
 
     constructor(context, options={}) {
         super(context);
-        let defOpts = {'waveType':'White Noise',
+        let defOpts = {'waveType':'Silence',
                        'freq':440,
                        'mod':'No Mod',
                        'modParam':1.0};

@@ -6,6 +6,7 @@ export const loginUser = payload => {
     const url = loginUrl();
     return postRequest(url, payload);
   };
-  export const redirectToRoot = () => {
-    window.location = '/';
+  export const redirectToHome = () => {
+    window.location = '/home';
   };
+  

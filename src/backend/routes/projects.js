@@ -127,8 +127,8 @@ router.post("/clone", (req, res) => {
             projectFiles.forEach(file => {
               console.log(file);
               fs.copyFileSync(
-                "./public/" + file.oldValue,
-                "./public/" + file.newValue,
+                "./public" + file.oldValue,
+                "./public" + file.newValue,
                 err => {
                   if (err) throw err;
                 }
