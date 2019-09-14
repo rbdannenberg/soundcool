@@ -66,8 +66,9 @@ const specValues = {
   },
   Pitch: {
     color: toHex(220, 105, 216),
-    cents: 0,
+    pitch: 0,
     kinect: false,
+    grainSize: 0.1,
     osc: undefined
   },
   VSTHost: {

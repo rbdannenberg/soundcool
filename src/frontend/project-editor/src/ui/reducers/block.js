@@ -7,6 +7,7 @@ import ScPlayer from "../../audio/sc-player";
 import ScPan from "../../audio/sc-pan";
 import ScOscilloscope from "../../audio/sc-oscilloscope";
 import ScSpectroscope from "../../audio/sc-spectroscope";
+import ScPitch from "../../audio/sc-pitch-phasor";
 
 const eva = typeName => {
   let t;
@@ -37,9 +38,9 @@ const eva = typeName => {
     case "DirectInput":
       t = new ScDirectIn(scContext);
       break;
-    // case "Pitch":
-    //   t = new ScPitch(scContext);
-    //   break;
+    case "Pitch":
+      t = new ScPitch(scContext);
+      break;
     // case "VSTHost":
     //   t = new ScVSTHost(scContext);
     //   break;
