@@ -1,14 +1,14 @@
 import React from "react";
 import changeBlock from "../../../handlers";
-import {store} from "../../../index";
+import store from "../../../index";
 
 const Pitch = ({ blockInfo }) => {
-  let { id, cents } = blockInfo;
+  let { id, pitch, grainSize } = blockInfo;
   return (
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "62px", position: "relative" }}
+        style={{ width: "288px", height: "102px", position: "relative" }}
       >
         <label
           htmlFor="cents"
@@ -22,10 +22,9 @@ const Pitch = ({ blockInfo }) => {
         >
           {"Cents: "}
         </label>
-
         <input
           type="number"
-          value={cents}
+          value={pitch}
           style={{
             position: "absolute",
             width: "30px",
@@ -34,7 +33,7 @@ const Pitch = ({ blockInfo }) => {
             top: "5px",
             fontSize: "0.7rem"
           }}
-          onChange={e => changeBlock(id, "cents", e.target.value)}
+          onChange={e => changeBlock(id, "pitch", e.target.value)}
         />
 
         <div className="text-center">
@@ -51,13 +50,13 @@ const Pitch = ({ blockInfo }) => {
               store.dispatch({
                 type: "CHANGE_BLOCK",
                 id: id,
-                field: "cents",
+                field: "pitch",
                 value: e.target.value
               });
             }}
-            min={-400}
-            max={400}
-            value={cents}
+            min={-1200}
+            max={1200}
+            value={pitch}
             id="cents"
           />
           <div
@@ -68,7 +67,7 @@ const Pitch = ({ blockInfo }) => {
               className="float-left"
               style={{ position: "absolute", left: "5px" }}
             >
-              -400
+              -1200
             </span>
             <span
               className="float-center"
@@ -80,10 +79,36 @@ const Pitch = ({ blockInfo }) => {
               className="float-right"
               style={{ position: "absolute", left: "235px" }}
             >
-              +400
+              +1200
             </span>
           </div>
         </div>
+
+        <label
+          htmlFor="grainSize"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            right: "64px",
+            top: "60px"
+          }}
+          className="float-right mx-2"
+        >
+          {"GrainSize: "}
+        </label>
+        <input
+          type="number"
+          value={grainSize}
+          style={{
+            position: "absolute",
+            width: "50px",
+            height: "16px",
+            right: "10px",
+            top: "60px",
+            fontSize: "0.7rem"
+          }}
+          onChange={e => changeBlock(id, "grainSize", e.target.value)}
+        />
       </div>
 
       <div

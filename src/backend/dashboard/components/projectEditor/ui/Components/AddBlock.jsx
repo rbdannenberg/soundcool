@@ -3,6 +3,7 @@ import {store} from "../../index";
 import specValues from "./blockSpecs";
 
 const addBlock = typeName => {
+  console.log(specValues)
   store.dispatch({
     type: "ADD_BLOCK",
     typeName,
@@ -66,8 +67,8 @@ const AddBlock = () => {
           <div className="dropdown-item" onClick={() => addBlock("Record")}>
             Record
           </div>
-          <div className="dropdown-item" onClick={() => addBlock("Spectralscope")}>
-            Spectralscope
+          <div className="dropdown-item" onClick={() => addBlock("Spectroscope")}>
+            Spectroscope
           </div>
           <div className="dropdown-item" onClick={() => addBlock("Oscilloscope")}>
             Oscilloscope

@@ -19,7 +19,7 @@ router.get("/get", (req, res) => {
   const QUERY = `select *,(CASE WHEN user=${user_id} THEN 0 ELSE user END)as isOwner from projects where user=${user_id} or sharedUsers like '%"user_id":${user_id}%' or isPublic =true`;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      console.log("come to error");
+      console.log(err);
       return res.send(err);
     } else {
       return res.json({
@@ -38,7 +38,7 @@ router.patch("/update", (req, res) => {
   const QUERY = UPDATE_PROJECT_CONTENT;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      console.log("come to error");
+      console.log(err);
       return res.send(err);
     } else {
       return res.json({
@@ -175,7 +175,7 @@ router.patch("/remove", (req, res) => {
   const QUERY = DELETE_PROJECT;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      console.log("come to error");
+      console.log(err);
       return res.send(err);
     } else {
       return res.json({

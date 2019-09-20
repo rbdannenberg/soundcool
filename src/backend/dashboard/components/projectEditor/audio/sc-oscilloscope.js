@@ -1,5 +1,5 @@
-import ScModule from './sc-module';
-import ScAnalyzer from './sc-analyzer';
+import ScModule from './sc-module.js';
+import ScAnalyzer from './sc-analyzer.js';
 
 class ScOscilloscope extends ScModule {
 
