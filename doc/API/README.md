@@ -22,7 +22,7 @@ Token is provided with the request:
 * [User Projects](projects/get.md) : `GET /api/v1/projects/get`
 * [Create Project](projects/new.md) : `POST /api/v1/projects/new`
 * [Update Project](projects/update.md) : `PATCH /api/v1/projects/update`
-* [Clone Project](projects/clone.md) : `POST `
+* [Clone Project](projects/clone.md) : `POST /api/v1/projects/clone`
 * [Remove Project](projects/remove.md) : `PATCH /api/v1/projects/remove`
 * [Share with a User](projects/sharing/add.md) : `PATCH /api/v1/projects/addShare`
 * [Remove a user from sharing pool](projects/sharing/remove.md) : `PATCH /api/v1/projects/removeShare`
