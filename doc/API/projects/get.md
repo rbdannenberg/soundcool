@@ -8,7 +8,7 @@ Get the details of the all projects owned or shared with current user.
 
 **Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : Owned or Shared with current user
 
 ## Success Response
 

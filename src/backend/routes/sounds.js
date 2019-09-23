@@ -29,13 +29,13 @@ router.get("/get", (req, res) => {
   connection.query(QUERY, (err, audios) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       let QUERY = `select * from audioSharing where user_id=${user_id}`;
       connection.query(QUERY, (err, sharing) => {
         if (err) {
           console.log(err);
-          return res.send(err);
+          return res.json({err:err});
         } else {
           if (!sharing[0]) {
             let QUERY = `insert into audioSharing values(${user_id},false)`;
@@ -59,13 +59,13 @@ router.post("/upload", upload.single("file"), (req, res) => {
   const QUERY = `insert into sounds(user,name) values(${user_id},'${req.file.originalname}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       const soundId = results.insertId;
       const QUERY = `insert into soundsLocation values(${soundId},'${fileLocation}')`;
       connection.query(QUERY, (err, results) => {
         if (err) {
-          return res.send(err);
+          return res.json({err:err});
         } else {
           return res.json({
             sound_id:soundId,
@@ -86,23 +86,23 @@ router.post("/remove", upload.single("file"), (req, res) => {
   connection.query(QUERY, (err, result) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       const QUERY = `delete from soundsLocation where sound_id = ${soundId}`;
       connection.query(QUERY, (err, results) => {
         if (err) {
           console.log(err);
-          return res.send(err);
+          return res.json({err:err});
         } else {
           const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
           connection.query(QUERY, (err, results) => {
             if (err) {
               console.log(err);
-              return res.send(err);
+              return res.json({err:err});
             } else {
               fs.unlinkSync("./public" + result[0]['fileLocation']);
               return res.json({
-                data: results
+                message: "Media Removed successfully"
               });
             }
           });
@@ -121,7 +121,7 @@ router.post("/toggleAudioSharing", (req, res) => {
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         data: "Audio Sharing Updated Successfully",
@@ -141,7 +141,7 @@ router.get('/serveAudio/:audioId/:token', function(req, res) {
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       var music = './public'+results[0]['fileLocation'];
 
