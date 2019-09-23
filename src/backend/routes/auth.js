@@ -18,7 +18,9 @@ exports.singIn = router.post("/sign_in", (req, res) => {
     } else {
       if (results.length === 0) {
         console.log("Invalid email and password combination.");
-        res.send("hello2");
+        res.json({
+          non_field_errors: ["Unable to login with provided credentials."]
+        });
       } else {
         const user = results[0];
         // the password is encrypted, so we need to compare it.
@@ -30,7 +32,9 @@ exports.singIn = router.post("/sign_in", (req, res) => {
           });
           console.log("Login successful");
         } else {
-          console.log("Invalid email and password combination.");
+          res.json({
+            non_field_errors: ["Unable to login with provided credentials."]
+          })
         }
       }
     }
@@ -45,8 +49,10 @@ router.post("/register", (req, res) => {
   connection.query(CREATE_NEW_USER, (err, results) => {
     if (err) {
       if (err.code == "ER_DUP_ENTRY")
-        res.json({res:"error", error: "User already exist" });
-      else res.send(err);
+        res.json({ res: "error", error: "User already exist" });
+      else  res.json({
+        non_field_errors: ["Unable to register with provided credentials."]
+      });
     } else {
       const token = jwt.sign({ id: results.insertId }, "jwtPrivateKey");
       res.json({
