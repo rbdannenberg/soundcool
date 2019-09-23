@@ -8,7 +8,6 @@ const helmet = require("helmet");
 const connection = require("./db");
 const sounds = require("./routes/sounds.js");
 const projects = require("./routes/projects.js");
-const users = require("./routes/users.js");
 var auth = require("./routes/auth.js");
 
 const PORT = process.env.PORT || 5000;
@@ -22,9 +21,7 @@ app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use("/api/v1/sounds", sounds);
-app.use("/api/sounds", sounds);
 app.use("/api/v1/projects", projects);
-app.use("/api/users", users);
 app.use("/api/v1/user", auth);
 
 if (app.get("env") === "development") {

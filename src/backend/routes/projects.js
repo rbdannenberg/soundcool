@@ -20,7 +20,7 @@ router.get("/get", (req, res) => {
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         data: results
@@ -39,7 +39,7 @@ router.patch("/update", (req, res) => {
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         message: "Project Updated successfully"
@@ -57,13 +57,13 @@ router.post("/new", (req, res) => {
   const QUERY = CREATE_NEW_PROJECT;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       const QUERY =
         SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${results.insertId}`;
       connection.query(QUERY, (err, results) => {
         if (err) {
-          return res.send(err);
+          return res.json({err:err});
         } else {
           return res.json(results[0]);
         }
@@ -86,13 +86,14 @@ router.post("/clone", (req, res) => {
   let content;
   connection.query(QUERY, (err, projects) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       if (projects[0] && projects[0]["content"]) {
         projectName = projects[0]['name'];
         projectDescription =projects[0]['description'];
         project = JSON.parse(projects[0]["content"]);
         project.bs.forEach(block => {
+          console.log(block)
           if (block["file"]) {
             let oldValue = block["file"]["fileLocation"];
             block["file"]["fileLocation"] =
@@ -118,7 +119,7 @@ router.post("/clone", (req, res) => {
       console.log(QUERY);
       connection.query(QUERY, (err, results) => {
         if (err) {
-          return res.send(err);
+          return res.json({err:err});
         } else {
           const allowed = results.every(share => {
             return share["sharing"] == 1;
@@ -141,13 +142,13 @@ router.post("/clone", (req, res) => {
             const QUERY = CREATE_NEW_PROJECT;
             connection.query(QUERY, (err, results) => {
               if (err) {
-                return res.send(err);
+                return res.json({err:err});
               } else {
                 const QUERY =
                   SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${results.insertId}`;
                 connection.query(QUERY, (err, results) => {
                   if (err) {
-                    return res.send(err);
+                    return res.json({err:err});
                   } else {
                     return res.json(results[0]);
                   }
@@ -176,7 +177,7 @@ router.patch("/remove", (req, res) => {
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         message: "Project Removed successfully"
@@ -192,13 +193,13 @@ router.patch("/addShare", (req, res) => {
   else QUERY = `select * from users WHERE email = '${userEmail}'`;
   connection.query(QUERY, (err, users) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       if (users[0]) {
         const QUERY = `select user,sharedUsers from projects WHERE project_id = ${projectId}`;
         connection.query(QUERY, (err, results) => {
           if (err) {
-            return res.send(err);
+            return res.json({err:err});
           } else {
             if (results[0]["user"] != users[0]["user_id"]) {
               var sharedUsers = results[0]["sharedUsers"];
@@ -216,7 +217,7 @@ router.patch("/addShare", (req, res) => {
               const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
               connection.query(QUERY, (err, results) => {
                 if (err) {
-                  return res.send(err);
+                  return res.json({err:err});
                 } else {
                   return res.json({
                     data: sharedUsers,
@@ -245,7 +246,7 @@ router.patch("/removeShare", (req, res) => {
   const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         data: sharedUsers,
@@ -260,7 +261,7 @@ router.patch("/setPublic", (req, res) => {
   const QUERY = `UPDATE projects SET isPublic = ${isPublic} WHERE project_id = ${projectId}`;
   connection.query(QUERY, (err, results) => {
     if (err) {
-      return res.send(err);
+      return res.json({err:err});
     } else {
       return res.json({
         message: isPublic
