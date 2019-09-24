@@ -1,0 +1,52 @@
+\documentclass[20pt]{article}
+\usepackage{graphicx}
+\setlength\parindent{0pt}
+\begin{document}
+\title{Pitch Shift Specification}
+\maketitle
+
+\section*{Terminology}
+
+R = audio sampling rate\\
+t = transposition expressed as a ratio e.g. 3/2 means up a fifth\\
+$f_{saw}$ = frequency of sawtooth wave\\
+s = upperbound of the delayTime audio param (also the peak amplitude of sawtooth modulating delay lines)\\
+
+\section*{Variables}
+\begin{itemize}
+\item grainSize:  this will be 1 period of sawtooth LFOs ($1/f_{saw}$). Range: [0.01, 0.1] seconds. Default: 0.1 s.
+\item pitch: the amount of pitch shift. Shift of zero is same as input. Range: [-1200, 1200] cents. Default: 0 cents.
+\end{itemize}
+
+\section*{Implementing setters}
+\subsection*{Setting pitch}
+If the mapping is 1:1, we get no transposition. If the mapping has slope 2, then every second of output plays 2 seconds of input, so the transposition is one octave up. Similarly, if slope = 1/2, we cover only 0.5 seconds of input per second, so the transposition is one octave down. The slope of the mapping is always 1 minus the slope of the delay amount. Not derived here, but if the delay is the constant 0, we still get a slope of 1, and if the delay increases at slope 1s per s, the mapping from output to input is a constant, so the slope is 0. 
+So: \\
+\\
+\begin{equation}
+t = Slope_{mapping} = 1 - Slope_{saw}.
+\end{equation}
+\\
+\newpage
+\noindent Slope of sawtooth is given by \\\\
+$ = \frac{\Delta y_{saw}}{\Delta x_{saw}}$\\
+\\
+$ = \frac{s}{1 / f_{saw}}$
+\begin{equation}
+Slope_{saw} = f_{saw} * s
+\end{equation}
+
+From equations (1) and (2) and solving for $s$, we get:
+\begin{equation}
+s = \frac{(1-t)}{f_{saw}}
+\end{equation} 
+
+To be concrete, the slope will be positive if pitch is to be shifted down and negative if the pitch is to be shifted up. In the implementation we compute the absolute slope and rescale the range to get correct signed slope.
+
+
+\subsection*{Setting grainSize}
+If users alter grain size, we change the frequency ($f_{saw}$ = 1/grainSize) to user specified value and recompute the slope using the above setter.
+
+
+
+\end{document}
