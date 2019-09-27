@@ -255,7 +255,7 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
           {outButton}
         </span>
       </div>
-      <Collapse isOpen={collapse}>
+      <Collapse isOpen={!collapse}>
         <Block blockInfo={blockInfo} />
       </Collapse>
     </div>

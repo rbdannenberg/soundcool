@@ -50,7 +50,7 @@ const SignalGen = ({ blockInfo }) => {
           value={frequency}
           style={{
             position: "absolute",
-            width: "40px",
+            width: "60px",
             height: "16px",
             left: "110px",
             top: "7px",

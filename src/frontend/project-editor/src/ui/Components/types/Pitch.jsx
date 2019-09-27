@@ -15,7 +15,7 @@ const Pitch = ({ blockInfo }) => {
           style={{
             fontSize: "0.8rem",
             position: "absolute",
-            right: "34px",
+            right: "64px",
             top: "4px"
           }}
           className="float-right mx-2"
@@ -27,7 +27,7 @@ const Pitch = ({ blockInfo }) => {
           value={pitch}
           style={{
             position: "absolute",
-            width: "30px",
+            width: "50px",
             height: "16px",
             right: "10px",
             top: "5px",

@@ -3,7 +3,7 @@ import store from "../../../index";
 import changeBlock from "../../../handlers";
 
 const Delay = ({ blockInfo }) => {
-  let { id, delayTime, feedback } = blockInfo;
+  let { id, delayTime, delayFeedback } = blockInfo;
   return (
     <React.Fragment>
       <div
@@ -61,11 +61,11 @@ const Delay = ({ blockInfo }) => {
             top: "24px",
             left: "6px"
           }}
-          onChange={e => changeBlock(id, "feedback", e.target.value)}
+          onChange={e => changeBlock(id, "delayFeedback", e.target.value)}
           step={0.001}
           min={0}
           max={1}
-          value={feedback}
+          value={delayFeedback}
           id="feedback"
         />
         <span
@@ -81,7 +81,7 @@ const Delay = ({ blockInfo }) => {
         </span>
         <input
           type="number"
-          value={feedback}
+          value={delayFeedback}
           style={{
             position: "absolute",
             width: "40px",
@@ -90,7 +90,7 @@ const Delay = ({ blockInfo }) => {
             top: "24px",
             fontSize: "0.7rem"
           }}
-          onChange={e => changeBlock(id, "feedback", e.target.value)}
+          onChange={e => changeBlock(id, "delayFeedback", e.target.value)}
         />
       </div>
 
