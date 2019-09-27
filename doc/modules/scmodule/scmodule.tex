@@ -1,0 +1,37 @@
+\documentclass[20pt]{article}
+\usepackage{graphicx}
+\setlength\parindent{0pt}
+\usepackage{amsfonts}
+\usepackage{courier}
+\begin{document}
+\title{Soundcool's ScModule Specification}
+\maketitle
+
+This is a specification for the \texttt{ScModule} superclass that implements methods common to all soundcool modules.
+\section*{Attributes}
+\subsubsection*{\texttt{context:window.AudioContext}}
+instance of Web Audio context to be imported from \texttt{sc-context.js}.
+\subsubsection*{\texttt{inputs:Array}}
+\texttt{JS Array} containing all inputs to that soundcool module.  
+\subsubsection*{\texttt{outputs:Array}}
+\texttt{JS Array} containing all outputs to that soundcool module.
+
+
+\section*{Methods}
+\subsubsection*{\texttt{connectTo(destination, sourceOutIndex, destInIndex)}}
+\begin{itemize}
+\item \texttt{destination}: an instance of a class that inherits \texttt{ScModule}. Specifies which module object to connect to.
+\item \texttt{sourceOutIndex}: integer index of the source's \texttt{outputs} attribute. (default: 0)
+\item \texttt{destInIndex}: integer index of the \texttt{destination}'s \texttt{inputs} attribute. (default: 0)
+\end{itemize}
+This method is used to connect two instantiated soundcool objects.
+
+\subsubsection*{\texttt{disconnect(destination, sourceOutIndex, destInIndex)}}
+\begin{itemize}
+\item \texttt{destination}: an instance of a class that inherits \texttt{ScModule}. Specifies which module object to disconnect.
+\item \texttt{sourceOutIndex}: integer index of the source's \texttt{outputs} attribute. (default: 0)
+\item \texttt{destInIndex}: integer index of the \texttt{destination}'s \texttt{inputs} attribute. (default: 0)
+\end{itemize}
+This method is used to disconnect two already connected soundcool objects.
+
+\end{document}
