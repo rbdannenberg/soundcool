@@ -2,3 +2,7 @@
 node_modules/
 .env
 build
+*.aux
+*.log
+*.synctex.gz
+*.swp
