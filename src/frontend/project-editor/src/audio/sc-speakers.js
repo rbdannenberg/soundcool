@@ -21,6 +21,9 @@ class ScSpeakers extends ScModule {
         this.inNode.connect(this.outNode);
         this.splitter.connect(this.analyzerL.inNode, 0);
         this.splitter.connect(this.analyzerR.inNode, 1);
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
     getAudioData() {

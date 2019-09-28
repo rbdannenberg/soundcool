@@ -27,6 +27,9 @@ class ScSignalGen extends ScModule {
         this.waveform = this.options.waveType;
         this.frequency = parseInt(this.options.freq);
         this.modParam = parseFloat(this.options.modParam);
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
     connectNodes() {

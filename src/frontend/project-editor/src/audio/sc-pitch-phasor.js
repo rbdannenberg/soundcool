@@ -96,6 +96,9 @@ class ScPitch extends ScModule {
         this.clfo.osc.start(currentTime);
 
         this.grainSize = this.options.grainSize;
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
     set pitch(cents) {

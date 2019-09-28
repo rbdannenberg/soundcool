@@ -12,6 +12,9 @@ class ScPan extends ScModule {
     setupNodes() {
         this.inNode = this.outNode = this.context.createStereoPanner();
         this.pan = this.options.panVal;
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
     set pan(value){
