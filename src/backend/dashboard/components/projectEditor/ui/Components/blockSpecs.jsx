@@ -25,8 +25,9 @@ const specValues = {
   Player: {
     inDisabled: true,
     color: toHex(229, 119, 125),
+    disabled: true,
     playing: false,
-    reversed: false,
+    reverse: false,
     loop: false,
     speed: 1,
     volume: 60,
@@ -66,7 +67,7 @@ const specValues = {
   },
   Pitch: {
     color: toHex(220, 105, 216),
-    pitch:0,
+    pitch: 0,
     kinect: false,
     grainSize: 0.1,
     osc: undefined

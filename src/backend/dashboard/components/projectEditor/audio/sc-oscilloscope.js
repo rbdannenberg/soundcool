@@ -16,6 +16,8 @@ class ScOscilloscope extends ScModule {
     setupNodes() {
         this.analyzerNode = new ScAnalyzer(this.context, this.options);
         this.inNode = this.analyzerNode.inNode;
+
+        this.inputs.push(this.inNode);
     }
 
     getAudioData() {

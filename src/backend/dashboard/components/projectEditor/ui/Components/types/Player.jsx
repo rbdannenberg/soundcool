@@ -30,17 +30,43 @@ class Player extends React.Component {
       hour,
       minute,
       second,
-      file
+      file,
+      disabled,
+      audioObj
     } = this.props.blockInfo;
-    let audio;
-    if(file){
-      audio = new Audio(serveAudio(file.sound_id));
+    console.log(audioObj);
+    if (file) {
+      console.log("hello");
+      // audio = new Audio(serveAudio(file.sound_id));
+      let url = serveAudio(file.sound_id);
+      console.log(url);
+      console.log("audioObj is: ");
+      console.log(audioObj);
+      window.foo = audioObj;
+      let loadPromise = audioObj.load(url);
+      loadPromise.then(function(value) {
+        console.log(value);
+      });
+      /*
+      let fetchAudio = new Promise((resolve, reject) => {
+        let seconds = audioObj.load(url);
+        resolve(seconds);
+      });
+      fetchAudio
+        .then(seconds => {
+          console.log("good");
+          // changeBlock()
+        })
+        .catch(() => {
+          console.log("bad");
+        });*/
     }
     const onSoundSelect = audio_id => {
       changeBlock(id, "file", audio_id);
     };
     const playMusic = () => {
-      audio.play();
+      audioObj.start();
+      changeBlock(id, "playing", undefined);
     };
     return (
       <React.Fragment>
@@ -150,7 +176,10 @@ class Player extends React.Component {
                 position: "absolute",
                 left: "78px"
               }}
-              onClick={playMusic}
+              onClick={() => {
+                audioObj.start();
+                changeBlock(id, "playing", undefined);
+              }}
             >
               <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
             </button>
@@ -161,7 +190,10 @@ class Player extends React.Component {
                 position: "absolute",
                 left: "120px"
               }}
-              onClick={() => audio.pause()}
+              onClick={() => {
+                audioObj.stop();
+                changeBlock(id, "playing", undefined);
+              }}
             >
               <FaSquare style={{ fontSize: "12px" }} />
             </button>
@@ -172,7 +204,7 @@ class Player extends React.Component {
                 position: "absolute",
                 left: "160px"
               }}
-              onClick={() => changeBlock(id, "reversed", undefined)}
+              onClick={() => changeBlock(id, "reverse", undefined)}
             >
               <FaPlay
                 style={{
@@ -188,7 +220,7 @@ class Player extends React.Component {
             className="progress progress-bar-vertical"
             style={{
               position: "absolute",
-              left: "220px",
+              left: "240px",
               top: "25px",
               height: "110px",
               width: "15px",
@@ -209,7 +241,7 @@ class Player extends React.Component {
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              left: "230px",
+              left: "250px",
               top: "5px"
             }}
           >

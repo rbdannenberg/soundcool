@@ -37,6 +37,9 @@ class ScEnvelope extends ScModule {
         let now = this.context.currentTime;
         this.sustain.start(now);
         this.envelope.start(now);
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
 

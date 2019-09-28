@@ -22,6 +22,9 @@ class ScDelay extends ScModule {
 
         this.delayNode.delayTime.value = this.options.delayTime;
         this.delayGain.gain.value = this.options.feedback;
+
+        this.inputs.push(this.inNode);
+        this.outputs.push(this.outNode);
     }
 
     set delayFeedback(val) {

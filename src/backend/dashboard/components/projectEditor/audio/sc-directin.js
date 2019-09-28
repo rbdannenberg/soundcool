@@ -5,12 +5,12 @@ function connectStream(stream) {
     this.outNode = this.context.createGain();
     this.inNode.connect(this.outNode);
 
-    this.connPromise.resolve();
+    this.inputs.push(this.inNode);
+    this.outputs.push(this.outNode);
 }
 
 function connectError(error) {
     console.error('ScDirectIn: '+error.message);
-    this.connPromise.reject();
 }
 
 class ScDirectIn extends ScModule {
