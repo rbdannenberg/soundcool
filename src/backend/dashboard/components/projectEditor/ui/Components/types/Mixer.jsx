@@ -1,5 +1,5 @@
 import React from "react";
-import {store} from "../../../index";
+import store from "../../../index";
 
 const Channel = ({ num, name, id, inNode, volume, audioObj }) => {
   return (

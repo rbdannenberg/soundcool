@@ -7,7 +7,7 @@ const Routing = ({ blockInfo }) => {
   return (
     <React.Fragment>
       <div
-        className=""
+        class=""
         style={{ position: "relative", height: "170px", color: "white" }}
       >
         <div className="" style={{ position: "absolute" }}>

@@ -1,5 +1,5 @@
 import React from "react";
-import {store} from "../../../index";
+import store from "../../../index";
 import changeBlock from "../../../handlers";
 import { FaPlay, FaSquare } from "react-icons/fa";
 
@@ -68,7 +68,7 @@ const IndividualPlayer = ({ id, num, file }) => {
       </button>
 
       <div
-        className="dropdown"
+        class="dropdown"
         style={{
           position: "absolute",
           top: "40px",
@@ -91,11 +91,11 @@ const IndividualPlayer = ({ id, num, file }) => {
           {file}
         </button>
         <div
-          className="dropdown-menu"
+          class="dropdown-menu"
           style={{ fontSize: "0.8rem" }}
           aria-labelledby="file dropdown"
         >
-          {/* <div className="dropdown-item" onClick={() => changeMod("No Mod", id)}>
+          {/* <div class="dropdown-item" onClick={() => changeMod("No Mod", id)}>
               No Mod
             </div> */}
         </div>

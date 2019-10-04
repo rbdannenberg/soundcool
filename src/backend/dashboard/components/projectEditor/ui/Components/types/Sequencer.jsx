@@ -1,5 +1,7 @@
 import React from "react";
+import "../../../index.css";
 import changeBlock from "../../../handlers";
+import {store} from "../../../index";
 import {
   FaArrowRight,
   FaArrowLeft,
@@ -201,7 +203,7 @@ const Beat = ({
 
         {/* Waveform dropdown */}
         <div
-          className="dropdown"
+          class="dropdown"
           style={{
             position: "absolute",
             top: "23px",
@@ -224,12 +226,12 @@ const Beat = ({
             {waveform}
           </button>
           <div
-            className="dropdown-menu"
+            class="dropdown-menu"
             style={{ fontSize: "0.8rem" }}
             aria-labelledby="waveform dropdown"
           >
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => {
                 changeWaveform("Silence", id, num);
               }}
@@ -237,37 +239,37 @@ const Beat = ({
               Silence
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("Sine Wave", id, num)}
             >
               Sine Wave
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("Triangle", id, num)}
             >
               Triangle
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("Square", id, num)}
             >
               Square
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("Sawtooth", id, num)}
             >
               Sawtooth
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("White Noise", id, num)}
             >
               White Noise
             </div>
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeWaveform("Pink Noise", id, num)}
             >
               Pink Noise
@@ -276,7 +278,7 @@ const Beat = ({
         </div>
         {/* Mods dropdown */}
         <div
-          className="dropdown"
+          class="dropdown"
           style={{
             position: "absolute",
             top: "48px",
@@ -299,23 +301,23 @@ const Beat = ({
             {modulation}
           </button>
           <div
-            className="dropdown-menu"
+            class="dropdown-menu"
             style={{ fontSize: "0.8rem" }}
             aria-labelledby="mod dropdown"
           >
             <div
-              className="dropdown-item"
+              class="dropdown-item"
               onClick={() => changeMod("No Mod", id, num)}
             >
               No Mod
             </div>
-            <div className="dropdown-item" onClick={() => changeMod("RM", id, num)}>
+            <div class="dropdown-item" onClick={() => changeMod("RM", id, num)}>
               RM
             </div>
-            <div className="dropdown-item" onClick={() => changeMod("AM", id, num)}>
+            <div class="dropdown-item" onClick={() => changeMod("AM", id, num)}>
               AM
             </div>
-            <div className="dropdown-item" onClick={() => changeMod("FM", id, num)}>
+            <div class="dropdown-item" onClick={() => changeMod("FM", id, num)}>
               FM
             </div>
           </div>
