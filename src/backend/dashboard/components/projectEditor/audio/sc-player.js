@@ -1,95 +1,120 @@
-import ScModule from "./sc-module.js";
+import ScModule from './sc-module.js';
 
-function createBuffer(buffer) {
-  this.buffer = buffer;
-  this.inNode.loop = this.options.loop;
-  this.inNode.playbackRate.value = this.options.speed;
-  this.inNode.buffer = buffer;
-  if (this.options.reverse) {
-    this.reverse = this.options.reverse;
-  }
-  // this.p1.resolve("foo");
-  // this.inNode.connect(this.outNode);
+function loadBufferSuccess(buffer) {
+    this.buffer = buffer;
+    this.duration = this.buffer.duration;
+    this.bufferChannels = this.buffer.numberOfChannels;
+    this.loadPromise.resolve(this.duration);
 }
 
-function createBufferError(error) {
-  console.error("ScPlayer: " + error.message);
+function loadBufferError(error) {
+    console.error('ScPlayer: '+error.message);
+    this.loadPromise.reject();
 }
 
 class ScPlayer extends ScModule {
-  constructor(context, options = {}) {
-    super(context);
-    let defOpts = {
-      path: "",
-      loop: false,
-      speed: 1.0,
-      reverse: false
-    };
-    this.options = Object.assign(defOpts, options);
-    this.createBuffer = createBuffer.bind(this);
-    this.createBufferError = createBufferError.bind(this);
-    this.setupNodes();
-  }
 
-  setupNodes() {
-    this.inNode = this.context.createBufferSource();
-    this.outNode = this.context.createGain();
-    this.inNode.connect(this.outNode);
+    constructor(context, options={}) {
+        super(context);
+        let defOpts = {
+            'path' : '',
+            'loop' : false,
+            'speed' : 1.0,
+            'reverse' : false
+        };
+        this.offset = 0;
+        this.options = Object.assign(defOpts, options);
+        this.loadBufferSuccess = loadBufferSuccess.bind(this);
+        this.loadBufferError = loadBufferSuccess.bind(this);
+        this.setupNodes();
+    }
 
-    this.inputs.push(this.inNode);
-    this.outputs.push(this.outNode);
-  }
+    setupNodes() {
+        this.inNode = this.context.createBufferSource();
+        this.outNode = this.context.createGain();
+        this.inNode.connect(this.outNode);
 
-  load(path) {
-    this.options.path = path;
-    this.p1 = new Promise();
-    let request = new XMLHttpRequest();
-    request.open("GET", this.options.path, true);
-    request.responseType = "arraybuffer";
-    request.onload = function(progressEvent) {
-      this.context.decodeAudioData(
-        progressEvent.target.response,
-        this.createBuffer,
-        this.createBufferError
-      );
-    }.bind(this);
-    request.send();
-    return this.p1;
-  }
+        this.outputs.push(this.outNode);
+    }
 
-  start() {
-    this.inNode.start(0);
-  }
 
-  stop() {}
+    load(path) {
+        this.offset = 0;
+        this.options.path = path;
+        let res, rej;
+        this.loadPromise = new Promise(function(resolve, reject) {
+            res = resolve;
+            rej = reject;
+        });
+        this.loadPromise.resolve = res;
+        this.loadPromise.reject = rej;
+        let request = new XMLHttpRequest();
+        request.open('GET', this.options.path, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function(progressEvent) {
+            this.context.decodeAudioData(progressEvent.target.response,
+                this.loadBufferSuccess,
+                this.loadBufferError)
+        }.bind(this);
+        request.send();
+        return this.loadPromise;
+    }
 
-  resume(speed, volume) {
-    this.speed = speed;
-    this.volume = volume;
-  }
+    play() {
+        if (this.inNode !== undefined) {
+            this.inNode.disconnect(this.outNode);
+            this.inNode = null;
+        }
+        this.inNode = this.context.createBufferSource();
+        this.inNode.buffer = this.buffer;
+        this.inNode.connect(this.outNode);
+        this.inNode.loop = this.options.loop;
+        this.inNode.playbackRate.value = this.options.speed;
+        this.inNode.start(0, this.offset);
+        console.log('offset: ', this.offset);
+        this.startTime = this.context.currentTime - this.offset;
+        console.log('start Time: ', this.startTime);
+        console.log(this.context.currentTime);
+    }
 
-  pause() {
-    this.speed = 0;
-    this.volume = 0;
-  }
+    stop(resetOffset=true) {
+        this.inNode.stop();
+        if (resetOffset) {
+            this.offset = 0;
+        }
+    }
 
-  set reverse(value) {
-    this.inNode.buffer.getChannelData(0).reverse();
-    this.inNode.buffer.getChannelData(1).reverse();
-    this.options.reverse = value;
-    console.log("setting reverse: ", value);
-  }
 
-  set speed(value) {
-    value = parseFloat(value);
-    this.options.speed = value;
-    this.inNode.playbackRate.value = value;
-  }
+    pause() {
+        this.offset = this.options.speed * ((this.context.currentTime - this.startTime) % this.duration);
+        console.log('pause offset: ', this.offset);
+        this.stop(false);
+    }
 
-  set loop(value) {
-    this.inNode.loop = value;
-    this.options.loop = value;
-  }
+    seek(seconds) {
+        this.pause();
+        this.play();
+    }
+
+    reverse() {
+        for (let i = 0; i < this.bufferChannels; i++){
+            this.inNode.buffer.getChannelData(i).reverse();
+        }
+        this.options.reverse = !this.options.reverse;
+    }
+
+    set speed(value) {
+        value = parseFloat(value);
+        this.options.speed = value;
+        this.inNode.playbackRate.value = value;
+        let offset = (this.context.currentTime - this.startTime) % this.duration;
+        this.startTime = this.context.currentTime - this.offset * value;
+    }
+
+    set loop(value) {
+        this.inNode.loop = value;
+        this.options.loop = value;
+    }
 }
 
 export default ScPlayer;
