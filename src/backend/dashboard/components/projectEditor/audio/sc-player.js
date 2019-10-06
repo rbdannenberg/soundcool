@@ -71,10 +71,7 @@ class ScPlayer extends ScModule {
         this.inNode.loop = this.options.loop;
         this.inNode.playbackRate.value = this.options.speed;
         this.inNode.start(0, this.offset);
-        console.log('offset: ', this.offset);
         this.startTime = this.context.currentTime - this.offset;
-        console.log('start Time: ', this.startTime);
-        console.log(this.context.currentTime);
     }
 
     stop(resetOffset=true) {
@@ -86,13 +83,14 @@ class ScPlayer extends ScModule {
 
 
     pause() {
-        this.offset = this.options.speed * ((this.context.currentTime - this.startTime) % this.duration);
-        console.log('pause offset: ', this.offset);
+        this.offset = (this.context.currentTime - this.startTime) % (this.duration / this.options.speed);
         this.stop(false);
     }
 
-    seek(seconds) {
+    seek(seekPosition) {
         this.pause();
+        let seekSeconds = seekPosition * (this.duration / this.options.speed);
+        this.offset = seekSeconds;
         this.play();
     }
 
@@ -107,8 +105,8 @@ class ScPlayer extends ScModule {
         value = parseFloat(value);
         this.options.speed = value;
         this.inNode.playbackRate.value = value;
-        let offset = (this.context.currentTime - this.startTime) % this.duration;
-        this.startTime = this.context.currentTime - this.offset * value;
+        //let offset = (this.context.currentTime - this.startTime) % this.duration;
+        //this.startTime = this.context.currentTime - this.offset * value;
     }
 
     set loop(value) {
