@@ -26,6 +26,7 @@ class ScPlayer extends ScModule {
         this.options = Object.assign(defOpts, options);
         this.loadBufferSuccess = loadBufferSuccess.bind(this);
         this.loadBufferError = loadBufferSuccess.bind(this);
+        this.startTime = null;
         this.setupNodes();
     }
 
@@ -37,9 +38,9 @@ class ScPlayer extends ScModule {
         this.outputs.push(this.outNode);
     }
 
-
     load(path) {
         this.offset = 0;
+        this.startTime = null;
         this.options.path = path;
         let res, rej;
         this.loadPromise = new Promise(function(resolve, reject) {
@@ -71,7 +72,8 @@ class ScPlayer extends ScModule {
         this.inNode.loop = this.options.loop;
         this.inNode.playbackRate.value = this.options.speed;
         this.inNode.start(0, this.offset);
-        this.startTime = this.context.currentTime - this.offset;
+        this.startTime = this.context.currentTime - (this.offset /
+            this.options.speed);
     }
 
     stop(resetOffset=true) {
@@ -81,32 +83,44 @@ class ScPlayer extends ScModule {
         }
     }
 
-
     pause() {
-        this.offset = (this.context.currentTime - this.startTime) % (this.duration / this.options.speed);
+        this.offset = (this.options.speed * (this.context.currentTime - 
+            this.startTime)) % (this.duration);
         this.stop(false);
     }
 
     seek(seekPosition) {
         this.pause();
-        let seekSeconds = seekPosition * (this.duration / this.options.speed);
-        this.offset = seekSeconds;
+        seekPosition = parseFloat(seekPosition);
+        this.offset = this.duration * seekPosition;
+        if (this.options.reverse) {
+            this.offset = this.duration - this.offset;
+        }
         this.play();
     }
 
     reverse() {
+        this.pause();
         for (let i = 0; i < this.bufferChannels; i++){
-            this.inNode.buffer.getChannelData(i).reverse();
+            this.buffer.getChannelData(i).reverse();
         }
+        this.offset = this.duration - this.offset;
         this.options.reverse = !this.options.reverse;
+        this.play();
     }
 
     set speed(value) {
         value = parseFloat(value);
+        let currTime = this.context.currentTime;
+        if (this.startTime !== null) {
+            let currPosition = (currTime - this.startTime) %
+                (this.duration / this.options.speed);
+            let posNewSpeed = (this.duration / value) * currPosition /
+                (this.duration / this.options.speed);
+            this.startTime = currTime - posNewSpeed;
+        }
         this.options.speed = value;
         this.inNode.playbackRate.value = value;
-        //let offset = (this.context.currentTime - this.startTime) % this.duration;
-        //this.startTime = this.context.currentTime - this.offset * value;
     }
 
     set loop(value) {
