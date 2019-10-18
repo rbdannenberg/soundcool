@@ -4,7 +4,9 @@ import {
   uploadSound,
   fetchAudio,
   toggleAudioSharing,
-  serveAudio
+  addSoundLink,
+  serveAudio,
+  getAudio
 } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../common";
@@ -35,6 +37,20 @@ class Sounds extends React.Component {
     }
   };
 
+  addSoundLink() {
+    var audioLink = prompt("Please enter Sound URL");
+    if (audioLink) {
+      addSoundLink({ audioLink })
+        .then(data => {
+          showToastr("success", "Audio added successfully");
+          this.setState({ sounds: [...this.state.sounds, data] });
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    }
+  }
+
   handleRemoveAudio(soundId) {
     var r = confirm("Do you want to delete media " + soundId);
     if (r == true) {
@@ -53,9 +69,25 @@ class Sounds extends React.Component {
         });
     }
   }
+
+  async getAudioUrl(sound_id) {
+    if (!this.state[sound_id]) {
+      this.state[sound_id] = 1;
+      await getAudio(sound_id).then(res => {
+        this.setState({ [sound_id]: res["location"] });
+      });
+    }
+  }
+
   renderSounds = sounds =>
     sounds.map((sound, index) => {
       let { sound_id, name } = sound;
+      let src;
+      if (name == "Sound Link") {
+        this.getAudioUrl(sound_id);
+      } else {
+        src = serveAudio(sound_id);
+      }
       return (
         <tr>
           <th scope="row">{index + 1}</th>
@@ -64,7 +96,7 @@ class Sounds extends React.Component {
           <td>
             <ReactAudioPlayer
               style={{ width: "100%", borderColor: "#333", minWidth: "200px" }}
-              src={serveAudio(sound_id)}
+              src={src ? src : this.state[sound_id]}
               autoPlay={false}
               controls
             />
@@ -75,7 +107,7 @@ class Sounds extends React.Component {
               className="btn btn-danger"
               onClick={() => this.handleRemoveAudio(sound_id)}
             >
-              <i class="fas fa-trash" aria-hidden="true"></i>
+              <i className="fas fa-trash" aria-hidden="true"></i>
             </button>
           </td>
           <ReactTooltip place="top" type="dark" effect="float" />
@@ -133,19 +165,26 @@ class Sounds extends React.Component {
                 className="btn btn-info"
               />
               <button className="btn btn-warning" onClick={toggleAudioS}>
-              Make Media Public :{this.state.audioSharing ? " Yes" : " No"}
+                Make Media Public :{this.state.audioSharing ? " Yes" : " No"}
               </button>
               &nbsp;
               <button
                 className="btn btn-info"
                 onClick={e => this.upload.click()}
               >
-                Import Sound
+                Upload Sound
+              </button>
+              &nbsp;
+              <button
+                className="btn btn-danger"
+                onClick={e => this.addSoundLink()}
+              >
+                Add Online Sound
               </button>
             </div>
           </div>
         </div>
-        <table class="table table-hover">
+        <table className="table table-hover">
           <thead>
             <tr>
               <th scope="col">#</th>

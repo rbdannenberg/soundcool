@@ -6,6 +6,8 @@ export const uploadSoundUrl = () => `${BASE_URL}/sounds/upload`;
 export const removeAudioUrl = () => `${BASE_URL}/sounds/remove`;
 export const fetchAudioUrl = () => `${BASE_URL}/sounds/get`;
 export const toggleAudioSharingUrl = () => `${BASE_URL}/sounds/toggleAudioSharing`;
+export const addSoundLinkUrl = () => `${BASE_URL}/sounds/addSoundLink`;
+export const getAudioUrl = () => `${BASE_URL}/sounds/getAudio`;
 export const serveAudioUrl = () => `${BASE_URL}/sounds/serveAudio`;
 export const fetchUserProjects = () => {
     return getRequest(fetchUserProjectURL());
@@ -27,9 +29,19 @@ export const fetchUserProjects = () => {
     return postRequest(url,payload);
   };
 
+  export const addSoundLink = (payload) => {
+    const url = addSoundLinkUrl();
+    return postRequest(url,payload);
+  };
+
   export const serveAudio = (sound_id) => {
     const url = serveAudioUrl()+'/'+sound_id+'/'+Store.headers['X-Auth-Token'];
     return url;
+  }
+
+  export const getAudio = (sound_id) => {
+    const url = getAudioUrl()+'/'+sound_id+'/'+Store.headers['X-Auth-Token'];
+    return getRequest(url);
   }
 
 
