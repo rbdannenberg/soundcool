@@ -51,25 +51,34 @@ router.patch("/update", (req, res) => {
 router.post("/new", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
-  const { projectName, projectDescription, content } = req.body;
-  const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
-  // do the query case on the user
-  const QUERY = CREATE_NEW_PROJECT;
-  connection.query(QUERY, (err, results) => {
-    if (err) {
-      return res.json({ err: err });
-    } else {
-      const QUERY =
-        SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${results.insertId}`;
-      connection.query(QUERY, (err, results) => {
-        if (err) {
-          return res.json({ err: err });
-        } else {
-          return res.json(results[0]);
-        }
-      });
-    }
-  });
+  const { projectName, projectDescription, blocks } = req.body;
+  let error = ""
+  if (blocks["bs"].length == 0) {
+    error = "Project is Empty";
+    return res.json({ error });
+  } else if (projectName == "") {
+    return res.json({ error });
+  } else {
+    let content = JSON.stringify(blocks)
+    const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
+    // do the query case on the user
+    const QUERY = CREATE_NEW_PROJECT;
+    connection.query(QUERY, (err, results) => {
+      if (err) {
+        return res.json({ error: err });
+      } else {
+        const QUERY =
+          SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${results.insertId}`;
+        connection.query(QUERY, (err, results) => {
+          if (err) {
+            return res.json({ error: err });
+          } else {
+            return res.json(results[0]);
+          }
+        });
+      }
+    });
+  }
 });
 
 router.post("/clone", (req, res) => {
@@ -113,13 +122,17 @@ router.post("/clone", (req, res) => {
                   }
                 );
 
-                const QUERY = `insert into sounds(user,name) values(${user_id},'${block["file"]["name"]}')`;
+                const QUERY = `insert into sounds(user,name) values(${user_id},'${
+                  block["file"]["name"]
+                }')`;
                 connection.query(QUERY, (err, results) => {
                   if (err) {
                     return res.json({ err: err });
                   } else {
                     const soundId = results.insertId;
-                    const QUERY = `insert into soundsLocation values(${soundId},'${result[0]["fileLocation"]}')`;
+                    const QUERY = `insert into soundsLocation values(${soundId},'${
+                      result[0]["fileLocation"]
+                    }')`;
                     connection.query(QUERY, (err, results) => {});
                   }
                 });

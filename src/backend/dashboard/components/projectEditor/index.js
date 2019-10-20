@@ -17,7 +17,6 @@ import FormInput from "../form/FormInput";
 
 export const store = createStore(blockApp);
 const BlockList = ({ blocks, nowOut }) => {
-  console.log(blocks);
   return (
     <React.Fragment>
       {blocks.map(b => (
@@ -78,6 +77,7 @@ class ProjectEditor extends React.Component {
     if (error) {
       showToastrError(res);
     } else {
+      localStorage.setItem("token", token);
       Store.populateFromProps({
         userToken: { email: undefined, token: token }
       });
@@ -141,24 +141,42 @@ class ProjectEditor extends React.Component {
 
   createProject = event => {
     event.preventDefault();
+    let isFormValid = true,
+      error = "";
 
     const { projectName, projectDescription, blocks } = this.state;
-    let payload = {
-      projectName,
-      projectDescription,
-      content: JSON.stringify(blocks)
-    };
 
-    createProject(payload)
-      .then(data => {
-        this.setState({ projectName: "", projectDescription: "" });
-        showToastr("success", "Project created successfully");
-        localStorage.setItem("project" + data.project_id, JSON.stringify(data));
-        window.location = "/project-editor/" + data.project_id;
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
+    if (blocks["bs"].length == 0) {
+      error = "Project is Empty";
+      isFormValid = false;
+    } else if (projectName == "") {
+      error = "Project name is required";
+      isFormValid = false;
+    }
+
+    if (isFormValid) {
+      let payload = {
+        projectName,
+        projectDescription,
+        blocks
+      };
+
+      createProject(payload)
+        .then(data => {
+          this.setState({ projectName: "", projectDescription: "" });
+          showToastr("success", "Project created successfully");
+          localStorage.setItem(
+            "project" + data.project_id,
+            JSON.stringify(data)
+          );
+          window.location = "/project-editor/" + data.project_id;
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    } else {
+      showToastrError({ error });
+    }
   };
 
   render() {
