@@ -4,6 +4,7 @@ import { fetchAudio } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { serveAudio } from "../sounds/actions";
 import { MDBDataTable } from "mdbreact";
+import ReactTable from "react-table";
 
 class AddSound extends Component {
   constructor(props) {
@@ -40,32 +41,25 @@ class AddSound extends Component {
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
   renderSounds = sounds => {
-    const data = {
-      columns: [
-        {
-          label: "Name",
-          field: "name",
-          sort: "asc",
-          width: 150
-        },
-        {
-          label: "Control",
-          field: "control",
-          sort: "asc",
-          width: 270
-        },
-        {
-          label: "Action",
-          field: "action",
-          sort: "asc",
-          width: 200
-        }
-      ],
-      rows: []
-    };
+    const columns = [
+      {
+        Header: "Name",
+        accessor: "name" // String-based value accessors!
+      },
+      {
+        Header: "Control",
+        accessor: "control" // Custom cell components!
+      },
+      {
+        Header: "Action",
+        accessor: "action"
+      }
+    ];
+    let data = [];
+
     sounds.forEach(sound => {
       let { name, sound_id } = sound;
-      const row = {
+      data.push({
         name: name,
         control: (
           <ReactAudioPlayer
@@ -76,17 +70,25 @@ class AddSound extends Component {
           />
         ),
         action: (
-          <button
-            className="btn btn-info"
-            onClick={() => this.selectSound(sound)}
-          >
-            Select
-          </button>
+          <div className="col-sm-12 text-center">
+            <button
+              className="btn btn-info text-center"
+              onClick={() => this.selectSound(sound)}
+            >
+              Select
+            </button>
+          </div>
         )
-      };
-      data["rows"].push(row);
+      });
     });
-    return <MDBDataTable  striped bordered small data={data} />;
+    return (
+      <ReactTable
+        data={data}
+        columns={columns}
+        defaultPageSize={5}
+        className="-striped -highlight"
+      />
+    );
   };
 
   render() {
@@ -112,7 +114,7 @@ class AddSound extends Component {
           onHide={this.toggleModal}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Create new account</Modal.Title>
+            <Modal.Title>Select a sound</Modal.Title>
           </Modal.Header>
           <Modal.Body style={{ overflowX: "auto" }}>
             {/* <div className="float-right">
