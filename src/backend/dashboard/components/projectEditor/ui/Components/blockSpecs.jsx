@@ -6,7 +6,7 @@ const specValues = {
   Delay: {
     color: toHex(210, 189, 120),
     delayTime: 76,
-    feedback: 0.119,
+    delayFeedback: 0.119,
     kinect: false,
     osc: undefined
   },
@@ -25,9 +25,8 @@ const specValues = {
   Player: {
     inDisabled: true,
     color: toHex(229, 119, 125),
-    disabled: true,
     playing: false,
-    reverse: false,
+    reversed: false,
     loop: false,
     speed: 1,
     volume: 60,
@@ -126,11 +125,16 @@ const specValues = {
   },
   Envelope: {
     color: toHex(80, 174, 55),
+    pointCount: 0,
     envelope: [],
     loop: false,
     style: "line",
-    dur: 2,
-    osc: undefined
+    duration: 1.0,
+    osc: undefined,
+    startSampleId: 0,
+    endSampleId: 0,
+    sustainAmp: 0,
+    arr: []
   },
   Filter: {
     color: toHex(144, 81, 57)

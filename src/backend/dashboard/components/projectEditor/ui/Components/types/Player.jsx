@@ -31,50 +31,46 @@ class Player extends React.Component {
       minute,
       second,
       file,
-      disabled,
+      // disabled,
       audioObj
     } = this.props.blockInfo;
-    console.log(audioObj);
-    let audioControl = new Audio();
-    if (file) {
-      console.log("hello");
-      // audio = new Audio(serveAudio(file.sound_id));
-      let url = serveAudio(file.sound_id);
-      console.log(url);
-      console.log("audioObj is: ");
-      console.log(audioObj);
-      window.foo = audioObj;
-      audioControl.src = url;
-      // let loadPromise = audioObj.load(url);
-      // loadPromise.then(function(value) {
-      //   console.log(value);
-      // });
-      /*
-      let fetchAudio = new Promise((resolve, reject) => {
-        let seconds = audioObj.load(url);
-        resolve(seconds);
-      });
-      fetchAudio
-        .then(seconds => {
-          console.log("good");
-          // changeBlock()
-        })
-        .catch(() => {
-          console.log("bad");
-        });*/
-    }
-    const onSoundSelect = audio_id => {
-      changeBlock(id, "file", audio_id);
-    };
+    // console.log(audioObj);
+    // let audioControl = new Audio();
+    // if (file) {
+    //   console.log("hello");
+    //   // audio = new Audio(serveAudio(file.sound_id));
+    //   let url = serveAudio(file.sound_id);
+    //   console.log(url);
+    //   console.log("audioObj is: ");
+    //   console.log(audioObj);
+    //   window.foo = audioObj;
+    //   audioControl.src = url;
+    //   // let loadPromise = audioObj.load(url);
+    //   // loadPromise.then(function(value) {
+    //   //   console.log(value);
+    //   // });
+    //   /*
+    //   let fetchAudio = new Promise((resolve, reject) => {
+    //     let seconds = audioObj.load(url);
+    //     resolve(seconds);
+    //   });
+    //   fetchAudio
+    //     .then(seconds => {
+    //       console.log("good");
+    //       // changeBlock()
+    //     })
+    //     .catch(() => {
+    //       console.log("bad");
+    //     });*/
+    // }
+    // const onSoundSelect = audio_id => {
+    //   changeBlock(id, "file", audio_id);
+    // };
     return (
       <React.Fragment>
         <div className="" style={{ position: "relative", height: "140px" }}>
           <div
-            style={{
-              fontSize: "0.8rem",
-              position: "absolute",
-              left: "10px"
-            }}
+            style={{ fontSize: "0.8rem", position: "absolute", left: "10px" }}
           >
             Speed
           </div>
@@ -96,11 +92,7 @@ class Player extends React.Component {
           />
           <div
             className="text-center mx-1"
-            style={{
-              fontSize: "0.8rem",
-              position: "absolute",
-              top: "36px"
-            }}
+            style={{ fontSize: "0.8rem", position: "absolute", top: "36px" }}
           >
             <span className="" style={{ position: "absolute", left: "5px" }}>
               x0
@@ -183,17 +175,12 @@ class Player extends React.Component {
                 left: "78px"
               }}
               onClick={() => {
-                audioControl.play();
-                audioObj.start();
+                // audioControl.play();
+                // audioObj.start();
                 changeBlock(id, "playing", undefined);
               }}
             >
-              <FaPlay
-                style={{
-                  fontSize: "12px",
-                  marginLeft: "2.5px"
-                }}
-              />
+              <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
             </button>
             <button
               className="btn btn-light btn-circle m-1"
@@ -203,8 +190,8 @@ class Player extends React.Component {
                 left: "120px"
               }}
               onClick={() => {
-                audioControl.pause();
-                audioObj.stop();
+                // audioControl.pause();
+                // audioObj.stop();
                 changeBlock(id, "playing", undefined);
               }}
             >
@@ -233,7 +220,7 @@ class Player extends React.Component {
             className="progress progress-bar-vertical"
             style={{
               position: "absolute",
-              left: "240px",
+              left: "220px",
               top: "25px",
               height: "110px",
               width: "15px",
@@ -254,7 +241,7 @@ class Player extends React.Component {
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              left: "250px",
+              left: "230px",
               top: "5px"
             }}
           >
@@ -280,7 +267,15 @@ class Player extends React.Component {
           />
         </div>
         <div className="text-center" style={{ backgroundColor: "grey" }}>
-          <AddSound onSoundSelect={onSoundSelect} file={file} />
+          {/* <AddSound onSoundSelect={onSoundSelect} file={file} /> */}
+          <div className="row">
+            <input
+              className="mx-4 my-1"
+              style={{ fontSize: "0.8rem" }}
+              type="file"
+              onChange={e => changeBlock(id, "file", e.target.files[0])}
+            />
+          </div>
 
           <span className="col text-center">
             <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
