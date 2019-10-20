@@ -10,7 +10,7 @@ import ScSpectroscope from "../../audio/sc-spectroscope";
 // import ScPitch from "../../audio/sc-pitch-phasor";
 import ScPitch from "../../audio/sc-pitch";
 
-const eva = typeName => {
+const newSoundModule = typeName => {
     let t;
     switch (typeName) {
         case "Delay":
@@ -72,7 +72,7 @@ const block = (state, action) => {
                 typeId: action.newTypeId,
                 name: action.typeName.charAt(0) + action.newTypeId,
                 collapse: false,
-                audioObj: eva(action.typeName),
+                audioObj: newSoundModule(action.typeName),
                 // contains generic values like in, out, collapse and also personal values
                 ...action.values
             };
@@ -83,7 +83,6 @@ const block = (state, action) => {
                     // submodules (like mixer, sequencer and samplePlay), we based on the
                     // submodule number to update the corresponding information in the field
                     if (action.num !== undefined) {
-                        console.log(action.id);
                         state[action.field][action.num] =
                             // when action.value is undefined, it means a boolean true/false change
                             action.value === undefined

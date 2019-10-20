@@ -20,21 +20,12 @@ class Player extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.queryTime = 1;
+        window.bar = this.queryTime;
     }
 
-    render() {
-        let {
-            id,
-            speed,
-            volume,
-            hour,
-            minute,
-            second,
-            file,
-            disabled,
-            audioObj
-        } = this.props.blockInfo;
-        console.log(audioObj);
+    loadFile = () => {
+        let { audioObj, file, id } = this.props.blockInfo;
         if (file) {
             console.log("hello");
             // audio = new Audio(serveAudio(file.sound_id));
@@ -43,37 +34,82 @@ class Player extends React.Component {
             console.log("audioObj is: ");
             console.log(audioObj);
             window.foo = audioObj;
-            // let loadPromise = audioObj.load(url);
-            // loadPromise.then(function(value) {
-            //   console.log(value);
-            // });
-            /*
-      let fetchAudio = new Promise((resolve, reject) => {
-        let seconds = audioObj.load(url);
-        resolve(seconds);
-      });
-      fetchAudio
-        .then(seconds => {
-          console.log("good");
-          // changeBlock()
-        })
-        .catch(() => {
-          console.log("bad");
-        });*/
+            let audioLoadPromise = audioObj.load(url);
+            audioLoadPromise
+                .then(function(seconds) {
+                    console.log("duration is: " + seconds);
+                    changeBlock(id, "disabled", undefined);
+                    changeBlock(id, "duration", seconds);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
         }
+    };
+
+    setStart = () => {
+        let { audioObj, id, startTime } = this.props.blockInfo;
+        changeBlock(id, "startTime", audioObj.context.currentTime);
+        console.log(startTime);
+    };
+
+    // called when the speed changes
+    changeStart = () => {
+        let { audioObj, startTime, id } = this.props.blockInfo;
+        let currentTime = audioObj.context.currentTime;
+        // since the speed changes, we replace the original startTime
+        // by a start time in this speed frame
+        newStart = currentTime - (currentTime - startTime) / speed;
+        changeBlock(id, "startTime", newStart);
+    };
+
+    startProgress = () => {
+        let { audioObj, startTime, id, speed } = this.props.blockInfo;
+        // when sound starts to play, increment seconds
+        // depending on the audio time frame and the speed
+        // also start the progress bar of playing
+        this.queryTime = setInterval(() => {
+            let currentTime = audioObj.context.currentTime;
+            // seconds is the overall progress that the audio starts running
+            let seconds = ((currentTime - startTime) * speed).toFixed(2);
+            changeBlock(id, "seconds", seconds);
+            // changeBlock(id, "progress", duration / (seconds === 0? 0 : seconds ))
+        }, 1000);
+    };
+
+    stopProgress = () => {
+        this.queryTime.clearInterval();
+    };
+
+    render() {
+        let {
+            id,
+            speed,
+            volume,
+            file,
+            disabled,
+            audioObj,
+            seconds,
+            progress,
+            duration,
+            startTime
+        } = this.props.blockInfo;
+        let hour = Math.floor(seconds / 3600);
+        let minute = Math.floor((seconds / 60) % 60);
+        let second = Math.floor(seconds % 60);
+
         const onSoundSelect = audio_id => {
             changeBlock(id, "file", audio_id);
+            this.loadFile();
         };
-        const playMusic = () => {
-            audioObj.start();
-            changeBlock(id, "playing", undefined);
-        };
+
         return (
             <React.Fragment>
                 <div
                     className=""
                     style={{ position: "relative", height: "140px" }}
                 >
+                    {/* speed */}
                     <div
                         style={{
                             fontSize: "0.8rem",
@@ -84,15 +120,19 @@ class Player extends React.Component {
                         Speed
                     </div>
                     <input
+                        disabled={disabled}
                         className="slider mx-1 my-2 text-center"
                         type="range"
                         style={{
-                            width: "190px",
+                            width: "230px",
                             position: "absolute",
                             left: "5px",
                             top: "12px"
                         }}
-                        onChange={e => changeBlock(id, "speed", e.target.value)}
+                        onChange={e => {
+                            changeBlock(id, "speed", e.target.value);
+                            this.changeStart();
+                        }}
                         min={0}
                         max={2}
                         step={0.1}
@@ -127,33 +167,51 @@ class Player extends React.Component {
                         </span>
                     </div>
 
+                    {/* progress bar of playing */}
                     <div
                         className="progress"
                         style={{
-                            width: "190px",
+                            width: "230px",
                             position: "absolute",
                             left: "8px",
                             top: "60px",
                             backgroundColor: "black"
                         }}
                     >
-                        <div
+                        {/* <div
                             className="progress-bar "
                             role="progressbar"
                             aria-valuenow="60"
                             aria-valuemin="0"
                             aria-valuemax="100"
                             style={{ width: "60%", backgroundColor: "green" }}
+                        /> */}
+                        <input
+                            disabled={disabled}
+                            className="slider text-center"
+                            type="range"
+                            style={{ width: "230px" }}
+                            onChange={e => {
+                                // changeBlock(id, "progress", e.target.value);
+                                console.log(e.target.value);
+                                audioObj.seek(0.01 * e.target.value);
+                            }}
+                            min={0}
+                            max={100}
+                            step={0.01}
+                            value={duration / (seconds === 0 ? 0 : seconds)}
+                            id="progress"
                         />
                     </div>
 
+                    {/* time */}
                     <div
                         style={{
                             fontSize: "0.8rem",
                             textAlign: "right",
                             position: "absolute",
                             top: "80px",
-                            right: "85px"
+                            right: "75px"
                         }}
                     >
                         {hour + ":" + minute + ":" + second}
@@ -176,6 +234,7 @@ class Player extends React.Component {
                             Loop
                         </label>
                         <input
+                            disabled={disabled}
                             type="checkbox"
                             className=""
                             id="loop"
@@ -190,6 +249,7 @@ class Player extends React.Component {
                         />
 
                         <button
+                            disabled={disabled}
                             className="btn btn-light m-1"
                             style={{
                                 ...circleStyle,
@@ -197,8 +257,10 @@ class Player extends React.Component {
                                 left: "78px"
                             }}
                             onClick={() => {
-                                audioObj.start();
+                                audioObj.play();
                                 changeBlock(id, "playing", undefined);
+                                this.setStart();
+                                this.startProgress();
                             }}
                         >
                             <FaPlay
@@ -209,6 +271,7 @@ class Player extends React.Component {
                             />
                         </button>
                         <button
+                            disabled={disabled}
                             className="btn btn-light btn-circle m-1"
                             style={{
                                 ...circleStyle,
@@ -218,20 +281,23 @@ class Player extends React.Component {
                             onClick={() => {
                                 audioObj.stop();
                                 changeBlock(id, "playing", undefined);
+                                this.stopProgress();
                             }}
                         >
                             <FaSquare style={{ fontSize: "12px" }} />
                         </button>
                         <button
+                            disabled={disabled}
                             className="btn btn-light btn-circle m-1"
                             style={{
                                 ...circleStyle,
                                 position: "absolute",
                                 left: "160px"
                             }}
-                            onClick={() =>
-                                changeBlock(id, "reverse", undefined)
-                            }
+                            onClick={() => {
+                                changeBlock(id, "reverse", undefined);
+                                // audioObj.reverse();
+                            }}
                         >
                             <FaPlay
                                 style={{
@@ -247,7 +313,7 @@ class Player extends React.Component {
                         className="progress progress-bar-vertical"
                         style={{
                             position: "absolute",
-                            left: "240px",
+                            left: "260px",
                             top: "25px",
                             height: "110px",
                             width: "15px",
@@ -268,13 +334,14 @@ class Player extends React.Component {
                         style={{
                             fontSize: "0.8rem",
                             position: "absolute",
-                            left: "250px",
+                            left: "270px",
                             top: "5px"
                         }}
                     >
                         {"Vol. " + volume}{" "}
                     </div>
                     <input
+                        disabled={disabled}
                         className="slider text-center"
                         orient="vertical"
                         type="range"
@@ -282,7 +349,7 @@ class Player extends React.Component {
                             width: "1.5rem",
                             height: "110px",
                             position: "absolute",
-                            left: "248px",
+                            left: "278px",
                             top: "26px"
                         }}
                         onChange={e =>
