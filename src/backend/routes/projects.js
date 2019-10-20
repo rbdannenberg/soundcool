@@ -115,8 +115,8 @@ router.post("/clone", (req, res) => {
                   result[0]["fileLocation"].split("::-::")[1]; // change it to some unique  ::-::
 
                 fs.copyFileSync(
-                  "./public" + oldValue,
-                  "./public" + result[0]["fileLocation"],
+                  "." + oldValue,
+                  "." + result[0]["fileLocation"],
                   err => {
                     if (err) throw err;
                   }

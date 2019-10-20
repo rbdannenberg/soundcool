@@ -10,7 +10,7 @@ function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
 }
 const storage = multer.diskStorage({
-  destination: "./public/assets/sounds/",
+  destination: "./assets/sounds/",
   filename(req, file, cb) {
     cb(null, `${cTimeStamp}::-::${file.originalname}`);
   }
@@ -100,7 +100,7 @@ router.post("/remove", upload.single("file"), (req, res) => {
               console.log(err);
               return res.json({ err: err });
             } else {
-              let filePath = "./public" + result[0]["fileLocation"]
+              let filePath = "." + result[0]["fileLocation"]
               if(fs.existsSync(filePath))
               {
                 fs.unlinkSync(filePath);
@@ -190,7 +190,7 @@ router.get("/serveAudio/:audioId/:token", function(req, res) {
       console.log(err);
       return res.json({ err: err });
     } else {
-      var music = "./public" + results[0]["fileLocation"];
+      var music = "." + results[0]["fileLocation"];
 
       var stat = fs.statSync(music);
       range = req.headers.range;
