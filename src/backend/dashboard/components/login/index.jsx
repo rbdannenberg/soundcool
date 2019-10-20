@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import Form from "../Form.jsx";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import { loginUser, redirectToHome } from './actions';
+import { loginUser, redirectToHome } from "./actions";
 import { Link } from "react-router-dom";
-import { showToastr, showToastrError } from '../common';
-import Cookies from 'universal-cookie';
-import LoginForm from "./form"
+import { showToastr, showToastrError } from "../common";
+import Cookies from "universal-cookie";
+import LoginForm from "./form";
 class Login extends Form {
-  
-  signInUser = (data) => {
+  signInUser = data => {
     event.preventDefault();
 
     const { email, password } = data;
@@ -25,11 +24,16 @@ class Login extends Form {
         showToastrError(error);
       });
   };
-  
-  afterSignin = ({token}) => {
-    showToastr('success', 'Logged in successfully.');
-    localStorage.setItem("token", token);
-    redirectToHome();
+
+  afterSignin = res => {
+    const { token, error } = res;
+    if (error) {
+      showToastrError(res);
+    } else {
+      showToastr("success", "Logged in successfully.");
+      localStorage.setItem("token", token);
+      redirectToHome();
+    }
   };
   render() {
     return (
@@ -42,9 +46,7 @@ class Login extends Form {
             <BreadcrumbItem active>Login</BreadcrumbItem>
           </Breadcrumb>
         </div>
-        <LoginForm
-          handleSubmit={this.signInUser}
-        />
+        <LoginForm handleSubmit={this.signInUser} />
         <Link to="/register">New user? Register</Link>
       </div>
     );
