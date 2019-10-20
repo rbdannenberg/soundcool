@@ -1,6 +1,8 @@
 import React from "react";
 import Form from "../Form.jsx";
 import FormInput from "../form/FormInput.jsx";
+import { showToastr, showToastrError } from "../common";
+import { loginUser } from "./actions";
 
 class LoginForm extends Form {
   constructor(props) {
@@ -14,6 +16,27 @@ class LoginForm extends Form {
     const params = { [name]: value };
     this.setState(params);
   };
+
+  handleSubmit = () => {
+    event.preventDefault();
+
+    const { email, password } = this.state;
+    let payload = {
+      user: {
+        email,
+        password
+      }
+    };
+
+    loginUser(payload)
+      .then(res => {
+        if (this.props.afterSignin) this.props.afterSignin(res);
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  };
+
   render() {
     const { email, password } = this.state;
     return (
@@ -39,10 +62,7 @@ class LoginForm extends Form {
           onChange={this.handleOnChange}
         />
         <br />
-        <button
-          onClick={() => this.props.handleSubmit(this.state)}
-          className="btn btn-primary"
-        >
+        <button onClick={() => this.handleSubmit()} className="btn btn-primary">
           Login
         </button>
       </div>

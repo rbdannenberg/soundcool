@@ -1,14 +1,23 @@
 import React, { Component } from "react";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
-import RegisterForm from "./form"
-import { redirectToRoot } from './actions';
+import RegisterForm from "./form";
+import { redirectToRoot } from "./actions";
+import { showToastr, showToastrError } from "../common";
 
 class Register extends Component {
+  afterRegister = res => {
+    const { token, error } = res;
 
-  afterRegister(){
-    redirectToRoot();
-  }
+    if (error) {
+      showToastrError(res);
+    } else {
+      showToastr("success", "User registered successfully");
+      localStorage.setItem("token", token);
+      redirectToRoot();
+    }
+  };
+
   render() {
     return (
       <div className="container">
@@ -20,9 +29,7 @@ class Register extends Component {
             <BreadcrumbItem active>Register</BreadcrumbItem>
           </Breadcrumb>
         </div>
-        <RegisterForm
-        afterRegister={this.afterRegister}
-        />
+        <RegisterForm afterRegister={this.afterRegister} />
       </div>
     );
   }

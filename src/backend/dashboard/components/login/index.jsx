@@ -1,30 +1,12 @@
 import React, { Component } from "react";
 import Form from "../Form.jsx";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import { loginUser, redirectToHome } from "./actions";
+import { redirectToHome } from "./actions";
 import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from "../common";
-import Cookies from "universal-cookie";
 import LoginForm from "./form";
+
 class Login extends Form {
-  signInUser = data => {
-    event.preventDefault();
-
-    const { email, password } = data;
-    let payload = {
-      user: {
-        email,
-        password
-      }
-    };
-
-    loginUser(payload)
-      .then(this.afterSignin)
-      .catch(error => {
-        showToastrError(error);
-      });
-  };
-
   afterSignin = res => {
     const { token, error } = res;
     if (error) {
@@ -35,6 +17,7 @@ class Login extends Form {
       redirectToHome();
     }
   };
+
   render() {
     return (
       <div className="container">
@@ -46,7 +29,7 @@ class Login extends Form {
             <BreadcrumbItem active>Login</BreadcrumbItem>
           </Breadcrumb>
         </div>
-        <LoginForm handleSubmit={this.signInUser} />
+        <LoginForm afterSignin={this.afterSignin} />
         <Link to="/register">New user? Register</Link>
       </div>
     );

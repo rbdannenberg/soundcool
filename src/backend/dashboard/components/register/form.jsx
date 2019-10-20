@@ -28,13 +28,8 @@ class RegisterForm extends Component {
     };
 
     registerUser(payload)
-      .then(data => {
-        if (data.res == "error") showToastrError(data);
-        else {
-          showToastr("success", "User registered successfully");
-          localStorage.setItem("token", data.token);
-          if (this.props.afterRegister) this.props.afterRegister();
-        }
+      .then(res => {
+        if (this.props.afterRegister) this.props.afterRegister(res);
       })
       .catch(error => {
         showToastrError(error);
