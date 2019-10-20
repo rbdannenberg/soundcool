@@ -5,6 +5,7 @@ const connection = require("../db");
 const bcrypt = require("bcrypt");
 
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+const saltRounds = 10
 
 exports.singIn = router.post("/sign_in", (req, res) => {
   const { email, password } = req.body.user;
@@ -69,7 +70,8 @@ router.post("/register", (req, res) => {
       error: "Password length must be atleast 6 character long"
     });
   } else {
-    const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${password}','${email}')`;
+    const hash_password = bcrypt.hashSync(password, saltRounds)
+    const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
     connection.query(CREATE_NEW_USER, (err, results) => {
       if (err) {

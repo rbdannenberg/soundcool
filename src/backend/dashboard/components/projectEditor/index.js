@@ -72,12 +72,19 @@ class ProjectEditor extends React.Component {
       });
   }
 
-  afterRegister = () => {
-    const token = localStorage.getItem("token");
-    Store.populateFromProps({ userToken: { email: undefined, token: token } });
-    showToastr("success", "Please enter project details");
-    this.toggleRegisterModal();
-    this.toggleModal();
+  afterRegister = res => {
+    const { token, error } = res;
+
+    if (error) {
+      showToastrError(res);
+    } else {
+      Store.populateFromProps({
+        userToken: { email: undefined, token: token }
+      });
+      showToastr("success", "Please enter project details");
+      this.toggleRegisterModal();
+      this.toggleModal();
+    }
   };
 
   handleOnChange = (name, value) => {
