@@ -6,4 +6,4 @@ build
 *.log
 *.synctex.gz
 *.swp
-src/backend/public/
+src/backend/public
