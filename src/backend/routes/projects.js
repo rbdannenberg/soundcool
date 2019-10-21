@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 const connection = require("../db");
+const utils = require("../utils");
 var cTimeStamp = new Date().getTime();
 var fs = require("fs");
 
@@ -22,9 +23,27 @@ router.get("/get", (req, res) => {
       console.log(err);
       return res.json({ err: err });
     } else {
-      return res.json({
-        data: results
+      return res.json(results);
+    }
+  });
+});
+
+router.get("/project", (req, res) => {
+  const projectId = req.query.projectId;
+  const token = req.headers["x-auth-token"];
+  utils.verifyToken(token, user => {
+    if (user) {
+      const QUERY = `select *,(CASE WHEN user=${user.id} THEN 0 ELSE user END)as isOwner from projects where (user=${user.id} or sharedUsers like '%"user_id":${user.id}%' or isPublic =true) and project_id = ${projectId}`;
+      connection.query(QUERY, (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.json({ err: err });
+        } else {
+          return res.json(results[0]);
+        }
       });
+    } else {
+      return res.status(401).json({ message: "Token Not Valid" });
     }
   });
 });
@@ -52,14 +71,14 @@ router.post("/new", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   const { projectName, projectDescription, blocks } = req.body;
-  let error = ""
+  let error = "";
   if (blocks["bs"].length == 0) {
     error = "Project is Empty";
     return res.json({ error });
   } else if (projectName == "") {
     return res.json({ error });
   } else {
-    let content = JSON.stringify(blocks)
+    let content = JSON.stringify(blocks);
     const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
     // do the query case on the user
     const QUERY = CREATE_NEW_PROJECT;

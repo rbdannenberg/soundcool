@@ -91,7 +91,10 @@ router.post("/register", (req, res) => {
             error: "Unable to register with provided credentials"
           });
       } else {
-        const token = utils.generateToken(user);
+        const token = utils.generateToken({
+          name,
+          user_id: results.insertId
+        });
         res.json({
           token
         });
@@ -107,7 +110,7 @@ router.get("/validateToken", function(req, res) {
   }
   utils.verifyToken(token, cb => {
     if (cb) {
-      res.json({token});
+      res.json({ token });
     } else {
       return res.status(401).json({ message: "Token Not Valid" });
     }

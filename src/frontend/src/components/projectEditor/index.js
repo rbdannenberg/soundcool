@@ -4,7 +4,7 @@ import RegisterForm from "../register/form";
 import AddBlock from "./ui/Components/AddBlock";
 import { Store } from "../store";
 import { isUserLoggedIn, showToastr, showToastrError } from "../common";
-import { updateProject, createProject } from "./actions";
+import { updateProject, createProject, fetchUserProject } from "./actions";
 import blocks from "./ui/reducers/blocks";
 import { createStore, combineReducers } from "redux";
 import Modal from "react-bootstrap/Modal";
@@ -226,11 +226,6 @@ class ProjectEditor extends React.Component {
   }
 
   componentDidMount() {
-    console.log(window.location.href + "");
-    console.log(window.location.href.toString());
-    console.log(window.location.href.toString().substring(37));
-
-    // const projectId = window.location.href.toString().substring(37);
     this.loadState();
   }
 
@@ -239,16 +234,35 @@ class ProjectEditor extends React.Component {
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
 
   loadState() {
-    store.dispatch({
-      type: "LOAD_STATE",
-      id: this.state.projectId
-    });
-    let project = localStorage.getItem("project" + this.state.projectId);
-    if (project)
-      this.setState({
-        projectName: JSON.parse(project).name,
-        projectDescription: JSON.parse(project).description
+    if (this.state.projectId !== "new") {
+      fetchUserProject(this.state.projectId)
+        .then(res => {
+          let { name, description, content } = res;
+
+          store.dispatch({
+            type: "LOAD_STATE",
+            content
+          });
+
+          this.setState({
+            projectName: name,
+            projectDescription: description
+          });
+        })
+        .catch(err => {
+          showToastrError(err);
+        });
+    } else {
+      store.dispatch({
+        type: "LOAD_STATE",
+        content: undefined
       });
+
+      this.setState({
+        projectName: "",
+        projectDescription: ""
+      });
+    }
   }
 
   afterRegister = res => {
@@ -287,10 +301,6 @@ class ProjectEditor extends React.Component {
     updateProject(payload)
       .then(() => {
         showToastr("success", "Project successfully updated");
-        store.dispatch({
-          type: "SAVE_STATE",
-          id: this.state.projectId
-        });
       })
       .catch(error => {
         showToastrError(error);
@@ -345,10 +355,6 @@ class ProjectEditor extends React.Component {
         .then(data => {
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
-          localStorage.setItem(
-            "project" + data.project_id,
-            JSON.stringify(data)
-          );
           window.location = "/project-editor/" + data.project_id;
         })
         .catch(error => {
@@ -363,9 +369,6 @@ class ProjectEditor extends React.Component {
     const { projectName, projectDescription } = this.state;
     return (
       <div className="container">
-        {/* <SLButton />
-      <ProjectPage /> */}
-
         <button className="btn btn-success m-2" onClick={this.saveProject}>
           {isUserLoggedIn()
             ? this.state.projectId === "new"

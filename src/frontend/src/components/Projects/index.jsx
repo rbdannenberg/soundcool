@@ -37,7 +37,10 @@ class Projects extends Component {
     // project get displayed
     if (this.props.user) {
       fetchUserProjects()
-        .then(data => this.setState({ projects: data.data }))
+        .then(data => {
+          console.log(data);
+          this.setState({ projects: data });
+        })
         .catch(error => {
           showToastrError(error);
         });
@@ -109,10 +112,6 @@ class Projects extends Component {
           showToastr("success", "Project can't be cloned");
         } else {
           showToastr("success", "Project cloned successfully");
-          localStorage.setItem(
-            "project" + data.project_id,
-            JSON.stringify(data)
-          );
           this.setState({ projects: [...this.state.projects, data] });
           console.log([...this.state.projects, data]);
         }
@@ -224,10 +223,6 @@ class Projects extends Component {
         isOwner,
         isPublic
       } = project;
-      localStorage.setItem(
-        "project" + project.project_id,
-        JSON.stringify(project)
-      );
       let sUsers = [],
         multiple = false;
       let countt = 0;
@@ -237,8 +232,8 @@ class Projects extends Component {
           sUsers.push(user.user_id);
           multiple = true;
           countt++;
-          if(countt > 2) {
-            sUsers.push(" , ... ")
+          if (countt > 2) {
+            sUsers.push(" , ... ");
             return false;
           }
           return true;
@@ -310,10 +305,6 @@ class Projects extends Component {
       createProject(payload)
         .then(data => {
           showToastr("success", "Project imported successfully");
-          localStorage.setItem(
-            "project" + data.project_id,
-            JSON.stringify(data)
-          );
           this.setState({ projects: [...this.state.projects, data] });
           this.upload.value = "";
         })

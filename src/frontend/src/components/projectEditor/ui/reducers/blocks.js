@@ -108,21 +108,16 @@ const blocks = (
       } else {
         return s;
       }
-    case "SAVE_STATE":
-      let project = JSON.parse(localStorage.getItem("project" + action.id));
-      project.content = JSON.stringify(state);
-      localStorage.setItem("project" + action.id, JSON.stringify(project));
-      return state;
 
     case "LOAD_STATE":
-      let newState = localStorage.getItem("project" + action.id)
-        ? JSON.parse(localStorage.getItem("project" + action.id)).content
-        : undefined;
+      let newState = action.content ? action.content : undefined;
+
       if (newState && JSON.parse(newState) !== null) {
         return JSON.parse(newState);
       } else {
         return emptyState;
       }
+
     default:
       return state;
   }

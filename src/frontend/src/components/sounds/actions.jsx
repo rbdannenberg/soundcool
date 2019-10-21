@@ -1,7 +1,6 @@
 import { BASE_URL } from './../constants';
 import { getRequest, postRequest, performMultipartRequest } from '../api';
 import { Store } from '../store';
-export const fetchUserProjectURL = () => `${BASE_URL}/projects/get`;
 export const uploadSoundUrl = () => `${BASE_URL}/sounds/upload`;
 export const removeAudioUrl = () => `${BASE_URL}/sounds/remove`;
 export const fetchAudioUrl = () => `${BASE_URL}/sounds/get`;
@@ -9,9 +8,7 @@ export const toggleAudioSharingUrl = () => `${BASE_URL}/sounds/toggleAudioSharin
 export const addSoundLinkUrl = () => `${BASE_URL}/sounds/addSoundLink`;
 export const getAudioUrl = () => `${BASE_URL}/sounds/getAudio`;
 export const serveAudioUrl = () => `${BASE_URL}/sounds/serveAudio`;
-export const fetchUserProjects = () => {
-    return getRequest(fetchUserProjectURL());
-  };
+
   export const uploadSound = (payload) => {
     const url = uploadSoundUrl();
     return performMultipartRequest(url,"post",payload);
