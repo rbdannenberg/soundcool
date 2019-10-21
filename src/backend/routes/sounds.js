@@ -10,7 +10,7 @@ function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
 }
 const storage = multer.diskStorage({
-  destination: "./assets/sounds/",
+  destination: "./uploads/sounds/",
   filename(req, file, cb) {
     cb(null, `${cTimeStamp}::-::${file.originalname}`);
   }
@@ -54,7 +54,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
   const user_id = user.id;
   const fileLocation =
-    "/assets/sounds/" + cTimeStamp + "::-::" + req.file.originalname;
+    "/uploads/sounds/" + cTimeStamp + "::-::" + req.file.originalname;
   updateTimeStamp();
   const QUERY = `insert into sounds(user,name) values(${user_id},'${req.file.originalname}')`;
   connection.query(QUERY, (err, results) => {

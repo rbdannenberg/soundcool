@@ -109,7 +109,7 @@ router.post("/clone", (req, res) => {
               } else {
                 let oldValue = result[0]["fileLocation"];
                 result[0]["fileLocation"] =
-                  "/assets/sounds/" +
+                  "uploads/sounds/" +
                   cTimeStamp +
                   "::-::" +
                   result[0]["fileLocation"].split("::-::")[1]; // change it to some unique  ::-::

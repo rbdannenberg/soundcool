@@ -1,7 +1,7 @@
 import React from "react";
 import changeBlock from "../../../handlers";
 import { FaPlay, FaSquare } from "react-icons/fa";
-
+import AddSound from "../../../../addSound";
 const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
@@ -27,7 +27,7 @@ class Player extends React.Component {
       hour,
       minute,
       second,
-      // file,
+      file,
       // disabled,
       // audioObj
     } = this.props.blockInfo;
@@ -60,9 +60,9 @@ class Player extends React.Component {
     //       console.log("bad");
     //     });*/
     // }
-    // const onSoundSelect = audio_id => {
-    //   changeBlock(id, "file", audio_id);
-    // };
+    const onSoundSelect = audio_id => {
+      changeBlock(id, "file", audio_id);
+    };
     return (
       <React.Fragment>
         <div className="" style={{ position: "relative", height: "140px" }}>
@@ -264,7 +264,7 @@ class Player extends React.Component {
           />
         </div>
         <div className="text-center" style={{ backgroundColor: "grey" }}>
-          {/* <AddSound onSoundSelect={onSoundSelect} file={file} /> */}
+          <AddSound onSoundSelect={onSoundSelect} file={file} />
           <div className="row">
             <input
               className="mx-4 my-1"
