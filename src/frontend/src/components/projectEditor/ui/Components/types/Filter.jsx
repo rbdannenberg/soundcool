@@ -1,8 +1,7 @@
 import React from "react";
-import { store } from "../../../index";
 
 const Filter = ({ blockInfo }) => {
-    let {} = blockInfo;
+    // let {} = blockInfo;
     return (
         <React.Fragment>
             <div

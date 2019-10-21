@@ -1,5 +1,5 @@
 import { BASE_URL } from './../constants';
-import { getRequest, postRequest, patchRequest, performMultipartRequest } from '../api';
+import { getRequest, postRequest, performMultipartRequest } from '../api';
 export const fetchUserProjectURL = () => `${BASE_URL}/projects/get`;
 export const uploadSoundUrl = () => `${BASE_URL}/sounds/upload`;
 export const removeAudioUrl = () => `${BASE_URL}/sounds/remove`;

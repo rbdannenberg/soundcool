@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Form from "../Form.jsx";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { redirectToHome } from "./actions";

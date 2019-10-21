@@ -41,7 +41,7 @@ class Home extends Component {
               <div className="col-12 text-center">
                 <div className="row iconos">
                   <div className="col-sm-3 col-md col-12">
-                    <img src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-tablet.png" />
+                    <img alt="icon-tablet" src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-tablet.png" />
                     <p>
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -59,7 +59,7 @@ class Home extends Component {
                   </div>
 
                   <div className="col-sm-3 col-md col-12">
-                    <img src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-movil.png" />
+                    <img alt="icon-mobile" src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-movil.png" />
                     <p>
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -77,7 +77,7 @@ class Home extends Component {
                   </div>
 
                   <div className="col-12 col-md">
-                    <img src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-ordenador.png" />
+                    <img alt="icon-ordenador" src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-ordenador.png" />
                     <p>
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -95,7 +95,7 @@ class Home extends Component {
                   </div>
 
                   <div className="col-sm-3 col-md col-12">
-                    <img src="http://soundcool.org/wp-content/uploads/2019/02/vr_icon.png" />
+                    <img alt="icon-vr" src="http://soundcool.org/wp-content/uploads/2019/02/vr_icon.png" />
                     <p>
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -113,7 +113,7 @@ class Home extends Component {
                   </div>
 
                   <div className="col-sm-3 col-md col-12">
-                    <img src="http://soundcool.org/wp-content/uploads/2019/02/kinect_icon-1.png" />
+                    <img alt="icon-knect" src="http://soundcool.org/wp-content/uploads/2019/02/kinect_icon-1.png" />
                     <p>
                       <font style={{ verticalAlign: "inherit" }}>
                         <font style={{ verticalAlign: "inherit" }}>Kinect</font>
@@ -165,7 +165,7 @@ class Home extends Component {
             <br/><br/>
             <div className="row">
                   <div className="col-sm-4">
-                    <img width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/4.jpg" />
+                    <img alt="Audiovisual creators" width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/4.jpg" />
                     <div className="text">
                       <h3>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -186,7 +186,7 @@ class Home extends Component {
                     </div>
                   </div>
                   <div className="col-sm-4">
-                    <img width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/5-e1552466526596.jpg" />
+                    <img alt="Education" width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/5-e1552466526596.jpg" />
                     <div className="text">
                       <h3>
                         <font style={{ verticalAlign: "inherit" }}>
@@ -213,7 +213,7 @@ class Home extends Component {
                     </div>
                   </div>
                   <div className="col-sm-4">
-                    <img width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/6.jpg" />
+                    <img alt="Inclusive education" width="100%" height="200px" src="http://soundcool.org/wp-content/uploads/2019/01/6.jpg" />
                     <div className="text">
                       <h3>
                         <font style={{ verticalAlign: "inherit" }}>

@@ -219,7 +219,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.match.params.id != this.props.match.params.id)
+    if (nextProps.match.params.id !== this.props.match.params.id)
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
       });
@@ -230,7 +230,7 @@ class ProjectEditor extends React.Component {
     console.log(window.location.href.toString());
     console.log(window.location.href.toString().substring(37));
 
-    const projectId = window.location.href.toString().substring(37);
+    // const projectId = window.location.href.toString().substring(37);
     this.loadState();
   }
 
@@ -274,7 +274,7 @@ class ProjectEditor extends React.Component {
 
   saveProject = () => {
     if (isUserLoggedIn())
-      if (this.state.projectId != "new")
+      if (this.state.projectId !== "new")
         this.updateProject({
           projectId: this.state.projectId,
           content: JSON.stringify(this.state.blocks)
@@ -326,10 +326,10 @@ class ProjectEditor extends React.Component {
 
     const { projectName, projectDescription, blocks } = this.state;
 
-    if (blocks["bs"].length == 0) {
+    if (blocks["bs"].length === 0) {
       error = "Project is Empty";
       isFormValid = false;
-    } else if (projectName == "") {
+    } else if (projectName === "") {
       error = "Project name is required";
       isFormValid = false;
     }
@@ -368,12 +368,12 @@ class ProjectEditor extends React.Component {
 
         <button className="btn btn-success m-2" onClick={this.saveProject}>
           {isUserLoggedIn()
-            ? this.state.projectId == "new"
+            ? this.state.projectId === "new"
               ? "Create"
               : "Save"
             : "Register to save"}
         </button>
-        {isUserLoggedIn() && this.state.projectId != "new" && (
+        {isUserLoggedIn() && this.state.projectId !== "new" && (
           <button
             className="btn btn-warning m-2 float-right"
             onClick={this.exportProject}

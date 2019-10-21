@@ -1,5 +1,4 @@
 import React from "react";
-import { store } from "../../../index";
 
 class Oscilloscope extends React.Component {
     constructor(props) {

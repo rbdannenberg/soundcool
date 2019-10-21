@@ -55,6 +55,8 @@ class ScSignalGen extends ScModule {
       case "No Mod":
         this.carr.connect(this.outNode);
         break;
+      default:
+        console.log("Invalid option");
     }
   }
 
@@ -80,6 +82,8 @@ class ScSignalGen extends ScModule {
       case "No Mod":
         this.carr.disconnect(this.outNode);
         break;
+      default:
+        console.log("Invalid option");
     }
   }
 

@@ -139,7 +139,7 @@ const SignalGen = ({ blockInfo }) => {
 
                 {/* Two Dropdowns */}
                 <div
-                    class="dropdown"
+                    className="dropdown"
                     style={{
                         position: "absolute",
                         top: "80px",
@@ -162,12 +162,12 @@ const SignalGen = ({ blockInfo }) => {
                         {waveform}
                     </button>
                     <div
-                        class="dropdown-menu"
+                        className="dropdown-menu"
                         style={{ fontSize: "0.8rem" }}
                         aria-labelledby="waveform dropdown"
                     >
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => {
                                 changeWaveform("Silence", id);
                             }}
@@ -175,37 +175,37 @@ const SignalGen = ({ blockInfo }) => {
                             Silence
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("Sine Wave", id)}
                         >
                             Sine Wave
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("Triangle", id)}
                         >
                             Triangle
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("Square", id)}
                         >
                             Square
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("Sawtooth", id)}
                         >
                             Sawtooth
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("White Noise", id)}
                         >
                             White Noise
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeWaveform("Pink Noise", id)}
                         >
                             Pink Noise
@@ -213,7 +213,7 @@ const SignalGen = ({ blockInfo }) => {
                     </div>
                 </div>
                 <div
-                    class="dropdown"
+                    className="dropdown"
                     style={{
                         position: "absolute",
                         top: "80px",
@@ -236,30 +236,30 @@ const SignalGen = ({ blockInfo }) => {
                         {modulation}
                     </button>
                     <div
-                        class="dropdown-menu"
+                        className="dropdown-menu"
                         style={{ fontSize: "0.8rem" }}
                         aria-labelledby="mod dropdown"
                     >
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeMod("No Mod", id)}
                         >
                             No Mod
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeMod("RM", id)}
                         >
                             RM
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeMod("AM", id)}
                         >
                             AM
                         </div>
                         <div
-                            class="dropdown-item"
+                            className="dropdown-item"
                             onClick={() => changeMod("FM", id)}
                         >
                             FM

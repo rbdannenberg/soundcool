@@ -78,28 +78,26 @@ const block = (state, action) => {
       };
     case "CHANGE_BLOCK":
       if (state.id === action.id) {
-        {
-          // The case that field is an array since the module has a lot of
-          // submodules (like mixer, sequencer and samplePlay), we based on the
-          // submodule number to update the corresponding information in the field
-          if (action.num !== undefined) {
-            console.log(action.id);
-            state[action.field][action.num] =
-              // when action.value is undefined, it means a boolean true/false change
-              action.value === undefined
-                ? !state[action.field][action.num]
-                : action.value;
-          } else {
-            state[action.field] =
-              action.value === undefined ? !state[action.field] : action.value;
+        // The case that field is an array since the module has a lot of
+        // submodules (like mixer, sequencer and samplePlay), we based on the
+        // submodule number to update the corresponding information in the field
+        if (action.num !== undefined) {
+          console.log(action.id);
+          state[action.field][action.num] =
+            // when action.value is undefined, it means a boolean true/false change
+            action.value === undefined
+              ? !state[action.field][action.num]
+              : action.value;
+        } else {
+          state[action.field] =
+            action.value === undefined ? !state[action.field] : action.value;
 
-            // also update the audioObj (will ignore if there is no such field in object)
-            if (state.audioObj !== undefined) {
-              state.audioObj[action.field] =
-                action.value === undefined
-                  ? !state.audioObj[action.field]
-                  : action.value;
-            }
+          // also update the audioObj (will ignore if there is no such field in object)
+          if (state.audioObj !== undefined) {
+            state.audioObj[action.field] =
+              action.value === undefined
+                ? !state.audioObj[action.field]
+                : action.value;
           }
         }
         return state;
@@ -131,6 +129,7 @@ const block = (state, action) => {
       let [indexIn, indexOut] = [action.nowIn[1], action.nowOut[1]];
       // The id of the blocks that we are connecting
       let [idIn, idOut] = [action.nowIn[2], action.nowOut[2]];
+      // eslint-disable-next-line
       let [audioObjIn, audioObjOut] = [action.nowIn[3], action.nowOut[3]];
 
       if (state.id === idIn) {

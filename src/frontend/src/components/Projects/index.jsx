@@ -60,7 +60,8 @@ class Projects extends Component {
         let index = -1;
         this.state.projects.some(project => {
           index++;
-          if (project.project_id == project_id) {
+          if (project.project_id === project_id) {
+            // eslint-disable-next-line
             this.state.projects[index]["sharedUsers"] = sharedUsers;
             return true;
           }
@@ -85,7 +86,8 @@ class Projects extends Component {
         let index = -1;
         this.state.projects.some(project => {
           index++;
-          if (project.project_id == project_id) {
+          if (project.project_id === project_id) {
+            // eslint-disable-next-line
             this.state.projects[index]["isPublic"] = checked;
             return true;
           }
@@ -123,16 +125,16 @@ class Projects extends Component {
     let { userId, userEmail, projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
     let duplicate = false;
-    if (userId != "") {
+    if (userId !== "") {
       if (sharedUsers)
         duplicate = JSON.parse(sharedUsers)["users"].some(user => {
-          return user.user_id == userId;
+          return user.user_id === userId;
         });
     }
-    if (userEmail != "") {
+    if (userEmail !== "") {
       if (sharedUsers)
         duplicate = JSON.parse(sharedUsers)["users"].some(user => {
-          return user.email == userEmail;
+          return user.email === userEmail;
         });
     }
     if (!duplicate) {
@@ -143,7 +145,8 @@ class Projects extends Component {
             let index = -1;
             this.state.projects.some(project => {
               index++;
-              if (project.project_id == project_id) {
+              if (project.project_id === project_id) {
+                // eslint-disable-next-line
                 this.state.projects[index]["sharedUsers"] = res.data;
                 return true;
               }
@@ -170,7 +173,7 @@ class Projects extends Component {
   }
   removeProject(projectId, index) {
     var r = window.confirm("Do you want to delete project " + projectId);
-    if (r == true) {
+    if (r === true) {
       removeProject({ projectId })
         .then(res => {
           showToastr("success", res.message);
@@ -187,7 +190,7 @@ class Projects extends Component {
   }
   filterProjects = project => {
     let qry = this.state.search;
-    if (qry == "") return true;
+    if (qry === "") return true;
     else if (
       project.user
         .toString()
@@ -255,7 +258,7 @@ class Projects extends Component {
                 window.location = "project-editor/" + project_id;
               }}
             >
-              <i class="fas fa-edit" aria-hidden="true"></i>
+              <i className="fas fa-edit" aria-hidden="true"></i>
             </button>
             &nbsp;
             <button
@@ -263,7 +266,7 @@ class Projects extends Component {
               className="btn btn-info"
               onClick={() => this.handleSharing(project)}
             >
-              <i class="fas fa-share-alt" aria-hidden="true"></i>
+              <i className="fas fa-share-alt" aria-hidden="true"></i>
             </button>
             &nbsp;
             {!isOwner && (
@@ -272,16 +275,16 @@ class Projects extends Component {
                 className="btn btn-danger"
                 onClick={() => this.removeProject(project_id, index)}
               >
-                <i class="fas fa-trash" aria-hidden="true"></i>
+                <i className="fas fa-trash" aria-hidden="true"></i>
               </button>
             )}
-            {isOwner != 0 && isOwner && (
+            {isOwner !== 0 && isOwner && (
               <button
                 data-tip="Clone Project"
                 className="btn btn-primary"
                 onClick={() => this.cloneProject(project_id)}
               >
-                <i class="fas fa-clone" aria-hidden="true"></i>
+                <i className="fas fa-clone" aria-hidden="true"></i>
               </button>
             )}
           </td>
@@ -364,8 +367,8 @@ class Projects extends Component {
           </div>
         </div>
 
-        <div class="table-responsive">
-          <table class="table table-hover">
+        <div className="table-responsive">
+          <table className="table table-hover">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -461,7 +464,7 @@ class Projects extends Component {
             <Modal.Title>Add new user</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.state.userEmail == "" && (
+            {this.state.userEmail === "" && (
               <FormInput
                 className="form-control"
                 type="text"
@@ -472,12 +475,12 @@ class Projects extends Component {
                 autoFocus
               />
             )}
-            {this.state.userId == "" && this.state.userEmail == "" && (
+            {this.state.userId === "" && this.state.userEmail === "" && (
               <center>
                 <h5>OR</h5>
               </center>
             )}
-            {this.state.userId == "" && (
+            {this.state.userId === "" && (
               <FormInput
                 className="form-control"
                 type="text"

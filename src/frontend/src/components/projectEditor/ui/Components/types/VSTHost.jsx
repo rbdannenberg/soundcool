@@ -38,7 +38,7 @@ const VSTHost = ({ blockInfo }) => {
                 </div>
 
                 <div className="text-center">
-                    <div class="dropdown col">
+                    <div className="dropdown col">
                         <button
                             className="btn btn-info dropdown-toggle"
                             style={{ fontSize: "0.7rem", width: "8rem" }}
@@ -50,11 +50,11 @@ const VSTHost = ({ blockInfo }) => {
                             {version}
                         </button>
                         <div
-                            class="dropdown-menu"
+                            className="dropdown-menu"
                             aria-labelledby="version dropdown"
                         >
                             <div
-                                class="dropdown-item"
+                                className="dropdown-item"
                                 onClick={() => {
                                     store.dispatch({
                                         type: "CHANGE_BLOCK",
@@ -67,7 +67,7 @@ const VSTHost = ({ blockInfo }) => {
                                 to Soundcool 3.1.1
                             </div>
                             <div
-                                class="dropdown-item"
+                                className="dropdown-item"
                                 onClick={() => {
                                     store.dispatch({
                                         type: "CHANGE_BLOCK",

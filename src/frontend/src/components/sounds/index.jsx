@@ -53,7 +53,7 @@ class Sounds extends React.Component {
 
   handleRemoveAudio(soundId) {
     var r = window.confirm("Do you want to delete media " + soundId);
-    if (r == true) {
+    if (r === true) {
       removeAudio({ soundId })
         .then(data => {
           showToastr("success", "Audio deleted successfully");
@@ -83,7 +83,7 @@ class Sounds extends React.Component {
     sounds.map((sound, index) => {
       let { sound_id, name } = sound;
       let src;
-      if (name == "Sound Link") {
+      if (name === "Sound Link") {
         this.getAudioUrl(sound_id);
       } else {
         src = serveAudio(sound_id);

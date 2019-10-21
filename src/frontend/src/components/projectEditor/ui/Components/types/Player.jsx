@@ -1,9 +1,6 @@
 import React from "react";
 import changeBlock from "../../../handlers";
 import { FaPlay, FaSquare } from "react-icons/fa";
-import AddSound from "../../../../addSound";
-import { showToastr } from "../../../../common";
-import { serveAudio } from "../../../../sounds/actions";
 
 const circleStyle = {
   width: "1.5rem",
@@ -30,9 +27,9 @@ class Player extends React.Component {
       hour,
       minute,
       second,
-      file,
+      // file,
       // disabled,
-      audioObj
+      // audioObj
     } = this.props.blockInfo;
     // console.log(audioObj);
     // let audioControl = new Audio();

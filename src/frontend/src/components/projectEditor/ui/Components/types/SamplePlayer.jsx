@@ -68,7 +68,7 @@ const IndividualPlayer = ({ id, num, file }) => {
       </button>
 
       <div
-        class="dropdown"
+        className="dropdown"
         style={{
           position: "absolute",
           top: "40px",
@@ -91,11 +91,11 @@ const IndividualPlayer = ({ id, num, file }) => {
           {file}
         </button>
         <div
-          class="dropdown-menu"
+          className="dropdown-menu"
           style={{ fontSize: "0.8rem" }}
           aria-labelledby="file dropdown"
         >
-          {/* <div class="dropdown-item" onClick={() => changeMod("No Mod", id)}>
+          {/* <div className="dropdown-item" onClick={() => changeMod("No Mod", id)}>
               No Mod
             </div> */}
         </div>

@@ -6,7 +6,7 @@ const Pan = ({ blockInfo }) => {
     return (
         <React.Fragment>
             <div
-                class="text-center"
+                className="text-center"
                 style={{ width: "288px", height: "40px", position: "relative" }}
             >
                 <span

@@ -47,6 +47,8 @@ class ScAnalyzer {
           return db;
         };
         break;
+      default:
+        console.log("Invalid option type");
     }
   }
 }

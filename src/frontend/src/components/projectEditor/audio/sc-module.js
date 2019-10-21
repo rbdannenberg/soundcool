@@ -48,9 +48,7 @@ class ScModule {
             destination.inputs.push(this);
             destination.connPromise.resolve();
           } else {
-            console.error(
-              "Argument for connect has to be" + " ScModule instance"
-            );
+            console.error("Argument for connect has to be ScModule instance");
             destination.connPromise.reject();
           }
         }.bind(this)

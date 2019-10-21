@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { store } from "../../../index";
 import changeBlock from "../../../handlers";
 
@@ -53,7 +52,7 @@ class Envelope extends React.Component {
 
     renderLines() {
         const c = this.canvasRef.current;
-        let { left, top } = c.getBoundingClientRect();
+        let { left } = c.getBoundingClientRect();
         let canvasCtx = c.getContext("2d");
         canvasCtx.clearRect(0, 0, 300, 200);
         console.log("this is envelope");

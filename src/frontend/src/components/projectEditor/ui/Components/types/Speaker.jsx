@@ -1,5 +1,4 @@
 import React from "react";
-import { store } from "../../../index";
 import changeBlock from "../../../handlers";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 
@@ -78,7 +77,7 @@ class Speaker extends React.Component {
         return (
             <React.Fragment>
                 <div
-                    class="text-center"
+                    className="text-center"
                     style={{ position: "relative", height: "48px" }}
                 >
                     {/* L and R Progress Bars */}

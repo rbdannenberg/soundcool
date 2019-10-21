@@ -176,7 +176,7 @@ const Keyboard = ({ blockInfo }) => {
       >
         {/* Instrument Dropdown menu */}
         <div
-          class="dropdown"
+          className="dropdown"
           style={{
             position: "absolute",
             top: "5px",
@@ -199,13 +199,13 @@ const Keyboard = ({ blockInfo }) => {
             {instrument}
           </button>
           <div
-            class="dropdown-menu"
+            className="dropdown-menu"
             style={{ fontSize: "0.8rem" }}
             aria-labelledby="instrument dropdown"
           >
             {instruments.map(i => (
               <div
-                class="dropdown-item"
+                className="dropdown-item"
                 onClick={() => {
                   changeInstrument(i, id);
                   changeMIDIMessage(
@@ -227,7 +227,6 @@ const Keyboard = ({ blockInfo }) => {
         {/* Output selection */}
         <button
           className="badge-light badge-sm"
-          style={{ fontSize: "0.8rem" }}
           onClick={() => changeBlock(id, "module", undefined)}
           style={{
             position: "absolute",
@@ -352,7 +351,7 @@ const Keyboard = ({ blockInfo }) => {
           MIDI CHANNEL:
         </label>
         <div
-          class="dropdown"
+          className="dropdown"
           style={{
             position: "absolute",
             top: "145px",
@@ -375,13 +374,13 @@ const Keyboard = ({ blockInfo }) => {
             {channel}
           </button>
           <div
-            class="dropdown-menu"
+            className="dropdown-menu"
             style={{ fontSize: "0.8rem" }}
             aria-labelledby="channel dropdown"
           >
             {[...Array(16).keys()].map(i => (
               <div
-                class="dropdown-item"
+                className="dropdown-item"
                 onClick={() => {
                   changeBlock(id, "channel", i + 1);
                 }}
@@ -469,7 +468,7 @@ const Keyboard = ({ blockInfo }) => {
         {/* octave */}
         <span className="text-center">
           <div
-            class="dropdown"
+            className="dropdown"
             style={{
               position: "absolute",
               top: "3px",
@@ -492,13 +491,13 @@ const Keyboard = ({ blockInfo }) => {
               {"C" + octave}
             </button>
             <div
-              class="dropdown-menu"
+              className="dropdown-menu"
               style={{ fontSize: "0.8rem" }}
               aria-labelledby="octave dropdown"
             >
               {[...Array(11).keys()].map(i => (
                 <div
-                  class="dropdown-item"
+                  className="dropdown-item"
                   onClick={() => {
                     changeBlock(id, "octave", i - 2);
                   }}

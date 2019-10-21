@@ -7,10 +7,10 @@ function loadBufferSuccess(buffer) {
   this.loadPromise.resolve(this.duration);
 }
 
-function loadBufferError(error) {
-  console.error("ScPlayer: " + error.message);
-  this.loadPromise.reject();
-}
+// function loadBufferError(error) {
+//   console.error("ScPlayer: " + error.message);
+//   this.loadPromise.reject();
+// }
 
 class ScPlayer extends ScModule {
   constructor(context, options = {}) {

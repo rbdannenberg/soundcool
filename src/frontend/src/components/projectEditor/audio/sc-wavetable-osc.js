@@ -46,6 +46,8 @@ class WaveTableOscillator {
           }
           this._partials[n - 1] = b;
           break;
+        default:
+          console.log("Invalid option");
       }
       if (b !== 0) {
         real[n] = -b * Math.sin(phase * n);

@@ -99,7 +99,7 @@ const Record = ({ blockInfo }) => {
     return (
         <React.Fragment>
             <div
-                class="text-center"
+                className="text-center"
                 style={{ position: "relative", height: "88px" }}
             >
                 <label

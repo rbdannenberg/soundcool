@@ -41,6 +41,8 @@ class ScOscillator {
       case "Silence":
         this.inNode = this.createAndFillBuffer("Silence");
         break;
+      default:
+        console.log("Invalid wave type");
     }
     this.inNode.start();
     this.inNode.connect(this.outNode);
@@ -65,6 +67,8 @@ class ScOscillator {
       case "Square":
         this.inNode.type = "square";
         break;
+      default:
+        console.log("Invalid option");
     }
   }
 
@@ -81,6 +85,8 @@ class ScOscillator {
       case "Silence":
         fillSilence(dataL, dataR);
         break;
+      default:
+        console.log("Invalid option");
     }
   }
 

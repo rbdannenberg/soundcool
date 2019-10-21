@@ -1,5 +1,5 @@
 import { BASE_URL } from './../constants';
-import { getRequest, postRequest, patchRequest } from '../api';
+import { postRequest } from '../api';
 export const registerUrl = () => `${BASE_URL}/user/register`;
 
 export const registerUser = payload => {

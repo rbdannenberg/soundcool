@@ -7,7 +7,6 @@ import {
   NavbarToggler,
   NavItem,
   Collapse,
-  Button,
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
@@ -47,8 +46,6 @@ export default class Header extends Component {
   }
 
   render() {
-    const { user } = this.props;
-    // console.log(user);
     return (
       <React.Fragment>
         <Navbar dark expand="md" style={{padding:'0'}}>
