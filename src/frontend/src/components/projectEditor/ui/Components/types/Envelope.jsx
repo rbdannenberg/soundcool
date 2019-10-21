@@ -48,6 +48,12 @@ class Envelope extends React.Component {
         });
         // pointCount ++
         changeBlock(this.id, "pointCount", this.props.blockInfo.pointCount + 1);
+        // store.dispatch({
+        //   type: "CHANGE_BLOCK",
+        //   id: this.props.blockInfo.id,
+        //   field: "pointCount",
+        //   value: this.props.blockInfo.pointCount + 1
+        // });
         this.renderLines();
     }
 
@@ -56,8 +62,7 @@ class Envelope extends React.Component {
         let { left, top } = c.getBoundingClientRect();
         let canvasCtx = c.getContext("2d");
         canvasCtx.clearRect(0, 0, 300, 200);
-        console.log("this is envelope");
-        console.log(this.props.blockInfo.envelope);
+        console.log("this is envelope: " + this.props.blockInfo.envelope);
         let sortedPoints = this.props.blockInfo.envelope.sort(
             ([a, b], [c, d]) => a - c
         );
