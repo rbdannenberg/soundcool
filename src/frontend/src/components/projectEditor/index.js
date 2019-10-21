@@ -257,7 +257,7 @@ class ProjectEditor extends React.Component {
     if (error) {
       showToastrError(res);
     } else {
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("jwtToken", token);
       Store.populateFromProps({
         userToken: { email: undefined, token: token }
       });

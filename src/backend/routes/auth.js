@@ -1,14 +1,15 @@
-const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 const connection = require("../db");
 const bcrypt = require("bcrypt");
 
 const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-const saltRounds = 10
+const saltRounds = 10;
 
-exports.singIn = router.post("/sign_in", (req, res) => {
-  const { email, password } = req.body.user;
+const utils = require("../utils");
+
+router.post("/sign_in", (req, res) => {
+  let { email, password } = req.body.user;
   if (email == "" || password == "") {
     res.json({
       error: "Please fill all required fields"
@@ -22,6 +23,8 @@ exports.singIn = router.post("/sign_in", (req, res) => {
       error: "Password length must be atleast 6 character long"
     });
   } else {
+    password = password.trim();
+    email = email.trim();
     const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
       email +
       '"'} `;
@@ -40,7 +43,8 @@ exports.singIn = router.post("/sign_in", (req, res) => {
           // the password is encrypted, so we need to compare it.
           if (bcrypt.compareSync(password, user.password)) {
             // JSON web token
-            const token = jwt.sign({ id: user.user_id }, "jwtPrivateKey");
+
+            const token = utils.generateToken(user);
             res.json({
               token
             });
@@ -56,7 +60,7 @@ exports.singIn = router.post("/sign_in", (req, res) => {
 });
 
 router.post("/register", (req, res) => {
-  const { name, password, email } = req.body.user;
+  let { name, password, email } = req.body.user;
   if (email == "" || password == "" || name == "") {
     res.json({
       error: "Please fill all required fields"
@@ -70,7 +74,10 @@ router.post("/register", (req, res) => {
       error: "Password length must be atleast 6 character long"
     });
   } else {
-    const hash_password = bcrypt.hashSync(password, saltRounds)
+    name = name.trim();
+    password = password.trim();
+    email = email.trim();
+    const hash_password = bcrypt.hashSync(password, saltRounds);
     const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
     connection.query(CREATE_NEW_USER, (err, results) => {
@@ -84,13 +91,27 @@ router.post("/register", (req, res) => {
             error: "Unable to register with provided credentials"
           });
       } else {
-        const token = jwt.sign({ id: results.insertId }, "jwtPrivateKey");
+        const token = utils.generateToken(user);
         res.json({
           token
         });
       }
     });
   }
+});
+
+router.get("/validateToken", function(req, res) {
+  var token = req.query.token;
+  if (!token) {
+    return res.status(401).json({ message: "Must pass token" });
+  }
+  utils.verifyToken(token, cb => {
+    if (cb) {
+      res.json({token});
+    } else {
+      return res.status(401).json({ message: "Token Not Valid" });
+    }
+  });
 });
 
 module.exports = router;

@@ -16,7 +16,7 @@ class Main extends Component {
 
   componentDidMount() {
     try {
-      const jwt = localStorage.getItem("token");
+      const jwt = sessionStorage.getItem("jwtToken");
       const user = jwtDecode(jwt);
       this.setState({ user: user });
     } catch (ex) {}

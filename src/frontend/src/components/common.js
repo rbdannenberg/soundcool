@@ -6,7 +6,7 @@ export const showToastr = (type, ...rest) => {
   toast[type](...rest);
 };
 export const isUserLoggedIn = () => {
-  return localStorage.getItem("token");
+  return sessionStorage.getItem("jwtToken");
 };
 export const successErrorHandler = (resolve, reject) => {
   const success = (data, status) => resolve(data);

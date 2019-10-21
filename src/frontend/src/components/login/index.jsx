@@ -13,7 +13,7 @@ class Login extends Form {
       showToastrError(res);
     } else {
       showToastr("success", "Logged in successfully.");
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("jwtToken", token);
       redirectToHome();
     }
   };

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { isUserLoggedIn} from "./common";
+import { isUserLoggedIn } from "./common";
 import {
   Navbar,
   NavbarBrand,
   Nav,
   NavbarToggler,
   NavItem,
-  Collapse,
+  Collapse
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
@@ -41,14 +41,14 @@ export default class Header extends Component {
   }
 
   handleLogout() {
-    localStorage.clear();
+    sessionStorage.clear();
     window.location = "/login";
   }
 
   render() {
     return (
       <React.Fragment>
-        <Navbar dark expand="md" style={{padding:'0'}}>
+        <Navbar dark expand="md" style={{ padding: "0" }}>
           <div className="container">
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
@@ -61,7 +61,7 @@ export default class Header extends Component {
             </NavbarBrand>
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
-              <NavItem>
+                <NavItem>
                   <NavLink className="nav-link" to="/project-editor/new">
                     <span className="fa fa-home " /> Create Project
                   </NavLink>
@@ -79,19 +79,18 @@ export default class Header extends Component {
                   </NavLink>
                 </NavItem>
                 {isUserLoggedIn() && (
-                <NavItem>
-                  <NavLink className="nav-link" to="/projects">
-                    <span className="fa fa-list " /> Projects
-                  </NavLink>
-                </NavItem>
-
+                  <NavItem>
+                    <NavLink className="nav-link" to="/projects">
+                      <span className="fa fa-list " /> Projects
+                    </NavLink>
+                  </NavItem>
                 )}
                 {isUserLoggedIn() && (
-                <NavItem>
-                  <NavLink className="nav-link" to="/sounds">
-                    <span className="fa fa-list " /> Sounds
-                  </NavLink>
-                </NavItem>
+                  <NavItem>
+                    <NavLink className="nav-link" to="/sounds">
+                      <span className="fa fa-list " /> Sounds
+                    </NavLink>
+                  </NavItem>
                 )}
                 <NavItem>
                   <NavLink className="nav-link" to="/contact">
@@ -107,8 +106,9 @@ export default class Header extends Component {
                   </NavItem>
                 )}
               </Nav>
-              {isUserLoggedIn() && (<Nav className="ml-auto" navbar>
-                <NavItem>
+              {isUserLoggedIn() && (
+                <Nav className="ml-auto" navbar>
+                  <NavItem>
                     <NavLink
                       className="nav-link btn btn-secondary"
                       to="/login"
@@ -116,8 +116,8 @@ export default class Header extends Component {
                     >
                       <span className="fa fa-sign-out-alt ">&nbsp;Logout</span>
                     </NavLink>
-                </NavItem>
-              </Nav>
+                  </NavItem>
+                </Nav>
               )}
             </Collapse>
           </div>

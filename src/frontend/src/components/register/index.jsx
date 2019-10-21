@@ -13,7 +13,7 @@ class Register extends Component {
       showToastrError(res);
     } else {
       showToastr("success", "User registered successfully");
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("jwtToken", token);
       redirectToRoot();
     }
   };
