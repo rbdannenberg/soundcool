@@ -1,10 +1,10 @@
 import React from "react";
-import store from "../../../index";
+import { store } from "../../../index";
 
 const Channel = ({ num, name, id, inNode, volume, audioObj }) => {
   return (
     <React.Fragment
-      style={{ position: "absolute", width: "40px", height: "120px" }}
+    // style={{ position: "absolute", width: "40px", height: "120px" }}
     >
       <span style={{ position: "absolute", left: "8px" }}>{num}</span>
       <button
@@ -179,7 +179,13 @@ const Mixer = ({ blockInfo }) => {
             volume={volume6}
           />
         </div>
-        <div style={{ position: "absolute", top: "140px", left: "114px" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "140px",
+            left: "114px"
+          }}
+        >
           <Channel
             num={7}
             name={name}
@@ -189,7 +195,13 @@ const Mixer = ({ blockInfo }) => {
             volume={volume7}
           />
         </div>
-        <div style={{ position: "absolute", top: "140px", left: "166px" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "140px",
+            left: "166px"
+          }}
+        >
           <Channel
             num={8}
             name={name}
@@ -219,7 +231,10 @@ const Mixer = ({ blockInfo }) => {
                 aria-valuenow="60"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                style={{ height: "60%", backgroundColor: "green" }}
+                style={{
+                  height: "60%",
+                  backgroundColor: "green"
+                }}
               />
             </div>
             <div
@@ -239,7 +254,10 @@ const Mixer = ({ blockInfo }) => {
                 aria-valuenow="60"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                style={{ height: "60%", backgroundColor: "green" }}
+                style={{
+                  height: "60%",
+                  backgroundColor: "green"
+                }}
               />
             </div>
             <input
