@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.17, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.18, for Linux (x86_64)
 --
 -- Host: localhost    Database: soundcool
 -- ------------------------------------------------------
--- Server version	8.0.17
+-- Server version	8.0.18
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,14 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Current Database: `soundcool`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `soundcool` /*!40100 DEFAULT CHARACTER SET latin1 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `soundcool`;
 
 --
 -- Table structure for table `audioSharing`
@@ -43,7 +35,7 @@ CREATE TABLE `audioSharing` (
 
 LOCK TABLES `audioSharing` WRITE;
 /*!40000 ALTER TABLE `audioSharing` DISABLE KEYS */;
-INSERT INTO `audioSharing` VALUES (1,0),(2,0);
+INSERT INTO `audioSharing` VALUES (100,0),(101,0);
 /*!40000 ALTER TABLE `audioSharing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,11 +52,11 @@ CREATE TABLE `projects` (
   `name` varchar(50) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `description` varchar(500) NOT NULL,
-  `content` varchar(2000) DEFAULT NULL,
+  `content` varchar(15300) DEFAULT NULL,
   `sharedUsers` varchar(500) DEFAULT NULL,
   `isPublic` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +65,7 @@ CREATE TABLE `projects` (
 
 LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-INSERT INTO `projects` VALUES (78,1,'Project 1','2019-09-11 06:07:48','Player','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"collapse\":true,\"file\":{\"sound_id\":75,\"user\":1,\"name\":\"file_example_WAV_1MG.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"file\":{\"sound_id\":75,\"user\":1,\"name\":\"file_example_WAV_1MG.wav\"},\"kinect\":false}]}',NULL,0),(79,2,'Project 1','2019-09-11 06:08:40','Player','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[],\"connPromise\":{},\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"collapse\":true,\"file\":{\"sound_id\":77,\"user\":2,\"name\":\"file_example_WAV_1MG.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"file\":{\"sound_id\":77,\"user\":2,\"name\":\"file_example_WAV_1MG.wav\"},\"kinect\":false}]}',NULL,0);
+INSERT INTO `projects` VALUES (117,100,'Project 1','2019-10-22 18:44:48','Delay and Transposer','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":2,\"Transposer\":2,\"Pan\":1,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Delay\",\"id\":1,\"typeId\":1,\"name\":\"D1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[{}],\"outputs\":[{}],\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"delayFeedback\":0.119,\"kinect\":false},{\"typeName\":\"Transposer\",\"id\":2,\"typeId\":1,\"name\":\"T1\",\"collapse\":true,\"inNode\":[],\"outNode\":[],\"color\":\"#c185c8\",\"buttonCents\":0,\"sliderCents\":0}]}',NULL,0),(118,100,'Project 2','2019-10-22 18:45:44','Shared with user 2','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[{}],\"offset\":0,\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"startTime\":null,\"inNode\":{},\"outNode\":{},\"collapse\":true,\"file\":{\"sound_id\":118,\"user\":100,\"name\":\"sound.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"kinect\":false,\"file\":{\"sound_id\":118,\"user\":100,\"name\":\"sound.wav\"}}]}','{\"users\":[{\"user_id\":101,\"name\":\"User 2\",\"email\":\"user2@welcome.com\"}]}',0),(119,101,'Project 1','2019-10-22 18:46:30','Delay and Pan','{\"nextBlockId\":3,\"nextTypeId\":{\"Delay\":2,\"Transposer\":1,\"Pan\":2,\"Player\":1,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Delay\",\"id\":1,\"typeId\":1,\"name\":\"D1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[{}],\"outputs\":[{}],\"options\":{\"delayTime\":0.1,\"feedback\":0.3},\"inNode\":{},\"outNode\":{},\"delayNode\":{},\"delayGain\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#d2bd78\",\"delayTime\":76,\"delayFeedback\":0.119,\"kinect\":false},{\"typeName\":\"Pan\",\"id\":2,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[{}],\"outputs\":[{}],\"options\":{\"panVal\":0},\"outNode\":{},\"inNode\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#88b35f\",\"panVal\":0,\"kinect\":false}]}',NULL,0),(120,101,'Project 2','2019-10-22 18:46:45','Shared with User 1','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[{}],\"offset\":0,\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"startTime\":null,\"inNode\":{},\"outNode\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"kinect\":false}]}','{\"users\":[{\"user_id\":100,\"name\":\"User 1\",\"email\":\"user1@welcome.com\"}]}',0),(121,101,'Project 3','2019-10-22 18:47:01','Shared with everyone','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":1,\"SignalGen\":2,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"SignalGen\",\"id\":1,\"typeId\":1,\"name\":\"S1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[{}],\"outputs\":[{}],\"options\":{\"waveType\":\"Silence\",\"freq\":440,\"mod\":\"No Mod\",\"modParam\":1},\"gainNode\":{},\"mod\":{},\"inNode\":{},\"carr\":{\"context\":{},\"options\":{\"waveType\":\"Silence\",\"freq\":440,\"mod\":\"No Mod\",\"modParam\":1},\"bufferSources\":[\"Silence\",\"White Noise\",\"Pink Noise\"],\"oscSources\":[\"Sine Wave\",\"Triangle\",\"Sawtooth\",\"Square\"],\"outNode\":{},\"inNode\":{}},\"outNode\":{},\"modParamNode\":{},\"collapse\":true},\"inNode\":[],\"outNode\":[],\"color\":\"#59c7c6\",\"frequency\":440,\"waveform\":\"Silence\",\"modulation\":\"No Mod\",\"MI\":0,\"FD\":0,\"volume\":0.6,\"kinect\":false}]}',NULL,1),(122,101,'Project 4','2019-10-22 18:47:51','Player with sound','{\"nextBlockId\":2,\"nextTypeId\":{\"Delay\":1,\"Transposer\":1,\"Pan\":1,\"Player\":2,\"SignalGen\":1,\"Speaker\":1,\"DirectInput\":1,\"Pitch\":1,\"VSTHost\":1,\"Routing\":1,\"Mixer\":1,\"Record\":1,\"Spectroscope\":1,\"Oscilloscope\":1,\"Envelope\":1,\"Filter\":1,\"Keyboard\":1,\"SamplePlayer\":1,\"Sequencer\":1},\"nowIn\":[],\"nowOut\":[],\"bs\":[{\"typeName\":\"Player\",\"id\":1,\"typeId\":1,\"name\":\"P1\",\"collapse\":true,\"audioObj\":{\"context\":{},\"inputs\":[],\"outputs\":[{}],\"offset\":0,\"options\":{\"path\":\"\",\"loop\":false,\"speed\":1,\"reverse\":false},\"startTime\":null,\"inNode\":{},\"outNode\":{},\"collapse\":true,\"file\":{\"sound_id\":117,\"user\":101,\"name\":\"sound.wav\"}},\"inNode\":[],\"outNode\":[],\"inDisabled\":true,\"color\":\"#e5777d\",\"playing\":false,\"reversed\":false,\"loop\":false,\"speed\":1,\"volume\":60,\"hour\":0,\"minute\":0,\"second\":0,\"kinect\":false,\"file\":{\"sound_id\":117,\"user\":101,\"name\":\"sound.wav\"}}]}',NULL,0);
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,7 +82,7 @@ CREATE TABLE `sounds` (
   `name` varchar(500) DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`sound_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +91,7 @@ CREATE TABLE `sounds` (
 
 LOCK TABLES `sounds` WRITE;
 /*!40000 ALTER TABLE `sounds` DISABLE KEYS */;
-INSERT INTO `sounds` VALUES (75,1,'file_example_WAV_1MG.wav','2019-09-11 06:07:29'),(77,2,'file_example_WAV_1MG.wav','2019-09-11 06:08:24');
+INSERT INTO `sounds` VALUES (117,101,'sound.wav','2019-10-22 18:47:57'),(118,100,'sound.wav','2019-10-22 18:48:56');
 /*!40000 ALTER TABLE `sounds` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +114,7 @@ CREATE TABLE `soundsLocation` (
 
 LOCK TABLES `soundsLocation` WRITE;
 /*!40000 ALTER TABLE `soundsLocation` DISABLE KEYS */;
-INSERT INTO `soundsLocation` VALUES (75,'/assets/sounds/1568162175466::-::file_example_WAV_1MG.wav'),(77,'/assets/sounds/1568162282458::-::file_example_WAV_1MG.wav');
+INSERT INTO `soundsLocation` VALUES (117,'/uploads/sounds/1571749887170::-::sound.wav'),(118,'/uploads/sounds/1571750277915::-::sound.wav');
 /*!40000 ALTER TABLE `soundsLocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +132,7 @@ CREATE TABLE `users` (
   `email` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +141,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Sample user 1','welcome','user1@welcome.com'),(2,'Sample user 2','welcome','user2@welcome.com');
+INSERT INTO `users` VALUES (100,'User 1','$2b$10$zoD.V4IYLhWmwz5Kld3gAu/jhYsPZYDYAWamQToQeC4tenQ1p1wwS','user1@welcome.com'),(101,'User 2','$2b$10$9nG9wvklANoTJIlO.WBrzu0wh6oTHHjh8hviJQ0pj7eEcY3aN4mMC','user2@welcome.com');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -162,4 +154,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-11  6:09:27
+-- Dump completed on 2019-10-22 18:50:35

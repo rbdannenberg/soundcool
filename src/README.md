@@ -16,11 +16,15 @@ If you are running the whole project, there are four steps.
 - **Step 1**: Install all dependencies
   - Go to `backend` folder.
   - Run `npm i` to install all the dependendies.
+  - Go to `frontend` folder.
+  - Run `npm i` to install all the dependendies.
   
-- **Step 2**: Start webpack to build and watch the project.
+- **Step 2**: Start webpack so it can rebuild project if any changes detected.
+  - Go to `frontend` folder.
   - Run `npm run webpack`
   
 - **Step 3**: Start server
+  - Go to `backend` folder.
   - Run `npm start`
   - Go to http://localhost:5000 to see the project!
   
@@ -42,11 +46,10 @@ If you are running the whole project, there are four steps.
       MYSQL_DB= soundcool
     ```
 
-Alternatively, if you are only developing the project editor and just want to
-run the project editor without going through dashboard and users, you can just
+Alternatively, if you just want to run the project front-end and want it to use a server hosted at X location, you can just
 
-- Go to `frontend/project-editor` folder.
-- run `npm i`
+- Go to `frontend/src/components/constants.js` file.
+- Change the `BASE_URL` with the X
 - run `npm start`
 - It will start the project editor in http://localhost:3000
 
@@ -56,10 +59,8 @@ As you may noticed, both the create-react-app and server-side-rendering
 require you to compile the react codes into a bundle and serve it when running the app.
 Without recompiling them, you will find that none of your changes are shown.
 
-- Anytime you make changes in the folder `frontend/project-editor` (the create-react-app)
-  - call `npm run build`.
-- If you are making changes in the folder `backend/dashboard` (the server-side-rendering dashboard)
-  - call `npm run webpack` in the `backend` folder. You don't need to call this every time, since webpack is watching you and automatically recompile when you make changes.
+- Anytime you make changes in the folder `frontend` (the create-react-app)
+  - Run `npm run webpack`. You don't need to call this every time, since webpack is watching you and automatically recompile when you make changes.
 - Any changes you make in terms of the server (anything outside of both client folders)
   will be automatically updated by `nodemon`. As you can see it's nodemon instead of node
   running when you starts the server.
@@ -68,7 +69,7 @@ Without recompiling them, you will find that none of your changes are shown.
 
 - A simple login scheme.
   - Please check the database for the table of user, projects and sounds.
-    If you login as user1@welcome.com or user2@welcome.com, they will have projects and
+    You can login as `user1@welcome.com` or `user2@welcome.com` using password `welcome`, they will have a few pre-populated projects and
     sound associated.
   - There is authorization scheme so that you can only access the projects or sounds
     when you logged in as a user.
