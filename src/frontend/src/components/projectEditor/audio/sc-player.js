@@ -13,14 +13,13 @@ function loadBufferError(error) {
 }
 
 class ScPlayer extends ScModule {
-
     constructor(context, options = {}) {
         super(context);
         let defOpts = {
-          path: "",
-          loop: false,
-          speed: 1.0,
-          reverse: false
+            path: "",
+            loop: false,
+            speed: 1.0,
+            reverse: false
         };
         this.offset = 0;
         this.options = Object.assign(defOpts, options);
@@ -88,7 +87,7 @@ class ScPlayer extends ScModule {
     pause() {
         this.offset =
             (this.options.speed * (this.context.currentTime - this.startTime)) %
-                this.duration;
+            this.duration;
         this.stop(false);
     }
 
@@ -117,10 +116,11 @@ class ScPlayer extends ScModule {
         let currTime = this.context.currentTime;
         if (this.startTime !== null) {
             let currPosition =
-                (currTime - this.startTime) % (this.duration / this.options.speed);
+                (currTime - this.startTime) %
+                (this.duration / this.options.speed);
             let posNewSpeed =
                 ((this.duration / value) * currPosition) /
-                    (this.duration / this.options.speed);
+                (this.duration / this.options.speed);
             this.startTime = currTime - posNewSpeed;
         }
         this.options.speed = value;

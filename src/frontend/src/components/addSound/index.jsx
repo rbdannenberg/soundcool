@@ -7,117 +7,124 @@ import ReactTable from "react-table";
 import { showToastrError } from "../common";
 
 class AddSound extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      search: "",
-      isModalOpen: false
+    constructor(props) {
+        super();
+        this.state = {
+            search: "",
+            isModalOpen: false
+        };
+    }
+
+    addSound = () => {
+        fetchAudio()
+            .then(data => {
+                this.setState({ sounds: data.audios });
+                this.toggleModal();
+            })
+            .catch(error => {
+                showToastrError(error);
+            });
     };
-  }
 
-  addSound = () => {
-    fetchAudio()
-      .then(data => {
-        this.setState({ sounds: data.audios });
+    filterSounds = sound => {
+        let qry = this.state.search;
+        if (qry == "") return true;
+        else if (sound.name.toLowerCase().includes(qry.toLowerCase()))
+            return true;
+        else return false;
+    };
+
+    selectSound = sound => {
         this.toggleModal();
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  };
+        this.props.onSoundSelect(sound);
+    };
 
-  filterSounds = sound => {
-    let qry = this.state.search;
-    if (qry == "") return true;
-    else if (sound.name.toLowerCase().includes(qry.toLowerCase())) return true;
-    else return false;
-  };
+    toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
-  selectSound = sound => {
-    this.toggleModal();
-    this.props.onSoundSelect(sound);
-  };
+    renderSounds = sounds => {
+        const columns = [
+            {
+                Header: "Name",
+                accessor: "name" // String-based value accessors!
+            },
+            {
+                Header: "Control",
+                accessor: "control" // Custom cell components!
+            },
+            {
+                Header: "Action",
+                accessor: "action"
+            }
+        ];
+        let data = [];
 
-  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+        sounds.forEach(sound => {
+            let { name, sound_id } = sound;
+            data.push({
+                name: name,
+                control: (
+                    <ReactAudioPlayer
+                        style={{
+                            width: "100%",
+                            borderColor: "#333",
+                            minWidth: "200px"
+                        }}
+                        src={serveAudio(sound_id)}
+                        autoPlay={false}
+                        controls
+                    />
+                ),
+                action: (
+                    <div className="col-sm-12 text-center">
+                        <button
+                            className="btn btn-info text-center"
+                            onClick={() => this.selectSound(sound)}
+                        >
+                            Select
+                        </button>
+                    </div>
+                )
+            });
+        });
+        return (
+            <ReactTable
+                data={data}
+                columns={columns}
+                defaultPageSize={5}
+                className="-striped -highlight"
+            />
+        );
+    };
 
-  renderSounds = sounds => {
-    const columns = [
-      {
-        Header: "Name",
-        accessor: "name" // String-based value accessors!
-      },
-      {
-        Header: "Control",
-        accessor: "control" // Custom cell components!
-      },
-      {
-        Header: "Action",
-        accessor: "action"
-      }
-    ];
-    let data = [];
-
-    sounds.forEach(sound => {
-      let { name, sound_id } = sound;
-      data.push({
-        name: name,
-        control: (
-          <ReactAudioPlayer
-            style={{ width: "100%", borderColor: "#333", minWidth: "200px" }}
-            src={serveAudio(sound_id)}
-            autoPlay={false}
-            controls
-          />
-        ),
-        action: (
-          <div className="col-sm-12 text-center">
-            <button
-              className="btn btn-info text-center"
-              onClick={() => this.selectSound(sound)}
-            >
-              Select
-            </button>
-          </div>
-        )
-      });
-    });
-    return (
-      <ReactTable
-        data={data}
-        columns={columns}
-        defaultPageSize={5}
-        className="-striped -highlight"
-      />
-    );
-  };
-
-  render() {
-    const { sounds } = this.state;
-    return (
-      <React.Fragment>
-        <p>
-          {this.props.file ? this.props.file.name : "Please select a sound"}{" "}
-          <button
-            className="btn btn-info"
-            style={{ fontSize: "0.8rem" }}
-            onClick={this.addSound}
-          >
-            {this.props.file && this.props.file.name
-              ? "Update sound"
-              : "Select Sound"}
-          </button>
-        </p>
-        <Modal
-          size="lg"
-          centered
-          show={this.state.isModalOpen}
-          onHide={this.toggleModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Select a sound</Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ overflowX: "auto" }}>
-            {/* <div className="float-right">
+    render() {
+        const { sounds } = this.state;
+        return (
+            <React.Fragment>
+                <p>
+                    {this.props.file
+                        ? this.props.file.name
+                        : "Please select a sound"}{" "}
+                    <button
+                        className="btn btn-info"
+                        style={{ fontSize: "0.8rem" }}
+                        onClick={this.addSound}
+                    >
+                        {this.props.file && this.props.file.name
+                            ? "Update sound"
+                            : "Select Sound"}
+                    </button>
+                </p>
+                <Modal
+                    size="lg"
+                    centered
+                    show={this.state.isModalOpen}
+                    onHide={this.toggleModal}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Select a sound</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={{ overflowX: "auto" }}>
+                        {/* <div className="float-right">
               <input
                 className="search"
                 style={{ marginRight: "10px" }}
@@ -128,12 +135,13 @@ class AddSound extends Component {
                 }}
               ></input>
             </div> */}
-            {sounds && this.renderSounds(sounds.filter(this.filterSounds))}
-          </Modal.Body>
-        </Modal>
-      </React.Fragment>
-    );
-  }
+                        {sounds &&
+                            this.renderSounds(sounds.filter(this.filterSounds))}
+                    </Modal.Body>
+                </Modal>
+            </React.Fragment>
+        );
+    }
 }
 
 export default AddSound;

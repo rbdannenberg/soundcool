@@ -5,16 +5,16 @@ export const projectCreateUrl = () => `${BASE_URL}/projects/new`;
 export const fetchUserProjectURL = () => `${BASE_URL}/projects/project`;
 
 export const updateProject = payload => {
-  const url = projectUrl();
-  return patchRequest(url, payload);
+    const url = projectUrl();
+    return patchRequest(url, payload);
 };
 
 export const createProject = payload => {
-  const url = projectCreateUrl();
-  return postRequest(url, payload);
+    const url = projectCreateUrl();
+    return postRequest(url, payload);
 };
 
 export const fetchUserProject = projectId => {
-  const url = fetchUserProjectURL() +"?projectId="+projectId;
-  return getRequest(url);
+    const url = fetchUserProjectURL() + "?projectId=" + projectId;
+    return getRequest(url);
 };

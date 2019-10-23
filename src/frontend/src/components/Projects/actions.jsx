@@ -9,31 +9,31 @@ export const removeSharedUserURL = () => `${BASE_URL}/projects/removeShare`;
 export const addSharedUserURL = () => `${BASE_URL}/projects/addShare`;
 
 export const fetchUserProjects = () => {
-  return getRequest(fetchUserProjectURL());
+    return getRequest(fetchUserProjectURL());
 };
 export const removeProject = payload => {
-  const url = removeProjectURL();
-  return patchRequest(url, payload);
+    const url = removeProjectURL();
+    return patchRequest(url, payload);
 };
 export const cloneProject = payload => {
-  const url = cloneProjectURL();
-  return postRequest(url, payload);
+    const url = cloneProjectURL();
+    return postRequest(url, payload);
 };
 export const addSharedUser = payload => {
-  toggleAudioSharing({ sharing: true });
-  const url = addSharedUserURL();
-  return patchRequest(url, payload);
+    toggleAudioSharing({ sharing: true });
+    const url = addSharedUserURL();
+    return patchRequest(url, payload);
 };
 
 export const removeSharedUser = payload => {
-  const url = removeSharedUserURL();
-  return patchRequest(url, payload);
+    const url = removeSharedUserURL();
+    return patchRequest(url, payload);
 };
 export const setProjectPublic = payload => {
-  toggleAudioSharing({ sharing: true });
-  const url = setProjectPublicURL();
-  return patchRequest(url, payload);
+    toggleAudioSharing({ sharing: true });
+    const url = setProjectPublicURL();
+    return patchRequest(url, payload);
 };
 export const redirectToRoot = () => {
-  window.location = "/";
+    window.location = "/";
 };

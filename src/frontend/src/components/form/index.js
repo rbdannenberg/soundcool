@@ -8,12 +8,12 @@ import FormRadio from "./FormRadio";
 import FormFileSelector from "./FormFileSelector";
 
 export {
-  FormGroup,
-  FormInput,
-  FormSelect,
-  FormNumericInput,
-  FormEmailInput,
-  FormCheckbox,
-  FormRadio,
-  FormFileSelector
+    FormGroup,
+    FormInput,
+    FormSelect,
+    FormNumericInput,
+    FormEmailInput,
+    FormCheckbox,
+    FormRadio,
+    FormFileSelector
 };

@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
@@ -21,12 +21,11 @@ app.use("/api/v1/projects", projects);
 app.use("/api/v1/user", auth);
 
 app.get("/api", (req, res) => {
-  res.send("Go to /sounds to see sounds, go to /projects to see projects ");
+    res.send("Go to /sounds to see sounds, go to /projects to see projects ");
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname + "/public/index.html"));
+    res.sendFile(path.resolve(__dirname + "/public/index.html"));
 });
-
 
 app.listen(PORT);
