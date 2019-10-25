@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import Home from "../home";
-import Login from "../login";
-import Register from "../register";
-import Header from "../Header.jsx";
-import Projects from "../Projects";
-import Sounds from "../sounds";
-import Contact from "../Contact.jsx";
+import Home from "./home";
+import Login from "./login";
+import Register from "./register";
+import Header from "./header";
+import Projects from "./projects";
+import Sounds from "./sounds";
+import Contact from "./contact";
 import jwtDecode from "jwt-decode";
-import About from "../About.jsx";
-import ProjectEditor from "../projectEditor";
+import About from "./about";
+import ProjectEditor from "./projectEditor";
 
 class Main extends Component {
     state = {};

@@ -31,7 +31,3 @@ export const getHeaders = ({ email, token }) => ({
     // 'X-Auth-Email': email,
     "X-Auth-Token": token
 });
-
-export const preventFormSubmissionOnEnter = e => {
-    if (e.key === "Enter") e.preventDefault();
-};

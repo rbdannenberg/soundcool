@@ -1,12 +1,12 @@
 import React from "react";
-import Main from "../router";
+import Main from "./router";
 import "./main.css";
 import { BrowserRouter } from "react-router-dom";
-import { Store } from "../store";
+import { Store } from "./store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateUser } from "./actions";
-import { showToastrError } from "../common";
+import { showToastrError } from "./common";
 
 class App extends React.Component {
     constructor(props) {

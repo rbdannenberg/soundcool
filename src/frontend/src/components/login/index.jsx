@@ -1,12 +1,11 @@
 import React from "react";
-import Form from "../Form.jsx";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { redirectToHome } from "./actions";
 import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from "../common";
 import LoginForm from "./form";
 
-class Login extends Form {
+class Login extends React.Component {
     afterSignin = res => {
         const { token, error } = res;
         if (error) {

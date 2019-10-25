@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { isUserLoggedIn } from "./common";
+import { isUserLoggedIn } from "../common";
 import {
     Navbar,
     NavbarBrand,

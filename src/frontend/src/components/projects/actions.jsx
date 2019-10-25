@@ -1,4 +1,4 @@
-import { BASE_URL } from "./../constants";
+import { BASE_URL } from "../constants";
 import { getRequest, postRequest, patchRequest } from "../api";
 import { toggleAudioSharing } from "../sounds/actions";
 export const fetchUserProjectURL = () => `${BASE_URL}/projects/get`;

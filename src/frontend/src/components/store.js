@@ -1,4 +1,4 @@
-import { getHeaders } from "../common";
+import { getHeaders } from "./common";
 
 export const Store = (function() {
     function save(key, value) {

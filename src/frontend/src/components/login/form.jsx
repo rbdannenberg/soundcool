@@ -1,10 +1,9 @@
 import React from "react";
-import Form from "../Form.jsx";
 import FormInput from "../form/FormInput.jsx";
 import { showToastrError } from "../common";
 import { loginUser } from "./actions";
 
-class LoginForm extends Form {
+class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

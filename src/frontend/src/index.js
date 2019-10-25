@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import App from "./components/soundcool";
+import App from "./components";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-table/react-table.css";
