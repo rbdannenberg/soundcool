@@ -15,29 +15,14 @@ export default class Header extends Component {
         super(props);
 
         this.state = {
-            isNavOpen: false,
-            isModalOpen: false
+            isNavOpen: false
         };
 
         this.toggleNav = this.toggleNav.bind(this);
-        this.toggleModal = this.toggleModal.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
     }
 
     toggleNav() {
         this.setState({ isNavOpen: !this.state.isNavOpen });
-    }
-
-    toggleModal() {
-        this.setState({ isModalOpen: !this.state.isModalOpen });
-    }
-
-    handleLogin(evt) {
-        this.toggleModal();
-
-        alert(this.username.value + " " + this.password.value);
-
-        evt.preventDefault();
     }
 
     handleLogout() {

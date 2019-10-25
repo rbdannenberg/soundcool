@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
-import { fetchAudio } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
-import { serveAudio } from "../sounds/actions";
+import { serveAudio, fetchAudio } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../common";
 

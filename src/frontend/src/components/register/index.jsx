@@ -30,6 +30,7 @@ class Register extends Component {
                     </Breadcrumb>
                 </div>
                 <RegisterForm afterRegister={this.afterRegister} />
+                <Link to="/login">Already a user? Login</Link>
             </div>
         );
     }

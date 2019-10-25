@@ -43,7 +43,3 @@ export const getAudio = sound_id => {
         getAudioUrl() + "/" + sound_id + "/" + Store.headers["X-Auth-Token"];
     return getRequest(url);
 };
-
-export const redirectToRoot = () => {
-    window.location = "/";
-};

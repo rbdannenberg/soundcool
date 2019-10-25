@@ -34,6 +34,3 @@ export const setProjectPublic = payload => {
     const url = setProjectPublicURL();
     return patchRequest(url, payload);
 };
-export const redirectToRoot = () => {
-    window.location = "/";
-};
