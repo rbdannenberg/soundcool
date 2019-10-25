@@ -1,6 +1,7 @@
 # Soundcool Sample Player module
 This document specifies the user interface and Web Audio implementation of SamplePlayer in Soundcool.
 ## User Interface
+![alt text](https://github.com/rbdannenberg/soundcool/blob/master/doc/modules/ScSamplePlayer/ui_sample_player.png)
 
 
 ## Web Audio Implementation
