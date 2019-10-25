@@ -3,9 +3,9 @@ import { postRequest } from "../api";
 export const registerUrl = () => `${BASE_URL}/user/register`;
 
 export const registerUser = payload => {
-    const url = registerUrl();
-    return postRequest(url, payload);
+  const url = registerUrl();
+  return postRequest(url, payload);
 };
 export const redirectToRoot = () => {
-    window.location = "/";
+  window.location = "/";
 };

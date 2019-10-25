@@ -9,112 +9,112 @@ const saltRounds = 10;
 const utils = require("../utils");
 
 router.post("/sign_in", (req, res) => {
-    let { email, password } = req.body.user;
-    if (email == "" || password == "") {
-        res.json({
-            error: "Please fill all required fields"
-        });
-    } else if (!emailRegexp.test(email)) {
-        res.json({
-            error: "Please enter a valid email address"
-        });
-    } else if (password.length < 6) {
-        res.json({
-            error: "Password length must be atleast 6 character long"
-        });
-    } else {
-        password = password.trim();
-        email = email.trim();
-        const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
-            email +
-            '"'} `;
+  let { email, password } = req.body.user;
+  if (email == "" || password == "") {
+    res.json({
+      error: "Please fill all required fields"
+    });
+  } else if (!emailRegexp.test(email)) {
+    res.json({
+      error: "Please enter a valid email address"
+    });
+  } else if (password.length < 6) {
+    res.json({
+      error: "Password length must be atleast 6 character long"
+    });
+  } else {
+    password = password.trim();
+    email = email.trim();
+    const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
+      email +
+      '"'} `;
 
-        connection.query(FIND_USER_QUERY, (err, results) => {
-            if (err) {
-                console.log(err);
-                res.send(err);
-            } else {
-                if (results.length === 0) {
-                    res.json({
-                        error: "User does not exist"
-                    });
-                } else {
-                    const user = results[0];
-                    // the password is encrypted, so we need to compare it.
-                    if (bcrypt.compareSync(password, user.password)) {
-                        // JSON web token
+    connection.query(FIND_USER_QUERY, (err, results) => {
+      if (err) {
+        console.log(err);
+        res.send(err);
+      } else {
+        if (results.length === 0) {
+          res.json({
+            error: "User does not exist"
+          });
+        } else {
+          const user = results[0];
+          // the password is encrypted, so we need to compare it.
+          if (bcrypt.compareSync(password, user.password)) {
+            // JSON web token
 
-                        const token = utils.generateToken(user);
-                        res.json({
-                            token
-                        });
-                    } else {
-                        res.json({
-                            error: "Invalid Password"
-                        });
-                    }
-                }
-            }
-        });
-    }
+            const token = utils.generateToken(user);
+            res.json({
+              token
+            });
+          } else {
+            res.json({
+              error: "Invalid Password"
+            });
+          }
+        }
+      }
+    });
+  }
 });
 
 router.post("/register", (req, res) => {
-    let { name, password, email } = req.body.user;
-    if (email == "" || password == "" || name == "") {
-        res.json({
-            error: "Please fill all required fields"
-        });
-    } else if (!emailRegexp.test(email)) {
-        res.json({
-            error: "Please enter a valid email address"
-        });
-    } else if (password.length < 6) {
-        res.json({
-            error: "Password length must be atleast 6 character long"
-        });
-    } else {
-        name = name.trim();
-        password = password.trim();
-        email = email.trim();
-        const hash_password = bcrypt.hashSync(password, saltRounds);
-        const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
+  let { name, password, email } = req.body.user;
+  if (email == "" || password == "" || name == "") {
+    res.json({
+      error: "Please fill all required fields"
+    });
+  } else if (!emailRegexp.test(email)) {
+    res.json({
+      error: "Please enter a valid email address"
+    });
+  } else if (password.length < 6) {
+    res.json({
+      error: "Password length must be atleast 6 character long"
+    });
+  } else {
+    name = name.trim();
+    password = password.trim();
+    email = email.trim();
+    const hash_password = bcrypt.hashSync(password, saltRounds);
+    const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
-        connection.query(CREATE_NEW_USER, (err, results) => {
-            if (err) {
-                if (err.code == "ER_DUP_ENTRY")
-                    res.json({
-                        error: "Account already exist"
-                    });
-                else
-                    res.json({
-                        error: "Unable to register with provided credentials"
-                    });
-            } else {
-                const token = utils.generateToken({
-                    name,
-                    user_id: results.insertId
-                });
-                res.json({
-                    token
-                });
-            }
+    connection.query(CREATE_NEW_USER, (err, results) => {
+      if (err) {
+        if (err.code == "ER_DUP_ENTRY")
+          res.json({
+            error: "Account already exist"
+          });
+        else
+          res.json({
+            error: "Unable to register with provided credentials"
+          });
+      } else {
+        const token = utils.generateToken({
+          name,
+          user_id: results.insertId
         });
-    }
+        res.json({
+          token
+        });
+      }
+    });
+  }
 });
 
 router.get("/validateToken", function(req, res) {
-    var token = req.query.token;
-    if (!token) {
-        return res.status(401).json({ message: "Must pass token" });
+  var token = req.query.token;
+  if (!token) {
+    return res.status(401).json({ message: "Must pass token" });
+  }
+  utils.verifyToken(token, cb => {
+    if (cb) {
+      res.json({ token });
+    } else {
+      return res.status(401).json({ message: "Token Not Valid" });
     }
-    utils.verifyToken(token, cb => {
-        if (cb) {
-            res.json({ token });
-        } else {
-            return res.status(401).json({ message: "Token Not Valid" });
-        }
-    });
+  });
 });
 
 module.exports = router;
