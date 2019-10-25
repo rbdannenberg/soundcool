@@ -2,7 +2,7 @@
 
 Stream media content
 
-**URL** : `/api/v1/sounds/serveAudio/:audioId/:token`
+**URL** : `/api/v1/sounds/getAudio/:audioId/:token`
 
 **Method** : `GET`
 
@@ -16,7 +16,11 @@ Stream media content
 
 **Content examples**
 
-Start Streaming the media in form of chunks whose audio id is sent in request parameters
+```json
+{
+    "location": "[Valid external url]"
+}
+```
 
 ## Error Response
 
