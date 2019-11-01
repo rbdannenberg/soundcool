@@ -21,7 +21,7 @@ const upload = multer({ storage });
 const SELECT_ALL_SOUNDS_QUERY = "SELECT * FROM sounds ";
 
 router.get("/get", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   // do the query case on the user
   let QUERY = `select sound_id,user,name from sounds WHERE user = ${user_id}`;
@@ -51,7 +51,7 @@ router.get("/get", (req, res) => {
 });
 
 router.post("/upload", upload.single("file"), (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const fileLocation =
     "/uploads/sounds/" + cTimeStamp + "::-::" + req.file.originalname;
@@ -79,7 +79,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
 });
 
 router.post("/remove", upload.single("file"), (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { soundId } = req.body;
   const QUERY = `select fileLocation from soundsLocation where sound_id = ${soundId}`;
@@ -116,7 +116,7 @@ router.post("/remove", upload.single("file"), (req, res) => {
 });
 
 router.post("/addSoundLink", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const fileLocation = req.body["audioLink"];
   const QUERY = `insert into sounds(user,name) values(${user_id},'Sound Link')`;
@@ -142,7 +142,7 @@ router.post("/addSoundLink", (req, res) => {
 });
 
 router.post("/toggleAudioSharing", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { sharing } = req.body;
   const QUERY = `UPDATE audioSharing SET sharing= ${sharing} where user_id=${user_id}`;
@@ -161,7 +161,7 @@ router.post("/toggleAudioSharing", (req, res) => {
 
 router.get("/getAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
-  var user = jwt.verify(req.params.token, "jwtPrivateKey");
+  var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
   const QUERY = `select fileLocation from soundsLocation where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {
@@ -181,7 +181,7 @@ router.get("/getAudio/:audioId/:token", function(req, res) {
 
 router.get("/serveAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
-  var user = jwt.verify(req.params.token, "jwtPrivateKey");
+  var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
   const QUERY = `select fileLocation from soundsLocation where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {

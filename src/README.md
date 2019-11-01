@@ -45,6 +45,12 @@ If you are running the whole project, there are four steps.
       MYSQL_PASS= <your_sql_server_password>
       MYSQL_DB= soundcool
     ```
+- **Step 5**: Set a JWT Key value you want to use to sign JWT
+  - Go to `.env` file
+  - Add the following lines
+  ```
+  JWT_SECRET= jwtPrivateKey
+  ```
 
 Alternatively, if you just want to run the project front-end and want it to use a server hosted at X location, you can just
 

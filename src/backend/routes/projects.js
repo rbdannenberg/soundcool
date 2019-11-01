@@ -14,7 +14,7 @@ const SELECT_ALL_PROJECTS_QUERY = "SELECT * FROM projects ";
 const UPDATE_PROJECT_CONTENT = "UPDATE projects SET content = ";
 
 router.get("/get", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   // do the query case on the user
   const QUERY = `select *,(CASE WHEN user=${user_id} THEN 0 ELSE user END)as isOwner from projects where user=${user_id} or sharedUsers like '%"user_id":${user_id}%' or isPublic =true`;
@@ -49,7 +49,7 @@ router.get("/project", (req, res) => {
 });
 
 router.patch("/update", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { content, projectId } = req.body;
   const UPDATE_PROJECT_CONTENT = `UPDATE projects SET content = '${content}' WHERE (user = '${user_id}' or sharedUsers like '%"user_id":${user_id}%') and project_id = '${projectId}'`;
@@ -68,7 +68,7 @@ router.patch("/update", (req, res) => {
 });
 
 router.post("/new", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { projectName, projectDescription, blocks } = req.body;
   let error = "";
@@ -101,7 +101,7 @@ router.post("/new", (req, res) => {
 });
 
 router.post("/clone", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { projectId } = req.body;
   const QUERY = `select * from projects where project_id = ${projectId}`;
@@ -187,7 +187,7 @@ router.post("/clone", (req, res) => {
 });
 
 router.patch("/remove", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], "jwtPrivateKey");
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { projectId } = req.body;
   const DELETE_PROJECT = `DELETE FROM projects WHERE user = '${user_id}' and project_id = '${projectId}'`;
