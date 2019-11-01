@@ -36,8 +36,8 @@ See implementation notes for more information of how it works.
 
 * When a sound ends:
     * if LOOP is selected, start playing the sound again
-    * otherwise, if RANDOM is selected and no other sound is playing pick another sound at random and start playing it (or if it has been paused, then resume it) (Soundcool seems to add a random silence before playing/resuming the next random sound.)
-        * The rationale behind "no other sound is playing" is that the current implementation seems to get confused and turn things off when multiple sounds are playing and you have RANDOM enabled. By having the condition "no other sounds are playing", you can manually start a sound with RANDOM and the behavior will be: the manually started sound will play concurrently with any sound started by RANDOM. When both sounds end, RANDOM will pick a new one.
+    * otherwise, if RANDOM is selected and no other sound is playing pick another sound at random and start playing it (or if it has been paused, then resume it) (Web Audio Soundcool adds a random silence before playing/resuming the next random sound.)
+        * By having the condition "no other sounds are playing", you can manually start a sound with RANDOM and the behavior will be: the manually started sound will play concurrently with any sound started by RANDOM. When both sounds end, RANDOM will pick a new one.
 
 * When a sound is paused or stopped:
     * the sound is paused or stopped. The rule for when a sound ends and this rule for when a sound is paused or stopped are followed for any other sounds that might still be playing.
