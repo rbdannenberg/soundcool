@@ -1,7 +1,8 @@
 import React from "react";
 import changeBlock from "../../../handlers";
-import { FaPlay, FaSquare } from "react-icons/fa";
+import { FaPlay, FaSquare, FaPause } from "react-icons/fa";
 import AddSound from "../../../../addSound";
+import { serveAudio } from "../../../../sounds/actions";
 const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
@@ -16,7 +17,7 @@ const circleStyle = {
 class Player extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isLoaded: false };
   }
 
   render() {
@@ -27,41 +28,27 @@ class Player extends React.Component {
       hour,
       minute,
       second,
-      file
+      file,
       // disabled,
-      // audioObj
+      audioObj
     } = this.props.blockInfo;
-    // console.log(audioObj);
-    // let audioControl = new Audio();
-    // if (file) {
-    //   console.log("hello");
-    //   // audio = new Audio(serveAudio(file.sound_id));
-    //   let url = serveAudio(file.sound_id);
-    //   console.log(url);
-    //   console.log("audioObj is: ");
-    //   console.log(audioObj);
-    //   window.foo = audioObj;
-    //   audioControl.src = url;
-    //   // let loadPromise = audioObj.load(url);
-    //   // loadPromise.then(function(value) {
-    //   //   console.log(value);
-    //   // });
-    //   /*
-    //   let fetchAudio = new Promise((resolve, reject) => {
-    //     let seconds = audioObj.load(url);
-    //     resolve(seconds);
-    //   });
-    //   fetchAudio
-    //     .then(seconds => {
-    //       console.log("good");
-    //       // changeBlock()
-    //     })
-    //     .catch(() => {
-    //       console.log("bad");
-    //     });*/
-    // }
+
+    const loadUrl = () => {
+      console.log(file.sound_id);
+      const url = serveAudio(file.sound_id);
+      audioObj.load(url);
+    };
+
+    if (file && !this.state.isLoaded) {
+      loadUrl();
+      this.setState({ isLoaded: true });
+    }
+
     const onSoundSelect = audio_id => {
+      audioObj.stop();
       changeBlock(id, "file", audio_id);
+      const url = serveAudio(audio_id.sound_id);
+      audioObj.load(url);
     };
     return (
       <React.Fragment>
@@ -180,17 +167,26 @@ class Player extends React.Component {
                 left: "78px"
               }}
               onClick={() => {
-                // audioControl.play();
-                // audioObj.start();
+                audioObj.isPlaying ? audioObj.pause() : audioObj.play();
                 changeBlock(id, "playing", undefined);
               }}
             >
-              <FaPlay
-                style={{
-                  fontSize: "12px",
-                  marginLeft: "2.5px"
-                }}
-              />
+              {!audioObj.isPlaying && (
+                <FaPlay
+                  style={{
+                    fontSize: "12px",
+                    marginLeft: "2.5px"
+                  }}
+                />
+              )}
+              {audioObj.isPlaying && (
+                <FaPause
+                  style={{
+                    fontSize: "12px",
+                    marginLeft: "2.5px"
+                  }}
+                />
+              )}
             </button>
             <button
               className="btn btn-light btn-circle m-1"
@@ -200,8 +196,7 @@ class Player extends React.Component {
                 left: "120px"
               }}
               onClick={() => {
-                // audioControl.pause();
-                // audioObj.stop();
+                audioObj.stop();
                 changeBlock(id, "playing", undefined);
               }}
             >
@@ -214,7 +209,10 @@ class Player extends React.Component {
                 position: "absolute",
                 left: "160px"
               }}
-              onClick={() => changeBlock(id, "reverse", undefined)}
+              onClick={() => {
+                audioObj.reverse();
+                changeBlock(id, "reverse", undefined);
+              }}
             >
               <FaPlay
                 style={{
@@ -278,14 +276,6 @@ class Player extends React.Component {
         </div>
         <div className="text-center" style={{ backgroundColor: "grey" }}>
           <AddSound onSoundSelect={onSoundSelect} file={file} />
-          <div className="row">
-            <input
-              className="mx-4 my-1"
-              style={{ fontSize: "0.8rem" }}
-              type="file"
-              onChange={e => changeBlock(id, "file", e.target.files[0])}
-            />
-          </div>
 
           <span className="col text-center">
             <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>

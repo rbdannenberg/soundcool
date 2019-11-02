@@ -84,7 +84,7 @@ class ScModule {
   }
 
   set volume(value) {
-    this.outNode.gain.value = parseFloat(value);
+    this.outNode.gain.value = parseFloat(value/100);
   }
 
   destroy() {}

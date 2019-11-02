@@ -39,7 +39,7 @@ class Speaker extends React.Component {
 
     renderCtx.clearRect(0, 0, 230, 140);
     renderCtx.fillStyle = "green";
-    renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
+    renderCtx.fillRect(90, 0, data, 140);
   };
 
   // render function
@@ -54,9 +54,9 @@ class Speaker extends React.Component {
     let renderCtx = canvasRCtx;
     let data = audioObj.getAudioData()[1];
 
-    renderCtx.clearRect(0, 0, 230, 140);
+    renderCtx.clearRect(0, 0, 180, 140);
     renderCtx.fillStyle = "green";
-    renderCtx.fillRect(0, 0, (data - 40) * 40, 140);
+    renderCtx.fillRect(90, 0, data, 140);
   };
 
   // bindtocanvas
@@ -95,7 +95,7 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "230px",
+              width: "180px",
               position: "absolute",
               top: "5px",
               left: "30px",
@@ -127,7 +127,7 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "230px",
+              width: "180px",
               position: "absolute",
               top: "25px",
               left: "30px",
