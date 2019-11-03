@@ -26,8 +26,19 @@ class Player extends React.Component {
   }
 
   componentDidMount = () => {
+    let { audioObj } = this.props.blockInfo;
     this.rendererP = setInterval(this.rendererMeter.bind(this), 200);
     this.rendererS = setInterval(this.rendererSeek.bind(this), 100);
+    var canvas = this.canvasSeekRef.current;
+    const seek = (canvas, e) => {
+      var rect = canvas.getBoundingClientRect();
+      let pos = e.clientX - rect.left;
+      let seek = pos / 190;
+      audioObj.seek(seek);
+    };
+    canvas.addEventListener("click", function(e) {
+      seek(canvas, e);
+    });
   };
 
   rendererSeek = () => {
@@ -48,9 +59,9 @@ class Player extends React.Component {
           (audioObj.context.currentTime - audioObj.startTime)) %
         audioObj.duration;
       let step = 190 / audioObj.duration;
-      if(audioObj.options.reverse){
-        renderCtx.fillRect(0, 0, 190-(data * step), 140);
-      }else{
+      if (audioObj.options.reverse) {
+        renderCtx.fillRect(0, 0, 190 - data * step, 140);
+      } else {
         renderCtx.fillRect(0, 0, data * step, 140);
       }
     } else if (audioObj.isPaused) {
@@ -236,7 +247,7 @@ class Player extends React.Component {
                 height: "20px",
                 width: "20px"
               }}
-              onClick={() => changeBlock(id, "loop", undefined)}
+              onClick={() => changeBlock(id, "loop", !audioObj.options.loop)}
             />
 
             <button
