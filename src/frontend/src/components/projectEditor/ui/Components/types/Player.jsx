@@ -17,8 +17,70 @@ const circleStyle = {
 class Player extends React.Component {
   constructor(props) {
     super(props);
+    this.canvasMeterRef = React.createRef();
+    this.canvasSeekRef = React.createRef();
+    this.rendererM = undefined;
+    this.rendererS = undefined;
+    this.oldDb = -100;
     this.state = { isLoaded: false };
   }
+
+  componentDidMount = () => {
+    this.rendererP = setInterval(this.rendererMeter.bind(this), 200);
+    this.rendererS = setInterval(this.rendererSeek.bind(this), 100);
+  };
+
+  rendererSeek = () => {
+    let { audioObj } = this.props.blockInfo;
+    let canvas = this.canvasSeekRef.current;
+    if (canvas === null) {
+      clearInterval(this.rendererS);
+      return;
+    }
+    let canvasCtx = canvas.getContext("2d");
+    let renderCtx = canvasCtx;
+
+    renderCtx.fillStyle = "blue";
+    if (audioObj.isPlaying) {
+      renderCtx.clearRect(0, 0, 190, 140);
+      let data =
+        (audioObj.options.speed *
+          (audioObj.context.currentTime - audioObj.startTime)) %
+        audioObj.duration;
+      let step = 190 / audioObj.duration;
+      if(audioObj.options.reverse){
+        renderCtx.fillRect(0, 0, 190-(data * step), 140);
+      }else{
+        renderCtx.fillRect(0, 0, data * step, 140);
+      }
+    } else if (audioObj.isPaused) {
+    } else {
+      renderCtx.clearRect(0, 0, 190, 140);
+    }
+  };
+
+  rendererMeter = () => {
+    let { audioObj } = this.props.blockInfo;
+    let canvas = this.canvasMeterRef.current;
+    if (canvas === null) {
+      clearInterval(this.rendererP);
+      return;
+    }
+    let canvasCtx = canvas.getContext("2d");
+    let renderCtx = canvasCtx;
+    let x = audioObj.getAudioData()[0];
+    let data = Math.max(this.oldDb - 7, x, -100);
+    let scaledData = 100 + data;
+    renderCtx.clearRect(0, 50, 15, 100);
+
+    var grd = renderCtx.createLinearGradient(0, 50, 0, 150);
+    grd.addColorStop(0, "red");
+    grd.addColorStop(0.2, "yellow");
+    grd.addColorStop(1, "green");
+
+    renderCtx.fillStyle = grd;
+    renderCtx.fillRect(0, 150 - scaledData, 15, scaledData);
+  };
 
   render() {
     let {
@@ -33,22 +95,28 @@ class Player extends React.Component {
       audioObj
     } = this.props.blockInfo;
 
-    const loadUrl = () => {
-      console.log(file.sound_id);
-      const url = serveAudio(file.sound_id);
-      audioObj.load(url);
+    const loadUrl = url => {
+      audioObj.load(url).then(res => {
+        let hour = parseInt(res / 3600);
+        let minute = parseInt((res - hour * 3600) / 60);
+        let second = parseInt(res - hour * 3600 - minute * 60);
+        changeBlock(id, "second", second);
+        changeBlock(id, "minute", minute);
+        changeBlock(id, "hour", hour);
+      });
     };
 
     if (file && !this.state.isLoaded) {
-      loadUrl();
-      this.setState({ isLoaded: true });
+      const url = serveAudio(file.sound_id);
+      loadUrl(url);
+      this.setState({ isLoaded: true, isPlaying: false });
     }
 
     const onSoundSelect = audio_id => {
       audioObj.stop();
       changeBlock(id, "file", audio_id);
       const url = serveAudio(audio_id.sound_id);
-      audioObj.load(url);
+      loadUrl(url);
     };
     return (
       <React.Fragment>
@@ -97,7 +165,7 @@ class Player extends React.Component {
             </span>
           </div>
 
-          <div
+          {/* <div
             className="progress"
             style={{
               width: "190px",
@@ -115,6 +183,18 @@ class Player extends React.Component {
               aria-valuemax="100"
               style={{ width: "60%", backgroundColor: "green" }}
             />
+          </div> */}
+          <div
+            className="progress"
+            style={{
+              width: "190px",
+              position: "absolute",
+              top: "60px",
+              left: "8px",
+              backgroundColor: "black"
+            }}
+          >
+            <canvas ref={this.canvasSeekRef} />
           </div>
 
           <div
@@ -123,7 +203,7 @@ class Player extends React.Component {
               textAlign: "right",
               position: "absolute",
               top: "80px",
-              right: "85px"
+              right: "110px"
             }}
           >
             {hour + ":" + minute + ":" + second}
@@ -167,7 +247,11 @@ class Player extends React.Component {
                 left: "78px"
               }}
               onClick={() => {
-                audioObj.isPlaying ? audioObj.pause() : audioObj.play();
+                audioObj.isPlaying
+                  ? audioObj.pause()
+                  : audioObj.play(() => {
+                      this.setState({});
+                    });
                 changeBlock(id, "playing", undefined);
               }}
             >
@@ -210,8 +294,9 @@ class Player extends React.Component {
                 left: "160px"
               }}
               onClick={() => {
-                audioObj.reverse();
-                changeBlock(id, "reverse", undefined);
+                audioObj.reverse(res => {
+                  console.log(res);
+                });
               }}
             >
               <FaPlay
@@ -229,13 +314,15 @@ class Player extends React.Component {
             style={{
               position: "absolute",
               left: "220px",
-              top: "25px",
-              height: "110px",
+              top: "30px",
+              height: "100px",
               width: "15px",
               backgroundColor: "black"
             }}
           >
-            <div
+            <canvas ref={this.canvasMeterRef} />
+          </div>
+          {/* <div
               className="progress-bar "
               role="progressbar"
               aria-valuenow="60"
@@ -243,7 +330,7 @@ class Player extends React.Component {
               aria-valuemax="100"
               style={{ height: "60%", backgroundColor: "green" }}
             />
-          </div>
+          </div> */}
 
           <div
             style={{

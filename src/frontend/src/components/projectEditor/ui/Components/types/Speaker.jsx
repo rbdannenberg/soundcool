@@ -14,6 +14,7 @@ const circleStyle = {
 class Speaker extends React.Component {
   constructor(props) {
     super(props);
+    this.oldDb = -100;
     this.canvasLRef = React.createRef();
     this.canvasRRef = React.createRef();
     this.rendererL = undefined;
@@ -33,13 +34,21 @@ class Speaker extends React.Component {
       clearInterval(this.rendererL);
       return;
     }
+
     let canvasLCtx = canvasL.getContext("2d");
     let renderCtx = canvasLCtx;
-    let data = audioObj.getAudioData()[0];
-
+    let x = audioObj.getAudioData()[0];
+    let data = Math.max(this.oldDb - 7, x, -100);
+    let scaledData = 230 + data * 2.3;
     renderCtx.clearRect(0, 0, 230, 140);
-    renderCtx.fillStyle = "green";
-    renderCtx.fillRect(90, 0, data, 140);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 230, 0);
+    grd.addColorStop(0, "green");
+    grd.addColorStop(0.8, "yellow");
+    grd.addColorStop(1, "red");
+
+    renderCtx.fillStyle = grd;
+    renderCtx.fillRect(0, 0, scaledData, 140);
   };
 
   // render function
@@ -52,11 +61,18 @@ class Speaker extends React.Component {
     }
     let canvasRCtx = canvasR.getContext("2d");
     let renderCtx = canvasRCtx;
-    let data = audioObj.getAudioData()[1];
+    let x = audioObj.getAudioData()[1];
+    let data = Math.max(this.oldDb - 7, x, -100);
+    let scaledData = 230 + data * 2.3;
+    renderCtx.clearRect(0, 0, 230, 140);
 
-    renderCtx.clearRect(0, 0, 180, 140);
-    renderCtx.fillStyle = "green";
-    renderCtx.fillRect(90, 0, data, 140);
+    var grd = renderCtx.createLinearGradient(0, 0, 230, 0);
+    grd.addColorStop(0, "green");
+    grd.addColorStop(0.8, "yellow");
+    grd.addColorStop(1, "red");
+
+    renderCtx.fillStyle = grd;
+    renderCtx.fillRect(0, 0, scaledData, 140);
   };
 
   // bindtocanvas
@@ -95,7 +111,7 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "180px",
+              width: "230px",
               position: "absolute",
               top: "5px",
               left: "30px",
@@ -127,7 +143,7 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "180px",
+              width: "230px",
               position: "absolute",
               top: "25px",
               left: "30px",
