@@ -80,19 +80,19 @@ class ScPlayer extends ScModule {
             this.context.currentTime - this.offset / this.options.speed;
         this.isPlaying = true;
         this.inNode.onended = function(event) {
-            this.stop();
+            if (this.isPlaying) this.stop();
             if (playbackEndCallback) playbackEndCallback();
         }.bind(this);
     }
 
     stop(resetOffset = true) {
+        this.isPlaying = false;
         if (this.startTime !== null) {
             this.inNode.stop();
         }
         if (resetOffset) {
             this.offset = 0;
         }
-        this.isPlaying = false;
     }
 
     pause() {
