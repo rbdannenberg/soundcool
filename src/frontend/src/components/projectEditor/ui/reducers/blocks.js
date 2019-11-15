@@ -1,4 +1,5 @@
 import block from "./block";
+import specValues from "../Components/blockSpecs";
 const allTypes = {
   Delay: 1,
   Transposer: 1,
@@ -45,6 +46,7 @@ const blocks = (
       let typeIds = { ...nextTypeId };
       let newTypeId = typeIds[action.typeName]++;
       let newAction = { ...action, newId, newTypeId };
+      console.log(newAction);
       return {
         nowIn,
         nowOut,
@@ -113,7 +115,22 @@ const blocks = (
       let newState = action.content ? action.content : undefined;
 
       if (newState && JSON.parse(newState) !== null) {
-        return JSON.parse(newState);
+        newState = JSON.parse(newState);
+        newState["bs"].forEach((element, index) => {
+          newState["bs"][index] = block(undefined, {
+            type: "ADD_BLOCK",
+            typeName: element.typeName,
+            values: {
+              inNode: [],
+              outNode: [],
+              collapse: true,
+              ...specValues[element.typeName]
+            },
+            newId: element.id,
+            newTypeId: element.typeId
+          });
+        });
+        return newState;
       } else {
         return emptyState;
       }
