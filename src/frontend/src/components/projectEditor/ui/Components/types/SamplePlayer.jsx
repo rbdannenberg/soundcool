@@ -1,7 +1,9 @@
 import React from "react";
-import store from "../../../index";
+import { store } from "../../../index";
 import changeBlock from "../../../handlers";
 import { FaPlay, FaSquare } from "react-icons/fa";
+import AddSound from "../../../../addSound";
+import { serveAudio } from "../../../../sounds/actions";
 
 const circleStyle = {
   width: "1.5rem",
@@ -13,7 +15,49 @@ const circleStyle = {
   borderColor: "black"
 };
 
-const IndividualPlayer = ({ id, num, file }) => {
+// id is the id of the module, num is the index of the samples
+// num starts with 0.
+const IndividualPlayer = ({ id, num, file, audioObj }) => {
+  let inDisabled = true;
+  const loadUrl = url => {
+    audioObj.load(num, url).then(res => {});
+    window.aoplayer = audioObj.players[num];
+  };
+
+  if (file) {
+    const url = serveAudio(file.sound_id);
+    loadUrl(url);
+    inDisabled = false;
+    // store.dispatch({
+    //   type: "CHANGE_BLOCK",
+    //   id,
+    //   field: "inDisableds",
+    //   num,
+    //   value: false
+    // });
+  }
+
+  const onSoundSelect = audio_id => {
+    audioObj.stop(num);
+    store.dispatch({
+      type: "CHANGE_BLOCK",
+      id,
+      field: "files",
+      num,
+      value: audio_id
+    });
+    const url = serveAudio(audio_id.sound_id);
+    inDisabled = false;
+    // store.dispatch({
+    //   type: "CHANGE_BLOCK",
+    //   id,
+    //   field: "inDisableds",
+    //   num,
+    //   value: false
+    // });
+    loadUrl(url);
+  };
+
   return (
     <div
       style={{
@@ -27,6 +71,7 @@ const IndividualPlayer = ({ id, num, file }) => {
     >
       <div style={{ position: "absolute", left: "2px" }}>{num + 1}</div>
       <button
+        disabled={inDisabled}
         className="btn btn-light m-1"
         style={{
           ...circleStyle,
@@ -34,19 +79,23 @@ const IndividualPlayer = ({ id, num, file }) => {
           top: "10px",
           left: "5px"
         }}
-        onClick={() =>
+        onClick={() => {
+          audioObj.players[num].isPlaying
+            ? audioObj.pause(num)
+            : audioObj.play(num);
           store.dispatch({
             type: "CHANGE_BLOCK",
             id,
             field: "playings",
             num,
             value: undefined
-          })
-        }
+          });
+        }}
       >
         <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
       </button>
       <button
+        disabled={inDisabled}
         className="btn btn-light btn-circle m-1"
         style={{
           ...circleStyle,
@@ -54,20 +103,33 @@ const IndividualPlayer = ({ id, num, file }) => {
           top: "10px",
           left: "31px"
         }}
-        onClick={() =>
+        onClick={() => {
+          audioObj.stop(num);
+          console.log("i am playing: " + audioObj.players[num].isPlaying);
           store.dispatch({
             type: "CHANGE_BLOCK",
             id,
             field: "playings",
             num,
             value: undefined
-          })
-        }
+          });
+        }}
       >
         <FaSquare style={{ fontSize: "12px" }} />
       </button>
 
       <div
+        style={{
+          position: "absolute",
+          top: "38px",
+          left: "4px",
+          webkitTransform: "scale(0.8)"
+        }}
+      >
+        <AddSound minimal={true} onSoundSelect={onSoundSelect} file={file} />
+      </div>
+
+      {/* <div
         className="dropdown"
         style={{
           position: "absolute",
@@ -95,18 +157,16 @@ const IndividualPlayer = ({ id, num, file }) => {
           style={{ fontSize: "0.8rem" }}
           aria-labelledby="file dropdown"
         >
-          {/* <div className="dropdown-item" onClick={() => changeMod("No Mod", id)}>
-              No Mod
-            </div> */}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
 const SamplePlayer = ({ blockInfo }) => {
   let l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  let { id, speed, files, masterVolume } = blockInfo;
+  let { id, speed, files, inDisableds, masterVolume, audioObj } = blockInfo;
+
   return (
     <React.Fragment>
       <div
@@ -255,7 +315,13 @@ const SamplePlayer = ({ blockInfo }) => {
                 left: left
               }}
             >
-              <IndividualPlayer id={id} num={x} file={files[x]} />
+              <IndividualPlayer
+                id={id}
+                num={x}
+                file={files[x]}
+                inDisabled={inDisableds[x]}
+                audioObj={audioObj}
+              />
             </div>
           );
         })}

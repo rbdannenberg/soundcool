@@ -31,9 +31,6 @@ const specValues = {
     speed: 1,
     volume: 60,
     playedTime: 0,
-    hour: 0,
-    minute: 0,
-    second: 0,
     file: undefined,
     kinect: false,
     osc: undefined
@@ -210,6 +207,20 @@ const specValues = {
       undefined,
       undefined,
       undefined
+    ],
+    inDisableds: [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
     ],
     masterVolume: 60
   },

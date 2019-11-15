@@ -99,14 +99,30 @@ class AddSound extends Component {
     return (
       <React.Fragment>
         <p>
-          {this.props.file ? this.props.file.name : "Please select a sound"}{" "}
+          {this.props.minimal
+            ? ""
+            : this.props.file
+            ? this.props.file.name
+            : "Please select a sound"}{" "}
           <button
             className="btn btn-info"
-            style={{ fontSize: "0.8rem" }}
+            style={
+              this.props.minimal
+                ? {
+                    fontSize: "0.7rem",
+                    width: "60px",
+                    lineHeight: "1",
+                    margin: "0px",
+                    padding: "0.2rem"
+                  }
+                : { fontSize: "0.8rem", lineHeight: "1.5" }
+            }
             onClick={this.addSound}
           >
             {this.props.file && this.props.file.name
-              ? "Update sound"
+              ? this.props.minimal
+                ? this.props.file.name
+                : "Update sound"
               : "Select Sound"}
           </button>
         </p>

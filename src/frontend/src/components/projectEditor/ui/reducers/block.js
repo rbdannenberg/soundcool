@@ -4,6 +4,7 @@ import ScSpeakers from "../../audio/sc-speakers";
 import ScDelay from "../../audio/sc-delay";
 import ScDirectIn from "../../audio/sc-directin";
 import ScPlayer from "../../audio/sc-player";
+import ScSamplePlayer from "../../audio/sc-sample-player";
 import ScPan from "../../audio/sc-pan";
 import ScOscilloscope from "../../audio/sc-oscilloscope";
 import ScSpectroscope from "../../audio/sc-spectroscope";
@@ -57,6 +58,9 @@ const eva = typeName => {
     case "Spectroscope":
       t = new ScSpectroscope(scContext);
       break;
+    case "SamplePlayer":
+      t = new ScSamplePlayer(scContext);
+      break;
     default:
       t = undefined;
   }
@@ -82,7 +86,6 @@ const block = (state, action) => {
         // submodules (like mixer, sequencer and samplePlay), we based on the
         // submodule number to update the corresponding information in the field
         if (action.num !== undefined) {
-          console.log(action.id);
           state[action.field][action.num] =
             // when action.value is undefined, it means a boolean true/false change
             action.value === undefined
