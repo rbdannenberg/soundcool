@@ -30,6 +30,7 @@ const specValues = {
     loop: false,
     speed: 1,
     volume: 60,
+    playedTime: 0,
     hour: 0,
     minute: 0,
     second: 0,
