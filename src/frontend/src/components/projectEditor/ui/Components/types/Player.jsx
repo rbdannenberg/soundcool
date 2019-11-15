@@ -1,6 +1,6 @@
 import React from "react";
 import changeBlock from "../../../handlers";
-import { FaPlay, FaSquare, FaPause } from "react-icons/fa";
+import { FaPlay, FaSquare, FaPause, FaWindows } from "react-icons/fa";
 import AddSound from "../../../../addSound";
 import { serveAudio } from "../../../../sounds/actions";
 const circleStyle = {
@@ -22,7 +22,8 @@ class Player extends React.Component {
     this.rendererM = undefined;
     this.rendererS = undefined;
     this.oldDb = -100;
-    this.state = { isLoaded: false };
+    this.state = { isLoaded: false, isPlaying: false };
+    this.id = this.props.blockInfo.id;
   }
 
   componentDidMount = () => {
@@ -31,10 +32,18 @@ class Player extends React.Component {
     this.rendererS = setInterval(this.rendererSeek.bind(this), 100);
     var canvas = this.canvasSeekRef.current;
     const seek = (canvas, e) => {
+      // if user seek when audio is not starting, we need to make sure
+      // audio don't start after seek
+      // the audioObj.seek function will assume a playing state and resume playing
+      // if (audioObj.isPlaying) {
+      console.log("seeking...");
       var rect = canvas.getBoundingClientRect();
+      window.rect = rect;
       let pos = e.clientX - rect.left;
+      window.e = e;
       let seek = pos / 190;
       audioObj.seek(seek);
+      // }
     };
     canvas.addEventListener("click", function(e) {
       seek(canvas, e);
@@ -52,21 +61,28 @@ class Player extends React.Component {
     let renderCtx = canvasCtx;
 
     renderCtx.fillStyle = "blue";
+    // fill width = 300 is a hack, since 190 is supposed to be the length of
+    // render bar, but when fill in a length of 190, it doesn't really
+    // fill in to the rightmost end.
     if (audioObj.isPlaying) {
-      renderCtx.clearRect(0, 0, 190, 140);
+      renderCtx.clearRect(0, 0, 300, 140);
+      changeBlock(this.id, "playedTime", 0);
       let data =
         (audioObj.options.speed *
           (audioObj.context.currentTime - audioObj.startTime)) %
         audioObj.duration;
-      let step = 190 / audioObj.duration;
+      let step = 300 / audioObj.duration;
       if (audioObj.options.reverse) {
-        renderCtx.fillRect(0, 0, 190 - data * step, 140);
+        renderCtx.fillRect(0, 0, 300 - data * step, 140);
+        changeBlock(this.id, "playedTime", audioObj.duration - data);
       } else {
+        changeBlock(this.id, "playedTime", data);
         renderCtx.fillRect(0, 0, data * step, 140);
       }
     } else if (audioObj.isPaused) {
     } else {
-      renderCtx.clearRect(0, 0, 190, 140);
+      renderCtx.clearRect(0, 0, 300, 140);
+      changeBlock(this.id, "playedTime", 0);
     }
   };
 
@@ -98,28 +114,26 @@ class Player extends React.Component {
       id,
       speed,
       volume,
-      hour,
-      minute,
-      second,
+      playedTime,
       file,
-      // disabled,
+      inDisabled,
       audioObj
     } = this.props.blockInfo;
 
     const loadUrl = url => {
       audioObj.load(url).then(res => {
+        // res returns the duration of the piece
+        console.log(res);
         let hour = parseInt(res / 3600);
         let minute = parseInt((res - hour * 3600) / 60);
         let second = parseInt(res - hour * 3600 - minute * 60);
-        changeBlock(id, "second", second);
-        changeBlock(id, "minute", minute);
-        changeBlock(id, "hour", hour);
       });
     };
 
     if (file && !this.state.isLoaded) {
       const url = serveAudio(file.sound_id);
       loadUrl(url);
+      changeBlock(id, "inDisabled", false);
       this.setState({ isLoaded: true, isPlaying: false });
     }
 
@@ -127,8 +141,25 @@ class Player extends React.Component {
       audioObj.stop();
       changeBlock(id, "file", audio_id);
       const url = serveAudio(audio_id.sound_id);
+      changeBlock(id, "inDisabled", false);
       loadUrl(url);
     };
+
+    const timeFormat = time => {
+      if (time === NaN || time == "NaN") {
+        return "00";
+      }
+      time = parseInt(time);
+      if (time < 10) {
+        time = "0" + time;
+      }
+      return time;
+    };
+
+    let hour = timeFormat(playedTime / 3600);
+    let minute = timeFormat((playedTime - hour * 3600) / 60);
+    let second = timeFormat(playedTime - hour * 3600 - minute * 60);
+
     return (
       <React.Fragment>
         <div className="" style={{ position: "relative", height: "140px" }}>
@@ -176,25 +207,6 @@ class Player extends React.Component {
             </span>
           </div>
 
-          {/* <div
-            className="progress"
-            style={{
-              width: "190px",
-              position: "absolute",
-              left: "8px",
-              top: "60px",
-              backgroundColor: "black"
-            }}
-          >
-            <div
-              className="progress-bar "
-              role="progressbar"
-              aria-valuenow="60"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style={{ width: "60%", backgroundColor: "green" }}
-            />
-          </div> */}
           <div
             className="progress"
             style={{
@@ -205,7 +217,7 @@ class Player extends React.Component {
               backgroundColor: "black"
             }}
           >
-            <canvas ref={this.canvasSeekRef} />
+            <canvas style={{ position: "relative" }} ref={this.canvasSeekRef} />
           </div>
 
           <div
@@ -217,7 +229,11 @@ class Player extends React.Component {
               right: "110px"
             }}
           >
-            {hour + ":" + minute + ":" + second}
+            {(isNaN(hour) ? "00" : hour) +
+              ":" +
+              (isNaN(minute) ? "00" : minute) +
+              ":" +
+              (isNaN(second) ? "00" : second)}
           </div>
 
           {/* check and buttons */}
@@ -251,6 +267,7 @@ class Player extends React.Component {
             />
 
             <button
+              disabled={inDisabled}
               className="btn btn-light m-1"
               style={{
                 ...circleStyle,
@@ -278,12 +295,13 @@ class Player extends React.Component {
                 <FaPause
                   style={{
                     fontSize: "12px",
-                    marginLeft: "2.5px"
+                    marginLeft: "0px"
                   }}
                 />
               )}
             </button>
             <button
+              disabled={inDisabled}
               className="btn btn-light btn-circle m-1"
               style={{
                 ...circleStyle,
@@ -298,6 +316,7 @@ class Player extends React.Component {
               <FaSquare style={{ fontSize: "12px" }} />
             </button>
             <button
+              disabled={inDisabled}
               className="btn btn-light btn-circle m-1"
               style={{
                 ...circleStyle,
@@ -324,7 +343,7 @@ class Player extends React.Component {
             className="progress progress-bar-vertical"
             style={{
               position: "absolute",
-              left: "220px",
+              left: "235px",
               top: "30px",
               height: "100px",
               width: "15px",
@@ -333,21 +352,12 @@ class Player extends React.Component {
           >
             <canvas ref={this.canvasMeterRef} />
           </div>
-          {/* <div
-              className="progress-bar "
-              role="progressbar"
-              aria-valuenow="60"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              style={{ height: "60%", backgroundColor: "green" }}
-            />
-          </div> */}
 
           <div
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              left: "230px",
+              left: "260px",
               top: "5px"
             }}
           >
@@ -361,7 +371,7 @@ class Player extends React.Component {
               width: "1.5rem",
               height: "110px",
               position: "absolute",
-              left: "248px",
+              left: "268px",
               top: "26px"
             }}
             onChange={e => changeBlock(id, "volume", e.target.value)}
