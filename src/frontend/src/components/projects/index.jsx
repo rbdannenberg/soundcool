@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { createProject } from "../projectEditor/actions";
-import { showToastr, showToastrError } from "../common";
+import { showToastr, showToastrError } from "../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import ReactTooltip from "react-tooltip";
 import { Link } from "react-router-dom";

@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import ReactAudioPlayer from "react-audio-player";
 import { serveAudio, fetchAudio } from "../sounds/actions";
 import ReactTable from "react-table";
-import { showToastrError } from "../common";
+import { showToastrError } from "../../actions/common";
 
 class AddSound extends Component {
   constructor(props) {

@@ -1,193 +1,18 @@
 import React from "react";
-import WithHeader from "./ui/Components/WithHeader";
+import { connect } from "react-redux";
+
+import WithHeader from "./Components/WithHeader";
 import RegisterForm from "../register/form";
-import AddBlock from "./ui/Components/AddBlock";
-import { Store } from "../store";
-import { isUserLoggedIn, showToastr, showToastrError } from "../common";
+import AddBlock from "./Components/AddBlock";
+import { StoreX as Store } from "../../storeX";
+import {
+  isUserLoggedIn,
+  showToastr,
+  showToastrError
+} from "../../actions/common";
 import { updateProject, createProject, fetchUserProject } from "./actions";
-import blocks from "./ui/reducers/blocks";
-import { createStore, combineReducers } from "redux";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
-
-const blockApp = combineReducers({
-  blocks
-});
-
-// #endregion
-
-export const store = createStore(blockApp);
-
-// const WithHeader = ({ blockInfo, nowOut, handleDelete }) => {
-//   let {
-//     typeName,
-//     name,
-//     id,
-//     audioObj,
-//     inDisabled,
-//     outDisabled,
-//     outNode,
-//     inNode,
-//     collapse,
-//     color
-//   } = blockInfo;
-//   // const Block = eva(typeName);
-//   let inButton;
-//   let outButton;
-
-//   // conditionally render in and out buttons in the header
-//   if (inDisabled) {
-//     inButton = (
-//       // nothing, placeholder
-//       <div
-//         className="btn btn-sm m-1 text-center"
-//         style={{
-//           // width: "1.5rem",
-//           height: "1.5rem",
-//           fontSize: "0.8rem",
-//           padding: "0px"
-//         }}
-//       />
-//     );
-//   } else {
-//     inButton = (
-//       <button
-//         id="inButton"
-//         className="btn btn-light btn-sm m-1 text-center"
-//         style={{
-//           width: "1.5rem",
-//           height: "1.5rem",
-//           fontSize: "0.8rem",
-//           padding: "0px"
-//         }}
-//         onClick={() => {
-//           store.dispatch({
-//             type: "CONNECTING_BLOCK",
-//             node: "nowIn",
-//             value: [name, "0", id, audioObj]
-//           });
-//         }}
-//       >
-//         <div>{inNode[0] === undefined ? "In" : inNode[0][0]}</div>
-//       </button>
-//     );
-//   }
-
-//   const style1 = {
-//     backgroundColor: "white",
-//     textAlign: "center",
-//     padding: "0px",
-//     width: "1.5rem",
-//     height: "1.5rem",
-//     fontSize: "0.8rem"
-//   };
-//   const circleStyle = {
-//     width: "1.5rem",
-//     height: "1.5rem",
-//     textAlign: "center",
-//     fontSize: "0.8rem",
-//     padding: "0px",
-//     lineHeight: 1.428571429,
-//     borderRadius: "0.5rem",
-//     borderColor: "black",
-//     backgroundColor: "white"
-//   };
-
-//   const outId = nowOut === undefined ? undefined : nowOut[2];
-
-//   if (outDisabled) {
-//     outButton = <span />;
-//   } else {
-//     outButton = (
-//       <button
-//         id="outButton"
-//         className="btn btn-sm text-center m-1"
-//         style={outId === id ? circleStyle : style1}
-//         onClick={() =>
-//           store.dispatch({
-//             type: "CONNECTING_BLOCK",
-//             node: "nowOut",
-//             value: [name, "0", id, audioObj]
-//           })
-//         }
-//       >
-//         <div>{outNode[0] === undefined ? "Out" : outNode[0][0]}</div>
-//       </button>
-//     );
-//   }
-
-//   return (
-//     <div
-//       className="text-left my-2"
-//       style={{
-//         width: "20rem",
-//         backgroundColor: color,
-//         borderColor: "grey",
-//         borderStyle: "solid",
-//         borderWidth: "2px"
-//       }}
-//     >
-//       <div className="">
-//         {inButton}
-//         <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
-//           {name}
-//         </span>
-//         <span
-//           className="badge badge-secondary badge-pill m-1"
-//           style={{ fontSize: "0.8rem" }}
-//           id="typeName"
-//         >
-//           {typeName}
-//         </span>
-//         <span className="float-right">
-//           <button
-//             id="collapseButton"
-//             className="btn btn-light btn-sm m-1 text-center"
-//             style={{
-//               width: "1.5rem",
-//               height: "1.5rem",
-//               fontSize: "0.4rem"
-//             }}
-//             onClick={() =>
-//               store.dispatch({
-//                 type: "CHANGE_BLOCK",
-//                 id: id,
-//                 field: "collapse",
-//                 value: undefined
-//               })
-//             }
-//           >
-//             <FaMinus style={{ marginLeft: "-1px" }} />
-//           </button>
-
-//           <button
-//             id="closeButton"
-//             className="btn btn-light btn-sm m-1 text-center"
-//             style={{
-//               width: "1.5rem",
-//               height: "1.5rem",
-//               fontSize: "0.4rem"
-//             }}
-//             onClick={() => {
-//               // handleDelete();
-//               store.dispatch({
-//                 type: "DELETE_BLOCK",
-//                 id: id
-//               });
-//             }}
-//           >
-//             <FaTimes style={{ marginLeft: "-1px" }} />
-//           </button>
-//           {outButton}
-//         </span>
-//       </div>
-//       <Collapse isOpen={!collapse}>
-//         <Example />
-//         {/* <Block blockInfo={blockInfo} /> */}
-//       </Collapse>
-//     </div>
-//   );
-// };
 
 const BlockList = ({ blocks, nowOut }) => {
   // let rBlocks = blocks.reverse();
@@ -204,11 +29,7 @@ const BlockList = ({ blocks, nowOut }) => {
 class ProjectEditor extends React.Component {
   constructor(props) {
     super(props);
-    store.subscribe(() => {
-      this.setState({ ...store.getState() });
-    });
     this.state = {
-      ...store.getState(),
       projectId: this.props.match.params.id,
       projectName: "",
       projectDescription: "",
@@ -239,7 +60,7 @@ class ProjectEditor extends React.Component {
         .then(res => {
           let { name, description, content } = res;
 
-          store.dispatch({
+          this.props.dispatch({
             type: "LOAD_STATE",
             content
           });
@@ -253,7 +74,7 @@ class ProjectEditor extends React.Component {
           showToastrError(err);
         });
     } else {
-      store.dispatch({
+      this.props.dispatch({
         type: "LOAD_STATE",
         content: undefined
       });
@@ -291,7 +112,7 @@ class ProjectEditor extends React.Component {
       if (this.state.projectId !== "new")
         this.updateProject({
           projectId: this.state.projectId,
-          content: JSON.stringify(this.state.blocks)
+          content: JSON.stringify(this.props.blocks)
         });
       else this.toggleModal();
     else this.toggleRegisterModal();
@@ -367,6 +188,7 @@ class ProjectEditor extends React.Component {
 
   render() {
     const { projectName, projectDescription } = this.state;
+    
     return (
       <div className="container">
         <button className="btn btn-success m-2" onClick={this.saveProject}>
@@ -386,8 +208,8 @@ class ProjectEditor extends React.Component {
         )}
         <AddBlock />
         <BlockList
-          blocks={this.state.blocks.bs}
-          nowOut={this.state.blocks.nowOut}
+          blocks={this.props.blocks.bs}
+          nowOut={this.props.blocks.nowOut}
         />
 
         <Modal
@@ -445,76 +267,8 @@ class ProjectEditor extends React.Component {
   }
 }
 
-export default ProjectEditor;
+const mapStateToProps = state => ({
+  blocks: state.blocks
+});
 
-// const ExampleWrapper = () => {
-//   return (
-//     <React.Fragment>
-//       <div>hello</div>
-//       <Example />
-//     </React.Fragment>
-//   );
-// };
-
-// class Example extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.canvasRef = React.createRef();
-//   }
-
-//   componentDidMount() {
-//     const c = this.canvasRef.current;
-//     console.log(c);
-//     setInterval(console.log(c.getBoundingClientRect()), 1);
-//   }
-
-//   render() {
-//     return (
-//       <React.Fragment>
-//         <div
-//           className=""
-//           style={{
-//             width: "288px",
-//             height: "188px",
-//             position: "relative"
-//           }}
-//         >
-//           <canvas
-//             ref={this.canvasRef}
-//             style={{
-//               position: "absolute",
-//               width: "263px",
-//               height: "168px",
-//               top: "10px",
-//               left: "10px",
-//               backgroundColor: "#DCDEE0"
-//             }}
-//             onClick={e => {
-//               e.persist();
-//               console.log(e);
-//             }}
-//           ></canvas>
-//         </div>
-//       </React.Fragment>
-//     );
-//   }
-// }
-
-// // ReactDOM.render(<Example />, document.getElementById("root"));
-
-// const render = () => {
-//   ReactDOM.render(
-//     <BlockApp {...store.getState()} />,
-//     document.getElementById("root")
-//   );
-// };
-
-// store.subscribe(render);
-// render();
-
-// // If you want your app to work offline and load faster, you can change
-// // unregister() to register() below. Note this comes with some pitfalls.
-// // Learn more about service workers: https://bit.ly/CRA-PWA
-// serviceWorker.unregister();
-
-// // ReactDOM.render(<App />, document.getElementById("root"));
+export default connect(mapStateToProps)(ProjectEditor);

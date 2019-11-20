@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import FormInput from "../form/FormInput.jsx";
 import { registerUser } from "./actions";
-import { showToastrError } from "../common";
+import { showToastrError } from "../../actions/common";
 
 class RegisterForm extends Component {
   constructor(props) {

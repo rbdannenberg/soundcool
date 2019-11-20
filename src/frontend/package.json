@@ -45,6 +45,7 @@
     "react-tooltip": "^3.11.1",
     "reactstrap": "^8.0.1",
     "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.7"
   },

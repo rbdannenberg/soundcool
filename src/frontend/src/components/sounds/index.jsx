@@ -9,7 +9,7 @@ import {
   getAudio
 } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
-import { showToastr, showToastrError } from "../common";
+import { showToastr, showToastrError } from "../../actions/common";
 import ReactTooltip from "react-tooltip";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";

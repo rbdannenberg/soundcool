@@ -1,5 +1,5 @@
-import { BASE_URL } from "../constants";
-import { getRequest, postRequest, patchRequest } from "../api";
+import { BASE_URL } from "../../constants";
+import { getRequest, postRequest, patchRequest } from "../../api";
 import { toggleAudioSharing } from "../sounds/actions";
 export const fetchUserProjectURL = () => `${BASE_URL}/projects/get`;
 export const removeProjectURL = () => `${BASE_URL}/projects/remove`;

@@ -1,6 +1,6 @@
 import React from "react";
 import FormInput from "../form/FormInput.jsx";
-import { showToastrError } from "../common";
+import { showToastrError } from "../../actions/common";
 import { loginUser } from "./actions";
 
 class LoginForm extends React.Component {

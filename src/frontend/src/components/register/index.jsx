@@ -3,7 +3,7 @@ import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 import RegisterForm from "./form";
 import { redirectToRoot } from "./actions";
-import { showToastr, showToastrError } from "../common";
+import { showToastr, showToastrError } from "../../actions/common";
 
 class Register extends Component {
   afterRegister = res => {

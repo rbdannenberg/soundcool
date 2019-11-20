@@ -2,7 +2,7 @@ import React from "react";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { redirectToHome } from "./actions";
 import { Link } from "react-router-dom";
-import { showToastr, showToastrError } from "../common";
+import { showToastr, showToastrError } from "../../actions/common";
 import LoginForm from "./form";
 
 class Login extends React.Component {

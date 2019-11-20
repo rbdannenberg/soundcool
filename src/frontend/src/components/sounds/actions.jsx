@@ -1,6 +1,6 @@
-import { BASE_URL } from "./../constants";
-import { getRequest, postRequest, performMultipartRequest } from "../api";
-import { Store } from "../store";
+import { BASE_URL } from "../../constants";
+import { getRequest, postRequest, performMultipartRequest } from "../../api";
+import { StoreX as Store } from "../../storeX";
 export const uploadSoundUrl = () => `${BASE_URL}/sounds/upload`;
 export const removeAudioUrl = () => `${BASE_URL}/sounds/remove`;
 export const fetchAudioUrl = () => `${BASE_URL}/sounds/get`;

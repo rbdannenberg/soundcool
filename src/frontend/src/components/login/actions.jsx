@@ -1,5 +1,5 @@
-import { BASE_URL } from "./../constants";
-import { postRequest } from "../api";
+import { BASE_URL } from "../../constants";
+import { postRequest } from "../../api";
 export const loginUrl = () => `${BASE_URL}/user/sign_in`;
 
 export const loginUser = payload => {
