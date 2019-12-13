@@ -7,7 +7,7 @@ along with react frontend and mysql database.
 - Prerequisites
   - Node 10.16.0+ 
   - NPM 6.10.0+
-  - MySQL 8.0+
+  - MySQL 8.0+ (for OS X, see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html)
 
 ## How to run
 
