@@ -1,4 +1,5 @@
 import React from "react";
+import { changeBlock, connectBlock } from "../../audioUI/actions";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes } from "react-icons/fa";
@@ -266,5 +267,5 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
+};
 export default connect(mapStateToProps)(WithHeader);

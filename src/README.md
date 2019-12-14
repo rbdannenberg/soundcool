@@ -4,8 +4,9 @@ This is the place where you run (locally) the express backend
 along with react frontend and mysql database.
 
 ## Prerequisites
+
 - Prerequisites
-  - Node 10.16.0+ 
+  - Node 10.16.0+
   - NPM 6.10.0+
   - MySQL 8.0+
 
@@ -14,21 +15,20 @@ along with react frontend and mysql database.
 If you are running the whole project, there are four steps.
 
 - **Step 1**: Install all dependencies
+
   - Go to `backend` folder.
   - Run `npm i` to install all the dependendies.
   - Go to `frontend` folder.
   - Run `npm i` to install all the dependendies.
-  
+
 - **Step 2**: Start webpack so it can rebuild project if any changes detected.
+
+  - (If you are not developing / modifying anything in Frontend folder, you don't need to run this step)
   - Go to `frontend` folder.
   - Run `npm run webpack`
-  
-- **Step 3**: Start server
-  - Go to `backend` folder.
-  - Run `npm start`
-  - Go to http://localhost:5000 to see the project!
-  
-- **Step 4**: Import `database/create-soundcool-db.sql` into local mysql server
+  - It will constantly watch for any changes made in Frontend folder and recompile React jsx into proper js each time you save your code. It won't terminate and it will print errors when compilation not succesfull.
+
+- **Step 3**: Import `database/create-soundcool-db.sql` into local mysql server
   - If using mysql comand line, you can import database using
     ```sql
     mysql -u <user_name> -p<Password> soundcool > <file_location>
@@ -41,16 +41,20 @@ If you are running the whole project, there are four steps.
     - Enter the following lines
     ```ruby
       MYSQL_HOST= <hostname> #it's localhost if you running it locally
-      MYSQL_USER= <your_sql_server_username> 
+      MYSQL_USER= <your_sql_server_username>
       MYSQL_PASS= <your_sql_server_password>
       MYSQL_DB= soundcool
     ```
-- **Step 5**: Set a JWT Key value you want to use to sign JWT
+- **Step 4**: Set a JWT Key value you want to use to sign JWT
   - Go to `.env` file
   - Add the following lines
   ```
   JWT_SECRET= <Any Valid JWT Key>
   ```
+- **Step 5**: Start server
+  - Go to `backend` folder.
+  - Run `npm start`
+  - Go to http://localhost:5000 to see the project!
 
 Alternatively, if you just want to run the project front-end and want it to use a server hosted at X location, you can just
 

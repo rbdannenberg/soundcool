@@ -2,7 +2,16 @@ import React from "react";
 import { changeBlock, connectBlock } from "./actions";
 import { connect } from "react-redux";
 
-const Channel = ({ num, name, id, inNode, volume, audioObj, changeBlock, connectBlock }) => {
+const Channel = ({
+  num,
+  name,
+  id,
+  inNode,
+  volume,
+  audioObj,
+  changeBlock,
+  connectBlock
+}) => {
   return (
     <React.Fragment
     // style={{ position: "absolute", width: "40px", height: "120px" }}
@@ -19,7 +28,16 @@ const Channel = ({ num, name, id, inNode, volume, audioObj, changeBlock, connect
           position: "absolute",
           left: "20px"
         }}
-        onClick={() => connectBlock("nowIn",[name, num - 1, id, audioObj])}
+        onClick={() => {
+          console.log("?");
+          // dispatch({
+          //   type: "CONNECTING_BLOCK",
+          //   node: "nowIn",
+          //   value: [name, num - 1, id, audioObj]
+          // });
+          // console.log(connectBlock);
+          connectBlock("nowIn", [name, num - 1, id, audioObj]);
+        }}
       >
         {inNode[num - 1] === undefined ? "In" : inNode[num - 1][0]}
       </button>
@@ -74,7 +92,7 @@ const Channel = ({ num, name, id, inNode, volume, audioObj, changeBlock, connect
             top: "28px"
           }}
           onChange={e => {
-            changeBlock(id,"volume" + num,e.target.value)
+            changeBlock(id, "volume" + num, e.target.value);
           }}
           min={0}
           max={100}
@@ -128,6 +146,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume2}
+            connectBlock={connectBlock}
           />
         </div>
         <div style={{ position: "absolute", left: "114px" }}>
@@ -138,6 +157,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume3}
+            connectBlock={connectBlock}
           />
         </div>
         <div style={{ position: "absolute", left: "166px" }}>
@@ -148,6 +168,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume4}
+            connectBlock={connectBlock}
           />
         </div>
         <div style={{ position: "absolute", top: "140px", left: "10px" }}>
@@ -158,6 +179,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume5}
+            connectBlock={connectBlock}
           />
         </div>
         <div style={{ position: "absolute", top: "140px", left: "62px" }}>
@@ -168,6 +190,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume6}
+            connectBlock={connectBlock}
           />
         </div>
         <div
@@ -184,6 +207,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume7}
+            connectBlock={connectBlock}
           />
         </div>
         <div
@@ -200,6 +224,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             inNode={inNode}
             audioObj={audioObj}
             volume={volume8}
+            connectBlock={connectBlock}
           />
         </div>
 
@@ -262,7 +287,8 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
                 left: "32px",
                 top: "28px"
               }}
-              onChange={e => {changeBlock(id,"volumeMaster",e.target.value);
+              onChange={e => {
+                changeBlock(id, "volumeMaster", e.target.value);
               }}
               min={0}
               max={100}
@@ -286,7 +312,7 @@ const Mixer = ({ blockInfo, changeBlock, connectBlock }) => {
             className="m-1"
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
-            onChange={e => changeBlock(id,"osc",e.target.value)}
+            onChange={e => changeBlock(id, "osc", e.target.value)}
           />
         </div>
       </div>
@@ -298,9 +324,8 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
+};
 export default connect(
   mapStateToProps,
-  { changeBlock }
+  { changeBlock, connectBlock }
 )(Mixer);
-

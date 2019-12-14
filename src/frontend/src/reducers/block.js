@@ -10,6 +10,7 @@ import ScOscilloscope from "../audio/sc-oscilloscope";
 import ScSpectroscope from "../audio/sc-spectroscope";
 // import ScPitch from "../audio/sc-pitch-phasor";
 import ScPitch from "../audio/sc-pitch";
+import ScMixer from "../audio/sc-mixer";
 
 const eva = typeName => {
   let t;
@@ -49,9 +50,9 @@ const eva = typeName => {
     // case "Routing":
     //   t = new ScRouting(scContext);
     //   break;
-    // case "Mixer":
-    //   t = new ScMixer(scContext);
-    //   break;
+    case "Mixer":
+      t = new ScMixer(scContext);
+      break;
     case "Oscilloscope":
       t = new ScOscilloscope(scContext);
       break;
@@ -134,13 +135,12 @@ const block = (state, action) => {
       let [idIn, idOut] = [action.nowIn[2], action.nowOut[2]];
       // eslint-disable-next-line
       let [audioObjIn, audioObjOut] = [action.nowIn[3], action.nowOut[3]];
-
       if (state.id === idIn) {
         if (state.id === idOut) {
           // don't connect to itself, except special case (Routing)
           return state;
         } else {
-          // if this is the nowin node, we shoud update it's inNode information
+          // if this is the nowin node, we shoud update its inNode information
           let newInNode = [...state.inNode];
           newInNode[indexIn] = [nameOut, idOut];
           return { ...state, inNode: newInNode };
@@ -149,7 +149,11 @@ const block = (state, action) => {
         if (state.id === idOut) {
           // connect the audio objects together
           if (state.audioObj !== undefined) {
-            state.audioObj.connectTo(audioObjIn);
+            state.audioObj.connectTo(
+              audioObjIn,
+              parseInt(indexOut, 10),
+              indexIn
+            );
           }
           // then update the ui information
           let newOutNode = [...state.outNode];

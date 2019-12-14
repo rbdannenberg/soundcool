@@ -17,33 +17,48 @@ const circleStyle = {
 
 // id is the id of the module, num is the index of the samples
 // num starts with 0.
-const IndividualPlayer = ({ id, num, file, audioObj, changeBlock }) => {
-  let inDisabled = true;
+const IndividualPlayer = ({
+  id,
+  num,
+  file,
+  inDisabled,
+  audioObj,
+  changeBlock
+}) => {
+  // let inDisabled = true;
   const loadUrl = url => {
-    audioObj.load(num, url).then(res => {});
+    audioObj.load(num, url).then(res => {
+      console.log("load called");
+      if (inDisabled) changeBlock(id, "inDisableds", false, { num });
+      console.log(res);
+      console.log(inDisabled);
+    });
     window.aoplayer = audioObj.players[num];
   };
 
-  if (file) {
-    const url = serveAudio(file.sound_id);
-    loadUrl(url);
-    inDisabled = false;
-    //use changeblock
-    // store.dispatch({
-    //   type: "CHANGE_BLOCK",
-    //   id,
-    //   field: "inDisableds",
-    //   num,
-    //   value: false
-    // });
-  }
+  // if (file) {
+  //   const url = serveAudio(file.sound_id);
+  //   loadUrl(url);
+  //   // inDisabled = false;
+  //   //use changeblock
+  //   // store.dispatch({
+  //   //   type: "CHANGE_BLOCK",
+  //   //   id,
+  //   //   field: "inDisableds",
+  //   //   num,
+  //   //   value: false
+  //   // });
+  // }
 
   const onSoundSelect = audio_id => {
-    audioObj.stop(num);
-    changeBlock(id,"files",audio_id,{num});
+    if (audioObj.players[num].isPlaying) {
+      audioObj.stop(num);
+    }
+
+    changeBlock(id, "files", audio_id, { num });
 
     const url = serveAudio(audio_id.sound_id);
-    inDisabled = false;
+
     //use changeblock
     // store.dispatch({
     //   type: "CHANGE_BLOCK",
@@ -77,11 +92,11 @@ const IndividualPlayer = ({ id, num, file, audioObj, changeBlock }) => {
           left: "5px"
         }}
         onClick={() => {
+          console.log("playbutton" + num);
           audioObj.players[num].isPlaying
             ? audioObj.pause(num)
             : audioObj.play(num);
-          
-          changeBlock(id,"playings",undefined,{num})
+          changeBlock(id, "playings", undefined, { num });
         }}
       >
         <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
@@ -96,9 +111,10 @@ const IndividualPlayer = ({ id, num, file, audioObj, changeBlock }) => {
           left: "31px"
         }}
         onClick={() => {
+          console.log("i am playing: " + num + audioObj.players[num].isPlaying);
           audioObj.stop(num);
-          console.log("i am playing: " + audioObj.players[num].isPlaying);
-          changeBlock(id,"playings",undefined,{num});
+          console.log("i am playing: " + num + audioObj.players[num].isPlaying);
+          changeBlock(id, "playings", undefined, { num });
         }}
       >
         <FaSquare style={{ fontSize: "12px" }} />
@@ -347,7 +363,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             type="checkbox"
             className="m-1"
             id="kinect"
-            onClick={() => changeBlock(id,"kinetic",undefined)}
+            onClick={() => changeBlock(id, "kinetic", undefined)}
           />
         </span>
         <span className="col text-center">
@@ -359,7 +375,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             className="my-1"
             style={{ height: "1.5rem", width: "3rem" }}
             id="osc"
-            onChange={e => changeBlock(id,"osc",e.target.value)}
+            onChange={e => changeBlock(id, "osc", e.target.value)}
           />
         </span>
       </div>
@@ -371,7 +387,7 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
+};
 export default connect(
   mapStateToProps,
   { changeBlock }

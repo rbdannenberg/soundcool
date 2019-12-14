@@ -46,7 +46,6 @@ const blocks = (
       let typeIds = { ...nextTypeId };
       let newTypeId = typeIds[action.typeName]++;
       let newAction = { ...action, newId, newTypeId };
-      console.log(newAction);
       return {
         nowIn,
         nowOut,

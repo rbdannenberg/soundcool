@@ -130,22 +130,15 @@ class Player extends React.Component {
 
     const loadUrl = url => {
       audioObj.load(url).then(res => {
+        if (inDisabled) this.props.changeBlock(id, "inDisabled", false);
         console.log(res);
       });
     };
-
-    if (file && !this.state.isLoaded) {
-      const url = serveAudio(file.sound_id);
-      loadUrl(url);
-      if (inDisabled) this.props.changeBlock(id, "inDisabled", false);
-      this.setState({ isLoaded: true, isPlaying: false });
-    }
 
     const onSoundSelect = audio_id => {
       audioObj.stop();
       this.props.changeBlock(id, "file", audio_id);
       const url = serveAudio(audio_id.sound_id);
-      if (inDisabled) this.props.changeBlock(id, "inDisabled", false);
       loadUrl(url);
     };
 

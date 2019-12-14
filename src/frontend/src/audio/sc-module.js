@@ -15,6 +15,7 @@ class ScModule {
   }
 
   connectTo(destination, sourceOutIndex = 0, destInIndex = 0) {
+    console.log(destination);
     let sourceAudioNode = this.outputs[sourceOutIndex];
     let destAudioNode = destination.inputs[destInIndex];
     sourceAudioNode.connect(destAudioNode);
@@ -84,7 +85,7 @@ class ScModule {
   }
 
   set volume(value) {
-    this.outNode.gain.value = parseFloat(value/100);
+    this.outNode.gain.value = parseFloat(value / 100);
   }
 
   destroy() {}
