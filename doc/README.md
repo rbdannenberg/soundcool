@@ -4,6 +4,8 @@ This file includes documentation for *developers*. Major sections include:
 - Documentation for the UI, including Soundcool components
 - Documentation for Audio Processing in Soundcool components
 
+For installation, see `src/README.md`.
+
 See also [design.md](design.md) for design and architectural notes.
 
 ## Documentation for the UI
