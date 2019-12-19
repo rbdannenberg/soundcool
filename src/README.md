@@ -17,27 +17,27 @@ If you are running the whole project, there are four steps.
 - **Step 1**: Install all dependencies
 
   - Go to `backend` folder.
-  - Run `npm i` to install all the dependendies.
+  - Run `npm i` to install all the dependencies.
   - Go to `frontend` folder.
-  - Run `npm i` to install all the dependendies.
+  - Run `npm i` to install all the dependencies.
 
 - **Step 2**: Start webpack so it can rebuild project if any changes detected.
 
   - (If you are not developing / modifying anything in Frontend folder, you don't need to run this step)
   - Go to `frontend` folder.
   - Run `npm run webpack`
-  - It will constantly watch for any changes made in Frontend folder and recompile React jsx into proper js each time you save your code. It won't terminate and it will print errors when compilation not succesfull.
+  - It will constantly watch for any changes made in Frontend folder and recompile React jsx into proper js each time you save your code. It won't terminate and it will print errors when compilation not successful.
 
 - **Step 3**: Import `database/create-soundcool-db.sql` into local mysql server
-  - If using mysql comand line, you can import database using
+  - If using mysql command line, To import database file first create a database `soundcool` using MySQL CLI then run the below command in terminal.
     ```sql
-    mysql -u <user_name> -p<Password> soundcool > <file_location>
+    mysql -u <mysql-username> -p soundcool < create-soundcool-db.sql
     ```
   - If using MySQL workbench, open the `database/create-soundcool-db.sql` file.
-    Execute the scripts by clicking the lighening button on the interface. This should create
+    Execute the scripts by clicking the lightning button on the interface. This should create
     the same database on your machine so that you can run with user information.
   - To connect express to your mysql server
-    - Create a .env file in current directory
+    - Create a .env file in `backend` directory
     - Enter the following lines
     ```ruby
       MYSQL_HOST= <hostname> #it's localhost if you running it locally
@@ -46,8 +46,7 @@ If you are running the whole project, there are four steps.
       MYSQL_DB= soundcool
     ```
 - **Step 4**: Set a JWT Key value you want to use to sign JWT
-  - Go to `.env` file
-  - Add the following lines
+  - Open previously created `.env` file and add below line
   ```
   JWT_SECRET= <Any Valid JWT Key>
   ```
