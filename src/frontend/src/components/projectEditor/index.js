@@ -1,6 +1,7 @@
 import React from "react";
+import "./index.css";
 import { connect } from "react-redux";
-
+import Draggable from "react-draggable";
 import WithHeader from "./Components/WithHeader";
 import RegisterForm from "../register/form";
 import AddBlock from "./Components/AddBlock";
@@ -14,22 +15,11 @@ import { updateProject, createProject, fetchUserProject } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
 
-const BlockList = ({ blocks, nowOut }) => {
-  // let rBlocks = blocks.reverse();
-  return (
-    <React.Fragment>
-      {blocks.map(b => (
-        <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
-        // <ExampleWrapper />
-      ))}
-    </React.Fragment>
-  );
-};
-
 class ProjectEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      floatingView: false,
       projectId: this.props.match.params.id,
       projectName: "",
       projectDescription: "",
@@ -38,6 +28,65 @@ class ProjectEditor extends React.Component {
     };
     this.canvasRef = React.createRef();
   }
+
+  blockStyle = id => {
+    const top = (id % 15) * 20 + "px";
+    const left = (id % 15) * 20 + "px";
+    const zIndex = this.state.selectedBlock
+      ? id == this.state.selectedBlock
+        ? 1
+        : 0
+      : 0;
+    return {
+      width: "316px",
+      position: "absolute",
+      top: top,
+      left: left,
+      zIndex: zIndex
+    };
+  };
+
+  renderBlockList = (blocks, nowOut) => {
+    // let rBlocks = blocks.reverse();
+
+    if (this.state.floatingView) {
+      return (
+        <div className="box">
+          <div className="boxContainer">
+            {blocks.map(b => (
+              <Draggable
+                bounds="parent"
+                onDrag={() => {
+                  if (this.state.selectedBlock != b.id) {
+                    this.setState({ selectedBlock: b.id });
+                  }
+                }}
+              >
+                <div
+                  onClick={() => {
+                    this.setState({ selectedBlock: b.id });
+                  }}
+                  style={this.blockStyle(b.id)}
+                >
+                  <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+                </div>
+              </Draggable>
+              // <ExampleWrapper />
+            ))}
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          {blocks.map(b => (
+            <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+            // <ExampleWrapper />
+          ))}
+        </React.Fragment>
+      );
+    }
+  };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.match.params.id !== this.props.match.params.id)
@@ -51,6 +100,8 @@ class ProjectEditor extends React.Component {
   }
 
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+  toggleFloatingView = () =>
+    this.setState({ floatingView: !this.state.floatingView });
   toggleRegisterModal = () =>
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
 
@@ -188,7 +239,7 @@ class ProjectEditor extends React.Component {
 
   render() {
     const { projectName, projectDescription } = this.state;
-    
+
     return (
       <div className="container">
         <button className="btn btn-success m-2" onClick={this.saveProject}>
@@ -207,10 +258,15 @@ class ProjectEditor extends React.Component {
           </button>
         )}
         <AddBlock />
-        <BlockList
-          blocks={this.props.blocks.bs}
-          nowOut={this.props.blocks.nowOut}
-        />
+
+        <button
+          className="btn btn-danger m-2 float-right"
+          onClick={this.toggleFloatingView}
+        >
+          Floating View : {this.state.floatingView ? "On" : "Off"}
+        </button>
+
+        {this.renderBlockList(this.props.blocks.bs, this.props.blocks.nowOut)}
 
         <Modal
           centered
