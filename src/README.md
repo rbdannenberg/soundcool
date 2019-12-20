@@ -37,8 +37,8 @@ If you are running the whole project, there are four steps.
     Execute the scripts by clicking the lightning button on the interface. This should create
     the same database on your machine so that you can run with user information.
   - To connect express to your mysql server
-    - Create a .env file in `backend` directory
-    - Enter the following lines
+    - Create a `.env` file in `backend` directory
+    - Copy the below details in the newly created `.env` file(mysql user should use native password).
     ```ruby
       MYSQL_HOST= <hostname> #it's localhost if you running it locally
       MYSQL_USER= <your_sql_server_username>
