@@ -15,7 +15,6 @@ class ScModule {
   }
 
   connectTo(destination, sourceOutIndex = 0, destInIndex = 0) {
-    console.log(destination);
     let sourceAudioNode = this.outputs[sourceOutIndex];
     let destAudioNode = destination.inputs[destInIndex];
     sourceAudioNode.connect(destAudioNode);
