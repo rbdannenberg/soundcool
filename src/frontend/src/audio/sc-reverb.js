@@ -5,7 +5,7 @@ class ScReverb extends ScModule {
   constructor(context, options={}) {
     super(context);
     let defOpts = {
-      'preset' : 'theatre',
+      'preset': 'theatre'
     };
     this.options = Object.assign(defOpts, options);
     this.irPaths = {
@@ -46,7 +46,7 @@ class ScReverb extends ScModule {
     let promises = [];
     for (let buffKey in this.irPaths) {
       if (this.irPaths.hasOwnProperty(buffKey)) {
-        console.log('ScReverb: loading '+this.irPaths[buffKey]);
+        console.log('ScReverb: loading ' + this.irPaths[buffKey]);
         let prom = this.requestIRBuffer(this.irPaths[buffKey], buffKey);
         promises.push(prom);
       }
