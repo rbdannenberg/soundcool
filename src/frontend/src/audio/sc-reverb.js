@@ -1,11 +1,14 @@
 import ScModule from "./sc-module.js";
+import ScCrossFade from "./sc-crossfade.js";
 
 class ScReverb extends ScModule {
 
   constructor(context, options={}) {
     super(context);
     let defOpts = {
-      'preset': 'theatre'
+      'preset': 'theatre',
+      'mix': 0.5,
+      'bypass': false
     };
     this.options = Object.assign(defOpts, options);
     this.irPaths = {
@@ -17,6 +20,7 @@ class ScReverb extends ScModule {
     this.irBuffers = {};
     this.setupNodes();
     this.loadPresets();
+    this.bypass = this.options.bypass;
   }
 
   requestIRBuffer(path, buffKey) {
@@ -58,13 +62,32 @@ class ScReverb extends ScModule {
   }
 
   setupNodes() {
+    this.mixNode = new ScCrossFade(this.context,
+                    {'fadeValue': this.options.mix});
     this.inNode = this.context.createGain();
     this.outNode = this.context.createGain();
     this.convolver = this.context.createConvolver();
     this.inNode.connect(this.convolver);
-    this.convolver.connect(this.outNode);
+    this.inNode.connect(this.mixNode.inNode1);
+    this.convolver.connect(this.mixNode.inNode2);
+    this.mixNode.outNode.connect(this.outNode);
     this.inputs.push(this.inNode);
     this.outputs.push(this.outNode);
+  }
+
+  set mix(value) {
+    value = parseFloat(value);
+    this.mixNode.fadeValue = value;
+    this.options.mix = value;
+  }
+
+  set bypass(value) {
+    if (value) {
+      this.mixNode.fadeValue = 0;
+    } else {
+      this.mix = this.options.mix;
+    }
+    this.options.bypass = value;
   }
 
   set preset(buffKey) {
