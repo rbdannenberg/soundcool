@@ -1,4 +1,6 @@
 import React from "react";
+import socketIOClient from "socket.io-client";
+
 import "./index.css";
 import { connect } from "react-redux";
 import Draggable from "react-draggable";
@@ -19,6 +21,7 @@ class ProjectEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      endpoint: "http://localhost:5000",
       floatingView: false,
       projectId: this.props.match.params.id,
       projectName: "",
@@ -97,6 +100,82 @@ class ProjectEditor extends React.Component {
 
   componentDidMount() {
     this.loadState();
+    const { endpoint } = this.state;
+    const socket = socketIOClient(endpoint);
+    socket.on("oscData", data => {
+      let field,
+        value,
+        ignore = false;
+
+      switch (data.type) {
+        case "loop":
+          (field = "loop"), (value = data.value == 1 ? true : false);
+          break;
+        case "playbackSpeed":
+          (field = "speed"), (value = data.value * 2);
+          break;
+        case "volume":
+          (field = "volume"), (value = Math.round(data.value * 100));
+          break;
+        case "playPause":
+          if (
+            data.value == 0 &&
+            this.props.blocks["bs"][0].audioObj.options.path != ""
+          ) {
+            if (this.props.blocks["bs"][0].audioObj.isPlaying) {
+              this.props.blocks["bs"][0].audioObj.pause();
+            } else {
+              this.props.blocks["bs"][0].audioObj.play();
+            }
+
+            field = "playing";
+            value = undefined;
+          } else {
+            ignore = true;
+          }
+          break;
+        case "stop":
+          if (
+            data.value == 0 &&
+            this.props.blocks["bs"][0].audioObj.options.path != ""
+          ) {
+            field = "playing";
+            value = undefined;
+            this.props.blocks["bs"][0].audioObj.stop();
+          } else {
+            ignore = true;
+          }
+
+          break;
+        case "reverse":
+          if (
+            data.value == 0 &&
+            this.props.blocks["bs"][0].audioObj.options.path != ""
+          ) {
+            this.props.blocks["bs"][0].audioObj.reverse(res => {
+              console.log(res);
+            });
+          } else {
+            ignore = true;
+          }
+
+          break;
+        case "seek":
+          if (this.props.blocks["bs"][0].audioObj.options.path != "") {
+            this.props.blocks["bs"][0].audioObj.seek(data.value);
+          }
+          ignore = true;
+      }
+      if (!ignore) {
+        this.props.dispatch({
+          type: "CHANGE_BLOCK",
+          id: 1,
+          field,
+          value
+        });
+      }
+      console.log(this.props.blocks["bs"][0]);
+    });
   }
 
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });

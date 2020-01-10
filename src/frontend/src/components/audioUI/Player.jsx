@@ -250,6 +250,7 @@ class Player extends React.Component {
               Loop
             </label>
             <input
+            checked={audioObj.options.loop}
               type="checkbox"
               className=""
               id="loop"
