@@ -17,6 +17,7 @@ import Filter from "./Filter";
 import Keyboard from "./Keyboard";
 import SamplePlayer from "./SamplePlayer";
 import Sequencer from "./Sequencer";
+import Reverb from "./Reverb";
 
 export { Delay };
 export { Transposer };
@@ -37,6 +38,7 @@ export { Filter };
 export { Keyboard };
 export { SamplePlayer };
 export { Sequencer };
+export { Reverb };
 
 // export * from './delay';
 // export * from './transposer';

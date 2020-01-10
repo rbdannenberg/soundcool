@@ -23,7 +23,8 @@ import {
   Filter,
   Keyboard,
   SamplePlayer,
-  Sequencer
+  Sequencer,
+  Reverb
   // #endregion
 } from "../../audioUI/all";
 import store from "../../../store";
@@ -87,6 +88,9 @@ const eva = typeName => {
       break;
     case "Sequencer":
       t = Sequencer;
+      break;
+    case "Reverb":
+      t = Reverb;
       break;
     default:
       t = <span>No setup yet!</span>;

@@ -11,6 +11,7 @@ import ScSpectroscope from "../audio/sc-spectroscope";
 // import ScPitch from "../audio/sc-pitch-phasor";
 import ScPitch from "../audio/sc-pitch";
 import ScMixer from "../audio/sc-mixer";
+import ScReverb from "../audio/sc-reverb";
 
 const eva = typeName => {
   let t;
@@ -44,9 +45,9 @@ const eva = typeName => {
     case "Pitch":
       t = new ScPitch(scContext);
       break;
-    // case "VSTHost":
-    //   t = new ScVSTHost(scContext);
-    //   break;
+    case "Reverb":
+      t = new ScReverb(scContext);
+      break;
     // case "Routing":
     //   t = new ScRouting(scContext);
     //   break;
@@ -95,13 +96,9 @@ const block = (state, action) => {
         } else {
           state[action.field] =
             action.value === undefined ? !state[action.field] : action.value;
-
           // also update the audioObj (will ignore if there is no such field in object)
           if (state.audioObj !== undefined) {
-            state.audioObj[action.field] =
-              action.value === undefined
-                ? !state.audioObj[action.field]
-                : action.value;
+            state.audioObj[action.field] = state[action.field];
           }
         }
         return state;

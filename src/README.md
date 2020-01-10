@@ -51,9 +51,14 @@ If you are running the whole project, there are four steps.
   JWT_SECRET= <Any Valid JWT Key>
   ```
 - **Step 5**: Start server
+
   - Go to `backend` folder.
   - Run `npm start`
   - Go to http://localhost:5000 to see the project!
+
+- **Step 6**: Browser Setting
+  - When trying to display the project, if the error `Uncaught TypeError: Cannot read property 'apply' of undefined` shows up in the browser console, it's because the redux devtools extension is not set up in the browser.
+  - Search for the redux devtools extension and add it to your Chrome or Firefox.
 
 Alternatively, if you just want to run the project front-end and want it to use a server hosted at X location, you can just
 

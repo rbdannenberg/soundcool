@@ -19,7 +19,8 @@ const allTypes = {
   Filter: 1,
   Keyboard: 1,
   SamplePlayer: 1,
-  Sequencer: 1
+  Sequencer: 1,
+  Reverb: 1
 };
 const emptyState = {
   bs: [],
