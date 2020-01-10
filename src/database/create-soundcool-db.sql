@@ -70,6 +70,33 @@ INSERT INTO `projects` VALUES (117,100,'Project 1','2019-10-22 18:44:48','Delay 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `presets`
+--
+
+DROP TABLE IF EXISTS `presets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presets` (
+  `preset_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) DEFAULT NULL,
+  `name` varchar(500) DEFAULT NULL,
+  `location` varchar(500) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`preset_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presets`
+--
+
+LOCK TABLES `presets` WRITE;
+/*!40000 ALTER TABLE `presets` DISABLE KEYS */;
+INSERT INTO `presets` VALUES (1,NUll,'CCRMAStairwell.wav','/assets/presets/CCRMAStairwell.wav','2020-01-10 05:43:43 '),(3,101,'RoomPool.wav','/assets/presets/1578618278209::-::RoomPool.wav','2020-01-10 06:34:44');
+/*!40000 ALTER TABLE `presets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sounds`
 --
 
