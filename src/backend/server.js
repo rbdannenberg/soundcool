@@ -6,6 +6,7 @@ const helmet = require("helmet");
 
 const sounds = require("./routes/sounds.js");
 const projects = require("./routes/projects.js");
+const presets = require("./routes/presets.js");
 var auth = require("./routes/auth.js");
 
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use("/api/v1/sounds", sounds);
 app.use("/api/v1/projects", projects);
+app.use("/api/v1/presets", presets);
 app.use("/api/v1/user", auth);
 
 app.get("/api", (req, res) => {
