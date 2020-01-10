@@ -35,3 +35,9 @@ Token is provided with the request:
 * [Remove Media](media/remove.md) : `PATCH /api/v1/sounds/remove`
 * [Stream Media](media/stream.md) : `GET /api/v1/sounds/serveAudio/:audioId/:token`
 
+#### Presets API
+
+* [Available Presets](presets/get.md) : `GET /api/v1/preset/get`
+* [Upload Preset](presets/upload.md) : `POST /api/v1/preset/upload`
+* [Load Preset](presets/load.md) : `GET /api/v1/preset/load`
+
