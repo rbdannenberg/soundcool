@@ -57,9 +57,9 @@ const AddBlock = props => {
           <div className="dropdown-item" onClick={() => addBlock("Pitch")}>
             Pitch
           </div>
-          {/* <div className="dropdown-item" onClick={() => addBlock("VSTHost")}>
-            VSTHost
-          </div> */}
+          <div className="dropdown-item" onClick={() => addBlock("Reverb")}>
+            Reverb
+          </div>
           <div className="dropdown-item" onClick={() => addBlock("Routing")}>
             Routing
           </div>

@@ -250,6 +250,12 @@ const specValues = {
       false
     ],
     midiMessage: undefined
+  },
+  Reverb: {
+    color: toHex(122, 187, 197),
+    preset: "Hall",
+    mix: 0.5,
+    bypass: false
   }
 };
 
