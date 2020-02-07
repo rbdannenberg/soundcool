@@ -1,4 +1,5 @@
 import ScModule from "./sc-module.js";
+import ScAnalyzer from "./sc-analyzer.js";
 
 class ScMixer extends ScModule {
   constructor(context, options = {}) {
@@ -37,6 +38,7 @@ class ScMixer extends ScModule {
     this.node7Gain = this.options.node7Gain;
     this.outNode = this.context.createGain();
     this.masterGain = this.options.masterGain;
+    this.masterAnalyzer = new ScAnalyzer(this.context, { type: "level" });
     this.inNode0.connect(this.outNode);
     this.inNode1.connect(this.outNode);
     this.inNode2.connect(this.outNode);
@@ -54,6 +56,7 @@ class ScMixer extends ScModule {
     this.inputs.push(this.inNode6);
     this.inputs.push(this.inNode7);
     this.outputs.push(this.outNode);
+    this.outNode.connect(this.masterAnalyzer.inNode);
   }
 
   set node0Gain(value) {
@@ -108,6 +111,11 @@ class ScMixer extends ScModule {
     value = parseFloat(value);
     this.outNode.gain.value = value;
     this.options.masterGain = value;
+  }
+
+  getMasterAudioData() {
+    let data = this.masterAnalyzer.getData();
+    return [data];
   }
 }
 

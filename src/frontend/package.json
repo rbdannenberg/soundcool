@@ -22,7 +22,7 @@
     "babel-preset-react-app": "^9.0.0",
     "bootstrap": "^4.3.1",
     "bootstrap-social": "5.1.1",
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.1.0",
     "font-awesome": "4.7.0",
     "joi-browser": "^13.4.0",

@@ -97,6 +97,7 @@ class Player extends React.Component {
   rendererMeter = () => {
     let { audioObj } = this.props.blockInfo;
     let canvas = this.canvasMeterRef.current;
+    console.log(this.canvasMeterRef);
     if (canvas === null) {
       clearInterval(this.rendererP);
       return;
@@ -104,6 +105,7 @@ class Player extends React.Component {
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
     let x = audioObj.getAudioData()[0];
+    console.log(x);
     let data = Math.max(this.oldDb - 7, x, -100);
     let scaledData = 100 + data;
     renderCtx.clearRect(0, 50, 15, 100);
@@ -250,7 +252,7 @@ class Player extends React.Component {
               Loop
             </label>
             <input
-            checked={audioObj.options.loop}
+              checked={audioObj.options.loop}
               type="checkbox"
               className=""
               id="loop"
@@ -376,8 +378,8 @@ class Player extends React.Component {
             }}
             onChange={e => this.props.changeBlock(id, "volume", e.target.value)}
             min={0}
-            max={100}
-            step={1}
+            max={1}
+            step={0.01}
             value={volume}
             id="volume"
           />
