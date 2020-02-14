@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.18, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.19, for Linux (x86_64)
 --
 -- Host: localhost    Database: soundcool
 -- ------------------------------------------------------
--- Server version	8.0.18
+-- Server version	8.0.19-0ubuntu0.19.10.3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `audioSharing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `audioSharing` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
   `sharing` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -40,6 +40,33 @@ INSERT INTO `audioSharing` VALUES (100,0),(101,0);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `presets`
+--
+
+DROP TABLE IF EXISTS `presets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presets` (
+  `preset_id` int NOT NULL AUTO_INCREMENT,
+  `user` int DEFAULT NULL,
+  `name` varchar(500) DEFAULT NULL,
+  `location` varchar(500) DEFAULT NULL,
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`preset_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presets`
+--
+
+LOCK TABLES `presets` WRITE;
+/*!40000 ALTER TABLE `presets` DISABLE KEYS */;
+INSERT INTO `presets` VALUES (1,NULL,'CCRMAStairwell.wav','/assets/presets/1578618278209-CCRMAStairwell.wav','2020-01-10 05:43:43'),(2,101,'RoomPool.wav','/assets/presets/1578618278209-RoomPool.wav','2020-01-10 06:34:44');
+/*!40000 ALTER TABLE `presets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `projects`
 --
 
@@ -47,8 +74,8 @@ DROP TABLE IF EXISTS `projects`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `projects` (
-  `project_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
+  `project_id` int NOT NULL AUTO_INCREMENT,
+  `user` int DEFAULT NULL,
   `name` varchar(50) NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   `description` varchar(500) NOT NULL,
@@ -70,33 +97,6 @@ INSERT INTO `projects` VALUES (117,100,'Project 1','2019-10-22 18:44:48','Delay 
 UNLOCK TABLES;
 
 --
--- Table structure for table `presets`
---
-
-DROP TABLE IF EXISTS `presets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `presets` (
-  `preset_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
-  `name` varchar(500) DEFAULT NULL,
-  `location` varchar(500) DEFAULT NULL,
-  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`preset_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `presets`
---
-
-LOCK TABLES `presets` WRITE;
-/*!40000 ALTER TABLE `presets` DISABLE KEYS */;
-INSERT INTO `presets` VALUES (1,NUll,'CCRMAStairwell.wav','/assets/presets/CCRMAStairwell.wav','2020-01-10 05:43:43 '),(3,101,'RoomPool.wav','/assets/presets/1578618278209::-::RoomPool.wav','2020-01-10 06:34:44');
-/*!40000 ALTER TABLE `presets` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sounds`
 --
 
@@ -104,9 +104,10 @@ DROP TABLE IF EXISTS `sounds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sounds` (
-  `sound_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) DEFAULT NULL,
+  `sound_id` int NOT NULL AUTO_INCREMENT,
+  `user` int DEFAULT NULL,
   `name` varchar(500) DEFAULT NULL,
+  `fileLocation` varchar(500) DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`sound_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -118,31 +119,8 @@ CREATE TABLE `sounds` (
 
 LOCK TABLES `sounds` WRITE;
 /*!40000 ALTER TABLE `sounds` DISABLE KEYS */;
-INSERT INTO `sounds` VALUES (117,101,'sound.wav','2019-10-22 18:47:57'),(118,100,'sound.wav','2019-10-22 18:48:56');
+INSERT INTO `sounds` VALUES (117,101,'sound.wav','/uploads/sounds/1571749887170-sound.wav','2019-10-22 18:47:57'),(118,100,'sound.wav','/uploads/sounds/1571750277915-sound.wav','2019-10-22 18:48:56');
 /*!40000 ALTER TABLE `sounds` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `soundsLocation`
---
-
-DROP TABLE IF EXISTS `soundsLocation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `soundsLocation` (
-  `sound_id` int(11) DEFAULT NULL,
-  `fileLocation` varchar(500) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `soundsLocation`
---
-
-LOCK TABLES `soundsLocation` WRITE;
-/*!40000 ALTER TABLE `soundsLocation` DISABLE KEYS */;
-INSERT INTO `soundsLocation` VALUES (117,'/uploads/sounds/1571749887170::-::sound.wav'),(118,'/uploads/sounds/1571750277915::-::sound.wav');
-/*!40000 ALTER TABLE `soundsLocation` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -153,7 +131,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `password` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
@@ -181,4 +159,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-22 18:50:35
+-- Dump completed on 2020-02-14 21:38:18
