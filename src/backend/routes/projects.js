@@ -118,9 +118,9 @@ router.post("/clone", (req, res) => {
         project = JSON.parse(projects[0]["content"]);
         project.bs.forEach(block => {
           if (block["file"]) {
-            const QUERY = `select fileLocation from soundsLocation where sound_id = ${
+            const QUERY = `select fileLocation,name from sounds where sound_id = ${
               block["file"]["sound_id"]
-            }`;
+              }`;
             connection.query(QUERY, (err, result) => {
               if (err) {
                 console.log(err);
@@ -128,10 +128,10 @@ router.post("/clone", (req, res) => {
               } else {
                 let oldValue = result[0]["fileLocation"];
                 result[0]["fileLocation"] =
-                  "uploads/sounds/" +
+                  "/uploads/sounds/" +
                   cTimeStamp +
-                  "::-::" +
-                  result[0]["fileLocation"].split("::-::")[1]; // change it to some unique  ::-::
+                  "-" +
+                  result[0]["name"];
 
                 fs.copyFileSync(
                   "." + oldValue,
@@ -141,21 +141,15 @@ router.post("/clone", (req, res) => {
                   }
                 );
 
-                const QUERY = `insert into sounds(user,name) values(${user_id},'${
+                const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'${
                   block["file"]["name"]
-                }')`;
+                  }','${result[0]["fileLocation"]}')`;
                 connection.query(QUERY, (err, results) => {
                   if (err) {
                     return res.json({ err: err });
                   } else {
-                    const soundId = results.insertId;
-                    const QUERY = `insert into soundsLocation values(${soundId},'${
-                      result[0]["fileLocation"]
-                    }')`;
-                    connection.query(QUERY, (err, results) => {});
                   }
                 });
-
                 updateTimeStamp();
               }
             });

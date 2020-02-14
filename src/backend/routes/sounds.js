@@ -12,7 +12,7 @@ function updateTimeStamp() {
 const storage = multer.diskStorage({
   destination: "./uploads/sounds/",
   filename(req, file, cb) {
-    cb(null, `${cTimeStamp}::-::${file.originalname}`);
+    cb(null, `${cTimeStamp}-${file.originalname}`);
   }
 });
 
@@ -39,7 +39,7 @@ router.get("/get", (req, res) => {
         } else {
           if (!sharing[0]) {
             let QUERY = `insert into audioSharing values(${user_id},false)`;
-            connection.query(QUERY, (err, sharing) => {});
+            connection.query(QUERY, (err, sharing) => { });
           } else {
             shared = sharing[0]["sharing"];
           }
@@ -54,25 +54,18 @@ router.post("/upload", upload.single("file"), (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const fileLocation =
-    "/uploads/sounds/" + cTimeStamp + "::-::" + req.file.originalname;
+    "/uploads/sounds/" + cTimeStamp + "-" + req.file.originalname;
   updateTimeStamp();
-  const QUERY = `insert into sounds(user,name) values(${user_id},'${req.file.originalname}')`;
+  const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'${req.file.originalname}','${fileLocation}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.json({ err: err });
     } else {
       const soundId = results.insertId;
-      const QUERY = `insert into soundsLocation values(${soundId},'${fileLocation}')`;
-      connection.query(QUERY, (err, results) => {
-        if (err) {
-          return res.json({ err: err });
-        } else {
-          return res.json({
-            sound_id: soundId,
-            user: user_id,
-            name: req.file.originalname
-          });
-        }
+      return res.json({
+        sound_id: soundId,
+        user: user_id,
+        name: req.file.originalname
       });
     }
   });
@@ -82,32 +75,24 @@ router.post("/remove", upload.single("file"), (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const { soundId } = req.body;
-  const QUERY = `select fileLocation from soundsLocation where sound_id = ${soundId}`;
+  const QUERY = `select fileLocation from sounds where sound_id = ${soundId}`;
   connection.query(QUERY, (err, result) => {
     if (err) {
       console.log(err);
       return res.json({ err: err });
     } else {
-      const QUERY = `delete from soundsLocation where sound_id = ${soundId}`;
+      const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
       connection.query(QUERY, (err, results) => {
         if (err) {
           console.log(err);
           return res.json({ err: err });
         } else {
-          const QUERY = `delete from sounds where user = ${user_id} and sound_id = ${soundId}`;
-          connection.query(QUERY, (err, results) => {
-            if (err) {
-              console.log(err);
-              return res.json({ err: err });
-            } else {
-              let filePath = "." + result[0]["fileLocation"];
-              if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-              }
-              return res.json({
-                message: "Media Removed successfully"
-              });
-            }
+          let filePath = "." + result[0]["fileLocation"];
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+          return res.json({
+            message: "Media Removed successfully"
           });
         }
       });
@@ -119,23 +104,16 @@ router.post("/addSoundLink", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const fileLocation = req.body["audioLink"];
-  const QUERY = `insert into sounds(user,name) values(${user_id},'Sound Link')`;
+  const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'Sound Link','${fileLocation}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.json({ err: err });
     } else {
       const soundId = results.insertId;
-      const QUERY = `insert into soundsLocation values(${soundId},'${fileLocation}')`;
-      connection.query(QUERY, (err, results) => {
-        if (err) {
-          return res.json({ err: err });
-        } else {
-          return res.json({
-            sound_id: soundId,
-            user: user_id,
-            name: "Sound Link"
-          });
-        }
+      return res.json({
+        sound_id: soundId,
+        user: user_id,
+        name: "Sound Link"
       });
     }
   });
@@ -159,11 +137,11 @@ router.post("/toggleAudioSharing", (req, res) => {
   });
 });
 
-router.get("/getAudio/:audioId/:token", function(req, res) {
+router.get("/getAudio/:audioId/:token", function (req, res) {
   var audioId = req.params.audioId;
   var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
-  const QUERY = `select fileLocation from soundsLocation where sound_id= ${audioId};`;
+  const QUERY = `select fileLocation from sounds where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);
@@ -179,11 +157,11 @@ router.get("/getAudio/:audioId/:token", function(req, res) {
   });
 });
 
-router.get("/serveAudio/:audioId/:token", function(req, res) {
+router.get("/serveAudio/:audioId/:token", function (req, res) {
   var audioId = req.params.audioId;
   var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
-  const QUERY = `select fileLocation from soundsLocation where sound_id= ${audioId};`;
+  const QUERY = `select fileLocation from sounds where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       console.log(err);

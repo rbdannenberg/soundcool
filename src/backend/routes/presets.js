@@ -14,7 +14,7 @@ function updateTimeStamp() {
 const storage = multer.diskStorage({
   destination: "./assets/presets/",
   filename(req, file, cb) {
-    cb(null, `${cTimeStamp}::-::${file.originalname}`);
+    cb(null, `${cTimeStamp}-${file.originalname}`);
   }
 });
 
@@ -67,7 +67,7 @@ router.get("/get", function(req, res) {
 router.post("/upload", upload.single("file"), (req, res) => {
   const token = req.headers["x-auth-token"];
   const fileLocation =
-    "/assets/presets/" + cTimeStamp + "::-::" + req.file.originalname;
+    "/assets/presets/" + cTimeStamp + "-" + req.file.originalname;
   updateTimeStamp();
   utils.verifyToken(token, user => {
     if (user) {
