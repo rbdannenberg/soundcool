@@ -28,38 +28,41 @@ If you are running the whole project, there are four steps.
   - Run `npm run webpack`
   - It will constantly watch for any changes made in Frontend folder and recompile React jsx into proper js each time you save your code. It won't terminate and it will print errors when compilation not successful.
 
-- **Step 3**: Import `database/create-soundcool-db.sql` into local mysql server
+- **Step 3**: Setup MySQL server
+
+  - Create a new user using the below command(You can use mysql command line or mysql workbench).
+    ```sql
+    CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password',
+    ```
+
   - If using mysql command line, To import database file first create a database `soundcool` using MySQL CLI then run the below command in terminal.
     ```sql
     mysql -u <mysql-username> -p soundcool < create-soundcool-db.sql
     ```
+
   - If using MySQL workbench, open the `database/create-soundcool-db.sql` file.
     Execute the scripts by clicking the lightning button on the interface. This should create
     the same database on your machine so that you can run with user information.
-  - To connect express to your mysql server
-    - Create a `.env` file in `backend` directory
-    - Copy the below details in the newly created `.env` file(mysql user should use native password).
+
+- **Step 4**: Setting up enviormental variables
+  - Create a `.env` file in `backend` directory
+  - Copy the below details in the newly created `.env` file.
     ```ruby
-      MYSQL_HOST= <hostname> #it's localhost if you running it locally
-      MYSQL_USER= <your_sql_server_username>
-      MYSQL_PASS= <your_sql_server_password>
+      MYSQL_HOST= localhost
+      MYSQL_USER= soundcool
+      MYSQL_PASS= password
       MYSQL_DB= soundcool
+      JWT_SECRET= randomText
     ```
-- **Step 4**: Set a JWT Key value you want to use to sign JWT
-  - Open previously created `.env` file and add below line
-  ```
-  JWT_SECRET= <Any Valid JWT Key>
-  ```
+
 - **Step 5**: Start server
 
   - Go to `backend` folder.
   - Run `npm start`
   - Go to http://localhost:5000 to see the project!
 
-- **Step 6**: Browser Setting
-  - When trying to display the project, if the error `Uncaught TypeError: Cannot read property 'apply' of undefined` shows up in the browser console, it's because the redux devtools extension is not set up in the browser.
-  - Search for the redux devtools extension and add it to your Chrome or Firefox.
-  - Note - This is a development tool and it's step won't be required in the production version
+- **Step 6(Optional)**: Development Tools 
+  - To see the store state and actions you can install redux devtools extension in your browser
 
 Alternatively, if you just want to run the project front-end and want it to use a server hosted at X location, you can just
 
