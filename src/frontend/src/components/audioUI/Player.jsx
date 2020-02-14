@@ -97,7 +97,7 @@ class Player extends React.Component {
   rendererMeter = () => {
     let { audioObj } = this.props.blockInfo;
     let canvas = this.canvasMeterRef.current;
-    console.log(this.canvasMeterRef);
+    // console.log(this.canvasMeterRef);
     if (canvas === null) {
       clearInterval(this.rendererP);
       return;
@@ -105,7 +105,7 @@ class Player extends React.Component {
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
     let x = audioObj.getAudioData()[0];
-    console.log(x);
+    // console.log(x);
     let data = Math.max(this.oldDb - 7, x, -100);
     let scaledData = 100 + data;
     renderCtx.clearRect(0, 50, 15, 100);

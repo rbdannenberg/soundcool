@@ -4,6 +4,7 @@ import ReactAudioPlayer from "react-audio-player";
 import { serveAudio, fetchAudio } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
+import { isUserLoggedIn } from "../../actions/common";
 
 class AddSound extends Component {
   constructor(props) {
@@ -15,14 +16,20 @@ class AddSound extends Component {
   }
 
   addSound = () => {
-    fetchAudio()
-      .then(data => {
-        this.setState({ sounds: data.audios });
-        this.toggleModal();
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
+    if (isUserLoggedIn()) {
+      fetchAudio()
+        .then(data => {
+          this.setState({ sounds: data.audios });
+          this.toggleModal();
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    }
+    else{
+      alert("You should be logged in to perform this action")
+    }
+
   };
 
   filterSounds = sound => {
@@ -102,19 +109,19 @@ class AddSound extends Component {
           {this.props.minimal
             ? ""
             : this.props.file
-            ? this.props.file.name
-            : "Please select a sound"}{" "}
+              ? this.props.file.name
+              : "Please select a sound"}{" "}
           <button
             className="btn btn-info"
             style={
               this.props.minimal
                 ? {
-                    fontSize: "0.7rem",
-                    width: "60px",
-                    lineHeight: "1",
-                    margin: "0px",
-                    padding: "0.2rem"
-                  }
+                  fontSize: "0.7rem",
+                  width: "60px",
+                  lineHeight: "1",
+                  margin: "0px",
+                  padding: "0.2rem"
+                }
                 : { fontSize: "0.8rem", lineHeight: "1.5" }
             }
             onClick={this.addSound}
