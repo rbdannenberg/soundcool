@@ -8,7 +8,12 @@ along with react frontend and mysql database.
 - Prerequisites
   - Node 10.16.0+
   - NPM 6.10.0+
-  - MySQL 8.0+ (for OS X, see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html))
+  - MySQL 8.0+ (for OS X, see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html)
+  - ffmpeg
+    - Linux :- [Install ffmpeg](https://itsfoss.com/ffmpeg/)
+    - Windows :- [Install ffmpeg](https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg)
+    - OSX :- [Install ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/wiki/Installing-ffmpeg-on-Mac-OS-X)
+  )
 
 ## How to run
 
