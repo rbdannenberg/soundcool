@@ -6,7 +6,9 @@ import {
   toggleAudioSharing,
   addSoundLink,
   serveAudio,
-  getAudio
+  getAudio,
+  youtubeAudio,
+  addYoutubeLink
 } from "./actions";
 import ReactAudioPlayer from "react-audio-player";
 import { showToastr, showToastrError } from "../../actions/common";
@@ -54,6 +56,20 @@ class Sounds extends React.Component {
     }
   }
 
+  addYoutubeLink() {
+    var youtubeLink = prompt("Please enter Youtube URL");
+    if (youtubeLink) {
+      addYoutubeLink({ youtubeLink })
+        .then(data => {
+          showToastr("success", "Youtube link added successfully");
+          this.setState({ sounds: [...this.state.sounds, data] });
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    }
+  }
+
   handleRemoveAudio(soundId) {
     var r = window.confirm("Do you want to delete media " + soundId);
     if (r === true) {
@@ -84,10 +100,12 @@ class Sounds extends React.Component {
 
   renderSounds = sounds =>
     sounds.map((sound, index) => {
-      let { sound_id, name } = sound;
+      let { sound_id, name, type } = sound;
       let src;
-      if (name === "Sound Link") {
+      if (type === "Sound Link") {
         this.getAudioUrl(sound_id);
+      } else if (type === "Youtube") {
+        src = youtubeAudio(sound_id);
       } else {
         src = serveAudio(sound_id);
       }
@@ -187,6 +205,13 @@ class Sounds extends React.Component {
                 onClick={e => this.addSoundLink()}
               >
                 Add Online Sound
+              </button>
+              &nbsp;
+              <button
+                className="btn btn-warning"
+                onClick={e => this.addYoutubeLink()}
+              >
+                Add Youtube Sound
               </button>
             </div>
           </div>

@@ -3,7 +3,7 @@ import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 import { FaPlay, FaSquare, FaPause, FaWindows } from "react-icons/fa";
 import AddSound from "../addSound";
-import { serveAudio, getAudio } from "../sounds/actions";
+import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
 const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
@@ -150,11 +150,13 @@ class Player extends React.Component {
     const onSoundSelect = sound => {
       audioObj.stop();
       this.props.changeBlock(id, "file", sound);
-      let { name, sound_id } = sound;
-      if (name === "Sound Link") {
+      let { name,type, sound_id } = sound;
+      if (type === "Sound Link") {
         getAudio(sound_id).then(res => {
           loadUrl(res["location"]);
         });
+      } else if (type === "Youtube") {
+        loadUrl(youtubeAudio(sound_id));
       } else {
         loadUrl(serveAudio(sound_id));
       }

@@ -5,6 +5,7 @@ const connection = require("../db");
 const multer = require("multer");
 var cTimeStamp = new Date().getTime();
 var fs = require("fs");
+const stream = require("youtube-audio-stream");
 
 function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
@@ -24,7 +25,7 @@ router.get("/get", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   // do the query case on the user
-  let QUERY = `select sound_id,user,name from sounds WHERE user = ${user_id}`;
+  let QUERY = `select sound_id,user,name,type from sounds WHERE user = ${user_id}`;
   let shared = false;
   connection.query(QUERY, (err, audios) => {
     if (err) {
@@ -39,7 +40,7 @@ router.get("/get", (req, res) => {
         } else {
           if (!sharing[0]) {
             let QUERY = `insert into audioSharing values(${user_id},false)`;
-            connection.query(QUERY, (err, sharing) => { });
+            connection.query(QUERY, (err, sharing) => {});
           } else {
             shared = sharing[0]["sharing"];
           }
@@ -56,7 +57,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
   const fileLocation =
     "/uploads/sounds/" + cTimeStamp + "-" + req.file.originalname;
   updateTimeStamp();
-  const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'${req.file.originalname}','${fileLocation}')`;
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${req.file.originalname}','upload','${fileLocation}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.json({ err: err });
@@ -104,7 +105,7 @@ router.post("/addSoundLink", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
   const user_id = user.id;
   const fileLocation = req.body["audioLink"];
-  const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'Sound Link','${fileLocation}')`;
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'Sound Link','Sound Link','${fileLocation}')`;
   connection.query(QUERY, (err, results) => {
     if (err) {
       return res.json({ err: err });
@@ -113,7 +114,28 @@ router.post("/addSoundLink", (req, res) => {
       return res.json({
         sound_id: soundId,
         user: user_id,
-        name: "Sound Link"
+        name: "Sound Link",
+        type: "Sound Link",
+      });
+    }
+  });
+});
+
+router.post("/addYoutubeLink", (req, res) => {
+  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  const user_id = user.id;
+  const fileLocation = req.body["youtubeLink"];
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'Youtube','Youtube','${fileLocation}')`;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      return res.json({ err: err });
+    } else {
+      const soundId = results.insertId;
+      return res.json({
+        sound_id: soundId,
+        user: user_id,
+        name: "Youtube",
+        type: "Youtube"
       });
     }
   });
@@ -137,7 +159,7 @@ router.post("/toggleAudioSharing", (req, res) => {
   });
 });
 
-router.get("/getAudio/:audioId/:token", function (req, res) {
+router.get("/getAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
   var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
@@ -157,7 +179,29 @@ router.get("/getAudio/:audioId/:token", function (req, res) {
   });
 });
 
-router.get("/serveAudio/:audioId/:token", function (req, res) {
+router.get("/youtubeAudio/:audioId/:token", function(req, res) {
+  var audioId = req.params.audioId;
+
+  const QUERY = `select fileLocation from sounds where sound_id= ${audioId};`;
+  connection.query(QUERY, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.json({ err: err });
+    } else {
+      var requestUrl = results[0]["fileLocation"];
+      try {
+        res.header({
+          "Content-Type": "audio/mpeg"
+        });
+        stream(requestUrl).pipe(res);
+      } catch (exception) {
+        res.status(500).send(exception);
+      }
+    }
+  });
+});
+
+router.get("/serveAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
   var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
 

@@ -25,7 +25,8 @@
     "nodemon": "^1.19.1",
     "osc-min": "^1.1.2",
     "redux-thunk": "^2.3.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "youtube-audio-stream": "^0.3.5"
   },
   "devDependencies": {
     "husky": "^3.0.9",

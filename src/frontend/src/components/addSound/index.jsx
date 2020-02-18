@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import ReactAudioPlayer from "react-audio-player";
-import { serveAudio, fetchAudio, getAudio } from "../sounds/actions";
+import { serveAudio, fetchAudio, getAudio, youtubeAudio } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
 import { isUserLoggedIn } from "../../actions/common";
@@ -73,10 +73,12 @@ class AddSound extends Component {
     let data = [];
 
     sounds.forEach(sound => {
-      let { name, sound_id } = sound;
+      let { name,type, sound_id } = sound;
       let src;
-      if (name === "Sound Link") {
+      if (type === "Sound Link") {
         this.getAudioUrl(sound_id);
+      } else if (type === "Youtube") {
+        src =  youtubeAudio(sound_id);
       } else {
         src = serveAudio(sound_id);
       }
