@@ -3,7 +3,7 @@ import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 import { FaPlay, FaSquare, FaPause, FaWindows } from "react-icons/fa";
 import AddSound from "../addSound";
-import { serveAudio } from "../sounds/actions";
+import { serveAudio, getAudio } from "../sounds/actions";
 const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
@@ -46,7 +46,7 @@ class Player extends React.Component {
       audioObj.seek(seek);
       // }
     };
-    canvas.addEventListener("click", function(e) {
+    canvas.addEventListener("click", function (e) {
       seek(canvas, e);
     });
   };
@@ -119,6 +119,15 @@ class Player extends React.Component {
     renderCtx.fillRect(0, 150 - scaledData, 15, scaledData);
   };
 
+  async getAudioUrl(sound_id) {
+    if (!this.state[sound_id]) {
+      this.state[sound_id] = 1;
+      await getAudio(sound_id).then(res => {
+        this.setState({ [sound_id]: res["location"] });
+      });
+    }
+  }
+
   render() {
     let {
       id,
@@ -137,11 +146,20 @@ class Player extends React.Component {
       });
     };
 
-    const onSoundSelect = audio_id => {
+
+    const onSoundSelect = sound => {
       audioObj.stop();
-      this.props.changeBlock(id, "file", audio_id);
-      const url = serveAudio(audio_id.sound_id);
-      loadUrl(url);
+      this.props.changeBlock(id, "file", sound);
+      let { name, sound_id } = sound;
+      if (name === "Sound Link") {
+        getAudio(sound_id).then(res => {
+          loadUrl(res["location"]);
+        });
+      } else {
+        loadUrl(serveAudio(sound_id));
+      }
+
+
     };
 
     const timeFormat = time => {
@@ -280,8 +298,8 @@ class Player extends React.Component {
                 audioObj.isPlaying
                   ? audioObj.pause()
                   : audioObj.play(() => {
-                      this.setState({});
-                    });
+                    this.setState({});
+                  });
                 this.props.changeBlock(id, "playing", undefined);
               }}
             >

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import ReactAudioPlayer from "react-audio-player";
-import { serveAudio, fetchAudio } from "../sounds/actions";
+import { serveAudio, fetchAudio, getAudio } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
 import { isUserLoggedIn } from "../../actions/common";
@@ -46,6 +46,15 @@ class AddSound extends Component {
 
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
+  async getAudioUrl(sound_id) {
+    if (!this.state[sound_id]) {
+      this.state[sound_id] = 1;
+      await getAudio(sound_id).then(res => {
+        this.setState({ [sound_id]: res["location"] });
+      });
+    }
+  }
+
   renderSounds = sounds => {
     const columns = [
       {
@@ -65,6 +74,12 @@ class AddSound extends Component {
 
     sounds.forEach(sound => {
       let { name, sound_id } = sound;
+      let src;
+      if (name === "Sound Link") {
+        this.getAudioUrl(sound_id);
+      } else {
+        src = serveAudio(sound_id);
+      }
       data.push({
         name: name,
         control: (
@@ -74,7 +89,7 @@ class AddSound extends Component {
               borderColor: "#333",
               minWidth: "200px"
             }}
-            src={serveAudio(sound_id)}
+            src={src ? src : this.state[sound_id]}
             autoPlay={false}
             controls
           />
