@@ -9,6 +9,12 @@ along with react frontend and mysql database.
   - Node 10.16.0+
   - NPM 6.10.0+
   - MySQL 8.0+ (for OS X, see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html))
+    - When installing, choose "Use Strong Password Encryption" if possible. 
+    - Choose the option to start the server immediately. 
+    - Installer will create a root user (not the same as the root 
+      account on your computer), and ask for a root user password. You 
+      will need this to configure mysql. WARNING: Non-alpha-numeric characters 
+      in passwords may not work (!). 
   - FFmpeg
     - Linux :- [Install ffmpeg](https://itsfoss.com/ffmpeg/)
     - Windows :- [Install ffmpeg](https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg)
@@ -34,19 +40,49 @@ If you are running the whole project, there are four steps.
 
 - **Step 3**: Setup MySQL server
 
-  - Create a new user using the below command(You can use mysql command line or mysql workbench).
+  - OSX :- To use the mysql command line, type to a terminal:
+    ```
+    /usr/local/mysql/bin/mysql -uroot -p
+    ```
+    and use the MySQL root password you created when you set up
+    MySQL.
+
+    To use MySQL Workbench, connect to the localhost server,
+    look for a tab named "Query" followed by a number, and enter the
+    command there. Then with the command(s) selected, click the
+    lightning bolt icon to run the command(s).
+
+  - Create a new user using the command below (You can use mysql command line or mysql workbench).
     ```sql
-    CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password',
+    CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+    GRANT ALL PRIVILEGES ON soundcool.* TO 'soundcool'@'localhost';
     ```
 
-  - If using mysql command line, To import database file first create a database `soundcool` using MySQL CLI then run the below command in terminal.
+  - Create the `soundcool` database. If using mysql command line,
+    execute
+    ```
+    CREATE DATABASE soundcool;
+    ```
+    If using MySQL Workbench, click on the "+database" icon (pop-up
+    help says "Create a new schema in the connected server", and note
+    that databases are called "schemas".) 
+
+  - Initialize the soundcool database. If using mysql command line,
+    run this command in terminal:
     ```sql
     mysql -u <mysql-username> -p soundcool < create-soundcool-db.sql
     ```
 
-  - If using MySQL workbench, open the `database/create-soundcool-db.sql` file.
-    Execute the scripts by clicking the lightning button on the interface. This should create
-    the same database on your machine so that you can run with user information.
+    If using MySQL workbench, use File:Open SQL Script... to open the
+    `database/create-soundcool-db.sql` file.
+    Execute the scripts by clicking the lightning button on the
+    interface.
+
+    The database is now initialized according to
+    create-soundcool-db.sql, which includes two users: "User 1" as
+    user1@welcome.com with password welcome, and "User 2" as
+    user2@welcome.com with password welcome.
+
 
 - **Step 4**: Setting up enviormental variables
   - Create a `.env` file in `backend` directory
