@@ -57,6 +57,13 @@ If you are running the whole project, there are four steps.
     CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
     GRANT ALL PRIVILEGES ON soundcool.* TO 'soundcool'@'localhost';
     ```
+    NOTE: This user/password is used by the *backend* to access the
+    database. `soundcool` is an account for the backend system, not
+    for any *user*. This account and password can be different. They
+    are communicated to the backend software through the `.env` file
+    (see below). Below, you will install *user* accounts for User 1
+    and User 2 that can be used to login when you connect to the
+    backend through a browser.
 
   - Create the `soundcool` database. If using mysql command line,
     execute
