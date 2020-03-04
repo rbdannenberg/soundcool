@@ -11,7 +11,7 @@ const AddBlock = props => {
         // inNode and outNode are a list, since a block can have multiple input and output
         inNode: [],
         outNode: [],
-        collapse: false,
+        collapse: true,
         ...specValues[typeName]
       }
     });
