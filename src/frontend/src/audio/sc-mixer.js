@@ -20,25 +20,42 @@ class ScMixer extends ScModule {
   }
 
   setupNodes() {
+    this.masterAnalyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node0Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node1Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node2Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node3Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node4Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node5Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node6Analyzer = new ScAnalyzer(this.context, { type: "level" });
+    this.node7Analyzer = new ScAnalyzer(this.context, { type: "level" });
     this.inNode0 = this.context.createGain();
+    this.inNode0.connect(this.node0Analyzer.inNode);
     this.node0Gain = this.options.node0Gain;
     this.inNode1 = this.context.createGain();
+    this.inNode1.connect(this.node1Analyzer.inNode);
     this.node1Gain = this.options.node1Gain;
     this.inNode2 = this.context.createGain();
+    this.inNode2.connect(this.node2Analyzer.inNode);
     this.node2Gain = this.options.node2Gain;
     this.inNode3 = this.context.createGain();
+    this.inNode3.connect(this.node3Analyzer.inNode);
     this.node3Gain = this.options.node3Gain;
     this.inNode4 = this.context.createGain();
+    this.inNode4.connect(this.node4Analyzer.inNode);
     this.node4Gain = this.options.node4Gain;
     this.inNode5 = this.context.createGain();
+    this.inNode5.connect(this.node5Analyzer.inNode);
     this.node5Gain = this.options.node5Gain;
     this.inNode6 = this.context.createGain();
+    this.inNode6.connect(this.node6Analyzer.inNode);
     this.node6Gain = this.options.node6Gain;
     this.inNode7 = this.context.createGain();
+    this.inNode7.connect(this.node7Analyzer.inNode);
     this.node7Gain = this.options.node7Gain;
     this.outNode = this.context.createGain();
+    this.outNode.connect(this.masterAnalyzer.inNode);
     this.masterGain = this.options.masterGain;
-    this.masterAnalyzer = new ScAnalyzer(this.context, { type: "level" });
     this.inNode0.connect(this.outNode);
     this.inNode1.connect(this.outNode);
     this.inNode2.connect(this.outNode);
@@ -56,7 +73,6 @@ class ScMixer extends ScModule {
     this.inputs.push(this.inNode6);
     this.inputs.push(this.inNode7);
     this.outputs.push(this.outNode);
-    this.outNode.connect(this.masterAnalyzer.inNode);
   }
 
   set node0Gain(value) {
@@ -115,6 +131,46 @@ class ScMixer extends ScModule {
 
   getMasterAudioData() {
     let data = this.masterAnalyzer.getData();
+    return [data];
+  }
+
+  getNode0AudioData() {
+    let data = this.node0Analyzer.getData();
+    return [data];
+  }
+
+  getNode1AudioData() {
+    let data = this.node1Analyzer.getData();
+    return [data];
+  }
+
+  getNode2AudioData() {
+    let data = this.node2Analyzer.getData();
+    return [data];
+  }
+
+  getNode3AudioData() {
+    let data = this.node3Analyzer.getData();
+    return [data];
+  }
+
+  getNode4AudioData() {
+    let data = this.node4Analyzer.getData();
+    return [data];
+  }
+
+  getNode5AudioData() {
+    let data = this.node5Analyzer.getData();
+    return [data];
+  }
+
+  getNode6AudioData() {
+    let data = this.node6Analyzer.getData();
+    return [data];
+  }
+
+  getNode7AudioData() {
+    let data = this.node7Analyzer.getData();
     return [data];
   }
 }
