@@ -3,7 +3,7 @@ import socketIOClient from "socket.io-client";
 
 import "./index.css";
 import { connect } from "react-redux";
-import Draggable from "react-draggable";
+import {default as RDraggable} from "react-draggable";
 import WithHeader from "./Components/WithHeader";
 import RegisterForm from "../register/form";
 import AddBlock from "./Components/AddBlock";
@@ -16,6 +16,30 @@ import {
 import { updateProject, createProject, fetchUserProject } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+const grid = 8;
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  userSelect: "none",
+  ...draggableStyle,
+  boxShadow: isDragging ? `0 25px 50px rgba(255,20,147,0.50), 0 20px 15px rgba(255,20,147,0.42)` : ''
+});
+
+const getListStyle = isDraggingOver => ({
+  width: "20rem",
+  background: isDraggingOver ? "lightblue" : "transparent",
+});
 
 class ProjectEditor extends React.Component {
   constructor(props) {
@@ -24,12 +48,30 @@ class ProjectEditor extends React.Component {
       endpoint: "http://localhost:5000",
       floatingView: false,
       projectId: this.props.match.params.id,
+      items: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
       isModalOpen: false,
       isRegisterModalOpen: false
     };
     this.canvasRef = React.createRef();
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      this.state.items,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      items
+    });
   }
 
   blockStyle = id => {
@@ -50,6 +92,7 @@ class ProjectEditor extends React.Component {
   };
 
   renderBlockList = (blocks, nowOut) => {
+    console.log(blocks);
     // let rBlocks = blocks.reverse();
 
     if (this.state.floatingView) {
@@ -57,7 +100,7 @@ class ProjectEditor extends React.Component {
         <div className="box">
           <div className="boxContainer">
             {blocks.map(b => (
-              <Draggable
+              <RDraggable
                 bounds="parent"
                 onDrag={() => {
                   if (this.state.selectedBlock != b.id) {
@@ -73,7 +116,7 @@ class ProjectEditor extends React.Component {
                 >
                   <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
                 </div>
-              </Draggable>
+              </RDraggable>
               // <ExampleWrapper />
             ))}
           </div>
@@ -82,10 +125,36 @@ class ProjectEditor extends React.Component {
     } else {
       return (
         <React.Fragment>
-          {blocks.map(b => (
-            <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
-            // <ExampleWrapper />
-          ))}
+          <DragDropContext onDragEnd={this.onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+            >
+              {blocks.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      <WithHeader key={item.id} blockInfo={item} nowOut={nowOut} />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
         </React.Fragment>
       );
     }
@@ -96,6 +165,8 @@ class ProjectEditor extends React.Component {
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
       });
+      if (this.state.items !== nextProps.blocks.bs)
+      this.setState({ items: nextProps.blocks.bs });
   }
 
   componentDidMount() {
@@ -317,8 +388,7 @@ class ProjectEditor extends React.Component {
   };
 
   render() {
-    const { projectName, projectDescription } = this.state;
-
+    const { projectName, projectDescription, items } = this.state;
     return (
       <div className="container">
         <button className="btn btn-success m-2" onClick={this.saveProject}>
@@ -345,7 +415,7 @@ class ProjectEditor extends React.Component {
           Floating View : {this.state.floatingView ? "On" : "Off"}
         </button>
 
-        {this.renderBlockList(this.props.blocks.bs, this.props.blocks.nowOut)}
+        {this.renderBlockList(items, this.props.blocks.nowOut)}
 
         <Modal
           centered

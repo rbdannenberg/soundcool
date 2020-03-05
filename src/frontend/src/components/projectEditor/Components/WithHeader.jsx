@@ -198,7 +198,7 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete, dispatch }) => {
 
   return (
     <div
-      className="text-left my-2"
+      className="text-left my-1"
       style={{
         width: "20rem",
         backgroundColor: color,
