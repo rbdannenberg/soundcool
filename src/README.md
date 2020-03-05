@@ -77,9 +77,12 @@ If you are running the whole project, there are four steps.
   - Initialize the soundcool database. If using mysql command line,
     run this command in terminal:
     ```sql
-    mysql -u <mysql-username> -p soundcool < create-soundcool-db.sql
+    mysql -u soundcool -p soundcool < create-soundcool-db.sql
     ```
 
+    (Note: user "soundcool" and password "password" match the CREATE
+    USER command above.)
+    
     If using MySQL workbench, use File:Open SQL Script... to open the
     `database/create-soundcool-db.sql` file.
     Execute the scripts by clicking the lightning button on the
