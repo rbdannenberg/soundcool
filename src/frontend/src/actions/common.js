@@ -31,3 +31,33 @@ export const getHeaders = ({ email, token }) => ({
   // 'X-Auth-Email': email,
   "X-Auth-Token": token
 });
+
+export const getCssPropById = (id, prop) => {
+  var elem = document.getElementById(id);
+  var theCSSprop = window.getComputedStyle(elem, null).getPropertyValue(prop);
+  return theCSSprop;
+};
+
+export const highlightElementById = (id,time = 3000) => {
+  var elem = document.getElementById(id);
+   elem.style.boxShadow = '10px 10px 10px darkred';
+   setTimeout(function(){
+    elem.style.boxShadow = '';
+   }, time);
+};
+
+export const setCssPropById = ({id, prop, time = 3000, temp = false}) => {
+  var elem = document.getElementById(id);
+  var orig =  elem.style[prop];
+  elem.style[prop] = '10px 10px 10px darkred';
+   if(temp){
+    setTimeout(function(){
+      elem.style[prop] = orig;
+     }, time);
+   }
+};
+
+export const focusElementById = (id) => {
+  var elem = document.getElementById(id);
+  elem.scrollIntoView();
+};

@@ -28,6 +28,11 @@ import {
   // #endregion
 } from "../../audioUI/all";
 import store from "../../../store";
+import {
+  getCssPropById,
+  focusElementById,
+  setCssPropById
+} from "../../../actions/common";
 
 const eva = typeName => {
   let t;
@@ -98,7 +103,13 @@ const eva = typeName => {
   return t;
 };
 
-const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch }) => {
+const WithHeader = ({
+  blockInfo,
+  draggableButton,
+  nowOut,
+  handleDelete,
+  dispatch
+}) => {
   let {
     typeName,
     name,
@@ -130,22 +141,35 @@ const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch
       />
     );
   } else {
+    let style = {
+      width: "1.5rem",
+      height: "1.5rem",
+      fontSize: "0.8rem",
+      padding: "0px"
+    };
+    if (inNode[0]) {
+      let backgroundColor = getCssPropById(inNode[0][0], "background-color");
+      style = { ...style, backgroundColor };
+    }
     inButton = (
       <button
         id="inButton"
         className="btn btn-light btn-sm m-1 text-center"
-        style={{
-          width: "1.5rem",
-          height: "1.5rem",
-          fontSize: "0.8rem",
-          padding: "0px"
-        }}
+        style={style}
         onClick={() => {
           dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowIn",
             value: [name, "0", id, audioObj]
           });
+        }}
+
+        onContextMenu={e => {
+          e.preventDefault();
+          if (inNode[0]) {
+            focusElementById(inNode[0][0]);
+            setCssPropById({id: inNode[0][0], prop: 'boxShadow', temp: true});
+          }
         }}
       >
         <div>{inNode[0] === undefined ? "In" : inNode[0][0]}</div>
@@ -178,18 +202,31 @@ const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch
   if (outDisabled) {
     outButton = <span />;
   } else {
+    let style = outId === id ? { ...circleStyle } : { ...style1 };
+    if (outNode[0]) {
+      let backgroundColor = getCssPropById(outNode[0][0], "background-color");
+      style = { ...style, backgroundColor };
+    }
     outButton = (
       <button
         id="outButton"
         className="btn btn-sm text-center m-1"
-        style={outId === id ? circleStyle : style1}
-        onClick={() =>
+        style={style}
+        onContextMenu={e => {
+          e.preventDefault();
+          if (outNode[0]) {
+            focusElementById(outNode[0][0]);
+            setCssPropById({id: outNode[0][0], prop: 'boxShadow', temp: true});
+          }
+        }}
+        onClick={e => {
+          e.preventDefault();
           dispatch({
             type: "CONNECTING_BLOCK",
             node: "nowOut",
             value: [name, "0", id, audioObj]
-          })
-        }
+          });
+        }}
       >
         <div>{outNode[0] === undefined ? "Out" : outNode[0][0]}</div>
       </button>
@@ -198,6 +235,7 @@ const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch
 
   return (
     <div
+      id={name}
       className="text-left my-1"
       style={{
         width: "20rem",
@@ -208,7 +246,11 @@ const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch
       }}
     >
       <div className="">
-    {draggableButton && <strong className="cursor pointer-cursor ml-1"><FaArrowsAlt /></strong>}
+        {draggableButton && (
+          <strong className="cursor pointer-cursor ml-1">
+            <FaArrowsAlt />
+          </strong>
+        )}
         {inButton}
         <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
           {name}
