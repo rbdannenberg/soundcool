@@ -2,7 +2,7 @@ import React from "react";
 import { changeBlock, connectBlock } from "../../audioUI/actions";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
-import { FaMinus, FaTimes } from "react-icons/fa";
+import { FaMinus, FaTimes, FaArrowsAlt } from "react-icons/fa";
 import {
   // #region all types
   Delay,
@@ -98,7 +98,7 @@ const eva = typeName => {
   return t;
 };
 
-const WithHeader = ({ blockInfo, nowOut, handleDelete, dispatch }) => {
+const WithHeader = ({ blockInfo, draggableButton, nowOut, handleDelete, dispatch }) => {
   let {
     typeName,
     name,
@@ -208,6 +208,7 @@ const WithHeader = ({ blockInfo, nowOut, handleDelete, dispatch }) => {
       }}
     >
       <div className="">
+    {draggableButton && <strong className="cursor pointer-cursor ml-1"><FaArrowsAlt /></strong>}
         {inButton}
         <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
           {name}

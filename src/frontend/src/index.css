@@ -108,3 +108,5 @@ h2 {
 .subtitle {
   font-size: 1.2rem;
 }
+
+.pointer-cursor {cursor: pointer;}

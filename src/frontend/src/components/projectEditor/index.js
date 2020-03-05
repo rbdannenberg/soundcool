@@ -101,6 +101,7 @@ class ProjectEditor extends React.Component {
           <div className="boxContainer">
             {blocks.map(b => (
               <RDraggable
+                handle="strong"
                 bounds="parent"
                 onDrag={() => {
                   if (this.state.selectedBlock != b.id) {
@@ -109,12 +110,13 @@ class ProjectEditor extends React.Component {
                 }}
               >
                 <div
+                  className="no-cursor"
                   onClick={() => {
                     this.setState({ selectedBlock: b.id });
                   }}
                   style={this.blockStyle(b.id)}
                 >
-                  <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+                  <WithHeader draggableButton={true} key={b.id} blockInfo={b} nowOut={nowOut} />
                 </div>
               </RDraggable>
               // <ExampleWrapper />
