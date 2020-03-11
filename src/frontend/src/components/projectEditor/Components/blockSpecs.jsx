@@ -29,7 +29,7 @@ const specValues = {
     reversed: false,
     loop: false,
     speed: 1,
-    volume: 0.6,
+    volume: 100,
     playedTime: 0,
     file: undefined,
     kinect: false,
@@ -42,7 +42,7 @@ const specValues = {
     modulation: "No Mod",
     MI: 0,
     FD: 0,
-    volume: 0.6,
+    volume: 100,
     kinect: false,
     osc: undefined
   },
@@ -59,7 +59,7 @@ const specValues = {
     direction: 0,
     muted: false,
     channel: 1,
-    volume: 6,
+    volume: 0.6,
     osc: undefined
   },
   Pitch: {

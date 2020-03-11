@@ -43,6 +43,11 @@ const blocks = (
   switch (action.type) {
     case "ADD_BLOCK": {
       // add the count information into action, so block knows the count when newing
+      // there can only be one speaker module
+      if (action.typeName === "Speaker" && nextTypeId["Speaker"] == 2) {
+        console.log("Can only have one speaker per project!");
+        return state;
+      }
       let newId = nextBlockId;
       let typeIds = { ...nextTypeId };
       let newTypeId = typeIds[action.typeName]++;

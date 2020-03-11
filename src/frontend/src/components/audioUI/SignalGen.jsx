@@ -9,11 +9,10 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
   let modParam;
 
   const changeWaveform = (w, id) => changeBlock(id, "waveform", w);
-  
-  const changeMod = (w, id) => {
-    changeBlock(id, "modulation", w)
-  };
 
+  const changeMod = (w, id) => {
+    changeBlock(id, "modulation", w);
+  };
 
   if (modulation === "No Mod" || modulation === "RM") {
     modParam = "Not Applicable";
@@ -89,7 +88,11 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
             if (modulation === "No Mod" || modulation === "RM") {
               return;
             } else {
-              changeBlock(id, modulation === "AM" ? "MI" : "FD", Math.floor(Math.pow(Math.E, e.target.value)));
+              changeBlock(
+                id,
+                modulation === "AM" ? "MI" : "FD",
+                Math.floor(Math.pow(Math.E, e.target.value))
+              );
             }
           }}
           min={0}
@@ -250,8 +253,8 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
-          max={1}
-          step={0.01}
+          max={100}
+          step={1}
           value={volume}
           id="volume"
         />
@@ -292,7 +295,7 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
+};
 export default connect(
   mapStateToProps,
   { changeBlock }

@@ -46,7 +46,7 @@ class Player extends React.Component {
       audioObj.seek(seek);
       // }
     };
-    canvas.addEventListener("click", function (e) {
+    canvas.addEventListener("click", function(e) {
       seek(canvas, e);
     });
   };
@@ -146,11 +146,10 @@ class Player extends React.Component {
       });
     };
 
-
     const onSoundSelect = sound => {
       audioObj.stop();
       this.props.changeBlock(id, "file", sound);
-      let { name,type, sound_id } = sound;
+      let { name, type, sound_id } = sound;
       if (type === "Sound Link") {
         getAudio(sound_id).then(res => {
           loadUrl(res["location"]);
@@ -160,8 +159,6 @@ class Player extends React.Component {
       } else {
         loadUrl(serveAudio(sound_id));
       }
-
-
     };
 
     const timeFormat = time => {
@@ -300,8 +297,8 @@ class Player extends React.Component {
                 audioObj.isPlaying
                   ? audioObj.pause()
                   : audioObj.play(() => {
-                    this.setState({});
-                  });
+                      this.setState({});
+                    });
                 this.props.changeBlock(id, "playing", undefined);
               }}
             >
@@ -398,8 +395,8 @@ class Player extends React.Component {
             }}
             onChange={e => this.props.changeBlock(id, "volume", e.target.value)}
             min={0}
-            max={1}
-            step={0.01}
+            max={100}
+            step={1}
             value={volume}
             id="volume"
           />
