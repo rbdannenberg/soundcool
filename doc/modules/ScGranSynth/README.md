@@ -1,3 +1,5 @@
+# ScGranSynth
+
 This a specification for ScGranSynth module. ScGranSynth stands for Soundcool's Granular Synthesis.
 
 ## Inputs
