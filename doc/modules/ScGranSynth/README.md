@@ -7,7 +7,8 @@ This a specification for ScGranSynth module. ScGranSynth stands for Soundcool's 
 * Grain rate: expected number of grains to be played per second. range: [1, 1000]; default: 100.
 * Jitter: specifies jitter (explained below) in grain scheduling. range: [0, 1]; default: 0.5.
 * Grain size: size of one grain in seconds. range: [0.01, 1]; default: 0.05.
-* Pitch shift: specifies by how much to transpose a grain in cents. range: [-2400, 2400]; default: randomized.
+* Pitch shift: specifies by how much to transpose a grain in cents. range: [-2400, 2400]; default: 0.
+* Pitch randomization: specifies a range of pitch shift random offset in cents. range: [0, 4800]; default: 0.
 * Grain reverse: specifies if to reverse a grain during playback. default: false.
 * Panning: panning during grain playback. range: [-1, 1]. -1 is full left pan; 1 is full right pan. default: randomized.
 * Delay: specfies the amount of delay in seconds to samples grains from. range: [1, 10]; default: 5.
