@@ -21,7 +21,7 @@ export const successErrorHandler = (resolve, reject) => {
 };
 
 export const showToastrError = errObj => {
-  showToastr("error", errObj.error || "Something went wrong.", null, {
+  showToastr("error", errObj.error || errObj.err || "Something went wrong.", null, {
     timeOut: 0,
     extendedTimeOut: 0
   });

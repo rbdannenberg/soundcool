@@ -6,9 +6,10 @@ module.exports = {
       name: user.name,
       id: user.user_id
     };
-    return (token = jwt.sign(u, process.env.JWT_SECRET, {
+    let token = jwt.sign(u, process.env.JWT_SECRET, {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
-    }));
+    })
+    return token;
   },
 
   verifyToken: function(token, callback) {

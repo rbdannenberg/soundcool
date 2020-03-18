@@ -13,7 +13,12 @@ import {
   showToastr,
   showToastrError
 } from "../../actions/common";
-import { updateProject, createProject, fetchUserProject } from "./actions";
+import {
+  updateProject,
+  createProject,
+  fetchUserProject,
+  openPort
+} from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -53,7 +58,8 @@ class ProjectEditor extends React.Component {
       projectName: "",
       projectDescription: "",
       isModalOpen: false,
-      isRegisterModalOpen: false
+      isRegisterModalOpen: false,
+      openPorts: []
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -189,79 +195,155 @@ class ProjectEditor extends React.Component {
     this.loadState();
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
+    socket.on("openPort", data => {
+      console.log(data);
+      this.setState({
+        openPorts: data
+      });
+    });
     socket.on("oscData", data => {
-      let field,
-        value,
-        ignore = false;
+      let portNumber = data.portNumber;
+      let targetComponent = this.findComponents(portNumber);
+      targetComponent.forEach(comp => {
+        this.handleOscInput(comp, data);
+      });
+    });
+  }
 
-      switch (data.type) {
-        case "loop":
-          (field = "loop"), (value = data.value == 1 ? true : false);
-          break;
-        case "playbackSpeed":
-          (field = "speed"), (value = data.value * 2);
-          break;
-        case "volume":
-          (field = "volume"), (value = Math.round(data.value * 100));
-          break;
-        case "playPause":
-          if (
-            data.value == 0 &&
-            this.props.blocks["bs"][0].audioObj.options.path != ""
-          ) {
-            if (this.props.blocks["bs"][0].audioObj.isPlaying) {
-              this.props.blocks["bs"][0].audioObj.pause();
-            } else {
-              this.props.blocks["bs"][0].audioObj.play();
-            }
+  findComponents(oscPort) {
+    let components = [];
+    this.props.blocks["bs"].forEach((comp, index) => {
+      if (comp.osc == oscPort) {
+        components.push({ typeName: comp.typeName, id: comp.id, index: index });
+      }
+    });
+    return components;
+  }
 
-            field = "playing";
-            value = undefined;
+  handleOscInput(comp, data) {
+    console.log(comp);
+    switch (comp.typeName) {
+      case "Delay":
+        break;
+      case "Transposer":
+        break;
+      case "Pan":
+        break;
+      case "Player":
+        this.handleOscPlayer(comp.id, data);
+        break;
+      case "SignalGen":
+        break;
+      case "Speaker":
+        break;
+      case "DirectInput":
+        break;
+      case "Pitch":
+        break;
+      case "Reverb":
+        break;
+      case "Routing":
+        break;
+      case "Mixer":
+        break;
+      case "Oscilloscope":
+        break;
+      case "Spectroscope":
+        break;
+      case "SamplePlayer":
+        break;
+    }
+  }
+
+  handleOscPlayer(id, data) {
+    let field,
+      value,
+      ignore = false;
+    switch (data.type) {
+      case "loop":
+        (field = "loop"), (value = data.value == 1 ? true : false);
+        break;
+      case "playbackSpeed":
+        (field = "speed"), (value = data.value * 2);
+        break;
+      case "volume":
+        (field = "volume"), (value = Math.round(data.value * 100));
+        break;
+      case "playPause":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          if (this.props.blocks["bs"][index].audioObj.isPlaying) {
+            this.props.blocks["bs"][index].audioObj.pause();
           } else {
-            ignore = true;
-          }
-          break;
-        case "stop":
-          if (
-            data.value == 0 &&
-            this.props.blocks["bs"][0].audioObj.options.path != ""
-          ) {
-            field = "playing";
-            value = undefined;
-            this.props.blocks["bs"][0].audioObj.stop();
-          } else {
-            ignore = true;
+            this.props.blocks["bs"][index].audioObj.play();
           }
 
-          break;
-        case "reverse":
-          if (
-            data.value == 0 &&
-            this.props.blocks["bs"][0].audioObj.options.path != ""
-          ) {
-            this.props.blocks["bs"][0].audioObj.reverse(res => {
-              console.log(res);
-            });
-          } else {
-            ignore = true;
-          }
-
-          break;
-        case "seek":
-          if (this.props.blocks["bs"][0].audioObj.options.path != "") {
-            this.props.blocks["bs"][0].audioObj.seek(data.value);
-          }
+          field = "playing";
+          value = undefined;
+        } else {
           ignore = true;
+        }
+        break;
+      case "stop":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          field = "playing";
+          value = undefined;
+          this.props.blocks["bs"][index].audioObj.stop();
+        } else {
+          ignore = true;
+        }
+
+        break;
+      case "reverse":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          this.props.blocks["bs"][index].audioObj.reverse(res => {
+            console.log(res);
+          });
+        } else {
+          ignore = true;
+        }
+
+        break;
+      case "seek":
+        if (this.props.blocks["bs"][index].audioObj.options.path != "") {
+          this.props.blocks["bs"][index].audioObj.seek(data.value);
+        }
+        ignore = true;
+    }
+    if (!ignore) {
+      this.props.dispatch({
+        type: "CHANGE_BLOCK",
+        id: id,
+        field,
+        value
+      });
+    }
+  }
+
+  openNewPort(blocks) {
+    blocks.forEach(block => {
+      if (block.osc && this.state.openPorts.indexOf(block.osc) === -1) {
+        this.setState({ openPorts: [...this.state.openPorts, block.osc] });
+        openPort({ portNumber: block.osc })
+          .then(data => {
+            if (data.err) {
+              showToastrError(data);
+            } else {
+              showToastr("success", data["message"]);
+            }
+          })
+          .catch(error => {
+            showToastrError(error);
+          });
       }
-      if (!ignore) {
-        this.props.dispatch({
-          type: "CHANGE_BLOCK",
-          id: 1,
-          field,
-          value
-        });
-      }
-      console.log(this.props.blocks["bs"][0]);
     });
   }
 
@@ -406,9 +488,20 @@ class ProjectEditor extends React.Component {
       showToastrError({ error });
     }
   };
-
+  checkIfAllPortsAreOpen(blocks) {
+    let flag = true;
+    blocks.forEach(block => {
+      if (block.osc && this.state.openPorts.indexOf(block.osc) === -1) {
+        flag = false;
+      }
+    });
+    return flag;
+  }
   render() {
-    const { projectName, projectDescription, items } = this.state;
+    const { projectName, projectDescription, items, portOpened } = this.state;
+    const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
+      ? false
+      : true;
     return (
       <div className="container">
         <button className="btn btn-success m-2" onClick={this.saveProject}>
@@ -434,6 +527,14 @@ class ProjectEditor extends React.Component {
         >
           Floating View : {this.state.floatingView ? "On" : "Off"}
         </button>
+        {isUserLoggedIn() && openPortsButton && (
+          <button
+            className="btn btn-secondary m-2 float-right"
+            onClick={() => this.openNewPort(this.props.blocks["bs"])}
+          >
+            Open Required Ports
+          </button>
+        )}
 
         {this.renderBlockList(items, this.props.blocks.nowOut)}
 
