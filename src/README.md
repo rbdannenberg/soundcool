@@ -7,14 +7,34 @@ along with react frontend and mysql database.
 
 - Prerequisites
   - Node 10.16.0+
+    - Linux (these commands tested on Ubuntu 18.04 LTS):
+      - `sudo apt update`
+      - `sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates`
+      - `sudo apt update`
+      - `sudo apt -y install gcc g++ make`
+      - `sudo apt -y install nodejs`
+      - `curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
   - NPM 6.10.0+
-  - MySQL 8.0+ (for OS X, see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html))
+  	- Linux note: NPM version is 6.9.0 for Node 10.16
+  - MySQL 8.0+
     - When installing, choose "Use Strong Password Encryption" if possible. 
     - Choose the option to start the server immediately. 
     - Installer will create a root user (not the same as the root 
       account on your computer), and ask for a root user password. You 
       will need this to configure mysql. WARNING: Non-alpha-numeric characters 
-      in passwords may not work (!). 
+      in passwords may not work (!).sudo service mysql restart
+    - Linux:
+      - `sudo apt update`
+      - `sudo apt install mysql-server`
+      - `sudo mysql_secure_installation`
+      - `sudo service mysql restart`
+      - `sudo mysql -uroot`
+        - `UPDATE mysql.user SET authentication_string = PASSWORD('password') WHERE User = 'root';`
+      (For `password`, use the same SQL root password you provided to `sudo mysql_secure_installation`.)
+        - `FLUSH PRIVILEGES;`
+        - `QUIT;`
+
+    - OS X: see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html)
   - FFmpeg
     - Linux :- [Install ffmpeg](https://itsfoss.com/ffmpeg/)
     - Windows :- [Install ffmpeg](https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg)
@@ -28,8 +48,10 @@ If you are running the whole project, there are four steps.
 
   - Go to `backend` folder.
   - Run `npm i` to install all the dependencies.
+  - Run `npm audit fix`
   - Go to `frontend` folder.
   - Run `npm i` to install all the dependencies.
+  - Run `npm audit fix`
 
 - **Step 2**: Start webpack so it can rebuild project if any changes detected.
 
@@ -40,17 +62,22 @@ If you are running the whole project, there are four steps.
 
 - **Step 3**: Setup MySQL server
 
-  - OSX :- To use the mysql command line, type to a terminal:
+  - General
+
+    - To use the mysql command line, type to a terminal:
     ```
-    /usr/local/mysql/bin/mysql -uroot -p
+    (on OS X) /usr/local/mysql/bin/mysql -uroot -p
+    (on Linux) mysql -uroot -p
     ```
     and use the MySQL root password you created when you set up
     MySQL.
 
-    To use MySQL Workbench, connect to the localhost server,
+    - To use MySQL Workbench, connect to the localhost server,
     look for a tab named "Query" followed by a number, and enter the
     command there. Then with the command(s) selected, click the
     lightning bolt icon to run the command(s).
+    
+    - Linux (Ubuntu 18.04 LTS): [Install MySQL Workbench](https://linuxize.com/post/how-to-install-and-use-mysql-workbench-on-ubuntu-18-04/)
 
   - Create a new user using the command below (You can use mysql command line or mysql workbench).
     ```sql
@@ -75,7 +102,7 @@ If you are running the whole project, there are four steps.
     that databases are called "schemas".) 
 
   - Initialize the soundcool database. If using mysql command line,
-    run this command in terminal:
+    run this command in terminal in the soundcool/src/database directory:
     ```sql
     mysql -u soundcool -p soundcool < create-soundcool-db.sql
     ```
