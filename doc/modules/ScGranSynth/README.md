@@ -21,14 +21,14 @@ Notes: The pitch shift for each grain is computed by: `pitch_shift + R * pitch_j
 The limits for pitch shift are -1200 to +1200 (cents). The limits for pan are -1 to +1. The limits for delay are *latency* to 20 (seconds), where *latency* is some minimum time needed to insure the input samples are available before the grain begins. (*latency* may depend on grain duration and whether `reverse` is non-zero.)
 
 ## Grain Scheduling
-The inter-onset interval between two scheduled grains follows a truncated negative exponential distribution:
+The inter-onset interval between two scheduled grains is a weighted sum of expected interval and a sample from truncated negative exponential distribution:
 ```
-random_interval ~ TruncExp(lambda, a, b)
-expected_interval = 1 / rate;
-interval = (1 - jitter) * expected_interval + jitter * random_interval
+expected_interval = 1 / rate
+random_interval ~ TruncExp(expected_interval, a, b)
+interval = (1 - ioi_jitter) * expected_interval + ioi_jitter * random_interval
 gt(n) = gt(n-1) + interval
 ```
-where, `gt(n)` is scheduled time for nth grain; truncated exponential distribution (i.e. `TruncExp`) is bounded 
+where `gt(n)` is scheduled time for nth grain; truncated exponential distribution (i.e. `TruncExp`) is bounded 
 by the range `[a, b]`;`lambda` is the rate parameter of the exponential distribution; `rate` above is grain rate.
 
 ## Grain Sampling
@@ -36,4 +36,4 @@ Grain sampling includes looking back `gdelay` (grain delay) seconds in the delay
 ```
 st(n) = gt(n) - gdelay
 ```
-, where `st(n)` is the start time from where nth grain starts playing. 
+where `st(n)` is the start time from where nth grain starts playing. 
