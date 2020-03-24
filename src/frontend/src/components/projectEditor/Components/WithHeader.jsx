@@ -24,7 +24,8 @@ import {
   Keyboard,
   SamplePlayer,
   Sequencer,
-  Reverb
+  Reverb,
+  GranSynth
   // #endregion
 } from "../../audioUI/all";
 import store from "../../../store";
@@ -51,6 +52,9 @@ const eva = typeName => {
       break;
     case "SignalGen":
       t = SignalGen;
+      break;
+    case "GranSynth":
+      t = GranSynth;
       break;
     case "Speaker":
       t = Speaker;
@@ -163,12 +167,11 @@ const WithHeader = ({
             value: [name, "0", id, audioObj]
           });
         }}
-
         onContextMenu={e => {
           e.preventDefault();
           if (inNode[0]) {
             focusElementById(inNode[0][0]);
-            setCssPropById({id: inNode[0][0], prop: 'boxShadow', temp: true});
+            setCssPropById({ id: inNode[0][0], prop: "boxShadow", temp: true });
           }
         }}
       >
@@ -216,7 +219,11 @@ const WithHeader = ({
           e.preventDefault();
           if (outNode[0]) {
             focusElementById(outNode[0][0]);
-            setCssPropById({id: outNode[0][0], prop: 'boxShadow', temp: true});
+            setCssPropById({
+              id: outNode[0][0],
+              prop: "boxShadow",
+              temp: true
+            });
           }
         }}
         onClick={e => {

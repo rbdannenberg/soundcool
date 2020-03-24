@@ -234,6 +234,8 @@ class ProjectEditor extends React.Component {
         break;
       case "SignalGen":
         break;
+      case "GranSynth":
+        break;
       case "Speaker":
         break;
       case "DirectInput":

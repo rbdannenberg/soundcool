@@ -256,6 +256,29 @@ const specValues = {
     preset: "Hall",
     mix: 0.5,
     bypass: false
+  },
+  GranSynth: {
+    color: toHex(114, 229, 190),
+    // Grain Rate: expected number of grains to be played per second. range: [1, 1000]; default: 100.
+    rate: 100,
+    // specifies jitter (explained below) in grain scheduling. range: [0, 1]; default: 0.5.
+    ioi_jitter: 0.5,
+    // duration of each grain in seconds. range: [0.01, 1]; default: 0.05.
+    dur: 0.05,
+    // specifies by how much to transpose a grain in cents. range: [-2400, 2400]; default: 0.
+    pitch_shift: 0,
+    // specifies a range of random pitch shift offset in cents. range: [0, 4800]; default: 0.
+    pitch_jitter: 0,
+    // probability of reversing a grain during playback. range: [0, 1]; default: 0.
+    reverse: 0,
+    // pan amount during grain playback. range: [-1, 1]. -1 is full left pan; 1 is full right pan. default: 0.
+    pan: 0,
+    // specifies a range of random offset added to pan amount for each grain. range: [0, 2]; default: 0.
+    pan_jitter: 0,
+    // specfies the amount of delay in seconds from input to output. range: [0, 20]; default: 1.
+    delay: 1,
+    // specifies the spread in seconds around delay grains. range: [0, 20]; default: 2.
+    delay_jitter: 2
   }
 };
 

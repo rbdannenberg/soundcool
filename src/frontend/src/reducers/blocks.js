@@ -20,7 +20,8 @@ const allTypes = {
   Keyboard: 1,
   SamplePlayer: 1,
   Sequencer: 1,
-  Reverb: 1
+  Reverb: 1,
+  GranSynth: 1
 };
 const emptyState = {
   bs: [],

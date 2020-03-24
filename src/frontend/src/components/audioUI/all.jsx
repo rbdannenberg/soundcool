@@ -18,6 +18,7 @@ import Keyboard from "./Keyboard";
 import SamplePlayer from "./SamplePlayer";
 import Sequencer from "./Sequencer";
 import Reverb from "./Reverb";
+import GranSynth from "./GranSynth";
 
 export { Delay };
 export { Transposer };
@@ -39,6 +40,7 @@ export { Keyboard };
 export { SamplePlayer };
 export { Sequencer };
 export { Reverb };
+export { GranSynth };
 
 // export * from './delay';
 // export * from './transposer';
