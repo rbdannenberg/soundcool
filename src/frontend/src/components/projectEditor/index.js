@@ -521,6 +521,7 @@ class ProjectEditor extends React.Component {
             Export Project
           </button>
         )}
+
         <AddBlock />
 
         <button

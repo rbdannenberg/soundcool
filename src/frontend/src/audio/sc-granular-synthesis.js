@@ -15,7 +15,6 @@ function makeEqualPowerCurve(buffLen = 4096) {
 }
 
 class GrainPlayer {
-
   constructor(context, numGrains, destination) {
     let gains = [];
     let curve = makeEqualPowerCurve();
@@ -34,26 +33,25 @@ class GrainPlayer {
 }
 
 class ScGranSynth extends ScModule {
-
-  constructor(context, options={}) {
+  constructor(context, options = {}) {
     super(context);
     let defOpts = {
-      grainsPS: 10,  // grains per second
-      grainDur: 50,  // in msec
-      dBufferDur: 5,    // len of delay buffer in seconds
+      grainsPS: 10, // grains per second
+      grainDur: 50, // in msec
+      dBufferDur: 5, // len of delay buffer in seconds
       minGrainSize: 1, // in msec
-      maxGrainSize: 50,  // in msec
-      expectedLatency: .1 // in msec
+      maxGrainSize: 50, // in msec
+      expectedLatency: 0.1 // in msec
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
   }
 
   schedule(currTime) {
-    console.log('currTime: ',currTime);
+    console.log("currTime: ", currTime);
     let maxOffset = this.dBufferDur - this.options.grainDur;
     let startOffset = Math.random() * maxOffset;
-    console.log('offset: ', startOffset);
+    console.log("offset: ", startOffset);
     let grain = this.context.createBufferSource();
     grain.buffer = this.dBuffer;
     grain.connect(this.outNode);
@@ -106,9 +104,9 @@ class ScGranSynth extends ScModule {
         this.dBufferArrL[this.dBufferWPtr] = liveBuffDataL[i];
         this.dBufferArrR[this.dBufferWPtr] = liveBuffDataR[i];
       }
-      let currDur = (this.dBufferWPtr / this.sampleRate);
+      let currDur = this.dBufferWPtr / this.sampleRate;
       this.sampleRPtr = (currDur + 0.1) % this.dBufferDur;
-      this.sampleLPtr = currDur - (this.grainDur / 1000);
+      this.sampleLPtr = currDur - this.grainDur / 1000;
       if (this.sampleLPtr < 0) {
         // sample from RPtr to dBufferDur - this.grainDur / 1000
       } else if (this.sampleRPtr < this.sampleLPtr) {
