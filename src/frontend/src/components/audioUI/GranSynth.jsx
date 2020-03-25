@@ -21,7 +21,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "220px", position: "relative" }}
+        style={{ width: "288px", height: "221px", position: "relative" }}
       >
         <ReactTooltip place="top" type="info" effect="float" />
         {/* Rate */}
@@ -36,13 +36,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"grain rate: "}
+          {"Grain Rate: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "6px",
             left: "80px"
@@ -53,6 +53,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={rate}
           id="rate"
         />
+        <label
+          htmlFor="rate"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "4px",
+            left: "285px"
+          }}
+        >
+          {rate}
+        </label>
 
         {/* ioi_jitter */}
         <label
@@ -65,13 +76,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"ioi_jitter: "}
+          {"Timing Jitter: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "26px",
             left: "80px"
@@ -83,6 +94,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={ioi_jitter}
           id="ioi_jitter"
         />
+        <label
+          htmlFor="ioi_jitter"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "24px",
+            left: "285px"
+          }}
+        >
+          {ioi_jitter}
+        </label>
 
         {/* dur */}
         <label
@@ -95,13 +117,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"grain dur: "}
+          {"Duration: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "46px",
             left: "80px"
@@ -113,6 +135,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={dur}
           id="dur"
         />
+        <label
+          htmlFor="dur"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "44px",
+            left: "285px"
+          }}
+        >
+          {dur}
+        </label>
 
         {/* pitch_shift */}
         <label
@@ -125,13 +158,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"pitch_shift: "}
+          {"Transpose: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "66px",
             left: "80px"
@@ -142,6 +175,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={pitch_shift}
           id="pitch_shift"
         />
+        <label
+          htmlFor="pitch_shift"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "64px",
+            left: "285px"
+          }}
+        >
+          {pitch_shift}
+        </label>
 
         {/* pitch_jitter */}
         <label
@@ -154,13 +198,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"pitch_jitter: "}
+          {"Transp. Jitter: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "86px",
             left: "80px"
@@ -171,6 +215,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={pitch_jitter}
           id="pitch_jitter"
         />
+        <label
+          htmlFor="pitch_jitter"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "84px",
+            left: "285px"
+          }}
+        >
+          {pitch_jitter}
+        </label>
 
         {/* reverse */}
         <label
@@ -183,13 +238,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"reverse: "}
+          {"Reverse: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "106px",
             left: "80px"
@@ -201,6 +256,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={reverse}
           id="reverse"
         />
+        <label
+          htmlFor="reverse"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "104px",
+            left: "285px"
+          }}
+        >
+          {reverse}
+        </label>
 
         {/* pan */}
         <label
@@ -213,13 +279,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"pan: "}
+          {"Pan: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "126px",
             left: "80px"
@@ -231,6 +297,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={pan}
           id="pan"
         />
+        <label
+          htmlFor="pan"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "124px",
+            left: "285px"
+          }}
+        >
+          {pan}
+        </label>
 
         {/* pan_jitter */}
         <label
@@ -243,13 +320,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"pan_jitter: "}
+          {"Pan Jitter: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "146px",
             left: "80px"
@@ -261,6 +338,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={pan_jitter}
           id="pan_jitter"
         />
+        <label
+          htmlFor="pan_jitter"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "144px",
+            left: "285px"
+          }}
+        >
+          {pan_jitter}
+        </label>
 
         {/* delay */}
         <label
@@ -273,13 +361,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"delay: "}
+          {"Delay: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "166px",
             left: "80px"
@@ -291,6 +379,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={delay}
           id="delay"
         />
+        <label
+          htmlFor="delay"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "164px",
+            left: "285px"
+          }}
+        >
+          {delay}
+        </label>
 
         {/* delay_jitter */}
         <label
@@ -303,13 +402,13 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             left: "6px"
           }}
         >
-          {"delay_jitter: "}
+          {"Delay Jitter: "}
         </label>
         <input
           className="slider"
           type="range"
           style={{
-            width: "220px",
+            width: "200px",
             position: "absolute",
             top: "186px",
             left: "80px"
@@ -321,6 +420,17 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           value={delay_jitter}
           id="delay_jitter"
         />
+        <label
+          htmlFor="delay_jitter"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            top: "184px",
+            left: "285px"
+          }}
+        >
+          {delay_jitter}
+        </label>
       </div>
 
       {/* Footer */}
@@ -329,26 +439,26 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
         style={{ backgroundColor: "grey", height: "30px" }}
       >
         <span className="col text-center">
-          <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
-            Kinect
+          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            OSC
           </label>
           <input
             type="checkbox"
             className="m-1"
-            id="kinect"
-            onClick={() => changeBlock(id, "kinect", undefined)}
+            id="osc"
+            onClick={() => changeBlock(id, "osc", undefined)}
           />
         </span>
         <span className="col text-center">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
             OSC port:
           </label>
           <input
             type="text"
             className="my-1"
             style={{ height: "1.5rem", width: "3rem" }}
-            id="osc"
-            onChange={e => changeBlock(id, "osc", e.target.value)}
+            id="oscPort"
+            onChange={e => changeBlock(id, "oscPort", e.target.value)}
           />
         </span>
       </div>

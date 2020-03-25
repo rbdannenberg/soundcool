@@ -7,8 +7,8 @@ const specValues = {
     color: toHex(210, 189, 120),
     delayTime: 76,
     delayFeedback: 0.119,
-    kinect: false,
-    osc: undefined
+    osc: false,
+    oscPort: undefined
   },
   Transposer: {
     color: toHex(193, 133, 200),
@@ -19,8 +19,8 @@ const specValues = {
   Pan: {
     color: toHex(136, 179, 95),
     panVal: 0,
-    kinect: false,
-    osc: undefined
+    osc: false,
+    oscPort: undefined
   },
   Player: {
     inDisabled: true,
@@ -32,8 +32,8 @@ const specValues = {
     volume: 100,
     playedTime: 0,
     file: undefined,
-    kinect: false,
-    osc: undefined
+    osc: false,
+    oscPort: undefined
   },
   SignalGen: {
     color: toHex(89, 199, 198),
@@ -43,8 +43,8 @@ const specValues = {
     MI: 0,
     FD: 0,
     volume: 100,
-    kinect: false,
-    osc: undefined
+    osc: false,
+    oscPort: undefined
   },
   Speaker: {
     color: toHex(240, 254, 199),
@@ -65,9 +65,9 @@ const specValues = {
   Pitch: {
     color: toHex(220, 105, 216),
     pitch: 0,
-    kinect: false,
+    osc: false,
     grainSize: 0.1,
-    osc: undefined
+    oscPort: undefined
   },
   VSTHost: {
     color: toHex(136, 179, 95),
@@ -178,8 +178,8 @@ const specValues = {
     loop: false,
     speed: 1,
     reversed: false,
-    kinect: false,
-    osc: undefined,
+    osc: false,
+    oscPort: undefined,
     playings: [
       false,
       false,
@@ -278,7 +278,9 @@ const specValues = {
     // specfies the amount of delay in seconds from input to output. range: [0, 20]; default: 1.
     delay: 1,
     // specifies the spread in seconds around delay grains. range: [0, 20]; default: 2.
-    delay_jitter: 2
+    delay_jitter: 2,
+    osc: false,
+    oscPort: undefined
   }
 };
 

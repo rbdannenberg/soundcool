@@ -194,7 +194,11 @@ const AddBlock = props => {
         id="vst"
         style={{ position: "absolute", left: "990px", top: "70px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("VSTHost")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => addBlock("GranSynth")}
+        >
           <img src={vst}></img>
         </button>
       </div>
