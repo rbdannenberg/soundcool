@@ -38,3 +38,14 @@ Grain sampling includes looking back `gdelay` (grain delay) seconds in the delay
 st(n) = gt(n) - gdelay
 ```
 where `st(n)` is the start time from where nth grain starts playing. 
+
+## Grain Transposition
+Grain transposition is achieved by setting `detune` parameter of Audio Buffer Source Node (ABSN). ABSN implements this by tweaking the `playbackRate` parameter as follows:
+```
+computedPlaybackRate = playbackRate * pow(2, detune / 1200)
+```
+Since `dur` shrinks/expands with change in `detune`, divide by the detune factor to achieve consisten `dur` independent of `detune`:
+```
+detune = pitchShift + R * (pitchJitter)
+dur = dur / pow(2, detune / 1200)
+```
