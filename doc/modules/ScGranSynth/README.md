@@ -40,12 +40,8 @@ st(n) = gt(n) - gdelay
 where `st(n)` is the start time from where nth grain starts playing. 
 
 ## Grain Transposition
-Grain transposition is achieved by setting `detune` parameter of Audio Buffer Source Node (ABSN). ABSN implements this by tweaking the `playbackRate` parameter as follows:
-```
-computedPlaybackRate = playbackRate * pow(2, detune / 1200)
-```
-Since `dur` shrinks/expands with change in `detune`, divide by the detune factor to achieve consistent `dur` (that is independent of `detune`):
-```
-detune = pitchShift + R * (pitchJitter)
-dur = dur / pow(2, detune / 1200)
-```
+We use the Audio Buffer Source Node ABSN to implement grain transposition. ABSN's actual playback rate depends on two ABSN parameters: `playbackRate` and `detune` as follows: *ABSNPlaybackRate* = `playbackRate` * *pow(2, `detune` / 1200)*
+
+Therefore, we just need to set `playbackRate = 1` (default), and set `detune` to a number between -2400 and +2400 based on `pitchShift` and `pitchJitter` (see **Jitter for pitch, pan, and delay** above).
+
+Since `dur` shrinks/expands with changes in `detune`, divide by the detune factor to achieve consistent `dur` (that is independent of `detune`): *ABSNdur = `dur` / pow(2, `detune` /* 1200)
