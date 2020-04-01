@@ -1,7 +1,7 @@
 import React from "react";
 import { changeBlock, connectBlock } from "./actions";
 import { connect } from "react-redux";
-import { getCssPropById } from "../../actions/common";
+import { getCssPropById, focusElementById, setCssPropById } from "../../actions/common";
 
 class Mixer extends React.Component {
   constructor(props) {
@@ -386,6 +386,13 @@ class Mixer extends React.Component {
                 onClick={() => {
                   connectBlock("nowIn", [name, 0, id, audioObj]);
                 }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[0]) {
+                    focusElementById(inNode[0][0]);
+                    setCssPropById({ id: inNode[0][0], prop: "boxShadow", temp: true });
+                  }
+                }}
               >
                 {inNode[0] === undefined ? "In" : inNode[0][0]}
               </button>
@@ -455,6 +462,13 @@ class Mixer extends React.Component {
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 1, id, audioObj]);
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[1]) {
+                    focusElementById(inNode[1][0]);
+                    setCssPropById({ id: inNode[1][0], prop: "boxShadow", temp: true });
+                  }
                 }}
               >
                 {inNode[1] === undefined ? "In" : inNode[1][0]}
@@ -526,6 +540,13 @@ class Mixer extends React.Component {
                 onClick={() => {
                   connectBlock("nowIn", [name, 2, id, audioObj]);
                 }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[2]) {
+                    focusElementById(inNode[2][0]);
+                    setCssPropById({ id: inNode[2][0], prop: "boxShadow", temp: true });
+                  }
+                }}
               >
                 {inNode[2] === undefined ? "In" : inNode[2][0]}
               </button>
@@ -595,6 +616,13 @@ class Mixer extends React.Component {
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 3, id, audioObj]);
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[3]) {
+                    focusElementById(inNode[3][0]);
+                    setCssPropById({ id: inNode[3][0], prop: "boxShadow", temp: true });
+                  }
                 }}
               >
                 {inNode[3] === undefined ? "In" : inNode[3][0]}
@@ -666,6 +694,13 @@ class Mixer extends React.Component {
                 onClick={() => {
                   connectBlock("nowIn", [name, 4, id, audioObj]);
                 }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[4]) {
+                    focusElementById(inNode[4][0]);
+                    setCssPropById({ id: inNode[4][0], prop: "boxShadow", temp: true });
+                  }
+                }}
               >
                 {inNode[4] === undefined ? "In" : inNode[4][0]}
               </button>
@@ -735,6 +770,13 @@ class Mixer extends React.Component {
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 5, id, audioObj]);
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[5]) {
+                    focusElementById(inNode[5][0]);
+                    setCssPropById({ id: inNode[5][0], prop: "boxShadow", temp: true });
+                  }
                 }}
               >
                 {inNode[5] === undefined ? "In" : inNode[5][0]}
@@ -812,6 +854,13 @@ class Mixer extends React.Component {
                 onClick={() => {
                   connectBlock("nowIn", [name, 6, id, audioObj]);
                 }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[6]) {
+                    focusElementById(inNode[6][0]);
+                    setCssPropById({ id: inNode[6][0], prop: "boxShadow", temp: true });
+                  }
+                }}
               >
                 {inNode[6] === undefined ? "In" : inNode[6][0]}
               </button>
@@ -887,6 +936,13 @@ class Mixer extends React.Component {
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 7, id, audioObj]);
+                }}
+                onContextMenu={e => {
+                  e.preventDefault();
+                  if (inNode[7]) {
+                    focusElementById(inNode[7][0]);
+                    setCssPropById({ id: inNode[7][0], prop: "boxShadow", temp: true });
+                  }
                 }}
               >
                 {inNode[7] === undefined ? "In" : inNode[7][0]}
