@@ -25,7 +25,7 @@ This is the folder that contains the GUI Objects such as Delay, Transposer, Spea
   - {bs, nextBlockId, nextStateId, nowIn, nowOut} are the five elements in this state.
   - bs: a list of all the blocks. Each block is represented as an object. Fields like id are common to all types of block, but other informations are specific to the type of block, like frequency of signalGen, speed of player. A complete documentation of these can be found in /Components/blockSpecs.jsx, which documents default values of all types of blocks.
     - Example of a Delay block:
-    - {id: 5, name: “D1”, typeName: “Delay”, audioObj: #an audio object from backend#, delayTime: 76, feedback: 0.119, kinect: false, osc: 8013}
+    - {id: 5, name: “D1”, typeName: “Delay”, audioObj: #an audio object from backend#, delayTime: 76, feedback: 0.119, osc: false, oscPort: 8013}
   - nextBlockId: the id of next block. Incremented each time when a new block is created. e.g. if we currently have 2 blocks, then the current nextBlockId should be 3.
   - nextStateId: an object that documents the next id of different types. e.g {delay: 1, transposer: 4, speaker: 2 ….}. This number is used to give the name of each block, like “D2”, “P3”.
   - nowIn: an array of four, documents the port that the user is trying to connect in.

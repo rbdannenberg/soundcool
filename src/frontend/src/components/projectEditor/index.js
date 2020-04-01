@@ -104,7 +104,7 @@ class ProjectEditor extends React.Component {
 
     if (this.state.floatingView) {
       return (
-        <div className="box">
+        <div className="box" style={{ height: "70vh" }}>
           <div className="boxContainer">
             {blocks.map(b => (
               <RDraggable
@@ -233,6 +233,8 @@ class ProjectEditor extends React.Component {
         this.handleOscPlayer(comp.id, data);
         break;
       case "SignalGen":
+        break;
+      case "GranSynth":
         break;
       case "Speaker":
         break;
@@ -504,7 +506,11 @@ class ProjectEditor extends React.Component {
       : true;
     return (
       <div className="container">
-        <button className="btn btn-success m-2" onClick={this.saveProject}>
+        <button
+          className=" btn btn-success m-2"
+          style={{ position: "absolute", top: "620px", left: "820px" }}
+          onClick={this.saveProject}
+        >
           {isUserLoggedIn()
             ? this.state.projectId === "new"
               ? "Create"
@@ -513,20 +519,24 @@ class ProjectEditor extends React.Component {
         </button>
         {isUserLoggedIn() && this.state.projectId !== "new" && (
           <button
-            className="btn btn-warning m-2 float-right"
+            className=" btn btn-warning m-2"
+            style={{ position: "absolute", top: "620px", left: "900px" }}
             onClick={this.exportProject}
           >
             Export Project
           </button>
         )}
+
         <AddBlock />
 
         <button
-          className="btn btn-danger m-2 float-right"
+          className=" btn btn-danger m-2"
+          style={{ position: "absolute", top: "620px", left: "1040px" }}
           onClick={this.toggleFloatingView}
         >
           Floating View : {this.state.floatingView ? "On" : "Off"}
         </button>
+
         {isUserLoggedIn() && openPortsButton && (
           <button
             className="btn btn-secondary m-2 float-right"
@@ -536,7 +546,12 @@ class ProjectEditor extends React.Component {
           </button>
         )}
 
-        {this.renderBlockList(items, this.props.blocks.nowOut)}
+        <div
+          className="container"
+          style={{ position: "absolute", top: "120px" }}
+        >
+          {this.renderBlockList(items, this.props.blocks.nowOut)}
+        </div>
 
         <Modal
           centered

@@ -12,6 +12,7 @@ import ScSpectroscope from "../audio/sc-spectroscope";
 import ScPitch from "../audio/sc-pitch";
 import ScMixer from "../audio/sc-mixer";
 import ScReverb from "../audio/sc-reverb";
+import ScGranSynth from "../audio/sc-granular-synthesis";
 
 const eva = typeName => {
   let t;
@@ -47,6 +48,9 @@ const eva = typeName => {
       break;
     case "Reverb":
       t = new ScReverb(scContext);
+      break;
+    case "GranSynth":
+      t = new ScGranSynth(scContext);
       break;
     // case "Routing":
     //   t = new ScRouting(scContext);

@@ -405,26 +405,28 @@ class Player extends React.Component {
           <AddSound onSoundSelect={onSoundSelect} file={file} />
 
           <span className="col text-center">
-            <label htmlFor="kinect" style={{ fontSize: "0.8rem" }}>
-              Kinect
+            <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+              OSC
             </label>
             <input
               type="checkbox"
               className="m-1"
-              id="kinect"
-              onClick={() => this.props.changeBlock(id, "kinect", undefined)}
+              id="osc"
+              onClick={() => this.props.changeBlock(id, "osc", undefined)}
             />
           </span>
           <span className="col text-center">
-            <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
               OSC port:
             </label>
             <input
               type="text"
               className=""
               style={{ height: "1.5rem", width: "3rem" }}
-              id="osc"
-              onChange={e => this.props.changeBlock(id, "osc", e.target.value)}
+              id="oscPort"
+              onChange={e =>
+                this.props.changeBlock(id, "oscPort", e.target.value)
+              }
             />
           </span>
         </div>
