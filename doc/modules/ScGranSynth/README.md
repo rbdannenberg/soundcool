@@ -44,7 +44,7 @@ Grain transposition is achieved by setting `detune` parameter of Audio Buffer So
 ```
 computedPlaybackRate = playbackRate * pow(2, detune / 1200)
 ```
-Since `dur` shrinks/expands with change in `detune`, divide by the detune factor to achieve consisten `dur` independent of `detune`:
+Since `dur` shrinks/expands with change in `detune`, divide by the detune factor to achieve consistent `dur` (that is independent of `detune`):
 ```
 detune = pitchShift + R * (pitchJitter)
 dur = dur / pow(2, detune / 1200)
