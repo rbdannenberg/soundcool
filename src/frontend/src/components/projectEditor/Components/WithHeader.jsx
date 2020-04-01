@@ -145,11 +145,13 @@ const WithHeader = ({
       width: "1.5rem",
       height: "1.5rem",
       fontSize: "0.8rem",
-      padding: "0px"
+      padding: "0px",
+      border:"0px"
     };
     if (inNode[0]) {
       let backgroundColor = getCssPropById(inNode[0][0], "background-color");
       style = { ...style, backgroundColor };
+      console.log(style);
     }
     inButton = (
       <button

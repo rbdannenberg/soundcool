@@ -1,6 +1,7 @@
 import React from "react";
 import { changeBlock, connectBlock } from "./actions";
 import { connect } from "react-redux";
+import { getCssPropById } from "../../actions/common";
 
 class Mixer extends React.Component {
   constructor(props) {
@@ -354,6 +355,14 @@ class Mixer extends React.Component {
     } = this.props.blockInfo;
     let changeBlock = this.props.changeBlock;
     let connectBlock = this.props.connectBlock;
+    let backgroundColor= [];
+    for(let i = 0;i< 8;i++){
+      if(inNode[i]){
+        backgroundColor[i] =  getCssPropById(inNode[i][0], "background-color"); 
+      }else{
+        backgroundColor[i] = "white";
+      }
+    }
     // #endregion
     return (
       <React.Fragment>
@@ -370,7 +379,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[0]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 0, id, audioObj]);
@@ -438,7 +449,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[1]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 1, id, audioObj]);
@@ -506,7 +519,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[2]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 2, id, audioObj]);
@@ -574,7 +589,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[3]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 3, id, audioObj]);
@@ -642,7 +659,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[4]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 4, id, audioObj]);
@@ -710,7 +729,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[5]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 5, id, audioObj]);
@@ -784,7 +805,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[6]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 6, id, audioObj]);
@@ -858,7 +881,9 @@ class Mixer extends React.Component {
                   fontSize: "0.8rem",
                   padding: "0px",
                   position: "absolute",
-                  left: "20px"
+                  left: "20px",
+                  border: "0px",
+                  backgroundColor: backgroundColor[7]
                 }}
                 onClick={() => {
                   connectBlock("nowIn", [name, 7, id, audioObj]);
