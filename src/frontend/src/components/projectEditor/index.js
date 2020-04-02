@@ -42,6 +42,20 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     : ""
 });
 
+const move = (source, destination, droppableSource, droppableDestination) => {
+  const sourceClone = Array.from(source);
+  const destClone = Array.from(destination);
+  const [removed] = sourceClone.splice(droppableSource.index, 1);
+
+  destClone.splice(droppableDestination.index, 0, removed);
+
+  const result = [];
+  result.push({ value: sourceClone, id: droppableSource.droppableId });
+  result.push({ value: destClone, id: droppableDestination.droppableId });
+
+  return result;
+};
+
 const getListStyle = isDraggingOver => ({
   width: "20rem",
   background: isDraggingOver ? "lightblue" : "transparent"
@@ -54,7 +68,8 @@ class ProjectEditor extends React.Component {
       endpoint: "http://localhost:5000",
       floatingView: false,
       projectId: this.props.match.params.id,
-      items: this.props.blocks.bs,
+      items: [[], [], []],
+      prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
       isModalOpen: false,
@@ -65,21 +80,43 @@ class ProjectEditor extends React.Component {
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
-  onDragEnd(result) {
-    if (!result.destination) {
+  getList = id => {
+    let x = this.state["items"];
+    return x[id.split("_")[1]];
+  };
+  onDragEnd = result => {
+    const { source, destination } = result;
+    // dropped outside the list
+    if (!destination) {
       return;
     }
+    console.log(source, destination);
+    if (source.droppableId === destination.droppableId) {
+      const items = reorder(
+        this.getList(source.droppableId),
+        source.index,
+        destination.index
+      );
 
-    const items = reorder(
-      this.state.items,
-      result.source.index,
-      result.destination.index
-    );
+      let finalResult = this.state.items;
+      finalResult[parseInt(source.droppableId.split("_")[1])] = items;
 
-    this.setState({
-      items
-    });
-  }
+      this.setState({ items: finalResult });
+    } else {
+      const result = move(
+        this.getList(source.droppableId),
+        this.getList(destination.droppableId),
+        source,
+        destination
+      );
+      let finalResult = this.state.items;
+      finalResult[parseInt(result[0]["id"].split("_")[1])] = result[0]["value"];
+      finalResult[parseInt(result[1]["id"].split("_")[1])] = result[1]["value"];
+      this.setState({
+        items: finalResult
+      });
+    }
+  };
 
   blockStyle = id => {
     const top = (id % 15) * 20 + "px";
@@ -99,14 +136,16 @@ class ProjectEditor extends React.Component {
   };
 
   renderBlockList = (blocks, nowOut) => {
-    console.log(blocks);
-    // let rBlocks = blocks.reverse();
-
     if (this.state.floatingView) {
+      blocks = blocks[0];
+      let finalBlock = [];
+      blocks.forEach(o => {
+        finalBlock = finalBlock.concat(o);
+      });
       return (
         <div className="box" style={{ height: "70vh" }}>
           <div className="boxContainer">
-            {blocks.map(b => (
+            {finalBlock.map(b => (
               <RDraggable
                 handle="strong"
                 bounds="parent"
@@ -140,42 +179,50 @@ class ProjectEditor extends React.Component {
       return (
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
+            {blocks.map((b, listIndex) => (
+              <div style={{ padding: "10px" }}>
+                <Droppable
+                  style={{ padding: "10px" }}
+                  droppableId={"droppable_" + listIndex}
                 >
-                  {blocks.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={getListStyle(snapshot.isDraggingOver)}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
+                      {b.map((item, index) => (
+                        <Draggable
+                          key={item.id}
+                          draggableId={item.id}
+                          index={index}
                         >
-                          <WithHeader
-                            key={item.id}
-                            blockInfo={item}
-                            nowOut={nowOut}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
+                            >
+                              <WithHeader
+                                key={item.id}
+                                blockInfo={item}
+                                nowOut={nowOut}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            ))}
+            ;
           </DragDropContext>
         </React.Fragment>
       );
@@ -187,8 +234,44 @@ class ProjectEditor extends React.Component {
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
       });
-    if (this.state.items !== nextProps.blocks.bs)
-      this.setState({ items: nextProps.blocks.bs });
+    if (this.state.prevItems !== nextProps.blocks.bs) {
+      let l1 = this.state.prevItems.length,
+        l2 = nextProps.blocks.bs.length;
+      if (l1 < l2) {
+        let newValue = this.state.items;
+        newValue[0] = [...this.state.items[0], nextProps.blocks.bs[l2 - 1]];
+        this.setState({
+          items: newValue,
+          prevItems: nextProps.blocks.bs
+        });
+      } else if (l1 > l2) {
+        let deletedComponent = "";
+        this.state.prevItems.every((o, index) => {
+          if (o != nextProps.blocks.bs[index]) {
+            deletedComponent = o;
+            return false;
+          }
+          return true;
+        });
+        console.log(deletedComponent);
+        let newValue = this.state.items;
+        newValue.every((o, index) => {
+          o.every((io, iindex) => {
+            if (io == deletedComponent) {
+              deletedComponent = "";
+              newValue[index].splice(iindex, 1);
+              return false;
+            }
+            return true;
+          });
+          return deletedComponent != "";
+        });
+        this.setState({
+          items: newValue,
+          prevItems: nextProps.blocks.bs
+        });
+      }
+    }
   }
 
   componentDidMount() {
@@ -551,7 +634,9 @@ class ProjectEditor extends React.Component {
           className="container"
           style={{ position: "absolute", top: "120px" }}
         >
-          {this.renderBlockList(items, this.props.blocks.nowOut)}
+          <div className="row">
+            {this.renderBlockList(items, this.props.blocks.nowOut)}
+          </div>
         </div>
 
         <Modal
