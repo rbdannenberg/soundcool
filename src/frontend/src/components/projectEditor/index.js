@@ -181,6 +181,10 @@ class ProjectEditor extends React.Component {
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
               <div style={{ padding: "10px" }}>
+                <h5 className="text-center">
+                  {" "}
+                  {"Columnn " + (listIndex + 1)}{" "}
+                </h5>
                 <Droppable
                   style={{ padding: "10px" }}
                   droppableId={"droppable_" + listIndex}
@@ -222,7 +226,6 @@ class ProjectEditor extends React.Component {
                 </Droppable>
               </div>
             ))}
-            ;
           </DragDropContext>
         </React.Fragment>
       );
@@ -610,9 +613,50 @@ class ProjectEditor extends React.Component {
             Export Project
           </button>
         )}
-
+        {!this.state.floatingView && (
+          <div style={{ position: "absolute", left: "165px", top: "53px" }}>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => {
+                let newValue = this.state.items;
+                let index =
+                  parseInt(prompt("Enter column number", newValue.length)) - 1;
+                if (
+                  index < newValue.length &&
+                  newValue[index][0] === undefined
+                ) {
+                  newValue.splice(index, 1);
+                  this.setState({ items: newValue });
+                } else {
+                  alert("Column number is wrong or not empty");
+                }
+              }}
+            >
+              Remove
+              <br />
+              Column
+            </button>
+          </div>
+        )}
+        {!this.state.floatingView && (
+          <div
+            class="contenedor"
+            id="oscilloscope"
+            style={{ position: "absolute", left: "1020px", top: "53px" }}
+          >
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() =>
+                this.setState({ items: [...this.state.items, []] })
+              }
+            >
+              Add
+              <br />
+              Column
+            </button>
+          </div>
+        )}
         <AddBlock />
-
         <button
           className=" btn btn-danger m-2"
           style={{ position: "absolute", top: "620px", left: "1040px" }}
@@ -620,7 +664,6 @@ class ProjectEditor extends React.Component {
         >
           Floating View : {this.state.floatingView ? "On" : "Off"}
         </button>
-
         {isUserLoggedIn() && openPortsButton && (
           <button
             className="btn btn-secondary m-2 float-right"
@@ -629,7 +672,6 @@ class ProjectEditor extends React.Component {
             Open Required Ports
           </button>
         )}
-
         <div
           className="container"
           style={{ position: "absolute", top: "120px" }}
@@ -638,7 +680,6 @@ class ProjectEditor extends React.Component {
             {this.renderBlockList(items, this.props.blocks.nowOut)}
           </div>
         </div>
-
         <Modal
           centered
           show={this.state.isRegisterModalOpen}
@@ -651,7 +692,6 @@ class ProjectEditor extends React.Component {
             <RegisterForm afterRegister={this.afterRegister} />
           </Modal.Body>
         </Modal>
-
         <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
           <form id="project_create" method="post">
             <Modal.Header closeButton>
