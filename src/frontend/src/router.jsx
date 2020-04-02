@@ -26,7 +26,7 @@ class Main extends Component {
     const { user } = this.state;
     return (
       <div>
-        <Header user={user} />
+        <Header user={user} name={sessionStorage.getItem("name")} />
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/project-editor/:id" component={ProjectEditor} />

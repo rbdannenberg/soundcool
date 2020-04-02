@@ -7,12 +7,13 @@ import LoginForm from "./form";
 
 class Login extends React.Component {
   afterSignin = res => {
-    const { token, error } = res;
+    const { token, error, name } = res;
     if (error) {
       showToastrError(res);
     } else {
       showToastr("success", "Logged in successfully.");
       sessionStorage.setItem("jwtToken", token);
+      sessionStorage.setItem("name", name);
       redirectToHome();
     }
   };

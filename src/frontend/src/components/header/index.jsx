@@ -6,6 +6,10 @@ import {
   Nav,
   NavbarToggler,
   NavItem,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
   Collapse
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
@@ -13,12 +17,17 @@ import { NavLink } from "react-router-dom";
 export default class Header extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
+      dropdownOpen: false,
       isNavOpen: false
     };
 
     this.toggleNav = this.toggleNav.bind(this);
+    this.toggleDropdown = this.toggleDropdown.bind(this);
+  }
+
+  toggleDropdown() {
+    this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
   toggleNav() {
@@ -31,6 +40,7 @@ export default class Header extends Component {
   }
 
   render() {
+    const { dropdownOpen } = this.state;
     return (
       <React.Fragment>
         <Navbar dark expand="md" style={{ padding: "0" }}>
@@ -93,15 +103,25 @@ export default class Header extends Component {
               </Nav>
               {isUserLoggedIn() && (
                 <Nav className="ml-auto" navbar>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link btn btn-secondary"
-                      to="/login"
-                      onClick={this.handleLogout}
-                    >
-                      <span className="fa fa-sign-out-alt ">&nbsp;Logout</span>
-                    </NavLink>
-                  </NavItem>
+                  <Dropdown
+                    nav
+                    isOpen={dropdownOpen}
+                    toggle={this.toggleDropdown}
+                  >
+                    <DropdownToggle nav caret>
+                      <span className="fa fa-user-circle "></span>&nbsp;
+                      {this.props.name}
+                    </DropdownToggle>
+                    <DropdownMenu tog>
+                      <DropdownItem disabled>Edit Profile</DropdownItem>
+                      <DropdownItem
+                        to="/login"
+                        onClick={this.handleLogout}
+                      >
+                        Logout
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
                 </Nav>
               )}
             </Collapse>

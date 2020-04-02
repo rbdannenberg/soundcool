@@ -388,12 +388,13 @@ class ProjectEditor extends React.Component {
   }
 
   afterRegister = res => {
-    const { token, error } = res;
+    const { token, error, name } = res;
 
     if (error) {
       showToastrError(res);
     } else {
       sessionStorage.setItem("jwtToken", token);
+      sessionStorage.setItem("name", name);
       Store.populateFromProps({
         userToken: { email: undefined, token: token }
       });

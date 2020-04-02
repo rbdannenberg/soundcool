@@ -7,13 +7,14 @@ import { showToastr, showToastrError } from "../../actions/common";
 
 class Register extends Component {
   afterRegister = res => {
-    const { token, error } = res;
+    const { token, error, name } = res;
 
     if (error) {
       showToastrError(res);
     } else {
       showToastr("success", "User registered successfully");
       sessionStorage.setItem("jwtToken", token);
+      sessionStorage.setItem("name", name);
       redirectToRoot();
     }
   };

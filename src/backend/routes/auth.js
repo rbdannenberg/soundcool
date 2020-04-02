@@ -46,6 +46,7 @@ router.post("/sign_in", (req, res) => {
 
             const token = utils.generateToken(user);
             res.json({
+              name: user['name'],
               token
             });
           } else {
@@ -96,6 +97,7 @@ router.post("/register", (req, res) => {
           user_id: results.insertId
         });
         res.json({
+          name: name,
           token
         });
       }
