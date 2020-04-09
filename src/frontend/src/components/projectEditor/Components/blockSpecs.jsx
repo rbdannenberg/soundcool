@@ -6,6 +6,7 @@ const specValues = {
   Delay: {
     color: toHex(210, 189, 120),
     delayTime: 76,
+    maxDelayTime: 10000,
     delayFeedback: 0.119,
     osc: false,
     oscPort: undefined

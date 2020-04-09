@@ -43,13 +43,24 @@ module.exports = {
           "css-loader"
         ]
       },
+      // {
+      //   test: /\.(png|jpg|gif)$/i,
+      //   use: [
+      //     {
+      //       loader: "url-loader",
+      //       options: {
+      //         limit: 8192
+      //       }
+      //     }
+      //   ]
+      // }
       {
-        test: /\.(png|jpg|gif)$/i,
+        test: /\.(jpe?g|png|gif|svg)$/i,
         use: [
           {
-            loader: "url-loader",
+            loader: "file-loader",
             options: {
-              limit: 8192
+              name: "../[path][name].[ext]"
             }
           }
         ]
