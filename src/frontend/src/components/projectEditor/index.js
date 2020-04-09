@@ -238,42 +238,28 @@ class ProjectEditor extends React.Component {
         this.loadState();
       });
     if (this.state.prevItems !== nextProps.blocks.bs) {
-      let l1 = this.state.prevItems.length,
-        l2 = nextProps.blocks.bs.length;
-      if (l1 < l2) {
-        let newValue = this.state.items;
-        newValue[0] = [...this.state.items[0], nextProps.blocks.bs[l2 - 1]];
-        this.setState({
-          items: newValue,
-          prevItems: nextProps.blocks.bs
-        });
-      } else if (l1 > l2) {
-        let deletedComponent = "";
-        this.state.prevItems.every((o, index) => {
-          if (o != nextProps.blocks.bs[index]) {
-            deletedComponent = o;
+      let length = this.state.items.length;
+      let newValue = [];
+      for (let i = 0; i < length; i++) {
+        newValue[i] = [];
+      }
+      nextProps.blocks.bs.forEach(o => {
+        this.state.items.every((arr, index) => {
+          const found = arr.find(element => element["id"] == o["id"]);
+          if (found == undefined)
+            if (index == length - 1) {
+              newValue[0].push(o);
+            } else return true;
+          else {
+            newValue[index].push(o);
             return false;
           }
-          return true;
         });
-        console.log(deletedComponent);
-        let newValue = this.state.items;
-        newValue.every((o, index) => {
-          o.every((io, iindex) => {
-            if (io == deletedComponent) {
-              deletedComponent = "";
-              newValue[index].splice(iindex, 1);
-              return false;
-            }
-            return true;
-          });
-          return deletedComponent != "";
-        });
-        this.setState({
-          items: newValue,
-          prevItems: nextProps.blocks.bs
-        });
-      }
+      });
+      this.setState({
+        items: newValue,
+        prevItems: nextProps.blocks.bs
+      });
     }
   }
 
