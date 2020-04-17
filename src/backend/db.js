@@ -39,7 +39,7 @@ if (process.env.MYSQL_HOST) {
   if (firstTime) {
     connection.serialize(() => {
       connection.run(
-        "CREATE TABLE users(user_id integer,name text, password text, email text)"
+        "CREATE TABLE users(user_id integer PRIMARY KEY AUTOINCREMENT,name text, password text, email text)"
       ).run(`INSERT INTO users
               VALUES(100,'User 1','$2b$10$zoD.V4IYLhWmwz5Kld3gAu/jhYsPZYDYAWamQToQeC4tenQ1p1wwS','user1@welcome.com'),
               (101,'User 2','$2b$10$9nG9wvklANoTJIlO.WBrzu0wh6oTHHjh8hviJQ0pj7eEcY3aN4mMC','user2@welcome.com')`);

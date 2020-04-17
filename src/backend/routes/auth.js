@@ -32,17 +32,17 @@ router.post("/sign_in", (req, res) => {
       '"'} `;
     if (database == "mysql") {
       connection.query(FIND_USER_QUERY, (err, results) => {
-        res.json(handleLoginUser(err, results, email, password));
+        res.json(handleLoginUser(err, results, password));
       });
     } else if (database == "sqlite") {
       connection.all(FIND_USER_QUERY, [], (err, results) => {
-        res.json(handleLoginUser(err, results, email, password));
+        res.json(handleLoginUser(err, results, password));
       });
     }
   }
 });
 
-function handleLoginUser(err, results, email, password) {
+function handleLoginUser(err, results, password) {
   if (err) {
     return {
       error: err
@@ -55,6 +55,7 @@ function handleLoginUser(err, results, email, password) {
     } else {
       const user = results[0];
       // the password is encrypted, so we need to compare it.
+      console.log(password, user.password)
       if (bcrypt.compareSync(password, user.password)) {
         // JSON web token
 
@@ -93,29 +94,35 @@ router.post("/register", (req, res) => {
     const hash_password = bcrypt.hashSync(password, saltRounds);
     const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
-    connection.query(CREATE_NEW_USER, (err, results) => {
-      if (err) {
-        if (err.code == "ER_DUP_ENTRY")
-          res.json({
-            error: "Account already exist"
-          });
-        else
-          res.json({
-            error: "Unable to register with provided credentials"
-          });
-      } else {
-        const token = utils.generateToken({
-          name,
-          user_id: results.insertId
-        });
-        res.json({
-          name: name,
-          token
-        });
-      }
-    });
+    if (database == "mysql") {
+      connection.query(CREATE_NEW_USER, (err, results) => {
+        res.json(handleRegister(err, results.insertId, name));
+      });
+    } else if (database == "sqlite") {
+      connection.run(CREATE_NEW_USER, function(err) {
+        res.json(handleRegister(err, this.lastID, name));
+      });
+    }
   }
 });
+
+function handleRegister(err, user_id, name) {
+  if (err) {
+    console.log(err.message);
+    return {
+      error: "Account exist or invalid entry"
+    };
+  } else {
+    const token = utils.generateToken({
+      name,
+      user_id
+    });
+    return {
+      name: name,
+      token
+    };
+  }
+}
 
 router.get("/validateToken", function(req, res) {
   var token = req.query.token;
