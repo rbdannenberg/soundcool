@@ -482,7 +482,216 @@ module.exports = WebSocket;
 
 
 /***/ }),
-/* 2 */,
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var fs = __webpack_require__(747);
+var rm = __webpack_require__(307);
+var log = __webpack_require__(937);
+
+module.exports = exports;
+
+var versionArray = process.version
+	.substr(1)
+	.replace(/-.*$/, '')
+	.split('.')
+	.map(function(item) {
+		return +item;
+	});
+
+var napi_multiple_commands = [
+	'build',
+	'clean',
+	'configure',
+	'package',
+	'publish',
+	'reveal',
+	'testbinary',
+	'testpackage',
+	'unpublish'
+];
+
+var napi_build_version_tag = 'napi_build_version=';
+
+module.exports.get_napi_version = function(target) { // target may be undefined
+	// returns the non-zero numeric napi version or undefined if napi is not supported.
+	// correctly supporting target requires an updated cross-walk
+	var version = process.versions.napi; // can be undefined
+	if (!version) { // this code should never need to be updated
+		if (versionArray[0] === 9 && versionArray[1] >= 3) version = 2; // 9.3.0+
+		else if (versionArray[0] === 8) version = 1; // 8.0.0+
+	}
+	return version;
+};
+
+module.exports.get_napi_version_as_string = function(target) {
+	// returns the napi version as a string or an empty string if napi is not supported.
+	var version = module.exports.get_napi_version(target);
+	return version ? ''+version : '';
+};
+
+module.exports.validate_package_json = function(package_json, opts) { // throws Error
+
+	var binary = package_json.binary;
+	var module_path_ok = pathOK(binary.module_path);
+	var remote_path_ok = pathOK(binary.remote_path);
+	var package_name_ok = pathOK(binary.package_name);
+	var napi_build_versions = module.exports.get_napi_build_versions(package_json,opts,true);
+	var napi_build_versions_raw = module.exports.get_napi_build_versions_raw(package_json);
+
+	if (napi_build_versions) {
+		napi_build_versions.forEach(function(napi_build_version){
+			if (!(parseInt(napi_build_version,10) === napi_build_version && napi_build_version > 0)) {
+				throw new Error("All values specified in napi_versions must be positive integers.");
+			}
+		});
+	}
+
+	if (napi_build_versions && (!module_path_ok || (!remote_path_ok && !package_name_ok))) {
+		throw new Error("When napi_versions is specified; module_path and either remote_path or " +
+			"package_name must contain the substitution string '{napi_build_version}`.");
+	}
+
+	if ((module_path_ok || remote_path_ok || package_name_ok) && !napi_build_versions_raw) {
+		throw new Error("When the substitution string '{napi_build_version}` is specified in " +
+			"module_path, remote_path, or package_name; napi_versions must also be specified.");
+	}
+
+	if (napi_build_versions && !module.exports.get_best_napi_build_version(package_json, opts) && 
+	module.exports.build_napi_only(package_json)) {
+		throw new Error(
+			'The N-API version of this Node instance is ' + module.exports.get_napi_version(opts ? opts.target : undefined) + '. ' +
+			'This module supports N-API version(s) ' + module.exports.get_napi_build_versions_raw(package_json) + '. ' +
+			'This Node instance cannot run this module.');
+	}
+
+	if (napi_build_versions_raw && !napi_build_versions && module.exports.build_napi_only(package_json)) {
+		throw new Error(
+			'The N-API version of this Node instance is ' + module.exports.get_napi_version(opts ? opts.target : undefined) + '. ' +
+			'This module supports N-API version(s) ' + module.exports.get_napi_build_versions_raw(package_json) + '. ' +
+			'This Node instance cannot run this module.');
+	}
+
+};
+
+function pathOK (path) {
+	return path && (path.indexOf('{napi_build_version}') !== -1 || path.indexOf('{node_napi_label}') !== -1);
+}
+
+module.exports.expand_commands = function(package_json, opts, commands) {
+	var expanded_commands = [];
+	var napi_build_versions = module.exports.get_napi_build_versions(package_json, opts);
+	commands.forEach(function(command){
+		if (napi_build_versions && command.name === 'install') {
+			var napi_build_version = module.exports.get_best_napi_build_version(package_json, opts);
+			var args = napi_build_version ? [ napi_build_version_tag+napi_build_version ] : [ ];
+			expanded_commands.push ({ name: command.name, args: args });
+		} else if (napi_build_versions && napi_multiple_commands.indexOf(command.name) !== -1) {
+			napi_build_versions.forEach(function(napi_build_version){
+				var args = command.args.slice();
+				args.push (napi_build_version_tag+napi_build_version);
+				expanded_commands.push ({ name: command.name, args: args });
+			});
+		} else {
+			expanded_commands.push (command);
+		}
+	});
+	return expanded_commands;
+};
+
+module.exports.get_napi_build_versions = function(package_json, opts, warnings) { // opts may be undefined
+	var napi_build_versions = [];
+	var supported_napi_version = module.exports.get_napi_version(opts ? opts.target : undefined);
+	// remove duplicates, verify each napi version can actaully be built
+	if (package_json.binary && package_json.binary.napi_versions) {
+		package_json.binary.napi_versions.forEach(function(napi_version) {
+			var duplicated = napi_build_versions.indexOf(napi_version) !== -1;
+			if (!duplicated && supported_napi_version && napi_version <= supported_napi_version) {
+				napi_build_versions.push(napi_version);
+			} else if (warnings && !duplicated && supported_napi_version) {
+				log.info('This Node instance does not support builds for N-API version', napi_version);
+			}
+		});
+	}
+	if (opts && opts["build-latest-napi-version-only"]) {
+		var latest_version = 0;
+		napi_build_versions.forEach(function(napi_version) {
+			if (napi_version > latest_version) latest_version = napi_version;
+		});
+		napi_build_versions = latest_version ? [ latest_version ] : [];
+	}
+	return napi_build_versions.length ? napi_build_versions : undefined;
+};
+
+module.exports.get_napi_build_versions_raw = function(package_json) {
+	var napi_build_versions = [];
+	// remove duplicates
+	if (package_json.binary && package_json.binary.napi_versions) {
+		package_json.binary.napi_versions.forEach(function(napi_version) {
+			if (napi_build_versions.indexOf(napi_version) === -1) {
+				napi_build_versions.push(napi_version);
+			}
+		});
+	}
+	return napi_build_versions.length ? napi_build_versions : undefined;
+};
+
+module.exports.get_command_arg = function(napi_build_version) {
+	return napi_build_version_tag + napi_build_version;
+};
+
+module.exports.get_napi_build_version_from_command_args = function(command_args) {
+	for (var i = 0; i < command_args.length; i++) {
+		var arg = command_args[i];
+		if (arg.indexOf(napi_build_version_tag) === 0) {
+			return parseInt(arg.substr(napi_build_version_tag.length),10);
+		}
+	}
+	return undefined;
+};
+
+module.exports.swap_build_dir_out = function(napi_build_version) {
+	if (napi_build_version) {
+		rm.sync(module.exports.get_build_dir(napi_build_version));
+		fs.renameSync('build', module.exports.get_build_dir(napi_build_version));
+	}
+};
+
+module.exports.swap_build_dir_in = function(napi_build_version) {
+	if (napi_build_version) {
+		rm.sync('build');
+		fs.renameSync(module.exports.get_build_dir(napi_build_version), 'build');
+	}
+};
+
+module.exports.get_build_dir = function(napi_build_version) {
+	return 'build-tmp-napi-v'+napi_build_version;
+};
+
+module.exports.get_best_napi_build_version = function(package_json, opts) {
+	var best_napi_build_version = 0;
+	var napi_build_versions = module.exports.get_napi_build_versions (package_json, opts);
+	if (napi_build_versions) {
+		var our_napi_version = module.exports.get_napi_version(opts ? opts.target : undefined);
+		napi_build_versions.forEach(function(napi_build_version){
+			if (napi_build_version > best_napi_build_version &&
+				napi_build_version <= our_napi_version) {
+				best_napi_build_version = napi_build_version;
+			}
+		});
+	}
+	return best_napi_build_version === 0 ? undefined : best_napi_build_version;
+};
+
+module.exports.build_napi_only = function(package_json) {
+	return package_json.binary && package_json.binary.package_name && 
+	package_json.binary.package_name.indexOf('{node_napi_label}') === -1;
+};
+
+/***/ }),
 /* 3 */
 /***/ (function(module) {
 
@@ -3950,7 +4159,216 @@ Server.listen = Server;
 /***/ }),
 /* 59 */,
 /* 60 */,
-/* 61 */,
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports;
+
+/**
+ * Module dependencies.
+ */
+
+var fs = __webpack_require__(747);
+var path = __webpack_require__(622);
+var nopt = __webpack_require__(143);
+var log = __webpack_require__(937);
+log.disableProgress();
+var napi = __webpack_require__(2);
+
+var EE = __webpack_require__(614).EventEmitter;
+var inherits = __webpack_require__(669).inherits;
+var commands = [
+      'clean',
+      'install',
+      'reinstall',
+      'build',
+      'rebuild',
+      'package',
+      'testpackage',
+      'publish',
+      'unpublish',
+      'info',
+      'testbinary',
+      'reveal',
+      'configure'
+    ];
+var aliases = {};
+
+// differentiate node-pre-gyp's logs from npm's
+log.heading = 'node-pre-gyp';
+
+exports.find = __webpack_require__(438).find;
+
+function Run() {
+  var self = this;
+
+  this.commands = {};
+
+  commands.forEach(function (command) {
+    self.commands[command] = function (argv, callback) {
+      log.verbose('command', command, argv);
+      return require('./' + command)(self, argv, callback);
+    };
+  });
+}
+inherits(Run, EE);
+exports.Run = Run;
+var proto = Run.prototype;
+
+/**
+ * Export the contents of the package.json.
+ */
+
+proto.package = __webpack_require__(123);
+
+/**
+ * nopt configuration definitions
+ */
+
+proto.configDefs = {
+    help: Boolean,     // everywhere
+    arch: String,      // 'configure'
+    debug: Boolean,    // 'build'
+    directory: String, // bin
+    proxy: String,     // 'install'
+    loglevel: String,  // everywhere
+};
+
+/**
+ * nopt shorthands
+ */
+
+proto.shorthands = {
+    release: '--no-debug',
+    C: '--directory',
+    debug: '--debug',
+    j: '--jobs',
+    silent: '--loglevel=silent',
+    silly: '--loglevel=silly',
+    verbose: '--loglevel=verbose',
+};
+
+/**
+ * expose the command aliases for the bin file to use.
+ */
+
+proto.aliases = aliases;
+
+/**
+ * Parses the given argv array and sets the 'opts',
+ * 'argv' and 'command' properties.
+ */
+
+proto.parseArgv = function parseOpts (argv) {
+  this.opts = nopt(this.configDefs, this.shorthands, argv);
+  this.argv = this.opts.argv.remain.slice();
+  var commands = this.todo = [];
+
+  // create a copy of the argv array with aliases mapped
+  argv = this.argv.map(function (arg) {
+    // is this an alias?
+    if (arg in this.aliases) {
+      arg = this.aliases[arg];
+    }
+    return arg;
+  }, this);
+
+  // process the mapped args into "command" objects ("name" and "args" props)
+  argv.slice().forEach(function (arg) {
+    if (arg in this.commands) {
+      var args = argv.splice(0, argv.indexOf(arg));
+      argv.shift();
+      if (commands.length > 0) {
+        commands[commands.length - 1].args = args;
+      }
+      commands.push({ name: arg, args: [] });
+    }
+  }, this);
+  if (commands.length > 0) {
+    commands[commands.length - 1].args = argv.splice(0);
+  }
+
+  // expand commands entries for multiple napi builds
+  var dir = this.opts.directory;
+  if (dir == null) dir = process.cwd();
+  var package_json = JSON.parse(fs.readFileSync(path.join(dir,'package.json')));
+
+  this.todo = napi.expand_commands (package_json, this.opts, commands);
+
+  // support for inheriting config env variables from npm
+  var npm_config_prefix = 'npm_config_';
+  Object.keys(process.env).forEach(function (name) {
+    if (name.indexOf(npm_config_prefix) !== 0) return;
+    var val = process.env[name];
+    if (name === npm_config_prefix + 'loglevel') {
+      log.level = val;
+    } else {
+      // add the user-defined options to the config
+      name = name.substring(npm_config_prefix.length);
+      // avoid npm argv clobber already present args
+      // which avoids problem of 'npm test' calling
+      // script that runs unique npm install commands
+      if (name === 'argv') {
+         if (this.opts.argv &&
+             this.opts.argv.remain &&
+             this.opts.argv.remain.length) {
+            // do nothing
+         } else {
+            this.opts[name] = val;
+         }
+      } else {
+        this.opts[name] = val;
+      }
+    }
+  }, this);
+
+  if (this.opts.loglevel) {
+    log.level = this.opts.loglevel;
+  }
+  log.resume();
+};
+
+/**
+ * Returns the usage instructions for node-pre-gyp.
+ */
+
+proto.usage = function usage () {
+  var str = [
+      '',
+      '  Usage: node-pre-gyp <command> [options]',
+      '',
+      '  where <command> is one of:',
+      commands.map(function (c) {
+        return '    - ' + c + ' - ' + require('./' + c).usage;
+      }).join('\n'),
+      '',
+      'node-pre-gyp@' + this.version + '  ' + path.resolve(__dirname, '..'),
+      'node@' + process.versions.node
+  ].join('\n');
+  return str;
+};
+
+/**
+ * Version number getter.
+ */
+
+Object.defineProperty(proto, 'version', {
+    get: function () {
+      return this.package.version;
+    },
+    enumerable: true
+});
+
+
+
+/***/ }),
 /* 62 */
 /***/ (function(module) {
 
@@ -4642,7 +5060,219 @@ Statistics.prototype.determinePacket = function determinePacket(firstByte) {
 
 
 /***/ }),
-/* 78 */,
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var binary = __webpack_require__(61);
+var path = __webpack_require__(622);
+var binding_path = __webpack_require__.ab + "/lib/binding/node-v64-linux-x64/node_sqlite3.node";
+var binding = __webpack_require__(181);
+var sqlite3 = module.exports = exports = binding;
+var EventEmitter = __webpack_require__(614).EventEmitter;
+
+function normalizeMethod (fn) {
+    return function (sql) {
+        var errBack;
+        var args = Array.prototype.slice.call(arguments, 1);
+        if (typeof args[args.length - 1] === 'function') {
+            var callback = args[args.length - 1];
+            errBack = function(err) {
+                if (err) {
+                    callback(err);
+                }
+            };
+        }
+        var statement = new Statement(this, sql, errBack);
+        return fn.call(this, statement, args);
+    };
+}
+
+function inherits(target, source) {
+    for (var k in source.prototype)
+        target.prototype[k] = source.prototype[k];
+}
+
+sqlite3.cached = {
+    Database: function(file, a, b) {
+        if (file === '' || file === ':memory:') {
+            // Don't cache special databases.
+            return new Database(file, a, b);
+        }
+
+        var db;
+        file = path.resolve(file);
+        function cb() { callback.call(db, null); }
+
+        if (!sqlite3.cached.objects[file]) {
+            db = sqlite3.cached.objects[file] = new Database(file, a, b);
+        }
+        else {
+            // Make sure the callback is called.
+            db = sqlite3.cached.objects[file];
+            var callback = (typeof a === 'number') ? b : a;
+            if (typeof callback === 'function') {
+                if (db.open) process.nextTick(cb);
+                else db.once('open', cb);
+            }
+        }
+
+        return db;
+    },
+    objects: {}
+};
+
+
+var Database = sqlite3.Database;
+var Statement = sqlite3.Statement;
+var Backup = sqlite3.Backup;
+
+inherits(Database, EventEmitter);
+inherits(Statement, EventEmitter);
+inherits(Backup, EventEmitter);
+
+// Database#prepare(sql, [bind1, bind2, ...], [callback])
+Database.prototype.prepare = normalizeMethod(function(statement, params) {
+    return params.length
+        ? statement.bind.apply(statement, params)
+        : statement;
+});
+
+// Database#run(sql, [bind1, bind2, ...], [callback])
+Database.prototype.run = normalizeMethod(function(statement, params) {
+    statement.run.apply(statement, params).finalize();
+    return this;
+});
+
+// Database#get(sql, [bind1, bind2, ...], [callback])
+Database.prototype.get = normalizeMethod(function(statement, params) {
+    statement.get.apply(statement, params).finalize();
+    return this;
+});
+
+// Database#all(sql, [bind1, bind2, ...], [callback])
+Database.prototype.all = normalizeMethod(function(statement, params) {
+    statement.all.apply(statement, params).finalize();
+    return this;
+});
+
+// Database#each(sql, [bind1, bind2, ...], [callback], [complete])
+Database.prototype.each = normalizeMethod(function(statement, params) {
+    statement.each.apply(statement, params).finalize();
+    return this;
+});
+
+Database.prototype.map = normalizeMethod(function(statement, params) {
+    statement.map.apply(statement, params).finalize();
+    return this;
+});
+
+// Database#backup(filename, [callback])
+// Database#backup(filename, destName, sourceName, filenameIsDest, [callback])
+Database.prototype.backup = function() {
+    var backup;
+    if (arguments.length <= 2) {
+        // By default, we write the main database out to the main database of the named file.
+        // This is the most likely use of the backup api.
+        backup = new Backup(this, arguments[0], 'main', 'main', true, arguments[1]);
+    } else {
+        // Otherwise, give the user full control over the sqlite3_backup_init arguments.
+        backup = new Backup(this, arguments[0], arguments[1], arguments[2], arguments[3], arguments[4]);
+    }
+    // Per the sqlite docs, exclude the following errors as non-fatal by default.
+    backup.retryErrors = [sqlite3.BUSY, sqlite3.LOCKED];
+    return backup;
+};
+
+Statement.prototype.map = function() {
+    var params = Array.prototype.slice.call(arguments);
+    var callback = params.pop();
+    params.push(function(err, rows) {
+        if (err) return callback(err);
+        var result = {};
+        if (rows.length) {
+            var keys = Object.keys(rows[0]), key = keys[0];
+            if (keys.length > 2) {
+                // Value is an object
+                for (var i = 0; i < rows.length; i++) {
+                    result[rows[i][key]] = rows[i];
+                }
+            } else {
+                var value = keys[1];
+                // Value is a plain value
+                for (i = 0; i < rows.length; i++) {
+                    result[rows[i][key]] = rows[i][value];
+                }
+            }
+        }
+        callback(err, result);
+    });
+    return this.all.apply(this, params);
+};
+
+var isVerbose = false;
+
+var supportedEvents = [ 'trace', 'profile', 'insert', 'update', 'delete' ];
+
+Database.prototype.addListener = Database.prototype.on = function(type) {
+    var val = EventEmitter.prototype.addListener.apply(this, arguments);
+    if (supportedEvents.indexOf(type) >= 0) {
+        this.configure(type, true);
+    }
+    return val;
+};
+
+Database.prototype.removeListener = function(type) {
+    var val = EventEmitter.prototype.removeListener.apply(this, arguments);
+    if (supportedEvents.indexOf(type) >= 0 && !this._events[type]) {
+        this.configure(type, false);
+    }
+    return val;
+};
+
+Database.prototype.removeAllListeners = function(type) {
+    var val = EventEmitter.prototype.removeAllListeners.apply(this, arguments);
+    if (supportedEvents.indexOf(type) >= 0) {
+        this.configure(type, false);
+    }
+    return val;
+};
+
+// Save the stack trace over EIO callbacks.
+sqlite3.verbose = function() {
+    if (!isVerbose) {
+        var trace = __webpack_require__(594);
+        [
+            'prepare',
+            'get',
+            'run',
+            'all',
+            'each',
+            'map',
+            'close',
+            'exec'
+        ].forEach(function (name) {
+            trace.extendTrace(Database.prototype, name);
+        });
+        [
+            'bind',
+            'get',
+            'run',
+            'all',
+            'each',
+            'map',
+            'reset',
+            'finalize',
+        ].forEach(function (name) {
+            trace.extendTrace(Statement.prototype, name);
+        });
+        isVerbose = true;
+    }
+
+    return this;
+};
+
+
+/***/ }),
 /* 79 */,
 /* 80 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
@@ -6442,6 +7072,8 @@ const utils = __webpack_require__(762);
 var cTimeStamp = new Date().getTime();
 var fs = __webpack_require__(747);
 
+const jwtToken = process.env.JWT_SECRET ? process.env.JWT_SECRET : "soundcool";
+
 function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
 }
@@ -6450,7 +7082,7 @@ const SELECT_ALL_PROJECTS_QUERY = "SELECT * FROM projects ";
 const UPDATE_PROJECT_CONTENT = "UPDATE projects SET content = ";
 
 router.get("/get", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   // do the query case on the user
   const QUERY = `select *,(CASE WHEN user=${user_id} THEN 0 ELSE user END)as isOwner from projects where user=${user_id} or sharedUsers like '%"user_id":${user_id}%' or isPublic =true`;
@@ -6485,7 +7117,7 @@ router.get("/project", (req, res) => {
 });
 
 router.patch("/update", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { content, projectId } = req.body;
   const UPDATE_PROJECT_CONTENT = `UPDATE projects SET content = '${content}' WHERE (user = '${user_id}' or sharedUsers like '%"user_id":${user_id}%') and project_id = '${projectId}'`;
@@ -6504,7 +7136,7 @@ router.patch("/update", (req, res) => {
 });
 
 router.post("/new", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { projectName, projectDescription, blocks } = req.body;
   let error = "";
@@ -6537,7 +7169,7 @@ router.post("/new", (req, res) => {
 });
 
 router.post("/clone", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { projectId } = req.body;
   const QUERY = `select * from projects where project_id = ${projectId}`;
@@ -6614,7 +7246,7 @@ router.post("/clone", (req, res) => {
 });
 
 router.patch("/remove", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { projectId } = req.body;
   const DELETE_PROJECT = `DELETE FROM projects WHERE user = '${user_id}' and project_id = '${projectId}'`;
@@ -7580,7 +8212,12 @@ function vary (res, field) {
 
 
 /***/ }),
-/* 101 */,
+/* 101 */
+/***/ (function(module) {
+
+module.exports = {"0.1.14":{"node_abi":null,"v8":"1.3"},"0.1.15":{"node_abi":null,"v8":"1.3"},"0.1.16":{"node_abi":null,"v8":"1.3"},"0.1.17":{"node_abi":null,"v8":"1.3"},"0.1.18":{"node_abi":null,"v8":"1.3"},"0.1.19":{"node_abi":null,"v8":"2.0"},"0.1.20":{"node_abi":null,"v8":"2.0"},"0.1.21":{"node_abi":null,"v8":"2.0"},"0.1.22":{"node_abi":null,"v8":"2.0"},"0.1.23":{"node_abi":null,"v8":"2.0"},"0.1.24":{"node_abi":null,"v8":"2.0"},"0.1.25":{"node_abi":null,"v8":"2.0"},"0.1.26":{"node_abi":null,"v8":"2.0"},"0.1.27":{"node_abi":null,"v8":"2.1"},"0.1.28":{"node_abi":null,"v8":"2.1"},"0.1.29":{"node_abi":null,"v8":"2.1"},"0.1.30":{"node_abi":null,"v8":"2.1"},"0.1.31":{"node_abi":null,"v8":"2.1"},"0.1.32":{"node_abi":null,"v8":"2.1"},"0.1.33":{"node_abi":null,"v8":"2.1"},"0.1.90":{"node_abi":null,"v8":"2.2"},"0.1.91":{"node_abi":null,"v8":"2.2"},"0.1.92":{"node_abi":null,"v8":"2.2"},"0.1.93":{"node_abi":null,"v8":"2.2"},"0.1.94":{"node_abi":null,"v8":"2.2"},"0.1.95":{"node_abi":null,"v8":"2.2"},"0.1.96":{"node_abi":null,"v8":"2.2"},"0.1.97":{"node_abi":null,"v8":"2.2"},"0.1.98":{"node_abi":null,"v8":"2.2"},"0.1.99":{"node_abi":null,"v8":"2.2"},"0.1.100":{"node_abi":null,"v8":"2.2"},"0.1.101":{"node_abi":null,"v8":"2.3"},"0.1.102":{"node_abi":null,"v8":"2.3"},"0.1.103":{"node_abi":null,"v8":"2.3"},"0.1.104":{"node_abi":null,"v8":"2.3"},"0.2.0":{"node_abi":1,"v8":"2.3"},"0.2.1":{"node_abi":1,"v8":"2.3"},"0.2.2":{"node_abi":1,"v8":"2.3"},"0.2.3":{"node_abi":1,"v8":"2.3"},"0.2.4":{"node_abi":1,"v8":"2.3"},"0.2.5":{"node_abi":1,"v8":"2.3"},"0.2.6":{"node_abi":1,"v8":"2.3"},"0.3.0":{"node_abi":1,"v8":"2.5"},"0.3.1":{"node_abi":1,"v8":"2.5"},"0.3.2":{"node_abi":1,"v8":"3.0"},"0.3.3":{"node_abi":1,"v8":"3.0"},"0.3.4":{"node_abi":1,"v8":"3.0"},"0.3.5":{"node_abi":1,"v8":"3.0"},"0.3.6":{"node_abi":1,"v8":"3.0"},"0.3.7":{"node_abi":1,"v8":"3.0"},"0.3.8":{"node_abi":1,"v8":"3.1"},"0.4.0":{"node_abi":1,"v8":"3.1"},"0.4.1":{"node_abi":1,"v8":"3.1"},"0.4.2":{"node_abi":1,"v8":"3.1"},"0.4.3":{"node_abi":1,"v8":"3.1"},"0.4.4":{"node_abi":1,"v8":"3.1"},"0.4.5":{"node_abi":1,"v8":"3.1"},"0.4.6":{"node_abi":1,"v8":"3.1"},"0.4.7":{"node_abi":1,"v8":"3.1"},"0.4.8":{"node_abi":1,"v8":"3.1"},"0.4.9":{"node_abi":1,"v8":"3.1"},"0.4.10":{"node_abi":1,"v8":"3.1"},"0.4.11":{"node_abi":1,"v8":"3.1"},"0.4.12":{"node_abi":1,"v8":"3.1"},"0.5.0":{"node_abi":1,"v8":"3.1"},"0.5.1":{"node_abi":1,"v8":"3.4"},"0.5.2":{"node_abi":1,"v8":"3.4"},"0.5.3":{"node_abi":1,"v8":"3.4"},"0.5.4":{"node_abi":1,"v8":"3.5"},"0.5.5":{"node_abi":1,"v8":"3.5"},"0.5.6":{"node_abi":1,"v8":"3.6"},"0.5.7":{"node_abi":1,"v8":"3.6"},"0.5.8":{"node_abi":1,"v8":"3.6"},"0.5.9":{"node_abi":1,"v8":"3.6"},"0.5.10":{"node_abi":1,"v8":"3.7"},"0.6.0":{"node_abi":1,"v8":"3.6"},"0.6.1":{"node_abi":1,"v8":"3.6"},"0.6.2":{"node_abi":1,"v8":"3.6"},"0.6.3":{"node_abi":1,"v8":"3.6"},"0.6.4":{"node_abi":1,"v8":"3.6"},"0.6.5":{"node_abi":1,"v8":"3.6"},"0.6.6":{"node_abi":1,"v8":"3.6"},"0.6.7":{"node_abi":1,"v8":"3.6"},"0.6.8":{"node_abi":1,"v8":"3.6"},"0.6.9":{"node_abi":1,"v8":"3.6"},"0.6.10":{"node_abi":1,"v8":"3.6"},"0.6.11":{"node_abi":1,"v8":"3.6"},"0.6.12":{"node_abi":1,"v8":"3.6"},"0.6.13":{"node_abi":1,"v8":"3.6"},"0.6.14":{"node_abi":1,"v8":"3.6"},"0.6.15":{"node_abi":1,"v8":"3.6"},"0.6.16":{"node_abi":1,"v8":"3.6"},"0.6.17":{"node_abi":1,"v8":"3.6"},"0.6.18":{"node_abi":1,"v8":"3.6"},"0.6.19":{"node_abi":1,"v8":"3.6"},"0.6.20":{"node_abi":1,"v8":"3.6"},"0.6.21":{"node_abi":1,"v8":"3.6"},"0.7.0":{"node_abi":1,"v8":"3.8"},"0.7.1":{"node_abi":1,"v8":"3.8"},"0.7.2":{"node_abi":1,"v8":"3.8"},"0.7.3":{"node_abi":1,"v8":"3.9"},"0.7.4":{"node_abi":1,"v8":"3.9"},"0.7.5":{"node_abi":1,"v8":"3.9"},"0.7.6":{"node_abi":1,"v8":"3.9"},"0.7.7":{"node_abi":1,"v8":"3.9"},"0.7.8":{"node_abi":1,"v8":"3.9"},"0.7.9":{"node_abi":1,"v8":"3.11"},"0.7.10":{"node_abi":1,"v8":"3.9"},"0.7.11":{"node_abi":1,"v8":"3.11"},"0.7.12":{"node_abi":1,"v8":"3.11"},"0.8.0":{"node_abi":1,"v8":"3.11"},"0.8.1":{"node_abi":1,"v8":"3.11"},"0.8.2":{"node_abi":1,"v8":"3.11"},"0.8.3":{"node_abi":1,"v8":"3.11"},"0.8.4":{"node_abi":1,"v8":"3.11"},"0.8.5":{"node_abi":1,"v8":"3.11"},"0.8.6":{"node_abi":1,"v8":"3.11"},"0.8.7":{"node_abi":1,"v8":"3.11"},"0.8.8":{"node_abi":1,"v8":"3.11"},"0.8.9":{"node_abi":1,"v8":"3.11"},"0.8.10":{"node_abi":1,"v8":"3.11"},"0.8.11":{"node_abi":1,"v8":"3.11"},"0.8.12":{"node_abi":1,"v8":"3.11"},"0.8.13":{"node_abi":1,"v8":"3.11"},"0.8.14":{"node_abi":1,"v8":"3.11"},"0.8.15":{"node_abi":1,"v8":"3.11"},"0.8.16":{"node_abi":1,"v8":"3.11"},"0.8.17":{"node_abi":1,"v8":"3.11"},"0.8.18":{"node_abi":1,"v8":"3.11"},"0.8.19":{"node_abi":1,"v8":"3.11"},"0.8.20":{"node_abi":1,"v8":"3.11"},"0.8.21":{"node_abi":1,"v8":"3.11"},"0.8.22":{"node_abi":1,"v8":"3.11"},"0.8.23":{"node_abi":1,"v8":"3.11"},"0.8.24":{"node_abi":1,"v8":"3.11"},"0.8.25":{"node_abi":1,"v8":"3.11"},"0.8.26":{"node_abi":1,"v8":"3.11"},"0.8.27":{"node_abi":1,"v8":"3.11"},"0.8.28":{"node_abi":1,"v8":"3.11"},"0.9.0":{"node_abi":1,"v8":"3.11"},"0.9.1":{"node_abi":10,"v8":"3.11"},"0.9.2":{"node_abi":10,"v8":"3.11"},"0.9.3":{"node_abi":10,"v8":"3.13"},"0.9.4":{"node_abi":10,"v8":"3.13"},"0.9.5":{"node_abi":10,"v8":"3.13"},"0.9.6":{"node_abi":10,"v8":"3.15"},"0.9.7":{"node_abi":10,"v8":"3.15"},"0.9.8":{"node_abi":10,"v8":"3.15"},"0.9.9":{"node_abi":11,"v8":"3.15"},"0.9.10":{"node_abi":11,"v8":"3.15"},"0.9.11":{"node_abi":11,"v8":"3.14"},"0.9.12":{"node_abi":11,"v8":"3.14"},"0.10.0":{"node_abi":11,"v8":"3.14"},"0.10.1":{"node_abi":11,"v8":"3.14"},"0.10.2":{"node_abi":11,"v8":"3.14"},"0.10.3":{"node_abi":11,"v8":"3.14"},"0.10.4":{"node_abi":11,"v8":"3.14"},"0.10.5":{"node_abi":11,"v8":"3.14"},"0.10.6":{"node_abi":11,"v8":"3.14"},"0.10.7":{"node_abi":11,"v8":"3.14"},"0.10.8":{"node_abi":11,"v8":"3.14"},"0.10.9":{"node_abi":11,"v8":"3.14"},"0.10.10":{"node_abi":11,"v8":"3.14"},"0.10.11":{"node_abi":11,"v8":"3.14"},"0.10.12":{"node_abi":11,"v8":"3.14"},"0.10.13":{"node_abi":11,"v8":"3.14"},"0.10.14":{"node_abi":11,"v8":"3.14"},"0.10.15":{"node_abi":11,"v8":"3.14"},"0.10.16":{"node_abi":11,"v8":"3.14"},"0.10.17":{"node_abi":11,"v8":"3.14"},"0.10.18":{"node_abi":11,"v8":"3.14"},"0.10.19":{"node_abi":11,"v8":"3.14"},"0.10.20":{"node_abi":11,"v8":"3.14"},"0.10.21":{"node_abi":11,"v8":"3.14"},"0.10.22":{"node_abi":11,"v8":"3.14"},"0.10.23":{"node_abi":11,"v8":"3.14"},"0.10.24":{"node_abi":11,"v8":"3.14"},"0.10.25":{"node_abi":11,"v8":"3.14"},"0.10.26":{"node_abi":11,"v8":"3.14"},"0.10.27":{"node_abi":11,"v8":"3.14"},"0.10.28":{"node_abi":11,"v8":"3.14"},"0.10.29":{"node_abi":11,"v8":"3.14"},"0.10.30":{"node_abi":11,"v8":"3.14"},"0.10.31":{"node_abi":11,"v8":"3.14"},"0.10.32":{"node_abi":11,"v8":"3.14"},"0.10.33":{"node_abi":11,"v8":"3.14"},"0.10.34":{"node_abi":11,"v8":"3.14"},"0.10.35":{"node_abi":11,"v8":"3.14"},"0.10.36":{"node_abi":11,"v8":"3.14"},"0.10.37":{"node_abi":11,"v8":"3.14"},"0.10.38":{"node_abi":11,"v8":"3.14"},"0.10.39":{"node_abi":11,"v8":"3.14"},"0.10.40":{"node_abi":11,"v8":"3.14"},"0.10.41":{"node_abi":11,"v8":"3.14"},"0.10.42":{"node_abi":11,"v8":"3.14"},"0.10.43":{"node_abi":11,"v8":"3.14"},"0.10.44":{"node_abi":11,"v8":"3.14"},"0.10.45":{"node_abi":11,"v8":"3.14"},"0.10.46":{"node_abi":11,"v8":"3.14"},"0.10.47":{"node_abi":11,"v8":"3.14"},"0.10.48":{"node_abi":11,"v8":"3.14"},"0.11.0":{"node_abi":12,"v8":"3.17"},"0.11.1":{"node_abi":12,"v8":"3.18"},"0.11.2":{"node_abi":12,"v8":"3.19"},"0.11.3":{"node_abi":12,"v8":"3.19"},"0.11.4":{"node_abi":12,"v8":"3.20"},"0.11.5":{"node_abi":12,"v8":"3.20"},"0.11.6":{"node_abi":12,"v8":"3.20"},"0.11.7":{"node_abi":12,"v8":"3.20"},"0.11.8":{"node_abi":13,"v8":"3.21"},"0.11.9":{"node_abi":13,"v8":"3.22"},"0.11.10":{"node_abi":13,"v8":"3.22"},"0.11.11":{"node_abi":14,"v8":"3.22"},"0.11.12":{"node_abi":14,"v8":"3.22"},"0.11.13":{"node_abi":14,"v8":"3.25"},"0.11.14":{"node_abi":14,"v8":"3.26"},"0.11.15":{"node_abi":14,"v8":"3.28"},"0.11.16":{"node_abi":14,"v8":"3.28"},"0.12.0":{"node_abi":14,"v8":"3.28"},"0.12.1":{"node_abi":14,"v8":"3.28"},"0.12.2":{"node_abi":14,"v8":"3.28"},"0.12.3":{"node_abi":14,"v8":"3.28"},"0.12.4":{"node_abi":14,"v8":"3.28"},"0.12.5":{"node_abi":14,"v8":"3.28"},"0.12.6":{"node_abi":14,"v8":"3.28"},"0.12.7":{"node_abi":14,"v8":"3.28"},"0.12.8":{"node_abi":14,"v8":"3.28"},"0.12.9":{"node_abi":14,"v8":"3.28"},"0.12.10":{"node_abi":14,"v8":"3.28"},"0.12.11":{"node_abi":14,"v8":"3.28"},"0.12.12":{"node_abi":14,"v8":"3.28"},"0.12.13":{"node_abi":14,"v8":"3.28"},"0.12.14":{"node_abi":14,"v8":"3.28"},"0.12.15":{"node_abi":14,"v8":"3.28"},"0.12.16":{"node_abi":14,"v8":"3.28"},"0.12.17":{"node_abi":14,"v8":"3.28"},"0.12.18":{"node_abi":14,"v8":"3.28"},"1.0.0":{"node_abi":42,"v8":"3.31"},"1.0.1":{"node_abi":42,"v8":"3.31"},"1.0.2":{"node_abi":42,"v8":"3.31"},"1.0.3":{"node_abi":42,"v8":"4.1"},"1.0.4":{"node_abi":42,"v8":"4.1"},"1.1.0":{"node_abi":43,"v8":"4.1"},"1.2.0":{"node_abi":43,"v8":"4.1"},"1.3.0":{"node_abi":43,"v8":"4.1"},"1.4.1":{"node_abi":43,"v8":"4.1"},"1.4.2":{"node_abi":43,"v8":"4.1"},"1.4.3":{"node_abi":43,"v8":"4.1"},"1.5.0":{"node_abi":43,"v8":"4.1"},"1.5.1":{"node_abi":43,"v8":"4.1"},"1.6.0":{"node_abi":43,"v8":"4.1"},"1.6.1":{"node_abi":43,"v8":"4.1"},"1.6.2":{"node_abi":43,"v8":"4.1"},"1.6.3":{"node_abi":43,"v8":"4.1"},"1.6.4":{"node_abi":43,"v8":"4.1"},"1.7.1":{"node_abi":43,"v8":"4.1"},"1.8.1":{"node_abi":43,"v8":"4.1"},"1.8.2":{"node_abi":43,"v8":"4.1"},"1.8.3":{"node_abi":43,"v8":"4.1"},"1.8.4":{"node_abi":43,"v8":"4.1"},"2.0.0":{"node_abi":44,"v8":"4.2"},"2.0.1":{"node_abi":44,"v8":"4.2"},"2.0.2":{"node_abi":44,"v8":"4.2"},"2.1.0":{"node_abi":44,"v8":"4.2"},"2.2.0":{"node_abi":44,"v8":"4.2"},"2.2.1":{"node_abi":44,"v8":"4.2"},"2.3.0":{"node_abi":44,"v8":"4.2"},"2.3.1":{"node_abi":44,"v8":"4.2"},"2.3.2":{"node_abi":44,"v8":"4.2"},"2.3.3":{"node_abi":44,"v8":"4.2"},"2.3.4":{"node_abi":44,"v8":"4.2"},"2.4.0":{"node_abi":44,"v8":"4.2"},"2.5.0":{"node_abi":44,"v8":"4.2"},"3.0.0":{"node_abi":45,"v8":"4.4"},"3.1.0":{"node_abi":45,"v8":"4.4"},"3.2.0":{"node_abi":45,"v8":"4.4"},"3.3.0":{"node_abi":45,"v8":"4.4"},"3.3.1":{"node_abi":45,"v8":"4.4"},"4.0.0":{"node_abi":46,"v8":"4.5"},"4.1.0":{"node_abi":46,"v8":"4.5"},"4.1.1":{"node_abi":46,"v8":"4.5"},"4.1.2":{"node_abi":46,"v8":"4.5"},"4.2.0":{"node_abi":46,"v8":"4.5"},"4.2.1":{"node_abi":46,"v8":"4.5"},"4.2.2":{"node_abi":46,"v8":"4.5"},"4.2.3":{"node_abi":46,"v8":"4.5"},"4.2.4":{"node_abi":46,"v8":"4.5"},"4.2.5":{"node_abi":46,"v8":"4.5"},"4.2.6":{"node_abi":46,"v8":"4.5"},"4.3.0":{"node_abi":46,"v8":"4.5"},"4.3.1":{"node_abi":46,"v8":"4.5"},"4.3.2":{"node_abi":46,"v8":"4.5"},"4.4.0":{"node_abi":46,"v8":"4.5"},"4.4.1":{"node_abi":46,"v8":"4.5"},"4.4.2":{"node_abi":46,"v8":"4.5"},"4.4.3":{"node_abi":46,"v8":"4.5"},"4.4.4":{"node_abi":46,"v8":"4.5"},"4.4.5":{"node_abi":46,"v8":"4.5"},"4.4.6":{"node_abi":46,"v8":"4.5"},"4.4.7":{"node_abi":46,"v8":"4.5"},"4.5.0":{"node_abi":46,"v8":"4.5"},"4.6.0":{"node_abi":46,"v8":"4.5"},"4.6.1":{"node_abi":46,"v8":"4.5"},"4.6.2":{"node_abi":46,"v8":"4.5"},"4.7.0":{"node_abi":46,"v8":"4.5"},"4.7.1":{"node_abi":46,"v8":"4.5"},"4.7.2":{"node_abi":46,"v8":"4.5"},"4.7.3":{"node_abi":46,"v8":"4.5"},"4.8.0":{"node_abi":46,"v8":"4.5"},"4.8.1":{"node_abi":46,"v8":"4.5"},"4.8.2":{"node_abi":46,"v8":"4.5"},"4.8.3":{"node_abi":46,"v8":"4.5"},"4.8.4":{"node_abi":46,"v8":"4.5"},"4.8.5":{"node_abi":46,"v8":"4.5"},"4.8.6":{"node_abi":46,"v8":"4.5"},"4.8.7":{"node_abi":46,"v8":"4.5"},"4.9.0":{"node_abi":46,"v8":"4.5"},"4.9.1":{"node_abi":46,"v8":"4.5"},"5.0.0":{"node_abi":47,"v8":"4.6"},"5.1.0":{"node_abi":47,"v8":"4.6"},"5.1.1":{"node_abi":47,"v8":"4.6"},"5.2.0":{"node_abi":47,"v8":"4.6"},"5.3.0":{"node_abi":47,"v8":"4.6"},"5.4.0":{"node_abi":47,"v8":"4.6"},"5.4.1":{"node_abi":47,"v8":"4.6"},"5.5.0":{"node_abi":47,"v8":"4.6"},"5.6.0":{"node_abi":47,"v8":"4.6"},"5.7.0":{"node_abi":47,"v8":"4.6"},"5.7.1":{"node_abi":47,"v8":"4.6"},"5.8.0":{"node_abi":47,"v8":"4.6"},"5.9.0":{"node_abi":47,"v8":"4.6"},"5.9.1":{"node_abi":47,"v8":"4.6"},"5.10.0":{"node_abi":47,"v8":"4.6"},"5.10.1":{"node_abi":47,"v8":"4.6"},"5.11.0":{"node_abi":47,"v8":"4.6"},"5.11.1":{"node_abi":47,"v8":"4.6"},"5.12.0":{"node_abi":47,"v8":"4.6"},"6.0.0":{"node_abi":48,"v8":"5.0"},"6.1.0":{"node_abi":48,"v8":"5.0"},"6.2.0":{"node_abi":48,"v8":"5.0"},"6.2.1":{"node_abi":48,"v8":"5.0"},"6.2.2":{"node_abi":48,"v8":"5.0"},"6.3.0":{"node_abi":48,"v8":"5.0"},"6.3.1":{"node_abi":48,"v8":"5.0"},"6.4.0":{"node_abi":48,"v8":"5.0"},"6.5.0":{"node_abi":48,"v8":"5.1"},"6.6.0":{"node_abi":48,"v8":"5.1"},"6.7.0":{"node_abi":48,"v8":"5.1"},"6.8.0":{"node_abi":48,"v8":"5.1"},"6.8.1":{"node_abi":48,"v8":"5.1"},"6.9.0":{"node_abi":48,"v8":"5.1"},"6.9.1":{"node_abi":48,"v8":"5.1"},"6.9.2":{"node_abi":48,"v8":"5.1"},"6.9.3":{"node_abi":48,"v8":"5.1"},"6.9.4":{"node_abi":48,"v8":"5.1"},"6.9.5":{"node_abi":48,"v8":"5.1"},"6.10.0":{"node_abi":48,"v8":"5.1"},"6.10.1":{"node_abi":48,"v8":"5.1"},"6.10.2":{"node_abi":48,"v8":"5.1"},"6.10.3":{"node_abi":48,"v8":"5.1"},"6.11.0":{"node_abi":48,"v8":"5.1"},"6.11.1":{"node_abi":48,"v8":"5.1"},"6.11.2":{"node_abi":48,"v8":"5.1"},"6.11.3":{"node_abi":48,"v8":"5.1"},"6.11.4":{"node_abi":48,"v8":"5.1"},"6.11.5":{"node_abi":48,"v8":"5.1"},"6.12.0":{"node_abi":48,"v8":"5.1"},"6.12.1":{"node_abi":48,"v8":"5.1"},"6.12.2":{"node_abi":48,"v8":"5.1"},"6.12.3":{"node_abi":48,"v8":"5.1"},"6.13.0":{"node_abi":48,"v8":"5.1"},"6.13.1":{"node_abi":48,"v8":"5.1"},"6.14.0":{"node_abi":48,"v8":"5.1"},"6.14.1":{"node_abi":48,"v8":"5.1"},"6.14.2":{"node_abi":48,"v8":"5.1"},"6.14.3":{"node_abi":48,"v8":"5.1"},"7.0.0":{"node_abi":51,"v8":"5.4"},"7.1.0":{"node_abi":51,"v8":"5.4"},"7.2.0":{"node_abi":51,"v8":"5.4"},"7.2.1":{"node_abi":51,"v8":"5.4"},"7.3.0":{"node_abi":51,"v8":"5.4"},"7.4.0":{"node_abi":51,"v8":"5.4"},"7.5.0":{"node_abi":51,"v8":"5.4"},"7.6.0":{"node_abi":51,"v8":"5.5"},"7.7.0":{"node_abi":51,"v8":"5.5"},"7.7.1":{"node_abi":51,"v8":"5.5"},"7.7.2":{"node_abi":51,"v8":"5.5"},"7.7.3":{"node_abi":51,"v8":"5.5"},"7.7.4":{"node_abi":51,"v8":"5.5"},"7.8.0":{"node_abi":51,"v8":"5.5"},"7.9.0":{"node_abi":51,"v8":"5.5"},"7.10.0":{"node_abi":51,"v8":"5.5"},"7.10.1":{"node_abi":51,"v8":"5.5"},"8.0.0":{"node_abi":57,"v8":"5.8"},"8.1.0":{"node_abi":57,"v8":"5.8"},"8.1.1":{"node_abi":57,"v8":"5.8"},"8.1.2":{"node_abi":57,"v8":"5.8"},"8.1.3":{"node_abi":57,"v8":"5.8"},"8.1.4":{"node_abi":57,"v8":"5.8"},"8.2.0":{"node_abi":57,"v8":"5.8"},"8.2.1":{"node_abi":57,"v8":"5.8"},"8.3.0":{"node_abi":57,"v8":"6.0"},"8.4.0":{"node_abi":57,"v8":"6.0"},"8.5.0":{"node_abi":57,"v8":"6.0"},"8.6.0":{"node_abi":57,"v8":"6.0"},"8.7.0":{"node_abi":57,"v8":"6.1"},"8.8.0":{"node_abi":57,"v8":"6.1"},"8.8.1":{"node_abi":57,"v8":"6.1"},"8.9.0":{"node_abi":57,"v8":"6.1"},"8.9.1":{"node_abi":57,"v8":"6.1"},"8.9.2":{"node_abi":57,"v8":"6.1"},"8.9.3":{"node_abi":57,"v8":"6.1"},"8.9.4":{"node_abi":57,"v8":"6.1"},"8.10.0":{"node_abi":57,"v8":"6.2"},"8.11.0":{"node_abi":57,"v8":"6.2"},"8.11.1":{"node_abi":57,"v8":"6.2"},"8.11.2":{"node_abi":57,"v8":"6.2"},"8.11.3":{"node_abi":57,"v8":"6.2"},"9.0.0":{"node_abi":59,"v8":"6.2"},"9.1.0":{"node_abi":59,"v8":"6.2"},"9.2.0":{"node_abi":59,"v8":"6.2"},"9.2.1":{"node_abi":59,"v8":"6.2"},"9.3.0":{"node_abi":59,"v8":"6.2"},"9.4.0":{"node_abi":59,"v8":"6.2"},"9.5.0":{"node_abi":59,"v8":"6.2"},"9.6.0":{"node_abi":59,"v8":"6.2"},"9.6.1":{"node_abi":59,"v8":"6.2"},"9.7.0":{"node_abi":59,"v8":"6.2"},"9.7.1":{"node_abi":59,"v8":"6.2"},"9.8.0":{"node_abi":59,"v8":"6.2"},"9.9.0":{"node_abi":59,"v8":"6.2"},"9.10.0":{"node_abi":59,"v8":"6.2"},"9.10.1":{"node_abi":59,"v8":"6.2"},"9.11.0":{"node_abi":59,"v8":"6.2"},"9.11.1":{"node_abi":59,"v8":"6.2"},"9.11.2":{"node_abi":59,"v8":"6.2"},"10.0.0":{"node_abi":64,"v8":"6.6"},"10.1.0":{"node_abi":64,"v8":"6.6"},"10.2.0":{"node_abi":64,"v8":"6.6"},"10.2.1":{"node_abi":64,"v8":"6.6"},"10.3.0":{"node_abi":64,"v8":"6.6"},"10.4.0":{"node_abi":64,"v8":"6.7"},"10.4.1":{"node_abi":64,"v8":"6.7"},"10.5.0":{"node_abi":64,"v8":"6.7"},"10.6.0":{"node_abi":64,"v8":"6.7"},"10.7.0":{"node_abi":64,"v8":"6.7"},"10.8.0":{"node_abi":64,"v8":"6.7"}};
+
+/***/ }),
 /* 102 */,
 /* 103 */,
 /* 104 */,
@@ -11428,7 +12065,12 @@ module.exports = PartStream;
 /* 120 */,
 /* 121 */,
 /* 122 */,
-/* 123 */,
+/* 123 */
+/***/ (function(module) {
+
+module.exports = {"_from":"node-pre-gyp@^0.11.0","_id":"node-pre-gyp@0.11.0","_inBundle":false,"_integrity":"sha512-TwWAOZb0j7e9eGaf9esRx3ZcLaE5tQ2lvYy1pb5IAaG1a2e2Kv5Lms1Y4hpj+ciXJRofIxxlt5haeQ/2ANeE0Q==","_location":"/sqlite3/node-pre-gyp","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"node-pre-gyp@^0.11.0","name":"node-pre-gyp","escapedName":"node-pre-gyp","rawSpec":"^0.11.0","saveSpec":null,"fetchSpec":"^0.11.0"},"_requiredBy":["/sqlite3"],"_resolved":"https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.11.0.tgz","_shasum":"db1f33215272f692cd38f03238e3e9b47c5dd054","_spec":"node-pre-gyp@^0.11.0","_where":"/home/heisenbrerg/Documents/soundcool/src/backend/node_modules/sqlite3","author":{"name":"Dane Springmeyer","email":"dane@mapbox.com"},"bin":{"node-pre-gyp":"./bin/node-pre-gyp"},"bugs":{"url":"https://github.com/mapbox/node-pre-gyp/issues"},"bundleDependencies":false,"dependencies":{"detect-libc":"^1.0.2","mkdirp":"^0.5.1","needle":"^2.2.1","nopt":"^4.0.1","npm-packlist":"^1.1.6","npmlog":"^4.0.2","rc":"^1.2.7","rimraf":"^2.6.1","semver":"^5.3.0","tar":"^4"},"deprecated":false,"description":"Node.js native addon binary install tool","devDependencies":{"aws-sdk":"^2.28.0","jshint":"^2.9.5","nock":"^9.2.3","tape":"^4.6.3"},"homepage":"https://github.com/mapbox/node-pre-gyp#readme","jshintConfig":{"node":true,"globalstrict":true,"undef":true,"unused":false,"noarg":true},"keywords":["native","addon","module","c","c++","bindings","binary"],"license":"BSD-3-Clause","main":"./lib/node-pre-gyp.js","name":"node-pre-gyp","repository":{"type":"git","url":"git://github.com/mapbox/node-pre-gyp.git"},"scripts":{"pretest":"jshint test/build.test.js test/s3_setup.test.js test/versioning.test.js test/fetch.test.js lib lib/util scripts bin/node-pre-gyp","test":"jshint lib lib/util scripts bin/node-pre-gyp && tape test/*test.js","update-crosswalk":"node scripts/abi_crosswalk.js"},"version":"0.11.0"};
+
+/***/ }),
 /* 124 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -16367,7 +17009,12 @@ try {
 
 
 /***/ }),
-/* 181 */,
+/* 181 */
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+module.exports = require(__webpack_require__.ab + "lib/binding/node-v64-linux-x64/node_sqlite3.node")
+
+/***/ }),
 /* 182 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -19278,49 +19925,7 @@ function forEach (xs, f) {
 
 /***/ }),
 /* 202 */,
-/* 203 */
-/***/ (function(module, __unusedexports, __webpack_require__) {
-
-"use strict";
-
-var util = __webpack_require__(669)
-var stream = __webpack_require__(362)
-var delegate = __webpack_require__(731)
-var Tracker = __webpack_require__(682)
-
-var TrackerStream = module.exports = function (name, size, options) {
-  stream.Transform.call(this, options)
-  this.tracker = new Tracker(name, size)
-  this.name = name
-  this.id = this.tracker.id
-  this.tracker.on('change', delegateChange(this))
-}
-util.inherits(TrackerStream, stream.Transform)
-
-function delegateChange (trackerStream) {
-  return function (name, completion, tracker) {
-    trackerStream.emit('change', name, completion, trackerStream)
-  }
-}
-
-TrackerStream.prototype._transform = function (data, encoding, cb) {
-  this.tracker.completeWork(data.length ? data.length : 1)
-  this.push(data)
-  cb()
-}
-
-TrackerStream.prototype._flush = function (cb) {
-  this.tracker.finish()
-  cb()
-}
-
-delegate(TrackerStream.prototype, 'tracker')
-  .method('completed')
-  .method('addWork')
-  .method('finish')
-
-
-/***/ }),
+/* 203 */,
 /* 204 */,
 /* 205 */,
 /* 206 */
@@ -19461,7 +20066,65 @@ module.exports = function parseDynamicDirectives(directives, functionArgs) {
 
 
 /***/ }),
-/* 208 */,
+/* 208 */
+/***/ (function(module) {
+
+var reFirstKey = /^[^\[]*/
+var reDigitPath = /^\[(\d+)\]/
+var reNormalPath = /^\[([^\]]+)\]/
+
+function parsePath (key) {
+  function failure () {
+    return [{ type: 'object', key: key, last: true }]
+  }
+
+  var firstKey = reFirstKey.exec(key)[0]
+  if (!firstKey) return failure()
+
+  var len = key.length
+  var pos = firstKey.length
+  var tail = { type: 'object', key: firstKey }
+  var steps = [tail]
+
+  while (pos < len) {
+    var m
+
+    if (key[pos] === '[' && key[pos + 1] === ']') {
+      pos += 2
+      tail.append = true
+      if (pos !== len) return failure()
+      continue
+    }
+
+    m = reDigitPath.exec(key.substring(pos))
+    if (m !== null) {
+      pos += m[0].length
+      tail.nextType = 'array'
+      tail = { type: 'array', key: parseInt(m[1], 10) }
+      steps.push(tail)
+      continue
+    }
+
+    m = reNormalPath.exec(key.substring(pos))
+    if (m !== null) {
+      pos += m[0].length
+      tail.nextType = 'object'
+      tail = { type: 'object', key: m[1] }
+      steps.push(tail)
+      continue
+    }
+
+    return failure()
+  }
+
+  tail.last = true
+  return steps
+}
+
+module.exports = parsePath
+
+
+/***/ }),
 /* 209 */,
 /* 210 */,
 /* 211 */
@@ -20857,7 +21520,7 @@ var xml_entities_1 = __webpack_require__(375);
 exports.XmlEntities = xml_entities_1.XmlEntities;
 var html4_entities_1 = __webpack_require__(480);
 exports.Html4Entities = html4_entities_1.Html4Entities;
-var html5_entities_1 = __webpack_require__(499);
+var html5_entities_1 = __webpack_require__(415);
 exports.Html5Entities = html5_entities_1.Html5Entities;
 exports.AllHtmlEntities = html5_entities_1.Html5Entities;
 
@@ -21913,61 +22576,13 @@ PoolConnection.prototype._removeFromPool = function _removeFromPool() {
 /* 256 */,
 /* 257 */,
 /* 258 */
-/***/ (function(module) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
-var reFirstKey = /^[^\[]*/
-var reDigitPath = /^\[(\d+)\]/
-var reNormalPath = /^\[([^\]]+)\]/
+"use strict";
 
-function parsePath (key) {
-  function failure () {
-    return [{ type: 'object', key: key, last: true }]
-  }
-
-  var firstKey = reFirstKey.exec(key)[0]
-  if (!firstKey) return failure()
-
-  var len = key.length
-  var pos = firstKey.length
-  var tail = { type: 'object', key: firstKey }
-  var steps = [tail]
-
-  while (pos < len) {
-    var m
-
-    if (key[pos] === '[' && key[pos + 1] === ']') {
-      pos += 2
-      tail.append = true
-      if (pos !== len) return failure()
-      continue
-    }
-
-    m = reDigitPath.exec(key.substring(pos))
-    if (m !== null) {
-      pos += m[0].length
-      tail.nextType = 'array'
-      tail = { type: 'array', key: parseInt(m[1], 10) }
-      steps.push(tail)
-      continue
-    }
-
-    m = reNormalPath.exec(key.substring(pos))
-    if (m !== null) {
-      pos += m[0].length
-      tail.nextType = 'object'
-      tail = { type: 'object', key: m[1] }
-      steps.push(tail)
-      continue
-    }
-
-    return failure()
-  }
-
-  tail.last = true
-  return steps
-}
-
-module.exports = parsePath
+exports.TrackerGroup = __webpack_require__(499)
+exports.Tracker = __webpack_require__(682)
+exports.TrackerStream = __webpack_require__(784)
 
 
 /***/ }),
@@ -28178,7 +28793,344 @@ module.exports.getRounds = function getRounds(hash) {
 
 
 /***/ }),
-/* 330 */,
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = exports;
+
+var path = __webpack_require__(622);
+var semver = __webpack_require__(176);
+var url = __webpack_require__(835);
+var detect_libc = __webpack_require__(696);
+var napi = __webpack_require__(2);
+
+var abi_crosswalk;
+
+// This is used for unit testing to provide a fake
+// ABI crosswalk that emulates one that is not updated
+// for the current version
+if (process.env.NODE_PRE_GYP_ABI_CROSSWALK) {
+    abi_crosswalk = require(process.env.NODE_PRE_GYP_ABI_CROSSWALK);
+} else {
+    abi_crosswalk = __webpack_require__(101);
+}
+
+var major_versions = {};
+Object.keys(abi_crosswalk).forEach(function(v) {
+    var major = v.split('.')[0];
+    if (!major_versions[major]) {
+        major_versions[major] = v;
+    }
+});
+
+function get_electron_abi(runtime, target_version) {
+    if (!runtime) {
+        throw new Error("get_electron_abi requires valid runtime arg");
+    }
+    if (typeof target_version === 'undefined') {
+        // erroneous CLI call
+        throw new Error("Empty target version is not supported if electron is the target.");
+    }
+    // Electron guarantees that patch version update won't break native modules.
+    var sem_ver = semver.parse(target_version);
+    return runtime + '-v' + sem_ver.major + '.' + sem_ver.minor;
+}
+module.exports.get_electron_abi = get_electron_abi;
+
+function get_node_webkit_abi(runtime, target_version) {
+    if (!runtime) {
+        throw new Error("get_node_webkit_abi requires valid runtime arg");
+    }
+    if (typeof target_version === 'undefined') {
+        // erroneous CLI call
+        throw new Error("Empty target version is not supported if node-webkit is the target.");
+    }
+    return runtime + '-v' + target_version;
+}
+module.exports.get_node_webkit_abi = get_node_webkit_abi;
+
+function get_node_abi(runtime, versions) {
+    if (!runtime) {
+        throw new Error("get_node_abi requires valid runtime arg");
+    }
+    if (!versions) {
+        throw new Error("get_node_abi requires valid process.versions object");
+    }
+    var sem_ver = semver.parse(versions.node);
+    if (sem_ver.major === 0 && sem_ver.minor % 2) { // odd series
+        // https://github.com/mapbox/node-pre-gyp/issues/124
+        return runtime+'-v'+versions.node;
+    } else {
+        // process.versions.modules added in >= v0.10.4 and v0.11.7
+        // https://github.com/joyent/node/commit/ccabd4a6fa8a6eb79d29bc3bbe9fe2b6531c2d8e
+        return versions.modules ? runtime+'-v' + (+versions.modules) :
+            'v8-' + versions.v8.split('.').slice(0,2).join('.');
+    }
+}
+module.exports.get_node_abi = get_node_abi;
+
+function get_runtime_abi(runtime, target_version) {
+    if (!runtime) {
+        throw new Error("get_runtime_abi requires valid runtime arg");
+    }
+    if (runtime === 'node-webkit') {
+        return get_node_webkit_abi(runtime, target_version || process.versions['node-webkit']);
+    } else if (runtime === 'electron') {
+        return get_electron_abi(runtime, target_version || process.versions.electron);
+    } else {
+        if (runtime != 'node') {
+            throw new Error("Unknown Runtime: '" + runtime + "'");
+        }
+        if (!target_version) {
+            return get_node_abi(runtime,process.versions);
+        } else {
+            var cross_obj;
+            // abi_crosswalk generated with ./scripts/abi_crosswalk.js
+            if (abi_crosswalk[target_version]) {
+                cross_obj = abi_crosswalk[target_version];
+            } else {
+                var target_parts = target_version.split('.').map(function(i) { return +i; });
+                if (target_parts.length != 3) { // parse failed
+                    throw new Error("Unknown target version: " + target_version);
+                }
+                /*
+                    The below code tries to infer the last known ABI compatible version
+                    that we have recorded in the abi_crosswalk.json when an exact match
+                    is not possible. The reasons for this to exist are complicated:
+
+                       - We support passing --target to be able to allow developers to package binaries for versions of node
+                         that are not the same one as they are running. This might also be used in combination with the
+                         --target_arch or --target_platform flags to also package binaries for alternative platforms
+                       - When --target is passed we can't therefore determine the ABI (process.versions.modules) from the node
+                         version that is running in memory
+                       - So, therefore node-pre-gyp keeps an "ABI crosswalk" (lib/util/abi_crosswalk.json) to be able to look
+                         this info up for all versions
+                       - But we cannot easily predict what the future ABI will be for released versions
+                       - And node-pre-gyp needs to be a `bundledDependency` in apps that depend on it in order to work correctly
+                         by being fully available at install time.
+                       - So, the speed of node releases and the bundled nature of node-pre-gyp mean that a new node-pre-gyp release
+                         need to happen for every node.js/io.js/node-webkit/nw.js/atom-shell/etc release that might come online if
+                         you want the `--target` flag to keep working for the latest version
+                       - Which is impractical ^^
+                       - Hence the below code guesses about future ABI to make the need to update node-pre-gyp less demanding.
+
+                    In practice then you can have a dependency of your app like `node-sqlite3` that bundles a `node-pre-gyp` that
+                    only knows about node v0.10.33 in the `abi_crosswalk.json` but target node v0.10.34 (which is assumed to be
+                    ABI compatible with v0.10.33).
+
+                    TODO: use semver module instead of custom version parsing
+                */
+                var major = target_parts[0];
+                var minor = target_parts[1];
+                var patch = target_parts[2];
+                // io.js: yeah if node.js ever releases 1.x this will break
+                // but that is unlikely to happen: https://github.com/iojs/io.js/pull/253#issuecomment-69432616
+                if (major === 1) {
+                    // look for last release that is the same major version
+                    // e.g. we assume io.js 1.x is ABI compatible with >= 1.0.0
+                    while (true) {
+                        if (minor > 0) --minor;
+                        if (patch > 0) --patch;
+                        var new_iojs_target = '' + major + '.' + minor + '.' + patch;
+                        if (abi_crosswalk[new_iojs_target]) {
+                            cross_obj = abi_crosswalk[new_iojs_target];
+                            console.log('Warning: node-pre-gyp could not find exact match for ' + target_version);
+                            console.log('Warning: but node-pre-gyp successfully choose ' + new_iojs_target + ' as ABI compatible target');
+                            break;
+                        }
+                        if (minor === 0 && patch === 0) {
+                            break;
+                        }
+                    }
+                } else if (major >= 2) {
+                    // look for last release that is the same major version
+                    if (major_versions[major]) {
+                        cross_obj = abi_crosswalk[major_versions[major]];
+                        console.log('Warning: node-pre-gyp could not find exact match for ' + target_version);
+                        console.log('Warning: but node-pre-gyp successfully choose ' + major_versions[major] + ' as ABI compatible target');
+                    }
+                } else if (major === 0) { // node.js
+                    if (target_parts[1] % 2 === 0) { // for stable/even node.js series
+                        // look for the last release that is the same minor release
+                        // e.g. we assume node 0.10.x is ABI compatible with >= 0.10.0
+                        while (--patch > 0) {
+                            var new_node_target = '' + major + '.' + minor + '.' + patch;
+                            if (abi_crosswalk[new_node_target]) {
+                                cross_obj = abi_crosswalk[new_node_target];
+                                console.log('Warning: node-pre-gyp could not find exact match for ' + target_version);
+                                console.log('Warning: but node-pre-gyp successfully choose ' + new_node_target + ' as ABI compatible target');
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!cross_obj) {
+                throw new Error("Unsupported target version: " + target_version);
+            }
+            // emulate process.versions
+            var versions_obj = {
+                node: target_version,
+                v8: cross_obj.v8+'.0',
+                // abi_crosswalk uses 1 for node versions lacking process.versions.modules
+                // process.versions.modules added in >= v0.10.4 and v0.11.7
+                modules: cross_obj.node_abi > 1 ? cross_obj.node_abi : undefined
+            };
+            return get_node_abi(runtime, versions_obj);
+        }
+    }
+}
+module.exports.get_runtime_abi = get_runtime_abi;
+
+var required_parameters = [
+    'module_name',
+    'module_path',
+    'host'
+];
+
+function validate_config(package_json,opts) {
+    var msg = package_json.name + ' package.json is not node-pre-gyp ready:\n';
+    var missing = [];
+    if (!package_json.main) {
+        missing.push('main');
+    }
+    if (!package_json.version) {
+        missing.push('version');
+    }
+    if (!package_json.name) {
+        missing.push('name');
+    }
+    if (!package_json.binary) {
+        missing.push('binary');
+    }
+    var o = package_json.binary;
+    required_parameters.forEach(function(p) {
+        if (missing.indexOf('binary') > -1) {
+            missing.pop('binary');
+        }
+        if (!o || o[p] === undefined || o[p] === "") {
+            missing.push('binary.' + p);
+        }
+    });
+    if (missing.length >= 1) {
+        throw new Error(msg+"package.json must declare these properties: \n" + missing.join('\n'));
+    }
+    if (o) {
+        // enforce https over http
+        var protocol = url.parse(o.host).protocol;
+        if (protocol === 'http:') {
+            throw new Error("'host' protocol ("+protocol+") is invalid - only 'https:' is accepted");
+        }
+    }
+    napi.validate_package_json(package_json,opts);
+}
+
+module.exports.validate_config = validate_config;
+
+function eval_template(template,opts) {
+    Object.keys(opts).forEach(function(key) {
+        var pattern = '{'+key+'}';
+        while (template.indexOf(pattern) > -1) {
+            template = template.replace(pattern,opts[key]);
+        }
+    });
+    return template;
+}
+
+// url.resolve needs single trailing slash
+// to behave correctly, otherwise a double slash
+// may end up in the url which breaks requests
+// and a lacking slash may not lead to proper joining
+function fix_slashes(pathname) {
+    if (pathname.slice(-1) != '/') {
+        return pathname + '/';
+    }
+    return pathname;
+}
+
+// remove double slashes
+// note: path.normalize will not work because
+// it will convert forward to back slashes
+function drop_double_slashes(pathname) {
+    return pathname.replace(/\/\//g,'/');
+}
+
+function get_process_runtime(versions) {
+    var runtime = 'node';
+    if (versions['node-webkit']) {
+        runtime = 'node-webkit';
+    } else if (versions.electron) {
+        runtime = 'electron';
+    }
+    return runtime;
+}
+
+module.exports.get_process_runtime = get_process_runtime;
+
+var default_package_name = '{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz';
+var default_remote_path = '';
+
+module.exports.evaluate = function(package_json,options,napi_build_version) {
+    options = options || {};
+    validate_config(package_json,options); // options is a suitable substitute for opts in this case
+    var v = package_json.version;
+    var module_version = semver.parse(v);
+    var runtime = options.runtime || get_process_runtime(process.versions);
+    var opts = {
+        name: package_json.name,
+        configuration: Boolean(options.debug) ? 'Debug' : 'Release',
+        debug: options.debug,
+        module_name: package_json.binary.module_name,
+        version: module_version.version,
+        prerelease: module_version.prerelease.length ? module_version.prerelease.join('.') : '',
+        build: module_version.build.length ? module_version.build.join('.') : '',
+        major: module_version.major,
+        minor: module_version.minor,
+        patch: module_version.patch,
+        runtime: runtime,
+        node_abi: get_runtime_abi(runtime,options.target),
+        node_abi_napi: napi.get_napi_version(options.target) ? 'napi' : get_runtime_abi(runtime,options.target),
+        napi_version: napi.get_napi_version(options.target), // non-zero numeric, undefined if unsupported
+        napi_build_version: napi_build_version || '',
+        node_napi_label: napi_build_version ? 'napi-v' + napi_build_version : get_runtime_abi(runtime,options.target),
+        target: options.target || '',
+        platform: options.target_platform || process.platform,
+        target_platform: options.target_platform || process.platform,
+        arch: options.target_arch || process.arch,
+        target_arch: options.target_arch || process.arch,
+        libc: options.target_libc || detect_libc.family || 'unknown',
+        module_main: package_json.main,
+        toolset : options.toolset || '' // address https://github.com/mapbox/node-pre-gyp/issues/119
+    };
+    // support host mirror with npm config `--{module_name}_binary_host_mirror`
+    // e.g.: https://github.com/node-inspector/v8-profiler/blob/master/package.json#L25
+    // > npm install v8-profiler --profiler_binary_host_mirror=https://npm.taobao.org/mirrors/node-inspector/
+    var host = process.env['npm_config_' + opts.module_name + '_binary_host_mirror'] || package_json.binary.host;
+    opts.host = fix_slashes(eval_template(host,opts));
+    opts.module_path = eval_template(package_json.binary.module_path,opts);
+    // now we resolve the module_path to ensure it is absolute so that binding.gyp variables work predictably
+    if (options.module_root) {
+        // resolve relative to known module root: works for pre-binding require
+        opts.module_path = path.join(options.module_root,opts.module_path);
+    } else {
+        // resolve relative to current working directory: works for node-pre-gyp commands
+        opts.module_path = path.resolve(opts.module_path);
+    }
+    opts.module = path.join(opts.module_path,opts.module_name + '.node');
+    opts.remote_path = package_json.binary.remote_path ? drop_double_slashes(fix_slashes(eval_template(package_json.binary.remote_path,opts))) : default_remote_path;
+    var package_name = package_json.binary.package_name ? package_json.binary.package_name : default_package_name;
+    opts.package_name = eval_template(package_name,opts);
+    opts.staged_tarball = path.join('build/stage',opts.remote_path,opts.package_name);
+    opts.hosted_path = url.resolve(opts.host,opts.remote_path);
+    opts.hosted_tarball = url.resolve(opts.hosted_path,opts.package_name);
+    return opts;
+};
+
+
+/***/ }),
 /* 331 */,
 /* 332 */,
 /* 333 */
@@ -28934,27 +29886,55 @@ module.exports = function (key, value) {
 /* 341 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
-const mysql = __webpack_require__(641);
+if (process.env.MYSQL_HOST) {
+  const mysql = __webpack_require__(641);
+  const connection = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DB
+  });
 
-// TODO: all of them should be environment variable and
-// should be inside and .env file that's not being distributed!
-// it's very dangerous to expose all these informations here!
-const connection = mysql.createConnection({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
-  database: process.env.MYSQL_DB
-});
+  connection.connect(err => {
+    if (err) {
+      console.log("connection error");
+      console.log(err);
+      return err;
+    }
+  });
 
-connection.connect(err => {
-  if (err) {
-    console.log("connection error");
-    console.log(err);
-    return err;
+  module.exports = connection;
+} else {
+  const sqlite3 = __webpack_require__(78).verbose();
+  const fs = __webpack_require__(747);
+
+  const path = "./soundcool.db";
+  let firstTime = false;
+  try {
+    if (!fs.existsSync(path)) {
+      firstTime = true;
+    }
+  } catch (err) {
+    console.error(err);
   }
-});
+  let connection = new sqlite3.Database("soundcool.db", err => {
+    if (err) {
+      return console.error(err.message);
+    }
+    console.log("Connected to the SQlite database.");
+  });
 
-module.exports = connection;
+  if (firstTime) {
+    connection.serialize(() => {
+      connection.run(
+        "CREATE TABLE users(user_id integer PRIMARY KEY AUTOINCREMENT,name text, password text, email text)"
+      ).run(`INSERT INTO users
+              VALUES(100,'User 1','$2b$10$zoD.V4IYLhWmwz5Kld3gAu/jhYsPZYDYAWamQToQeC4tenQ1p1wwS','user1@welcome.com'),
+              (101,'User 2','$2b$10$9nG9wvklANoTJIlO.WBrzu0wh6oTHHjh8hviJQ0pj7eEcY3aN4mMC','user2@welcome.com')`);
+    });
+  }
+  module.exports = connection;
+}
 
 
 /***/ }),
@@ -37120,7 +38100,160 @@ Duplex.prototype._destroy = function (err, cb) {
 };
 
 /***/ }),
-/* 415 */,
+/* 415 */
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ENTITIES = [['Aacute', [193]], ['aacute', [225]], ['Abreve', [258]], ['abreve', [259]], ['ac', [8766]], ['acd', [8767]], ['acE', [8766, 819]], ['Acirc', [194]], ['acirc', [226]], ['acute', [180]], ['Acy', [1040]], ['acy', [1072]], ['AElig', [198]], ['aelig', [230]], ['af', [8289]], ['Afr', [120068]], ['afr', [120094]], ['Agrave', [192]], ['agrave', [224]], ['alefsym', [8501]], ['aleph', [8501]], ['Alpha', [913]], ['alpha', [945]], ['Amacr', [256]], ['amacr', [257]], ['amalg', [10815]], ['amp', [38]], ['AMP', [38]], ['andand', [10837]], ['And', [10835]], ['and', [8743]], ['andd', [10844]], ['andslope', [10840]], ['andv', [10842]], ['ang', [8736]], ['ange', [10660]], ['angle', [8736]], ['angmsdaa', [10664]], ['angmsdab', [10665]], ['angmsdac', [10666]], ['angmsdad', [10667]], ['angmsdae', [10668]], ['angmsdaf', [10669]], ['angmsdag', [10670]], ['angmsdah', [10671]], ['angmsd', [8737]], ['angrt', [8735]], ['angrtvb', [8894]], ['angrtvbd', [10653]], ['angsph', [8738]], ['angst', [197]], ['angzarr', [9084]], ['Aogon', [260]], ['aogon', [261]], ['Aopf', [120120]], ['aopf', [120146]], ['apacir', [10863]], ['ap', [8776]], ['apE', [10864]], ['ape', [8778]], ['apid', [8779]], ['apos', [39]], ['ApplyFunction', [8289]], ['approx', [8776]], ['approxeq', [8778]], ['Aring', [197]], ['aring', [229]], ['Ascr', [119964]], ['ascr', [119990]], ['Assign', [8788]], ['ast', [42]], ['asymp', [8776]], ['asympeq', [8781]], ['Atilde', [195]], ['atilde', [227]], ['Auml', [196]], ['auml', [228]], ['awconint', [8755]], ['awint', [10769]], ['backcong', [8780]], ['backepsilon', [1014]], ['backprime', [8245]], ['backsim', [8765]], ['backsimeq', [8909]], ['Backslash', [8726]], ['Barv', [10983]], ['barvee', [8893]], ['barwed', [8965]], ['Barwed', [8966]], ['barwedge', [8965]], ['bbrk', [9141]], ['bbrktbrk', [9142]], ['bcong', [8780]], ['Bcy', [1041]], ['bcy', [1073]], ['bdquo', [8222]], ['becaus', [8757]], ['because', [8757]], ['Because', [8757]], ['bemptyv', [10672]], ['bepsi', [1014]], ['bernou', [8492]], ['Bernoullis', [8492]], ['Beta', [914]], ['beta', [946]], ['beth', [8502]], ['between', [8812]], ['Bfr', [120069]], ['bfr', [120095]], ['bigcap', [8898]], ['bigcirc', [9711]], ['bigcup', [8899]], ['bigodot', [10752]], ['bigoplus', [10753]], ['bigotimes', [10754]], ['bigsqcup', [10758]], ['bigstar', [9733]], ['bigtriangledown', [9661]], ['bigtriangleup', [9651]], ['biguplus', [10756]], ['bigvee', [8897]], ['bigwedge', [8896]], ['bkarow', [10509]], ['blacklozenge', [10731]], ['blacksquare', [9642]], ['blacktriangle', [9652]], ['blacktriangledown', [9662]], ['blacktriangleleft', [9666]], ['blacktriangleright', [9656]], ['blank', [9251]], ['blk12', [9618]], ['blk14', [9617]], ['blk34', [9619]], ['block', [9608]], ['bne', [61, 8421]], ['bnequiv', [8801, 8421]], ['bNot', [10989]], ['bnot', [8976]], ['Bopf', [120121]], ['bopf', [120147]], ['bot', [8869]], ['bottom', [8869]], ['bowtie', [8904]], ['boxbox', [10697]], ['boxdl', [9488]], ['boxdL', [9557]], ['boxDl', [9558]], ['boxDL', [9559]], ['boxdr', [9484]], ['boxdR', [9554]], ['boxDr', [9555]], ['boxDR', [9556]], ['boxh', [9472]], ['boxH', [9552]], ['boxhd', [9516]], ['boxHd', [9572]], ['boxhD', [9573]], ['boxHD', [9574]], ['boxhu', [9524]], ['boxHu', [9575]], ['boxhU', [9576]], ['boxHU', [9577]], ['boxminus', [8863]], ['boxplus', [8862]], ['boxtimes', [8864]], ['boxul', [9496]], ['boxuL', [9563]], ['boxUl', [9564]], ['boxUL', [9565]], ['boxur', [9492]], ['boxuR', [9560]], ['boxUr', [9561]], ['boxUR', [9562]], ['boxv', [9474]], ['boxV', [9553]], ['boxvh', [9532]], ['boxvH', [9578]], ['boxVh', [9579]], ['boxVH', [9580]], ['boxvl', [9508]], ['boxvL', [9569]], ['boxVl', [9570]], ['boxVL', [9571]], ['boxvr', [9500]], ['boxvR', [9566]], ['boxVr', [9567]], ['boxVR', [9568]], ['bprime', [8245]], ['breve', [728]], ['Breve', [728]], ['brvbar', [166]], ['bscr', [119991]], ['Bscr', [8492]], ['bsemi', [8271]], ['bsim', [8765]], ['bsime', [8909]], ['bsolb', [10693]], ['bsol', [92]], ['bsolhsub', [10184]], ['bull', [8226]], ['bullet', [8226]], ['bump', [8782]], ['bumpE', [10926]], ['bumpe', [8783]], ['Bumpeq', [8782]], ['bumpeq', [8783]], ['Cacute', [262]], ['cacute', [263]], ['capand', [10820]], ['capbrcup', [10825]], ['capcap', [10827]], ['cap', [8745]], ['Cap', [8914]], ['capcup', [10823]], ['capdot', [10816]], ['CapitalDifferentialD', [8517]], ['caps', [8745, 65024]], ['caret', [8257]], ['caron', [711]], ['Cayleys', [8493]], ['ccaps', [10829]], ['Ccaron', [268]], ['ccaron', [269]], ['Ccedil', [199]], ['ccedil', [231]], ['Ccirc', [264]], ['ccirc', [265]], ['Cconint', [8752]], ['ccups', [10828]], ['ccupssm', [10832]], ['Cdot', [266]], ['cdot', [267]], ['cedil', [184]], ['Cedilla', [184]], ['cemptyv', [10674]], ['cent', [162]], ['centerdot', [183]], ['CenterDot', [183]], ['cfr', [120096]], ['Cfr', [8493]], ['CHcy', [1063]], ['chcy', [1095]], ['check', [10003]], ['checkmark', [10003]], ['Chi', [935]], ['chi', [967]], ['circ', [710]], ['circeq', [8791]], ['circlearrowleft', [8634]], ['circlearrowright', [8635]], ['circledast', [8859]], ['circledcirc', [8858]], ['circleddash', [8861]], ['CircleDot', [8857]], ['circledR', [174]], ['circledS', [9416]], ['CircleMinus', [8854]], ['CirclePlus', [8853]], ['CircleTimes', [8855]], ['cir', [9675]], ['cirE', [10691]], ['cire', [8791]], ['cirfnint', [10768]], ['cirmid', [10991]], ['cirscir', [10690]], ['ClockwiseContourIntegral', [8754]], ['clubs', [9827]], ['clubsuit', [9827]], ['colon', [58]], ['Colon', [8759]], ['Colone', [10868]], ['colone', [8788]], ['coloneq', [8788]], ['comma', [44]], ['commat', [64]], ['comp', [8705]], ['compfn', [8728]], ['complement', [8705]], ['complexes', [8450]], ['cong', [8773]], ['congdot', [10861]], ['Congruent', [8801]], ['conint', [8750]], ['Conint', [8751]], ['ContourIntegral', [8750]], ['copf', [120148]], ['Copf', [8450]], ['coprod', [8720]], ['Coproduct', [8720]], ['copy', [169]], ['COPY', [169]], ['copysr', [8471]], ['CounterClockwiseContourIntegral', [8755]], ['crarr', [8629]], ['cross', [10007]], ['Cross', [10799]], ['Cscr', [119966]], ['cscr', [119992]], ['csub', [10959]], ['csube', [10961]], ['csup', [10960]], ['csupe', [10962]], ['ctdot', [8943]], ['cudarrl', [10552]], ['cudarrr', [10549]], ['cuepr', [8926]], ['cuesc', [8927]], ['cularr', [8630]], ['cularrp', [10557]], ['cupbrcap', [10824]], ['cupcap', [10822]], ['CupCap', [8781]], ['cup', [8746]], ['Cup', [8915]], ['cupcup', [10826]], ['cupdot', [8845]], ['cupor', [10821]], ['cups', [8746, 65024]], ['curarr', [8631]], ['curarrm', [10556]], ['curlyeqprec', [8926]], ['curlyeqsucc', [8927]], ['curlyvee', [8910]], ['curlywedge', [8911]], ['curren', [164]], ['curvearrowleft', [8630]], ['curvearrowright', [8631]], ['cuvee', [8910]], ['cuwed', [8911]], ['cwconint', [8754]], ['cwint', [8753]], ['cylcty', [9005]], ['dagger', [8224]], ['Dagger', [8225]], ['daleth', [8504]], ['darr', [8595]], ['Darr', [8609]], ['dArr', [8659]], ['dash', [8208]], ['Dashv', [10980]], ['dashv', [8867]], ['dbkarow', [10511]], ['dblac', [733]], ['Dcaron', [270]], ['dcaron', [271]], ['Dcy', [1044]], ['dcy', [1076]], ['ddagger', [8225]], ['ddarr', [8650]], ['DD', [8517]], ['dd', [8518]], ['DDotrahd', [10513]], ['ddotseq', [10871]], ['deg', [176]], ['Del', [8711]], ['Delta', [916]], ['delta', [948]], ['demptyv', [10673]], ['dfisht', [10623]], ['Dfr', [120071]], ['dfr', [120097]], ['dHar', [10597]], ['dharl', [8643]], ['dharr', [8642]], ['DiacriticalAcute', [180]], ['DiacriticalDot', [729]], ['DiacriticalDoubleAcute', [733]], ['DiacriticalGrave', [96]], ['DiacriticalTilde', [732]], ['diam', [8900]], ['diamond', [8900]], ['Diamond', [8900]], ['diamondsuit', [9830]], ['diams', [9830]], ['die', [168]], ['DifferentialD', [8518]], ['digamma', [989]], ['disin', [8946]], ['div', [247]], ['divide', [247]], ['divideontimes', [8903]], ['divonx', [8903]], ['DJcy', [1026]], ['djcy', [1106]], ['dlcorn', [8990]], ['dlcrop', [8973]], ['dollar', [36]], ['Dopf', [120123]], ['dopf', [120149]], ['Dot', [168]], ['dot', [729]], ['DotDot', [8412]], ['doteq', [8784]], ['doteqdot', [8785]], ['DotEqual', [8784]], ['dotminus', [8760]], ['dotplus', [8724]], ['dotsquare', [8865]], ['doublebarwedge', [8966]], ['DoubleContourIntegral', [8751]], ['DoubleDot', [168]], ['DoubleDownArrow', [8659]], ['DoubleLeftArrow', [8656]], ['DoubleLeftRightArrow', [8660]], ['DoubleLeftTee', [10980]], ['DoubleLongLeftArrow', [10232]], ['DoubleLongLeftRightArrow', [10234]], ['DoubleLongRightArrow', [10233]], ['DoubleRightArrow', [8658]], ['DoubleRightTee', [8872]], ['DoubleUpArrow', [8657]], ['DoubleUpDownArrow', [8661]], ['DoubleVerticalBar', [8741]], ['DownArrowBar', [10515]], ['downarrow', [8595]], ['DownArrow', [8595]], ['Downarrow', [8659]], ['DownArrowUpArrow', [8693]], ['DownBreve', [785]], ['downdownarrows', [8650]], ['downharpoonleft', [8643]], ['downharpoonright', [8642]], ['DownLeftRightVector', [10576]], ['DownLeftTeeVector', [10590]], ['DownLeftVectorBar', [10582]], ['DownLeftVector', [8637]], ['DownRightTeeVector', [10591]], ['DownRightVectorBar', [10583]], ['DownRightVector', [8641]], ['DownTeeArrow', [8615]], ['DownTee', [8868]], ['drbkarow', [10512]], ['drcorn', [8991]], ['drcrop', [8972]], ['Dscr', [119967]], ['dscr', [119993]], ['DScy', [1029]], ['dscy', [1109]], ['dsol', [10742]], ['Dstrok', [272]], ['dstrok', [273]], ['dtdot', [8945]], ['dtri', [9663]], ['dtrif', [9662]], ['duarr', [8693]], ['duhar', [10607]], ['dwangle', [10662]], ['DZcy', [1039]], ['dzcy', [1119]], ['dzigrarr', [10239]], ['Eacute', [201]], ['eacute', [233]], ['easter', [10862]], ['Ecaron', [282]], ['ecaron', [283]], ['Ecirc', [202]], ['ecirc', [234]], ['ecir', [8790]], ['ecolon', [8789]], ['Ecy', [1069]], ['ecy', [1101]], ['eDDot', [10871]], ['Edot', [278]], ['edot', [279]], ['eDot', [8785]], ['ee', [8519]], ['efDot', [8786]], ['Efr', [120072]], ['efr', [120098]], ['eg', [10906]], ['Egrave', [200]], ['egrave', [232]], ['egs', [10902]], ['egsdot', [10904]], ['el', [10905]], ['Element', [8712]], ['elinters', [9191]], ['ell', [8467]], ['els', [10901]], ['elsdot', [10903]], ['Emacr', [274]], ['emacr', [275]], ['empty', [8709]], ['emptyset', [8709]], ['EmptySmallSquare', [9723]], ['emptyv', [8709]], ['EmptyVerySmallSquare', [9643]], ['emsp13', [8196]], ['emsp14', [8197]], ['emsp', [8195]], ['ENG', [330]], ['eng', [331]], ['ensp', [8194]], ['Eogon', [280]], ['eogon', [281]], ['Eopf', [120124]], ['eopf', [120150]], ['epar', [8917]], ['eparsl', [10723]], ['eplus', [10865]], ['epsi', [949]], ['Epsilon', [917]], ['epsilon', [949]], ['epsiv', [1013]], ['eqcirc', [8790]], ['eqcolon', [8789]], ['eqsim', [8770]], ['eqslantgtr', [10902]], ['eqslantless', [10901]], ['Equal', [10869]], ['equals', [61]], ['EqualTilde', [8770]], ['equest', [8799]], ['Equilibrium', [8652]], ['equiv', [8801]], ['equivDD', [10872]], ['eqvparsl', [10725]], ['erarr', [10609]], ['erDot', [8787]], ['escr', [8495]], ['Escr', [8496]], ['esdot', [8784]], ['Esim', [10867]], ['esim', [8770]], ['Eta', [919]], ['eta', [951]], ['ETH', [208]], ['eth', [240]], ['Euml', [203]], ['euml', [235]], ['euro', [8364]], ['excl', [33]], ['exist', [8707]], ['Exists', [8707]], ['expectation', [8496]], ['exponentiale', [8519]], ['ExponentialE', [8519]], ['fallingdotseq', [8786]], ['Fcy', [1060]], ['fcy', [1092]], ['female', [9792]], ['ffilig', [64259]], ['fflig', [64256]], ['ffllig', [64260]], ['Ffr', [120073]], ['ffr', [120099]], ['filig', [64257]], ['FilledSmallSquare', [9724]], ['FilledVerySmallSquare', [9642]], ['fjlig', [102, 106]], ['flat', [9837]], ['fllig', [64258]], ['fltns', [9649]], ['fnof', [402]], ['Fopf', [120125]], ['fopf', [120151]], ['forall', [8704]], ['ForAll', [8704]], ['fork', [8916]], ['forkv', [10969]], ['Fouriertrf', [8497]], ['fpartint', [10765]], ['frac12', [189]], ['frac13', [8531]], ['frac14', [188]], ['frac15', [8533]], ['frac16', [8537]], ['frac18', [8539]], ['frac23', [8532]], ['frac25', [8534]], ['frac34', [190]], ['frac35', [8535]], ['frac38', [8540]], ['frac45', [8536]], ['frac56', [8538]], ['frac58', [8541]], ['frac78', [8542]], ['frasl', [8260]], ['frown', [8994]], ['fscr', [119995]], ['Fscr', [8497]], ['gacute', [501]], ['Gamma', [915]], ['gamma', [947]], ['Gammad', [988]], ['gammad', [989]], ['gap', [10886]], ['Gbreve', [286]], ['gbreve', [287]], ['Gcedil', [290]], ['Gcirc', [284]], ['gcirc', [285]], ['Gcy', [1043]], ['gcy', [1075]], ['Gdot', [288]], ['gdot', [289]], ['ge', [8805]], ['gE', [8807]], ['gEl', [10892]], ['gel', [8923]], ['geq', [8805]], ['geqq', [8807]], ['geqslant', [10878]], ['gescc', [10921]], ['ges', [10878]], ['gesdot', [10880]], ['gesdoto', [10882]], ['gesdotol', [10884]], ['gesl', [8923, 65024]], ['gesles', [10900]], ['Gfr', [120074]], ['gfr', [120100]], ['gg', [8811]], ['Gg', [8921]], ['ggg', [8921]], ['gimel', [8503]], ['GJcy', [1027]], ['gjcy', [1107]], ['gla', [10917]], ['gl', [8823]], ['glE', [10898]], ['glj', [10916]], ['gnap', [10890]], ['gnapprox', [10890]], ['gne', [10888]], ['gnE', [8809]], ['gneq', [10888]], ['gneqq', [8809]], ['gnsim', [8935]], ['Gopf', [120126]], ['gopf', [120152]], ['grave', [96]], ['GreaterEqual', [8805]], ['GreaterEqualLess', [8923]], ['GreaterFullEqual', [8807]], ['GreaterGreater', [10914]], ['GreaterLess', [8823]], ['GreaterSlantEqual', [10878]], ['GreaterTilde', [8819]], ['Gscr', [119970]], ['gscr', [8458]], ['gsim', [8819]], ['gsime', [10894]], ['gsiml', [10896]], ['gtcc', [10919]], ['gtcir', [10874]], ['gt', [62]], ['GT', [62]], ['Gt', [8811]], ['gtdot', [8919]], ['gtlPar', [10645]], ['gtquest', [10876]], ['gtrapprox', [10886]], ['gtrarr', [10616]], ['gtrdot', [8919]], ['gtreqless', [8923]], ['gtreqqless', [10892]], ['gtrless', [8823]], ['gtrsim', [8819]], ['gvertneqq', [8809, 65024]], ['gvnE', [8809, 65024]], ['Hacek', [711]], ['hairsp', [8202]], ['half', [189]], ['hamilt', [8459]], ['HARDcy', [1066]], ['hardcy', [1098]], ['harrcir', [10568]], ['harr', [8596]], ['hArr', [8660]], ['harrw', [8621]], ['Hat', [94]], ['hbar', [8463]], ['Hcirc', [292]], ['hcirc', [293]], ['hearts', [9829]], ['heartsuit', [9829]], ['hellip', [8230]], ['hercon', [8889]], ['hfr', [120101]], ['Hfr', [8460]], ['HilbertSpace', [8459]], ['hksearow', [10533]], ['hkswarow', [10534]], ['hoarr', [8703]], ['homtht', [8763]], ['hookleftarrow', [8617]], ['hookrightarrow', [8618]], ['hopf', [120153]], ['Hopf', [8461]], ['horbar', [8213]], ['HorizontalLine', [9472]], ['hscr', [119997]], ['Hscr', [8459]], ['hslash', [8463]], ['Hstrok', [294]], ['hstrok', [295]], ['HumpDownHump', [8782]], ['HumpEqual', [8783]], ['hybull', [8259]], ['hyphen', [8208]], ['Iacute', [205]], ['iacute', [237]], ['ic', [8291]], ['Icirc', [206]], ['icirc', [238]], ['Icy', [1048]], ['icy', [1080]], ['Idot', [304]], ['IEcy', [1045]], ['iecy', [1077]], ['iexcl', [161]], ['iff', [8660]], ['ifr', [120102]], ['Ifr', [8465]], ['Igrave', [204]], ['igrave', [236]], ['ii', [8520]], ['iiiint', [10764]], ['iiint', [8749]], ['iinfin', [10716]], ['iiota', [8489]], ['IJlig', [306]], ['ijlig', [307]], ['Imacr', [298]], ['imacr', [299]], ['image', [8465]], ['ImaginaryI', [8520]], ['imagline', [8464]], ['imagpart', [8465]], ['imath', [305]], ['Im', [8465]], ['imof', [8887]], ['imped', [437]], ['Implies', [8658]], ['incare', [8453]], ['in', [8712]], ['infin', [8734]], ['infintie', [10717]], ['inodot', [305]], ['intcal', [8890]], ['int', [8747]], ['Int', [8748]], ['integers', [8484]], ['Integral', [8747]], ['intercal', [8890]], ['Intersection', [8898]], ['intlarhk', [10775]], ['intprod', [10812]], ['InvisibleComma', [8291]], ['InvisibleTimes', [8290]], ['IOcy', [1025]], ['iocy', [1105]], ['Iogon', [302]], ['iogon', [303]], ['Iopf', [120128]], ['iopf', [120154]], ['Iota', [921]], ['iota', [953]], ['iprod', [10812]], ['iquest', [191]], ['iscr', [119998]], ['Iscr', [8464]], ['isin', [8712]], ['isindot', [8949]], ['isinE', [8953]], ['isins', [8948]], ['isinsv', [8947]], ['isinv', [8712]], ['it', [8290]], ['Itilde', [296]], ['itilde', [297]], ['Iukcy', [1030]], ['iukcy', [1110]], ['Iuml', [207]], ['iuml', [239]], ['Jcirc', [308]], ['jcirc', [309]], ['Jcy', [1049]], ['jcy', [1081]], ['Jfr', [120077]], ['jfr', [120103]], ['jmath', [567]], ['Jopf', [120129]], ['jopf', [120155]], ['Jscr', [119973]], ['jscr', [119999]], ['Jsercy', [1032]], ['jsercy', [1112]], ['Jukcy', [1028]], ['jukcy', [1108]], ['Kappa', [922]], ['kappa', [954]], ['kappav', [1008]], ['Kcedil', [310]], ['kcedil', [311]], ['Kcy', [1050]], ['kcy', [1082]], ['Kfr', [120078]], ['kfr', [120104]], ['kgreen', [312]], ['KHcy', [1061]], ['khcy', [1093]], ['KJcy', [1036]], ['kjcy', [1116]], ['Kopf', [120130]], ['kopf', [120156]], ['Kscr', [119974]], ['kscr', [120000]], ['lAarr', [8666]], ['Lacute', [313]], ['lacute', [314]], ['laemptyv', [10676]], ['lagran', [8466]], ['Lambda', [923]], ['lambda', [955]], ['lang', [10216]], ['Lang', [10218]], ['langd', [10641]], ['langle', [10216]], ['lap', [10885]], ['Laplacetrf', [8466]], ['laquo', [171]], ['larrb', [8676]], ['larrbfs', [10527]], ['larr', [8592]], ['Larr', [8606]], ['lArr', [8656]], ['larrfs', [10525]], ['larrhk', [8617]], ['larrlp', [8619]], ['larrpl', [10553]], ['larrsim', [10611]], ['larrtl', [8610]], ['latail', [10521]], ['lAtail', [10523]], ['lat', [10923]], ['late', [10925]], ['lates', [10925, 65024]], ['lbarr', [10508]], ['lBarr', [10510]], ['lbbrk', [10098]], ['lbrace', [123]], ['lbrack', [91]], ['lbrke', [10635]], ['lbrksld', [10639]], ['lbrkslu', [10637]], ['Lcaron', [317]], ['lcaron', [318]], ['Lcedil', [315]], ['lcedil', [316]], ['lceil', [8968]], ['lcub', [123]], ['Lcy', [1051]], ['lcy', [1083]], ['ldca', [10550]], ['ldquo', [8220]], ['ldquor', [8222]], ['ldrdhar', [10599]], ['ldrushar', [10571]], ['ldsh', [8626]], ['le', [8804]], ['lE', [8806]], ['LeftAngleBracket', [10216]], ['LeftArrowBar', [8676]], ['leftarrow', [8592]], ['LeftArrow', [8592]], ['Leftarrow', [8656]], ['LeftArrowRightArrow', [8646]], ['leftarrowtail', [8610]], ['LeftCeiling', [8968]], ['LeftDoubleBracket', [10214]], ['LeftDownTeeVector', [10593]], ['LeftDownVectorBar', [10585]], ['LeftDownVector', [8643]], ['LeftFloor', [8970]], ['leftharpoondown', [8637]], ['leftharpoonup', [8636]], ['leftleftarrows', [8647]], ['leftrightarrow', [8596]], ['LeftRightArrow', [8596]], ['Leftrightarrow', [8660]], ['leftrightarrows', [8646]], ['leftrightharpoons', [8651]], ['leftrightsquigarrow', [8621]], ['LeftRightVector', [10574]], ['LeftTeeArrow', [8612]], ['LeftTee', [8867]], ['LeftTeeVector', [10586]], ['leftthreetimes', [8907]], ['LeftTriangleBar', [10703]], ['LeftTriangle', [8882]], ['LeftTriangleEqual', [8884]], ['LeftUpDownVector', [10577]], ['LeftUpTeeVector', [10592]], ['LeftUpVectorBar', [10584]], ['LeftUpVector', [8639]], ['LeftVectorBar', [10578]], ['LeftVector', [8636]], ['lEg', [10891]], ['leg', [8922]], ['leq', [8804]], ['leqq', [8806]], ['leqslant', [10877]], ['lescc', [10920]], ['les', [10877]], ['lesdot', [10879]], ['lesdoto', [10881]], ['lesdotor', [10883]], ['lesg', [8922, 65024]], ['lesges', [10899]], ['lessapprox', [10885]], ['lessdot', [8918]], ['lesseqgtr', [8922]], ['lesseqqgtr', [10891]], ['LessEqualGreater', [8922]], ['LessFullEqual', [8806]], ['LessGreater', [8822]], ['lessgtr', [8822]], ['LessLess', [10913]], ['lesssim', [8818]], ['LessSlantEqual', [10877]], ['LessTilde', [8818]], ['lfisht', [10620]], ['lfloor', [8970]], ['Lfr', [120079]], ['lfr', [120105]], ['lg', [8822]], ['lgE', [10897]], ['lHar', [10594]], ['lhard', [8637]], ['lharu', [8636]], ['lharul', [10602]], ['lhblk', [9604]], ['LJcy', [1033]], ['ljcy', [1113]], ['llarr', [8647]], ['ll', [8810]], ['Ll', [8920]], ['llcorner', [8990]], ['Lleftarrow', [8666]], ['llhard', [10603]], ['lltri', [9722]], ['Lmidot', [319]], ['lmidot', [320]], ['lmoustache', [9136]], ['lmoust', [9136]], ['lnap', [10889]], ['lnapprox', [10889]], ['lne', [10887]], ['lnE', [8808]], ['lneq', [10887]], ['lneqq', [8808]], ['lnsim', [8934]], ['loang', [10220]], ['loarr', [8701]], ['lobrk', [10214]], ['longleftarrow', [10229]], ['LongLeftArrow', [10229]], ['Longleftarrow', [10232]], ['longleftrightarrow', [10231]], ['LongLeftRightArrow', [10231]], ['Longleftrightarrow', [10234]], ['longmapsto', [10236]], ['longrightarrow', [10230]], ['LongRightArrow', [10230]], ['Longrightarrow', [10233]], ['looparrowleft', [8619]], ['looparrowright', [8620]], ['lopar', [10629]], ['Lopf', [120131]], ['lopf', [120157]], ['loplus', [10797]], ['lotimes', [10804]], ['lowast', [8727]], ['lowbar', [95]], ['LowerLeftArrow', [8601]], ['LowerRightArrow', [8600]], ['loz', [9674]], ['lozenge', [9674]], ['lozf', [10731]], ['lpar', [40]], ['lparlt', [10643]], ['lrarr', [8646]], ['lrcorner', [8991]], ['lrhar', [8651]], ['lrhard', [10605]], ['lrm', [8206]], ['lrtri', [8895]], ['lsaquo', [8249]], ['lscr', [120001]], ['Lscr', [8466]], ['lsh', [8624]], ['Lsh', [8624]], ['lsim', [8818]], ['lsime', [10893]], ['lsimg', [10895]], ['lsqb', [91]], ['lsquo', [8216]], ['lsquor', [8218]], ['Lstrok', [321]], ['lstrok', [322]], ['ltcc', [10918]], ['ltcir', [10873]], ['lt', [60]], ['LT', [60]], ['Lt', [8810]], ['ltdot', [8918]], ['lthree', [8907]], ['ltimes', [8905]], ['ltlarr', [10614]], ['ltquest', [10875]], ['ltri', [9667]], ['ltrie', [8884]], ['ltrif', [9666]], ['ltrPar', [10646]], ['lurdshar', [10570]], ['luruhar', [10598]], ['lvertneqq', [8808, 65024]], ['lvnE', [8808, 65024]], ['macr', [175]], ['male', [9794]], ['malt', [10016]], ['maltese', [10016]], ['Map', [10501]], ['map', [8614]], ['mapsto', [8614]], ['mapstodown', [8615]], ['mapstoleft', [8612]], ['mapstoup', [8613]], ['marker', [9646]], ['mcomma', [10793]], ['Mcy', [1052]], ['mcy', [1084]], ['mdash', [8212]], ['mDDot', [8762]], ['measuredangle', [8737]], ['MediumSpace', [8287]], ['Mellintrf', [8499]], ['Mfr', [120080]], ['mfr', [120106]], ['mho', [8487]], ['micro', [181]], ['midast', [42]], ['midcir', [10992]], ['mid', [8739]], ['middot', [183]], ['minusb', [8863]], ['minus', [8722]], ['minusd', [8760]], ['minusdu', [10794]], ['MinusPlus', [8723]], ['mlcp', [10971]], ['mldr', [8230]], ['mnplus', [8723]], ['models', [8871]], ['Mopf', [120132]], ['mopf', [120158]], ['mp', [8723]], ['mscr', [120002]], ['Mscr', [8499]], ['mstpos', [8766]], ['Mu', [924]], ['mu', [956]], ['multimap', [8888]], ['mumap', [8888]], ['nabla', [8711]], ['Nacute', [323]], ['nacute', [324]], ['nang', [8736, 8402]], ['nap', [8777]], ['napE', [10864, 824]], ['napid', [8779, 824]], ['napos', [329]], ['napprox', [8777]], ['natural', [9838]], ['naturals', [8469]], ['natur', [9838]], ['nbsp', [160]], ['nbump', [8782, 824]], ['nbumpe', [8783, 824]], ['ncap', [10819]], ['Ncaron', [327]], ['ncaron', [328]], ['Ncedil', [325]], ['ncedil', [326]], ['ncong', [8775]], ['ncongdot', [10861, 824]], ['ncup', [10818]], ['Ncy', [1053]], ['ncy', [1085]], ['ndash', [8211]], ['nearhk', [10532]], ['nearr', [8599]], ['neArr', [8663]], ['nearrow', [8599]], ['ne', [8800]], ['nedot', [8784, 824]], ['NegativeMediumSpace', [8203]], ['NegativeThickSpace', [8203]], ['NegativeThinSpace', [8203]], ['NegativeVeryThinSpace', [8203]], ['nequiv', [8802]], ['nesear', [10536]], ['nesim', [8770, 824]], ['NestedGreaterGreater', [8811]], ['NestedLessLess', [8810]], ['nexist', [8708]], ['nexists', [8708]], ['Nfr', [120081]], ['nfr', [120107]], ['ngE', [8807, 824]], ['nge', [8817]], ['ngeq', [8817]], ['ngeqq', [8807, 824]], ['ngeqslant', [10878, 824]], ['nges', [10878, 824]], ['nGg', [8921, 824]], ['ngsim', [8821]], ['nGt', [8811, 8402]], ['ngt', [8815]], ['ngtr', [8815]], ['nGtv', [8811, 824]], ['nharr', [8622]], ['nhArr', [8654]], ['nhpar', [10994]], ['ni', [8715]], ['nis', [8956]], ['nisd', [8954]], ['niv', [8715]], ['NJcy', [1034]], ['njcy', [1114]], ['nlarr', [8602]], ['nlArr', [8653]], ['nldr', [8229]], ['nlE', [8806, 824]], ['nle', [8816]], ['nleftarrow', [8602]], ['nLeftarrow', [8653]], ['nleftrightarrow', [8622]], ['nLeftrightarrow', [8654]], ['nleq', [8816]], ['nleqq', [8806, 824]], ['nleqslant', [10877, 824]], ['nles', [10877, 824]], ['nless', [8814]], ['nLl', [8920, 824]], ['nlsim', [8820]], ['nLt', [8810, 8402]], ['nlt', [8814]], ['nltri', [8938]], ['nltrie', [8940]], ['nLtv', [8810, 824]], ['nmid', [8740]], ['NoBreak', [8288]], ['NonBreakingSpace', [160]], ['nopf', [120159]], ['Nopf', [8469]], ['Not', [10988]], ['not', [172]], ['NotCongruent', [8802]], ['NotCupCap', [8813]], ['NotDoubleVerticalBar', [8742]], ['NotElement', [8713]], ['NotEqual', [8800]], ['NotEqualTilde', [8770, 824]], ['NotExists', [8708]], ['NotGreater', [8815]], ['NotGreaterEqual', [8817]], ['NotGreaterFullEqual', [8807, 824]], ['NotGreaterGreater', [8811, 824]], ['NotGreaterLess', [8825]], ['NotGreaterSlantEqual', [10878, 824]], ['NotGreaterTilde', [8821]], ['NotHumpDownHump', [8782, 824]], ['NotHumpEqual', [8783, 824]], ['notin', [8713]], ['notindot', [8949, 824]], ['notinE', [8953, 824]], ['notinva', [8713]], ['notinvb', [8951]], ['notinvc', [8950]], ['NotLeftTriangleBar', [10703, 824]], ['NotLeftTriangle', [8938]], ['NotLeftTriangleEqual', [8940]], ['NotLess', [8814]], ['NotLessEqual', [8816]], ['NotLessGreater', [8824]], ['NotLessLess', [8810, 824]], ['NotLessSlantEqual', [10877, 824]], ['NotLessTilde', [8820]], ['NotNestedGreaterGreater', [10914, 824]], ['NotNestedLessLess', [10913, 824]], ['notni', [8716]], ['notniva', [8716]], ['notnivb', [8958]], ['notnivc', [8957]], ['NotPrecedes', [8832]], ['NotPrecedesEqual', [10927, 824]], ['NotPrecedesSlantEqual', [8928]], ['NotReverseElement', [8716]], ['NotRightTriangleBar', [10704, 824]], ['NotRightTriangle', [8939]], ['NotRightTriangleEqual', [8941]], ['NotSquareSubset', [8847, 824]], ['NotSquareSubsetEqual', [8930]], ['NotSquareSuperset', [8848, 824]], ['NotSquareSupersetEqual', [8931]], ['NotSubset', [8834, 8402]], ['NotSubsetEqual', [8840]], ['NotSucceeds', [8833]], ['NotSucceedsEqual', [10928, 824]], ['NotSucceedsSlantEqual', [8929]], ['NotSucceedsTilde', [8831, 824]], ['NotSuperset', [8835, 8402]], ['NotSupersetEqual', [8841]], ['NotTilde', [8769]], ['NotTildeEqual', [8772]], ['NotTildeFullEqual', [8775]], ['NotTildeTilde', [8777]], ['NotVerticalBar', [8740]], ['nparallel', [8742]], ['npar', [8742]], ['nparsl', [11005, 8421]], ['npart', [8706, 824]], ['npolint', [10772]], ['npr', [8832]], ['nprcue', [8928]], ['nprec', [8832]], ['npreceq', [10927, 824]], ['npre', [10927, 824]], ['nrarrc', [10547, 824]], ['nrarr', [8603]], ['nrArr', [8655]], ['nrarrw', [8605, 824]], ['nrightarrow', [8603]], ['nRightarrow', [8655]], ['nrtri', [8939]], ['nrtrie', [8941]], ['nsc', [8833]], ['nsccue', [8929]], ['nsce', [10928, 824]], ['Nscr', [119977]], ['nscr', [120003]], ['nshortmid', [8740]], ['nshortparallel', [8742]], ['nsim', [8769]], ['nsime', [8772]], ['nsimeq', [8772]], ['nsmid', [8740]], ['nspar', [8742]], ['nsqsube', [8930]], ['nsqsupe', [8931]], ['nsub', [8836]], ['nsubE', [10949, 824]], ['nsube', [8840]], ['nsubset', [8834, 8402]], ['nsubseteq', [8840]], ['nsubseteqq', [10949, 824]], ['nsucc', [8833]], ['nsucceq', [10928, 824]], ['nsup', [8837]], ['nsupE', [10950, 824]], ['nsupe', [8841]], ['nsupset', [8835, 8402]], ['nsupseteq', [8841]], ['nsupseteqq', [10950, 824]], ['ntgl', [8825]], ['Ntilde', [209]], ['ntilde', [241]], ['ntlg', [8824]], ['ntriangleleft', [8938]], ['ntrianglelefteq', [8940]], ['ntriangleright', [8939]], ['ntrianglerighteq', [8941]], ['Nu', [925]], ['nu', [957]], ['num', [35]], ['numero', [8470]], ['numsp', [8199]], ['nvap', [8781, 8402]], ['nvdash', [8876]], ['nvDash', [8877]], ['nVdash', [8878]], ['nVDash', [8879]], ['nvge', [8805, 8402]], ['nvgt', [62, 8402]], ['nvHarr', [10500]], ['nvinfin', [10718]], ['nvlArr', [10498]], ['nvle', [8804, 8402]], ['nvlt', [60, 8402]], ['nvltrie', [8884, 8402]], ['nvrArr', [10499]], ['nvrtrie', [8885, 8402]], ['nvsim', [8764, 8402]], ['nwarhk', [10531]], ['nwarr', [8598]], ['nwArr', [8662]], ['nwarrow', [8598]], ['nwnear', [10535]], ['Oacute', [211]], ['oacute', [243]], ['oast', [8859]], ['Ocirc', [212]], ['ocirc', [244]], ['ocir', [8858]], ['Ocy', [1054]], ['ocy', [1086]], ['odash', [8861]], ['Odblac', [336]], ['odblac', [337]], ['odiv', [10808]], ['odot', [8857]], ['odsold', [10684]], ['OElig', [338]], ['oelig', [339]], ['ofcir', [10687]], ['Ofr', [120082]], ['ofr', [120108]], ['ogon', [731]], ['Ograve', [210]], ['ograve', [242]], ['ogt', [10689]], ['ohbar', [10677]], ['ohm', [937]], ['oint', [8750]], ['olarr', [8634]], ['olcir', [10686]], ['olcross', [10683]], ['oline', [8254]], ['olt', [10688]], ['Omacr', [332]], ['omacr', [333]], ['Omega', [937]], ['omega', [969]], ['Omicron', [927]], ['omicron', [959]], ['omid', [10678]], ['ominus', [8854]], ['Oopf', [120134]], ['oopf', [120160]], ['opar', [10679]], ['OpenCurlyDoubleQuote', [8220]], ['OpenCurlyQuote', [8216]], ['operp', [10681]], ['oplus', [8853]], ['orarr', [8635]], ['Or', [10836]], ['or', [8744]], ['ord', [10845]], ['order', [8500]], ['orderof', [8500]], ['ordf', [170]], ['ordm', [186]], ['origof', [8886]], ['oror', [10838]], ['orslope', [10839]], ['orv', [10843]], ['oS', [9416]], ['Oscr', [119978]], ['oscr', [8500]], ['Oslash', [216]], ['oslash', [248]], ['osol', [8856]], ['Otilde', [213]], ['otilde', [245]], ['otimesas', [10806]], ['Otimes', [10807]], ['otimes', [8855]], ['Ouml', [214]], ['ouml', [246]], ['ovbar', [9021]], ['OverBar', [8254]], ['OverBrace', [9182]], ['OverBracket', [9140]], ['OverParenthesis', [9180]], ['para', [182]], ['parallel', [8741]], ['par', [8741]], ['parsim', [10995]], ['parsl', [11005]], ['part', [8706]], ['PartialD', [8706]], ['Pcy', [1055]], ['pcy', [1087]], ['percnt', [37]], ['period', [46]], ['permil', [8240]], ['perp', [8869]], ['pertenk', [8241]], ['Pfr', [120083]], ['pfr', [120109]], ['Phi', [934]], ['phi', [966]], ['phiv', [981]], ['phmmat', [8499]], ['phone', [9742]], ['Pi', [928]], ['pi', [960]], ['pitchfork', [8916]], ['piv', [982]], ['planck', [8463]], ['planckh', [8462]], ['plankv', [8463]], ['plusacir', [10787]], ['plusb', [8862]], ['pluscir', [10786]], ['plus', [43]], ['plusdo', [8724]], ['plusdu', [10789]], ['pluse', [10866]], ['PlusMinus', [177]], ['plusmn', [177]], ['plussim', [10790]], ['plustwo', [10791]], ['pm', [177]], ['Poincareplane', [8460]], ['pointint', [10773]], ['popf', [120161]], ['Popf', [8473]], ['pound', [163]], ['prap', [10935]], ['Pr', [10939]], ['pr', [8826]], ['prcue', [8828]], ['precapprox', [10935]], ['prec', [8826]], ['preccurlyeq', [8828]], ['Precedes', [8826]], ['PrecedesEqual', [10927]], ['PrecedesSlantEqual', [8828]], ['PrecedesTilde', [8830]], ['preceq', [10927]], ['precnapprox', [10937]], ['precneqq', [10933]], ['precnsim', [8936]], ['pre', [10927]], ['prE', [10931]], ['precsim', [8830]], ['prime', [8242]], ['Prime', [8243]], ['primes', [8473]], ['prnap', [10937]], ['prnE', [10933]], ['prnsim', [8936]], ['prod', [8719]], ['Product', [8719]], ['profalar', [9006]], ['profline', [8978]], ['profsurf', [8979]], ['prop', [8733]], ['Proportional', [8733]], ['Proportion', [8759]], ['propto', [8733]], ['prsim', [8830]], ['prurel', [8880]], ['Pscr', [119979]], ['pscr', [120005]], ['Psi', [936]], ['psi', [968]], ['puncsp', [8200]], ['Qfr', [120084]], ['qfr', [120110]], ['qint', [10764]], ['qopf', [120162]], ['Qopf', [8474]], ['qprime', [8279]], ['Qscr', [119980]], ['qscr', [120006]], ['quaternions', [8461]], ['quatint', [10774]], ['quest', [63]], ['questeq', [8799]], ['quot', [34]], ['QUOT', [34]], ['rAarr', [8667]], ['race', [8765, 817]], ['Racute', [340]], ['racute', [341]], ['radic', [8730]], ['raemptyv', [10675]], ['rang', [10217]], ['Rang', [10219]], ['rangd', [10642]], ['range', [10661]], ['rangle', [10217]], ['raquo', [187]], ['rarrap', [10613]], ['rarrb', [8677]], ['rarrbfs', [10528]], ['rarrc', [10547]], ['rarr', [8594]], ['Rarr', [8608]], ['rArr', [8658]], ['rarrfs', [10526]], ['rarrhk', [8618]], ['rarrlp', [8620]], ['rarrpl', [10565]], ['rarrsim', [10612]], ['Rarrtl', [10518]], ['rarrtl', [8611]], ['rarrw', [8605]], ['ratail', [10522]], ['rAtail', [10524]], ['ratio', [8758]], ['rationals', [8474]], ['rbarr', [10509]], ['rBarr', [10511]], ['RBarr', [10512]], ['rbbrk', [10099]], ['rbrace', [125]], ['rbrack', [93]], ['rbrke', [10636]], ['rbrksld', [10638]], ['rbrkslu', [10640]], ['Rcaron', [344]], ['rcaron', [345]], ['Rcedil', [342]], ['rcedil', [343]], ['rceil', [8969]], ['rcub', [125]], ['Rcy', [1056]], ['rcy', [1088]], ['rdca', [10551]], ['rdldhar', [10601]], ['rdquo', [8221]], ['rdquor', [8221]], ['CloseCurlyDoubleQuote', [8221]], ['rdsh', [8627]], ['real', [8476]], ['realine', [8475]], ['realpart', [8476]], ['reals', [8477]], ['Re', [8476]], ['rect', [9645]], ['reg', [174]], ['REG', [174]], ['ReverseElement', [8715]], ['ReverseEquilibrium', [8651]], ['ReverseUpEquilibrium', [10607]], ['rfisht', [10621]], ['rfloor', [8971]], ['rfr', [120111]], ['Rfr', [8476]], ['rHar', [10596]], ['rhard', [8641]], ['rharu', [8640]], ['rharul', [10604]], ['Rho', [929]], ['rho', [961]], ['rhov', [1009]], ['RightAngleBracket', [10217]], ['RightArrowBar', [8677]], ['rightarrow', [8594]], ['RightArrow', [8594]], ['Rightarrow', [8658]], ['RightArrowLeftArrow', [8644]], ['rightarrowtail', [8611]], ['RightCeiling', [8969]], ['RightDoubleBracket', [10215]], ['RightDownTeeVector', [10589]], ['RightDownVectorBar', [10581]], ['RightDownVector', [8642]], ['RightFloor', [8971]], ['rightharpoondown', [8641]], ['rightharpoonup', [8640]], ['rightleftarrows', [8644]], ['rightleftharpoons', [8652]], ['rightrightarrows', [8649]], ['rightsquigarrow', [8605]], ['RightTeeArrow', [8614]], ['RightTee', [8866]], ['RightTeeVector', [10587]], ['rightthreetimes', [8908]], ['RightTriangleBar', [10704]], ['RightTriangle', [8883]], ['RightTriangleEqual', [8885]], ['RightUpDownVector', [10575]], ['RightUpTeeVector', [10588]], ['RightUpVectorBar', [10580]], ['RightUpVector', [8638]], ['RightVectorBar', [10579]], ['RightVector', [8640]], ['ring', [730]], ['risingdotseq', [8787]], ['rlarr', [8644]], ['rlhar', [8652]], ['rlm', [8207]], ['rmoustache', [9137]], ['rmoust', [9137]], ['rnmid', [10990]], ['roang', [10221]], ['roarr', [8702]], ['robrk', [10215]], ['ropar', [10630]], ['ropf', [120163]], ['Ropf', [8477]], ['roplus', [10798]], ['rotimes', [10805]], ['RoundImplies', [10608]], ['rpar', [41]], ['rpargt', [10644]], ['rppolint', [10770]], ['rrarr', [8649]], ['Rrightarrow', [8667]], ['rsaquo', [8250]], ['rscr', [120007]], ['Rscr', [8475]], ['rsh', [8625]], ['Rsh', [8625]], ['rsqb', [93]], ['rsquo', [8217]], ['rsquor', [8217]], ['CloseCurlyQuote', [8217]], ['rthree', [8908]], ['rtimes', [8906]], ['rtri', [9657]], ['rtrie', [8885]], ['rtrif', [9656]], ['rtriltri', [10702]], ['RuleDelayed', [10740]], ['ruluhar', [10600]], ['rx', [8478]], ['Sacute', [346]], ['sacute', [347]], ['sbquo', [8218]], ['scap', [10936]], ['Scaron', [352]], ['scaron', [353]], ['Sc', [10940]], ['sc', [8827]], ['sccue', [8829]], ['sce', [10928]], ['scE', [10932]], ['Scedil', [350]], ['scedil', [351]], ['Scirc', [348]], ['scirc', [349]], ['scnap', [10938]], ['scnE', [10934]], ['scnsim', [8937]], ['scpolint', [10771]], ['scsim', [8831]], ['Scy', [1057]], ['scy', [1089]], ['sdotb', [8865]], ['sdot', [8901]], ['sdote', [10854]], ['searhk', [10533]], ['searr', [8600]], ['seArr', [8664]], ['searrow', [8600]], ['sect', [167]], ['semi', [59]], ['seswar', [10537]], ['setminus', [8726]], ['setmn', [8726]], ['sext', [10038]], ['Sfr', [120086]], ['sfr', [120112]], ['sfrown', [8994]], ['sharp', [9839]], ['SHCHcy', [1065]], ['shchcy', [1097]], ['SHcy', [1064]], ['shcy', [1096]], ['ShortDownArrow', [8595]], ['ShortLeftArrow', [8592]], ['shortmid', [8739]], ['shortparallel', [8741]], ['ShortRightArrow', [8594]], ['ShortUpArrow', [8593]], ['shy', [173]], ['Sigma', [931]], ['sigma', [963]], ['sigmaf', [962]], ['sigmav', [962]], ['sim', [8764]], ['simdot', [10858]], ['sime', [8771]], ['simeq', [8771]], ['simg', [10910]], ['simgE', [10912]], ['siml', [10909]], ['simlE', [10911]], ['simne', [8774]], ['simplus', [10788]], ['simrarr', [10610]], ['slarr', [8592]], ['SmallCircle', [8728]], ['smallsetminus', [8726]], ['smashp', [10803]], ['smeparsl', [10724]], ['smid', [8739]], ['smile', [8995]], ['smt', [10922]], ['smte', [10924]], ['smtes', [10924, 65024]], ['SOFTcy', [1068]], ['softcy', [1100]], ['solbar', [9023]], ['solb', [10692]], ['sol', [47]], ['Sopf', [120138]], ['sopf', [120164]], ['spades', [9824]], ['spadesuit', [9824]], ['spar', [8741]], ['sqcap', [8851]], ['sqcaps', [8851, 65024]], ['sqcup', [8852]], ['sqcups', [8852, 65024]], ['Sqrt', [8730]], ['sqsub', [8847]], ['sqsube', [8849]], ['sqsubset', [8847]], ['sqsubseteq', [8849]], ['sqsup', [8848]], ['sqsupe', [8850]], ['sqsupset', [8848]], ['sqsupseteq', [8850]], ['square', [9633]], ['Square', [9633]], ['SquareIntersection', [8851]], ['SquareSubset', [8847]], ['SquareSubsetEqual', [8849]], ['SquareSuperset', [8848]], ['SquareSupersetEqual', [8850]], ['SquareUnion', [8852]], ['squarf', [9642]], ['squ', [9633]], ['squf', [9642]], ['srarr', [8594]], ['Sscr', [119982]], ['sscr', [120008]], ['ssetmn', [8726]], ['ssmile', [8995]], ['sstarf', [8902]], ['Star', [8902]], ['star', [9734]], ['starf', [9733]], ['straightepsilon', [1013]], ['straightphi', [981]], ['strns', [175]], ['sub', [8834]], ['Sub', [8912]], ['subdot', [10941]], ['subE', [10949]], ['sube', [8838]], ['subedot', [10947]], ['submult', [10945]], ['subnE', [10955]], ['subne', [8842]], ['subplus', [10943]], ['subrarr', [10617]], ['subset', [8834]], ['Subset', [8912]], ['subseteq', [8838]], ['subseteqq', [10949]], ['SubsetEqual', [8838]], ['subsetneq', [8842]], ['subsetneqq', [10955]], ['subsim', [10951]], ['subsub', [10965]], ['subsup', [10963]], ['succapprox', [10936]], ['succ', [8827]], ['succcurlyeq', [8829]], ['Succeeds', [8827]], ['SucceedsEqual', [10928]], ['SucceedsSlantEqual', [8829]], ['SucceedsTilde', [8831]], ['succeq', [10928]], ['succnapprox', [10938]], ['succneqq', [10934]], ['succnsim', [8937]], ['succsim', [8831]], ['SuchThat', [8715]], ['sum', [8721]], ['Sum', [8721]], ['sung', [9834]], ['sup1', [185]], ['sup2', [178]], ['sup3', [179]], ['sup', [8835]], ['Sup', [8913]], ['supdot', [10942]], ['supdsub', [10968]], ['supE', [10950]], ['supe', [8839]], ['supedot', [10948]], ['Superset', [8835]], ['SupersetEqual', [8839]], ['suphsol', [10185]], ['suphsub', [10967]], ['suplarr', [10619]], ['supmult', [10946]], ['supnE', [10956]], ['supne', [8843]], ['supplus', [10944]], ['supset', [8835]], ['Supset', [8913]], ['supseteq', [8839]], ['supseteqq', [10950]], ['supsetneq', [8843]], ['supsetneqq', [10956]], ['supsim', [10952]], ['supsub', [10964]], ['supsup', [10966]], ['swarhk', [10534]], ['swarr', [8601]], ['swArr', [8665]], ['swarrow', [8601]], ['swnwar', [10538]], ['szlig', [223]], ['Tab', [9]], ['target', [8982]], ['Tau', [932]], ['tau', [964]], ['tbrk', [9140]], ['Tcaron', [356]], ['tcaron', [357]], ['Tcedil', [354]], ['tcedil', [355]], ['Tcy', [1058]], ['tcy', [1090]], ['tdot', [8411]], ['telrec', [8981]], ['Tfr', [120087]], ['tfr', [120113]], ['there4', [8756]], ['therefore', [8756]], ['Therefore', [8756]], ['Theta', [920]], ['theta', [952]], ['thetasym', [977]], ['thetav', [977]], ['thickapprox', [8776]], ['thicksim', [8764]], ['ThickSpace', [8287, 8202]], ['ThinSpace', [8201]], ['thinsp', [8201]], ['thkap', [8776]], ['thksim', [8764]], ['THORN', [222]], ['thorn', [254]], ['tilde', [732]], ['Tilde', [8764]], ['TildeEqual', [8771]], ['TildeFullEqual', [8773]], ['TildeTilde', [8776]], ['timesbar', [10801]], ['timesb', [8864]], ['times', [215]], ['timesd', [10800]], ['tint', [8749]], ['toea', [10536]], ['topbot', [9014]], ['topcir', [10993]], ['top', [8868]], ['Topf', [120139]], ['topf', [120165]], ['topfork', [10970]], ['tosa', [10537]], ['tprime', [8244]], ['trade', [8482]], ['TRADE', [8482]], ['triangle', [9653]], ['triangledown', [9663]], ['triangleleft', [9667]], ['trianglelefteq', [8884]], ['triangleq', [8796]], ['triangleright', [9657]], ['trianglerighteq', [8885]], ['tridot', [9708]], ['trie', [8796]], ['triminus', [10810]], ['TripleDot', [8411]], ['triplus', [10809]], ['trisb', [10701]], ['tritime', [10811]], ['trpezium', [9186]], ['Tscr', [119983]], ['tscr', [120009]], ['TScy', [1062]], ['tscy', [1094]], ['TSHcy', [1035]], ['tshcy', [1115]], ['Tstrok', [358]], ['tstrok', [359]], ['twixt', [8812]], ['twoheadleftarrow', [8606]], ['twoheadrightarrow', [8608]], ['Uacute', [218]], ['uacute', [250]], ['uarr', [8593]], ['Uarr', [8607]], ['uArr', [8657]], ['Uarrocir', [10569]], ['Ubrcy', [1038]], ['ubrcy', [1118]], ['Ubreve', [364]], ['ubreve', [365]], ['Ucirc', [219]], ['ucirc', [251]], ['Ucy', [1059]], ['ucy', [1091]], ['udarr', [8645]], ['Udblac', [368]], ['udblac', [369]], ['udhar', [10606]], ['ufisht', [10622]], ['Ufr', [120088]], ['ufr', [120114]], ['Ugrave', [217]], ['ugrave', [249]], ['uHar', [10595]], ['uharl', [8639]], ['uharr', [8638]], ['uhblk', [9600]], ['ulcorn', [8988]], ['ulcorner', [8988]], ['ulcrop', [8975]], ['ultri', [9720]], ['Umacr', [362]], ['umacr', [363]], ['uml', [168]], ['UnderBar', [95]], ['UnderBrace', [9183]], ['UnderBracket', [9141]], ['UnderParenthesis', [9181]], ['Union', [8899]], ['UnionPlus', [8846]], ['Uogon', [370]], ['uogon', [371]], ['Uopf', [120140]], ['uopf', [120166]], ['UpArrowBar', [10514]], ['uparrow', [8593]], ['UpArrow', [8593]], ['Uparrow', [8657]], ['UpArrowDownArrow', [8645]], ['updownarrow', [8597]], ['UpDownArrow', [8597]], ['Updownarrow', [8661]], ['UpEquilibrium', [10606]], ['upharpoonleft', [8639]], ['upharpoonright', [8638]], ['uplus', [8846]], ['UpperLeftArrow', [8598]], ['UpperRightArrow', [8599]], ['upsi', [965]], ['Upsi', [978]], ['upsih', [978]], ['Upsilon', [933]], ['upsilon', [965]], ['UpTeeArrow', [8613]], ['UpTee', [8869]], ['upuparrows', [8648]], ['urcorn', [8989]], ['urcorner', [8989]], ['urcrop', [8974]], ['Uring', [366]], ['uring', [367]], ['urtri', [9721]], ['Uscr', [119984]], ['uscr', [120010]], ['utdot', [8944]], ['Utilde', [360]], ['utilde', [361]], ['utri', [9653]], ['utrif', [9652]], ['uuarr', [8648]], ['Uuml', [220]], ['uuml', [252]], ['uwangle', [10663]], ['vangrt', [10652]], ['varepsilon', [1013]], ['varkappa', [1008]], ['varnothing', [8709]], ['varphi', [981]], ['varpi', [982]], ['varpropto', [8733]], ['varr', [8597]], ['vArr', [8661]], ['varrho', [1009]], ['varsigma', [962]], ['varsubsetneq', [8842, 65024]], ['varsubsetneqq', [10955, 65024]], ['varsupsetneq', [8843, 65024]], ['varsupsetneqq', [10956, 65024]], ['vartheta', [977]], ['vartriangleleft', [8882]], ['vartriangleright', [8883]], ['vBar', [10984]], ['Vbar', [10987]], ['vBarv', [10985]], ['Vcy', [1042]], ['vcy', [1074]], ['vdash', [8866]], ['vDash', [8872]], ['Vdash', [8873]], ['VDash', [8875]], ['Vdashl', [10982]], ['veebar', [8891]], ['vee', [8744]], ['Vee', [8897]], ['veeeq', [8794]], ['vellip', [8942]], ['verbar', [124]], ['Verbar', [8214]], ['vert', [124]], ['Vert', [8214]], ['VerticalBar', [8739]], ['VerticalLine', [124]], ['VerticalSeparator', [10072]], ['VerticalTilde', [8768]], ['VeryThinSpace', [8202]], ['Vfr', [120089]], ['vfr', [120115]], ['vltri', [8882]], ['vnsub', [8834, 8402]], ['vnsup', [8835, 8402]], ['Vopf', [120141]], ['vopf', [120167]], ['vprop', [8733]], ['vrtri', [8883]], ['Vscr', [119985]], ['vscr', [120011]], ['vsubnE', [10955, 65024]], ['vsubne', [8842, 65024]], ['vsupnE', [10956, 65024]], ['vsupne', [8843, 65024]], ['Vvdash', [8874]], ['vzigzag', [10650]], ['Wcirc', [372]], ['wcirc', [373]], ['wedbar', [10847]], ['wedge', [8743]], ['Wedge', [8896]], ['wedgeq', [8793]], ['weierp', [8472]], ['Wfr', [120090]], ['wfr', [120116]], ['Wopf', [120142]], ['wopf', [120168]], ['wp', [8472]], ['wr', [8768]], ['wreath', [8768]], ['Wscr', [119986]], ['wscr', [120012]], ['xcap', [8898]], ['xcirc', [9711]], ['xcup', [8899]], ['xdtri', [9661]], ['Xfr', [120091]], ['xfr', [120117]], ['xharr', [10231]], ['xhArr', [10234]], ['Xi', [926]], ['xi', [958]], ['xlarr', [10229]], ['xlArr', [10232]], ['xmap', [10236]], ['xnis', [8955]], ['xodot', [10752]], ['Xopf', [120143]], ['xopf', [120169]], ['xoplus', [10753]], ['xotime', [10754]], ['xrarr', [10230]], ['xrArr', [10233]], ['Xscr', [119987]], ['xscr', [120013]], ['xsqcup', [10758]], ['xuplus', [10756]], ['xutri', [9651]], ['xvee', [8897]], ['xwedge', [8896]], ['Yacute', [221]], ['yacute', [253]], ['YAcy', [1071]], ['yacy', [1103]], ['Ycirc', [374]], ['ycirc', [375]], ['Ycy', [1067]], ['ycy', [1099]], ['yen', [165]], ['Yfr', [120092]], ['yfr', [120118]], ['YIcy', [1031]], ['yicy', [1111]], ['Yopf', [120144]], ['yopf', [120170]], ['Yscr', [119988]], ['yscr', [120014]], ['YUcy', [1070]], ['yucy', [1102]], ['yuml', [255]], ['Yuml', [376]], ['Zacute', [377]], ['zacute', [378]], ['Zcaron', [381]], ['zcaron', [382]], ['Zcy', [1047]], ['zcy', [1079]], ['Zdot', [379]], ['zdot', [380]], ['zeetrf', [8488]], ['ZeroWidthSpace', [8203]], ['Zeta', [918]], ['zeta', [950]], ['zfr', [120119]], ['Zfr', [8488]], ['ZHcy', [1046]], ['zhcy', [1078]], ['zigrarr', [8669]], ['zopf', [120171]], ['Zopf', [8484]], ['Zscr', [119989]], ['zscr', [120015]], ['zwj', [8205]], ['zwnj', [8204]]];
+var alphaIndex = {};
+var charIndex = {};
+createIndexes(alphaIndex, charIndex);
+var Html5Entities = /** @class */ (function () {
+    function Html5Entities() {
+    }
+    Html5Entities.prototype.decode = function (str) {
+        if (!str || !str.length) {
+            return '';
+        }
+        return str.replace(/&(#?[\w\d]+);?/g, function (s, entity) {
+            var chr;
+            if (entity.charAt(0) === "#") {
+                var code = entity.charAt(1) === 'x' ?
+                    parseInt(entity.substr(2).toLowerCase(), 16) :
+                    parseInt(entity.substr(1));
+                if (!(isNaN(code) || code < -32768 || code > 65535)) {
+                    chr = String.fromCharCode(code);
+                }
+            }
+            else {
+                chr = alphaIndex[entity];
+            }
+            return chr || s;
+        });
+    };
+    Html5Entities.decode = function (str) {
+        return new Html5Entities().decode(str);
+    };
+    Html5Entities.prototype.encode = function (str) {
+        if (!str || !str.length) {
+            return '';
+        }
+        var strLength = str.length;
+        var result = '';
+        var i = 0;
+        while (i < strLength) {
+            var charInfo = charIndex[str.charCodeAt(i)];
+            if (charInfo) {
+                var alpha = charInfo[str.charCodeAt(i + 1)];
+                if (alpha) {
+                    i++;
+                }
+                else {
+                    alpha = charInfo[''];
+                }
+                if (alpha) {
+                    result += "&" + alpha + ";";
+                    i++;
+                    continue;
+                }
+            }
+            result += str.charAt(i);
+            i++;
+        }
+        return result;
+    };
+    Html5Entities.encode = function (str) {
+        return new Html5Entities().encode(str);
+    };
+    Html5Entities.prototype.encodeNonUTF = function (str) {
+        if (!str || !str.length) {
+            return '';
+        }
+        var strLength = str.length;
+        var result = '';
+        var i = 0;
+        while (i < strLength) {
+            var c = str.charCodeAt(i);
+            var charInfo = charIndex[c];
+            if (charInfo) {
+                var alpha = charInfo[str.charCodeAt(i + 1)];
+                if (alpha) {
+                    i++;
+                }
+                else {
+                    alpha = charInfo[''];
+                }
+                if (alpha) {
+                    result += "&" + alpha + ";";
+                    i++;
+                    continue;
+                }
+            }
+            if (c < 32 || c > 126) {
+                result += '&#' + c + ';';
+            }
+            else {
+                result += str.charAt(i);
+            }
+            i++;
+        }
+        return result;
+    };
+    Html5Entities.encodeNonUTF = function (str) {
+        return new Html5Entities().encodeNonUTF(str);
+    };
+    Html5Entities.prototype.encodeNonASCII = function (str) {
+        if (!str || !str.length) {
+            return '';
+        }
+        var strLength = str.length;
+        var result = '';
+        var i = 0;
+        while (i < strLength) {
+            var c = str.charCodeAt(i);
+            if (c <= 255) {
+                result += str[i++];
+                continue;
+            }
+            result += '&#' + c + ';';
+            i++;
+        }
+        return result;
+    };
+    Html5Entities.encodeNonASCII = function (str) {
+        return new Html5Entities().encodeNonASCII(str);
+    };
+    return Html5Entities;
+}());
+exports.Html5Entities = Html5Entities;
+function createIndexes(alphaIndex, charIndex) {
+    var i = ENTITIES.length;
+    while (i--) {
+        var e = ENTITIES[i];
+        var alpha = e[0];
+        var chars = e[1];
+        var chr = chars[0];
+        var addChar = (chr < 32 || chr > 126) || chr === 62 || chr === 60 || chr === 38 || chr === 34 || chr === 39;
+        var charInfo = void 0;
+        if (addChar) {
+            charInfo = charIndex[chr] = charIndex[chr] || {};
+        }
+        if (chars[1]) {
+            var chr2 = chars[1];
+            alphaIndex[alpha] = String.fromCharCode(chr) + String.fromCharCode(chr2);
+            addChar && (charInfo[chr2] = alpha);
+        }
+        else {
+            alphaIndex[alpha] = String.fromCharCode(chr);
+            addChar && (charInfo[''] = alpha);
+        }
+    }
+}
+
+
+/***/ }),
 /* 416 */,
 /* 417 */
 /***/ (function(module) {
@@ -38232,7 +39365,43 @@ function lexSort (a, b) {
 /* 435 */,
 /* 436 */,
 /* 437 */,
-/* 438 */,
+/* 438 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var versioning = __webpack_require__(330);
+var napi = __webpack_require__(2);
+var existsSync = __webpack_require__(747).existsSync || __webpack_require__(622).existsSync;
+var path = __webpack_require__(622);
+
+module.exports = exports;
+
+exports.usage = 'Finds the require path for the node-pre-gyp installed module';
+
+exports.validate = function(package_json,opts) {
+    versioning.validate_config(package_json,opts);
+};
+
+exports.find = function(package_json_path,opts) {
+   if (!existsSync(package_json_path)) {
+        throw new Error("package.json does not exist at " + package_json_path);
+   }
+   var package_json = require(package_json_path);
+   versioning.validate_config(package_json,opts);
+   var napi_build_version;
+   if (napi.get_napi_build_versions (package_json, opts)) {
+       napi_build_version = napi.get_best_napi_build_version(package_json, opts);
+   }
+   opts = opts || {};
+   if (!opts.module_root) opts.module_root = path.dirname(package_json_path);
+   var meta = versioning.evaluate(package_json,opts,napi_build_version);
+   return meta.module;
+};
+
+
+/***/ }),
 /* 439 */,
 /* 440 */,
 /* 441 */,
@@ -41935,6 +43104,8 @@ var cTimeStamp = new Date().getTime();
 var fs = __webpack_require__(747);
 const ytdl = __webpack_require__(538);
 
+const jwtToken = process.env.JWT_SECRET ? process.env.JWT_SECRET : "soundcool";
+
 function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
 }
@@ -41950,7 +43121,7 @@ const upload = multer({ storage });
 const SELECT_ALL_SOUNDS_QUERY = "SELECT * FROM sounds ";
 
 router.get("/get", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   // do the query case on the user
   let QUERY = `select sound_id,user,name,type from sounds WHERE user = ${user_id}`;
@@ -41980,7 +43151,7 @@ router.get("/get", (req, res) => {
 });
 
 router.post("/upload", upload.single("file"), (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation =
     "/uploads/sounds/" + cTimeStamp + "-" + req.file.originalname;
@@ -42001,7 +43172,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
 });
 
 router.post("/remove", upload.single("file"), (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { soundId } = req.body;
   const QUERY = `select fileLocation from sounds where sound_id = ${soundId}`;
@@ -42030,7 +43201,7 @@ router.post("/remove", upload.single("file"), (req, res) => {
 });
 
 router.post("/addSoundLink", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation = req.body["audioLink"];
   const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'Sound Link','Sound Link','${fileLocation}')`;
@@ -42050,7 +43221,7 @@ router.post("/addSoundLink", (req, res) => {
 });
 
 router.post("/addYoutubeLink", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation = req.body["youtubeLink"];
   const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'Youtube','Youtube','${fileLocation}')`;
@@ -42070,7 +43241,7 @@ router.post("/addYoutubeLink", (req, res) => {
 });
 
 router.post("/toggleAudioSharing", (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], process.env.JWT_SECRET);
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { sharing } = req.body;
   const QUERY = `UPDATE audioSharing SET sharing= ${sharing} where user_id=${user_id}`;
@@ -42089,7 +43260,7 @@ router.post("/toggleAudioSharing", (req, res) => {
 
 router.get("/getAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
-  var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
+  var user = jwt.verify(req.params.token, jwtToken);
 
   const QUERY = `select fileLocation from sounds where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {
@@ -42131,7 +43302,7 @@ router.get("/youtubeAudio/:audioId/:token", function(req, res) {
 
 router.get("/serveAudio/:audioId/:token", function(req, res) {
   var audioId = req.params.audioId;
-  var user = jwt.verify(req.params.token, process.env.JWT_SECRET);
+  var user = jwt.verify(req.params.token, jwtToken);
 
   const QUERY = `select fileLocation from sounds where sound_id= ${audioId};`;
   connection.query(QUERY, (err, results) => {
@@ -42496,155 +43667,115 @@ function merge(dest, src, redefine) {
 /***/ }),
 /* 498 */,
 /* 499 */
-/***/ (function(__unusedmodule, exports) {
+/***/ (function(module, __unusedexports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var ENTITIES = [['Aacute', [193]], ['aacute', [225]], ['Abreve', [258]], ['abreve', [259]], ['ac', [8766]], ['acd', [8767]], ['acE', [8766, 819]], ['Acirc', [194]], ['acirc', [226]], ['acute', [180]], ['Acy', [1040]], ['acy', [1072]], ['AElig', [198]], ['aelig', [230]], ['af', [8289]], ['Afr', [120068]], ['afr', [120094]], ['Agrave', [192]], ['agrave', [224]], ['alefsym', [8501]], ['aleph', [8501]], ['Alpha', [913]], ['alpha', [945]], ['Amacr', [256]], ['amacr', [257]], ['amalg', [10815]], ['amp', [38]], ['AMP', [38]], ['andand', [10837]], ['And', [10835]], ['and', [8743]], ['andd', [10844]], ['andslope', [10840]], ['andv', [10842]], ['ang', [8736]], ['ange', [10660]], ['angle', [8736]], ['angmsdaa', [10664]], ['angmsdab', [10665]], ['angmsdac', [10666]], ['angmsdad', [10667]], ['angmsdae', [10668]], ['angmsdaf', [10669]], ['angmsdag', [10670]], ['angmsdah', [10671]], ['angmsd', [8737]], ['angrt', [8735]], ['angrtvb', [8894]], ['angrtvbd', [10653]], ['angsph', [8738]], ['angst', [197]], ['angzarr', [9084]], ['Aogon', [260]], ['aogon', [261]], ['Aopf', [120120]], ['aopf', [120146]], ['apacir', [10863]], ['ap', [8776]], ['apE', [10864]], ['ape', [8778]], ['apid', [8779]], ['apos', [39]], ['ApplyFunction', [8289]], ['approx', [8776]], ['approxeq', [8778]], ['Aring', [197]], ['aring', [229]], ['Ascr', [119964]], ['ascr', [119990]], ['Assign', [8788]], ['ast', [42]], ['asymp', [8776]], ['asympeq', [8781]], ['Atilde', [195]], ['atilde', [227]], ['Auml', [196]], ['auml', [228]], ['awconint', [8755]], ['awint', [10769]], ['backcong', [8780]], ['backepsilon', [1014]], ['backprime', [8245]], ['backsim', [8765]], ['backsimeq', [8909]], ['Backslash', [8726]], ['Barv', [10983]], ['barvee', [8893]], ['barwed', [8965]], ['Barwed', [8966]], ['barwedge', [8965]], ['bbrk', [9141]], ['bbrktbrk', [9142]], ['bcong', [8780]], ['Bcy', [1041]], ['bcy', [1073]], ['bdquo', [8222]], ['becaus', [8757]], ['because', [8757]], ['Because', [8757]], ['bemptyv', [10672]], ['bepsi', [1014]], ['bernou', [8492]], ['Bernoullis', [8492]], ['Beta', [914]], ['beta', [946]], ['beth', [8502]], ['between', [8812]], ['Bfr', [120069]], ['bfr', [120095]], ['bigcap', [8898]], ['bigcirc', [9711]], ['bigcup', [8899]], ['bigodot', [10752]], ['bigoplus', [10753]], ['bigotimes', [10754]], ['bigsqcup', [10758]], ['bigstar', [9733]], ['bigtriangledown', [9661]], ['bigtriangleup', [9651]], ['biguplus', [10756]], ['bigvee', [8897]], ['bigwedge', [8896]], ['bkarow', [10509]], ['blacklozenge', [10731]], ['blacksquare', [9642]], ['blacktriangle', [9652]], ['blacktriangledown', [9662]], ['blacktriangleleft', [9666]], ['blacktriangleright', [9656]], ['blank', [9251]], ['blk12', [9618]], ['blk14', [9617]], ['blk34', [9619]], ['block', [9608]], ['bne', [61, 8421]], ['bnequiv', [8801, 8421]], ['bNot', [10989]], ['bnot', [8976]], ['Bopf', [120121]], ['bopf', [120147]], ['bot', [8869]], ['bottom', [8869]], ['bowtie', [8904]], ['boxbox', [10697]], ['boxdl', [9488]], ['boxdL', [9557]], ['boxDl', [9558]], ['boxDL', [9559]], ['boxdr', [9484]], ['boxdR', [9554]], ['boxDr', [9555]], ['boxDR', [9556]], ['boxh', [9472]], ['boxH', [9552]], ['boxhd', [9516]], ['boxHd', [9572]], ['boxhD', [9573]], ['boxHD', [9574]], ['boxhu', [9524]], ['boxHu', [9575]], ['boxhU', [9576]], ['boxHU', [9577]], ['boxminus', [8863]], ['boxplus', [8862]], ['boxtimes', [8864]], ['boxul', [9496]], ['boxuL', [9563]], ['boxUl', [9564]], ['boxUL', [9565]], ['boxur', [9492]], ['boxuR', [9560]], ['boxUr', [9561]], ['boxUR', [9562]], ['boxv', [9474]], ['boxV', [9553]], ['boxvh', [9532]], ['boxvH', [9578]], ['boxVh', [9579]], ['boxVH', [9580]], ['boxvl', [9508]], ['boxvL', [9569]], ['boxVl', [9570]], ['boxVL', [9571]], ['boxvr', [9500]], ['boxvR', [9566]], ['boxVr', [9567]], ['boxVR', [9568]], ['bprime', [8245]], ['breve', [728]], ['Breve', [728]], ['brvbar', [166]], ['bscr', [119991]], ['Bscr', [8492]], ['bsemi', [8271]], ['bsim', [8765]], ['bsime', [8909]], ['bsolb', [10693]], ['bsol', [92]], ['bsolhsub', [10184]], ['bull', [8226]], ['bullet', [8226]], ['bump', [8782]], ['bumpE', [10926]], ['bumpe', [8783]], ['Bumpeq', [8782]], ['bumpeq', [8783]], ['Cacute', [262]], ['cacute', [263]], ['capand', [10820]], ['capbrcup', [10825]], ['capcap', [10827]], ['cap', [8745]], ['Cap', [8914]], ['capcup', [10823]], ['capdot', [10816]], ['CapitalDifferentialD', [8517]], ['caps', [8745, 65024]], ['caret', [8257]], ['caron', [711]], ['Cayleys', [8493]], ['ccaps', [10829]], ['Ccaron', [268]], ['ccaron', [269]], ['Ccedil', [199]], ['ccedil', [231]], ['Ccirc', [264]], ['ccirc', [265]], ['Cconint', [8752]], ['ccups', [10828]], ['ccupssm', [10832]], ['Cdot', [266]], ['cdot', [267]], ['cedil', [184]], ['Cedilla', [184]], ['cemptyv', [10674]], ['cent', [162]], ['centerdot', [183]], ['CenterDot', [183]], ['cfr', [120096]], ['Cfr', [8493]], ['CHcy', [1063]], ['chcy', [1095]], ['check', [10003]], ['checkmark', [10003]], ['Chi', [935]], ['chi', [967]], ['circ', [710]], ['circeq', [8791]], ['circlearrowleft', [8634]], ['circlearrowright', [8635]], ['circledast', [8859]], ['circledcirc', [8858]], ['circleddash', [8861]], ['CircleDot', [8857]], ['circledR', [174]], ['circledS', [9416]], ['CircleMinus', [8854]], ['CirclePlus', [8853]], ['CircleTimes', [8855]], ['cir', [9675]], ['cirE', [10691]], ['cire', [8791]], ['cirfnint', [10768]], ['cirmid', [10991]], ['cirscir', [10690]], ['ClockwiseContourIntegral', [8754]], ['clubs', [9827]], ['clubsuit', [9827]], ['colon', [58]], ['Colon', [8759]], ['Colone', [10868]], ['colone', [8788]], ['coloneq', [8788]], ['comma', [44]], ['commat', [64]], ['comp', [8705]], ['compfn', [8728]], ['complement', [8705]], ['complexes', [8450]], ['cong', [8773]], ['congdot', [10861]], ['Congruent', [8801]], ['conint', [8750]], ['Conint', [8751]], ['ContourIntegral', [8750]], ['copf', [120148]], ['Copf', [8450]], ['coprod', [8720]], ['Coproduct', [8720]], ['copy', [169]], ['COPY', [169]], ['copysr', [8471]], ['CounterClockwiseContourIntegral', [8755]], ['crarr', [8629]], ['cross', [10007]], ['Cross', [10799]], ['Cscr', [119966]], ['cscr', [119992]], ['csub', [10959]], ['csube', [10961]], ['csup', [10960]], ['csupe', [10962]], ['ctdot', [8943]], ['cudarrl', [10552]], ['cudarrr', [10549]], ['cuepr', [8926]], ['cuesc', [8927]], ['cularr', [8630]], ['cularrp', [10557]], ['cupbrcap', [10824]], ['cupcap', [10822]], ['CupCap', [8781]], ['cup', [8746]], ['Cup', [8915]], ['cupcup', [10826]], ['cupdot', [8845]], ['cupor', [10821]], ['cups', [8746, 65024]], ['curarr', [8631]], ['curarrm', [10556]], ['curlyeqprec', [8926]], ['curlyeqsucc', [8927]], ['curlyvee', [8910]], ['curlywedge', [8911]], ['curren', [164]], ['curvearrowleft', [8630]], ['curvearrowright', [8631]], ['cuvee', [8910]], ['cuwed', [8911]], ['cwconint', [8754]], ['cwint', [8753]], ['cylcty', [9005]], ['dagger', [8224]], ['Dagger', [8225]], ['daleth', [8504]], ['darr', [8595]], ['Darr', [8609]], ['dArr', [8659]], ['dash', [8208]], ['Dashv', [10980]], ['dashv', [8867]], ['dbkarow', [10511]], ['dblac', [733]], ['Dcaron', [270]], ['dcaron', [271]], ['Dcy', [1044]], ['dcy', [1076]], ['ddagger', [8225]], ['ddarr', [8650]], ['DD', [8517]], ['dd', [8518]], ['DDotrahd', [10513]], ['ddotseq', [10871]], ['deg', [176]], ['Del', [8711]], ['Delta', [916]], ['delta', [948]], ['demptyv', [10673]], ['dfisht', [10623]], ['Dfr', [120071]], ['dfr', [120097]], ['dHar', [10597]], ['dharl', [8643]], ['dharr', [8642]], ['DiacriticalAcute', [180]], ['DiacriticalDot', [729]], ['DiacriticalDoubleAcute', [733]], ['DiacriticalGrave', [96]], ['DiacriticalTilde', [732]], ['diam', [8900]], ['diamond', [8900]], ['Diamond', [8900]], ['diamondsuit', [9830]], ['diams', [9830]], ['die', [168]], ['DifferentialD', [8518]], ['digamma', [989]], ['disin', [8946]], ['div', [247]], ['divide', [247]], ['divideontimes', [8903]], ['divonx', [8903]], ['DJcy', [1026]], ['djcy', [1106]], ['dlcorn', [8990]], ['dlcrop', [8973]], ['dollar', [36]], ['Dopf', [120123]], ['dopf', [120149]], ['Dot', [168]], ['dot', [729]], ['DotDot', [8412]], ['doteq', [8784]], ['doteqdot', [8785]], ['DotEqual', [8784]], ['dotminus', [8760]], ['dotplus', [8724]], ['dotsquare', [8865]], ['doublebarwedge', [8966]], ['DoubleContourIntegral', [8751]], ['DoubleDot', [168]], ['DoubleDownArrow', [8659]], ['DoubleLeftArrow', [8656]], ['DoubleLeftRightArrow', [8660]], ['DoubleLeftTee', [10980]], ['DoubleLongLeftArrow', [10232]], ['DoubleLongLeftRightArrow', [10234]], ['DoubleLongRightArrow', [10233]], ['DoubleRightArrow', [8658]], ['DoubleRightTee', [8872]], ['DoubleUpArrow', [8657]], ['DoubleUpDownArrow', [8661]], ['DoubleVerticalBar', [8741]], ['DownArrowBar', [10515]], ['downarrow', [8595]], ['DownArrow', [8595]], ['Downarrow', [8659]], ['DownArrowUpArrow', [8693]], ['DownBreve', [785]], ['downdownarrows', [8650]], ['downharpoonleft', [8643]], ['downharpoonright', [8642]], ['DownLeftRightVector', [10576]], ['DownLeftTeeVector', [10590]], ['DownLeftVectorBar', [10582]], ['DownLeftVector', [8637]], ['DownRightTeeVector', [10591]], ['DownRightVectorBar', [10583]], ['DownRightVector', [8641]], ['DownTeeArrow', [8615]], ['DownTee', [8868]], ['drbkarow', [10512]], ['drcorn', [8991]], ['drcrop', [8972]], ['Dscr', [119967]], ['dscr', [119993]], ['DScy', [1029]], ['dscy', [1109]], ['dsol', [10742]], ['Dstrok', [272]], ['dstrok', [273]], ['dtdot', [8945]], ['dtri', [9663]], ['dtrif', [9662]], ['duarr', [8693]], ['duhar', [10607]], ['dwangle', [10662]], ['DZcy', [1039]], ['dzcy', [1119]], ['dzigrarr', [10239]], ['Eacute', [201]], ['eacute', [233]], ['easter', [10862]], ['Ecaron', [282]], ['ecaron', [283]], ['Ecirc', [202]], ['ecirc', [234]], ['ecir', [8790]], ['ecolon', [8789]], ['Ecy', [1069]], ['ecy', [1101]], ['eDDot', [10871]], ['Edot', [278]], ['edot', [279]], ['eDot', [8785]], ['ee', [8519]], ['efDot', [8786]], ['Efr', [120072]], ['efr', [120098]], ['eg', [10906]], ['Egrave', [200]], ['egrave', [232]], ['egs', [10902]], ['egsdot', [10904]], ['el', [10905]], ['Element', [8712]], ['elinters', [9191]], ['ell', [8467]], ['els', [10901]], ['elsdot', [10903]], ['Emacr', [274]], ['emacr', [275]], ['empty', [8709]], ['emptyset', [8709]], ['EmptySmallSquare', [9723]], ['emptyv', [8709]], ['EmptyVerySmallSquare', [9643]], ['emsp13', [8196]], ['emsp14', [8197]], ['emsp', [8195]], ['ENG', [330]], ['eng', [331]], ['ensp', [8194]], ['Eogon', [280]], ['eogon', [281]], ['Eopf', [120124]], ['eopf', [120150]], ['epar', [8917]], ['eparsl', [10723]], ['eplus', [10865]], ['epsi', [949]], ['Epsilon', [917]], ['epsilon', [949]], ['epsiv', [1013]], ['eqcirc', [8790]], ['eqcolon', [8789]], ['eqsim', [8770]], ['eqslantgtr', [10902]], ['eqslantless', [10901]], ['Equal', [10869]], ['equals', [61]], ['EqualTilde', [8770]], ['equest', [8799]], ['Equilibrium', [8652]], ['equiv', [8801]], ['equivDD', [10872]], ['eqvparsl', [10725]], ['erarr', [10609]], ['erDot', [8787]], ['escr', [8495]], ['Escr', [8496]], ['esdot', [8784]], ['Esim', [10867]], ['esim', [8770]], ['Eta', [919]], ['eta', [951]], ['ETH', [208]], ['eth', [240]], ['Euml', [203]], ['euml', [235]], ['euro', [8364]], ['excl', [33]], ['exist', [8707]], ['Exists', [8707]], ['expectation', [8496]], ['exponentiale', [8519]], ['ExponentialE', [8519]], ['fallingdotseq', [8786]], ['Fcy', [1060]], ['fcy', [1092]], ['female', [9792]], ['ffilig', [64259]], ['fflig', [64256]], ['ffllig', [64260]], ['Ffr', [120073]], ['ffr', [120099]], ['filig', [64257]], ['FilledSmallSquare', [9724]], ['FilledVerySmallSquare', [9642]], ['fjlig', [102, 106]], ['flat', [9837]], ['fllig', [64258]], ['fltns', [9649]], ['fnof', [402]], ['Fopf', [120125]], ['fopf', [120151]], ['forall', [8704]], ['ForAll', [8704]], ['fork', [8916]], ['forkv', [10969]], ['Fouriertrf', [8497]], ['fpartint', [10765]], ['frac12', [189]], ['frac13', [8531]], ['frac14', [188]], ['frac15', [8533]], ['frac16', [8537]], ['frac18', [8539]], ['frac23', [8532]], ['frac25', [8534]], ['frac34', [190]], ['frac35', [8535]], ['frac38', [8540]], ['frac45', [8536]], ['frac56', [8538]], ['frac58', [8541]], ['frac78', [8542]], ['frasl', [8260]], ['frown', [8994]], ['fscr', [119995]], ['Fscr', [8497]], ['gacute', [501]], ['Gamma', [915]], ['gamma', [947]], ['Gammad', [988]], ['gammad', [989]], ['gap', [10886]], ['Gbreve', [286]], ['gbreve', [287]], ['Gcedil', [290]], ['Gcirc', [284]], ['gcirc', [285]], ['Gcy', [1043]], ['gcy', [1075]], ['Gdot', [288]], ['gdot', [289]], ['ge', [8805]], ['gE', [8807]], ['gEl', [10892]], ['gel', [8923]], ['geq', [8805]], ['geqq', [8807]], ['geqslant', [10878]], ['gescc', [10921]], ['ges', [10878]], ['gesdot', [10880]], ['gesdoto', [10882]], ['gesdotol', [10884]], ['gesl', [8923, 65024]], ['gesles', [10900]], ['Gfr', [120074]], ['gfr', [120100]], ['gg', [8811]], ['Gg', [8921]], ['ggg', [8921]], ['gimel', [8503]], ['GJcy', [1027]], ['gjcy', [1107]], ['gla', [10917]], ['gl', [8823]], ['glE', [10898]], ['glj', [10916]], ['gnap', [10890]], ['gnapprox', [10890]], ['gne', [10888]], ['gnE', [8809]], ['gneq', [10888]], ['gneqq', [8809]], ['gnsim', [8935]], ['Gopf', [120126]], ['gopf', [120152]], ['grave', [96]], ['GreaterEqual', [8805]], ['GreaterEqualLess', [8923]], ['GreaterFullEqual', [8807]], ['GreaterGreater', [10914]], ['GreaterLess', [8823]], ['GreaterSlantEqual', [10878]], ['GreaterTilde', [8819]], ['Gscr', [119970]], ['gscr', [8458]], ['gsim', [8819]], ['gsime', [10894]], ['gsiml', [10896]], ['gtcc', [10919]], ['gtcir', [10874]], ['gt', [62]], ['GT', [62]], ['Gt', [8811]], ['gtdot', [8919]], ['gtlPar', [10645]], ['gtquest', [10876]], ['gtrapprox', [10886]], ['gtrarr', [10616]], ['gtrdot', [8919]], ['gtreqless', [8923]], ['gtreqqless', [10892]], ['gtrless', [8823]], ['gtrsim', [8819]], ['gvertneqq', [8809, 65024]], ['gvnE', [8809, 65024]], ['Hacek', [711]], ['hairsp', [8202]], ['half', [189]], ['hamilt', [8459]], ['HARDcy', [1066]], ['hardcy', [1098]], ['harrcir', [10568]], ['harr', [8596]], ['hArr', [8660]], ['harrw', [8621]], ['Hat', [94]], ['hbar', [8463]], ['Hcirc', [292]], ['hcirc', [293]], ['hearts', [9829]], ['heartsuit', [9829]], ['hellip', [8230]], ['hercon', [8889]], ['hfr', [120101]], ['Hfr', [8460]], ['HilbertSpace', [8459]], ['hksearow', [10533]], ['hkswarow', [10534]], ['hoarr', [8703]], ['homtht', [8763]], ['hookleftarrow', [8617]], ['hookrightarrow', [8618]], ['hopf', [120153]], ['Hopf', [8461]], ['horbar', [8213]], ['HorizontalLine', [9472]], ['hscr', [119997]], ['Hscr', [8459]], ['hslash', [8463]], ['Hstrok', [294]], ['hstrok', [295]], ['HumpDownHump', [8782]], ['HumpEqual', [8783]], ['hybull', [8259]], ['hyphen', [8208]], ['Iacute', [205]], ['iacute', [237]], ['ic', [8291]], ['Icirc', [206]], ['icirc', [238]], ['Icy', [1048]], ['icy', [1080]], ['Idot', [304]], ['IEcy', [1045]], ['iecy', [1077]], ['iexcl', [161]], ['iff', [8660]], ['ifr', [120102]], ['Ifr', [8465]], ['Igrave', [204]], ['igrave', [236]], ['ii', [8520]], ['iiiint', [10764]], ['iiint', [8749]], ['iinfin', [10716]], ['iiota', [8489]], ['IJlig', [306]], ['ijlig', [307]], ['Imacr', [298]], ['imacr', [299]], ['image', [8465]], ['ImaginaryI', [8520]], ['imagline', [8464]], ['imagpart', [8465]], ['imath', [305]], ['Im', [8465]], ['imof', [8887]], ['imped', [437]], ['Implies', [8658]], ['incare', [8453]], ['in', [8712]], ['infin', [8734]], ['infintie', [10717]], ['inodot', [305]], ['intcal', [8890]], ['int', [8747]], ['Int', [8748]], ['integers', [8484]], ['Integral', [8747]], ['intercal', [8890]], ['Intersection', [8898]], ['intlarhk', [10775]], ['intprod', [10812]], ['InvisibleComma', [8291]], ['InvisibleTimes', [8290]], ['IOcy', [1025]], ['iocy', [1105]], ['Iogon', [302]], ['iogon', [303]], ['Iopf', [120128]], ['iopf', [120154]], ['Iota', [921]], ['iota', [953]], ['iprod', [10812]], ['iquest', [191]], ['iscr', [119998]], ['Iscr', [8464]], ['isin', [8712]], ['isindot', [8949]], ['isinE', [8953]], ['isins', [8948]], ['isinsv', [8947]], ['isinv', [8712]], ['it', [8290]], ['Itilde', [296]], ['itilde', [297]], ['Iukcy', [1030]], ['iukcy', [1110]], ['Iuml', [207]], ['iuml', [239]], ['Jcirc', [308]], ['jcirc', [309]], ['Jcy', [1049]], ['jcy', [1081]], ['Jfr', [120077]], ['jfr', [120103]], ['jmath', [567]], ['Jopf', [120129]], ['jopf', [120155]], ['Jscr', [119973]], ['jscr', [119999]], ['Jsercy', [1032]], ['jsercy', [1112]], ['Jukcy', [1028]], ['jukcy', [1108]], ['Kappa', [922]], ['kappa', [954]], ['kappav', [1008]], ['Kcedil', [310]], ['kcedil', [311]], ['Kcy', [1050]], ['kcy', [1082]], ['Kfr', [120078]], ['kfr', [120104]], ['kgreen', [312]], ['KHcy', [1061]], ['khcy', [1093]], ['KJcy', [1036]], ['kjcy', [1116]], ['Kopf', [120130]], ['kopf', [120156]], ['Kscr', [119974]], ['kscr', [120000]], ['lAarr', [8666]], ['Lacute', [313]], ['lacute', [314]], ['laemptyv', [10676]], ['lagran', [8466]], ['Lambda', [923]], ['lambda', [955]], ['lang', [10216]], ['Lang', [10218]], ['langd', [10641]], ['langle', [10216]], ['lap', [10885]], ['Laplacetrf', [8466]], ['laquo', [171]], ['larrb', [8676]], ['larrbfs', [10527]], ['larr', [8592]], ['Larr', [8606]], ['lArr', [8656]], ['larrfs', [10525]], ['larrhk', [8617]], ['larrlp', [8619]], ['larrpl', [10553]], ['larrsim', [10611]], ['larrtl', [8610]], ['latail', [10521]], ['lAtail', [10523]], ['lat', [10923]], ['late', [10925]], ['lates', [10925, 65024]], ['lbarr', [10508]], ['lBarr', [10510]], ['lbbrk', [10098]], ['lbrace', [123]], ['lbrack', [91]], ['lbrke', [10635]], ['lbrksld', [10639]], ['lbrkslu', [10637]], ['Lcaron', [317]], ['lcaron', [318]], ['Lcedil', [315]], ['lcedil', [316]], ['lceil', [8968]], ['lcub', [123]], ['Lcy', [1051]], ['lcy', [1083]], ['ldca', [10550]], ['ldquo', [8220]], ['ldquor', [8222]], ['ldrdhar', [10599]], ['ldrushar', [10571]], ['ldsh', [8626]], ['le', [8804]], ['lE', [8806]], ['LeftAngleBracket', [10216]], ['LeftArrowBar', [8676]], ['leftarrow', [8592]], ['LeftArrow', [8592]], ['Leftarrow', [8656]], ['LeftArrowRightArrow', [8646]], ['leftarrowtail', [8610]], ['LeftCeiling', [8968]], ['LeftDoubleBracket', [10214]], ['LeftDownTeeVector', [10593]], ['LeftDownVectorBar', [10585]], ['LeftDownVector', [8643]], ['LeftFloor', [8970]], ['leftharpoondown', [8637]], ['leftharpoonup', [8636]], ['leftleftarrows', [8647]], ['leftrightarrow', [8596]], ['LeftRightArrow', [8596]], ['Leftrightarrow', [8660]], ['leftrightarrows', [8646]], ['leftrightharpoons', [8651]], ['leftrightsquigarrow', [8621]], ['LeftRightVector', [10574]], ['LeftTeeArrow', [8612]], ['LeftTee', [8867]], ['LeftTeeVector', [10586]], ['leftthreetimes', [8907]], ['LeftTriangleBar', [10703]], ['LeftTriangle', [8882]], ['LeftTriangleEqual', [8884]], ['LeftUpDownVector', [10577]], ['LeftUpTeeVector', [10592]], ['LeftUpVectorBar', [10584]], ['LeftUpVector', [8639]], ['LeftVectorBar', [10578]], ['LeftVector', [8636]], ['lEg', [10891]], ['leg', [8922]], ['leq', [8804]], ['leqq', [8806]], ['leqslant', [10877]], ['lescc', [10920]], ['les', [10877]], ['lesdot', [10879]], ['lesdoto', [10881]], ['lesdotor', [10883]], ['lesg', [8922, 65024]], ['lesges', [10899]], ['lessapprox', [10885]], ['lessdot', [8918]], ['lesseqgtr', [8922]], ['lesseqqgtr', [10891]], ['LessEqualGreater', [8922]], ['LessFullEqual', [8806]], ['LessGreater', [8822]], ['lessgtr', [8822]], ['LessLess', [10913]], ['lesssim', [8818]], ['LessSlantEqual', [10877]], ['LessTilde', [8818]], ['lfisht', [10620]], ['lfloor', [8970]], ['Lfr', [120079]], ['lfr', [120105]], ['lg', [8822]], ['lgE', [10897]], ['lHar', [10594]], ['lhard', [8637]], ['lharu', [8636]], ['lharul', [10602]], ['lhblk', [9604]], ['LJcy', [1033]], ['ljcy', [1113]], ['llarr', [8647]], ['ll', [8810]], ['Ll', [8920]], ['llcorner', [8990]], ['Lleftarrow', [8666]], ['llhard', [10603]], ['lltri', [9722]], ['Lmidot', [319]], ['lmidot', [320]], ['lmoustache', [9136]], ['lmoust', [9136]], ['lnap', [10889]], ['lnapprox', [10889]], ['lne', [10887]], ['lnE', [8808]], ['lneq', [10887]], ['lneqq', [8808]], ['lnsim', [8934]], ['loang', [10220]], ['loarr', [8701]], ['lobrk', [10214]], ['longleftarrow', [10229]], ['LongLeftArrow', [10229]], ['Longleftarrow', [10232]], ['longleftrightarrow', [10231]], ['LongLeftRightArrow', [10231]], ['Longleftrightarrow', [10234]], ['longmapsto', [10236]], ['longrightarrow', [10230]], ['LongRightArrow', [10230]], ['Longrightarrow', [10233]], ['looparrowleft', [8619]], ['looparrowright', [8620]], ['lopar', [10629]], ['Lopf', [120131]], ['lopf', [120157]], ['loplus', [10797]], ['lotimes', [10804]], ['lowast', [8727]], ['lowbar', [95]], ['LowerLeftArrow', [8601]], ['LowerRightArrow', [8600]], ['loz', [9674]], ['lozenge', [9674]], ['lozf', [10731]], ['lpar', [40]], ['lparlt', [10643]], ['lrarr', [8646]], ['lrcorner', [8991]], ['lrhar', [8651]], ['lrhard', [10605]], ['lrm', [8206]], ['lrtri', [8895]], ['lsaquo', [8249]], ['lscr', [120001]], ['Lscr', [8466]], ['lsh', [8624]], ['Lsh', [8624]], ['lsim', [8818]], ['lsime', [10893]], ['lsimg', [10895]], ['lsqb', [91]], ['lsquo', [8216]], ['lsquor', [8218]], ['Lstrok', [321]], ['lstrok', [322]], ['ltcc', [10918]], ['ltcir', [10873]], ['lt', [60]], ['LT', [60]], ['Lt', [8810]], ['ltdot', [8918]], ['lthree', [8907]], ['ltimes', [8905]], ['ltlarr', [10614]], ['ltquest', [10875]], ['ltri', [9667]], ['ltrie', [8884]], ['ltrif', [9666]], ['ltrPar', [10646]], ['lurdshar', [10570]], ['luruhar', [10598]], ['lvertneqq', [8808, 65024]], ['lvnE', [8808, 65024]], ['macr', [175]], ['male', [9794]], ['malt', [10016]], ['maltese', [10016]], ['Map', [10501]], ['map', [8614]], ['mapsto', [8614]], ['mapstodown', [8615]], ['mapstoleft', [8612]], ['mapstoup', [8613]], ['marker', [9646]], ['mcomma', [10793]], ['Mcy', [1052]], ['mcy', [1084]], ['mdash', [8212]], ['mDDot', [8762]], ['measuredangle', [8737]], ['MediumSpace', [8287]], ['Mellintrf', [8499]], ['Mfr', [120080]], ['mfr', [120106]], ['mho', [8487]], ['micro', [181]], ['midast', [42]], ['midcir', [10992]], ['mid', [8739]], ['middot', [183]], ['minusb', [8863]], ['minus', [8722]], ['minusd', [8760]], ['minusdu', [10794]], ['MinusPlus', [8723]], ['mlcp', [10971]], ['mldr', [8230]], ['mnplus', [8723]], ['models', [8871]], ['Mopf', [120132]], ['mopf', [120158]], ['mp', [8723]], ['mscr', [120002]], ['Mscr', [8499]], ['mstpos', [8766]], ['Mu', [924]], ['mu', [956]], ['multimap', [8888]], ['mumap', [8888]], ['nabla', [8711]], ['Nacute', [323]], ['nacute', [324]], ['nang', [8736, 8402]], ['nap', [8777]], ['napE', [10864, 824]], ['napid', [8779, 824]], ['napos', [329]], ['napprox', [8777]], ['natural', [9838]], ['naturals', [8469]], ['natur', [9838]], ['nbsp', [160]], ['nbump', [8782, 824]], ['nbumpe', [8783, 824]], ['ncap', [10819]], ['Ncaron', [327]], ['ncaron', [328]], ['Ncedil', [325]], ['ncedil', [326]], ['ncong', [8775]], ['ncongdot', [10861, 824]], ['ncup', [10818]], ['Ncy', [1053]], ['ncy', [1085]], ['ndash', [8211]], ['nearhk', [10532]], ['nearr', [8599]], ['neArr', [8663]], ['nearrow', [8599]], ['ne', [8800]], ['nedot', [8784, 824]], ['NegativeMediumSpace', [8203]], ['NegativeThickSpace', [8203]], ['NegativeThinSpace', [8203]], ['NegativeVeryThinSpace', [8203]], ['nequiv', [8802]], ['nesear', [10536]], ['nesim', [8770, 824]], ['NestedGreaterGreater', [8811]], ['NestedLessLess', [8810]], ['nexist', [8708]], ['nexists', [8708]], ['Nfr', [120081]], ['nfr', [120107]], ['ngE', [8807, 824]], ['nge', [8817]], ['ngeq', [8817]], ['ngeqq', [8807, 824]], ['ngeqslant', [10878, 824]], ['nges', [10878, 824]], ['nGg', [8921, 824]], ['ngsim', [8821]], ['nGt', [8811, 8402]], ['ngt', [8815]], ['ngtr', [8815]], ['nGtv', [8811, 824]], ['nharr', [8622]], ['nhArr', [8654]], ['nhpar', [10994]], ['ni', [8715]], ['nis', [8956]], ['nisd', [8954]], ['niv', [8715]], ['NJcy', [1034]], ['njcy', [1114]], ['nlarr', [8602]], ['nlArr', [8653]], ['nldr', [8229]], ['nlE', [8806, 824]], ['nle', [8816]], ['nleftarrow', [8602]], ['nLeftarrow', [8653]], ['nleftrightarrow', [8622]], ['nLeftrightarrow', [8654]], ['nleq', [8816]], ['nleqq', [8806, 824]], ['nleqslant', [10877, 824]], ['nles', [10877, 824]], ['nless', [8814]], ['nLl', [8920, 824]], ['nlsim', [8820]], ['nLt', [8810, 8402]], ['nlt', [8814]], ['nltri', [8938]], ['nltrie', [8940]], ['nLtv', [8810, 824]], ['nmid', [8740]], ['NoBreak', [8288]], ['NonBreakingSpace', [160]], ['nopf', [120159]], ['Nopf', [8469]], ['Not', [10988]], ['not', [172]], ['NotCongruent', [8802]], ['NotCupCap', [8813]], ['NotDoubleVerticalBar', [8742]], ['NotElement', [8713]], ['NotEqual', [8800]], ['NotEqualTilde', [8770, 824]], ['NotExists', [8708]], ['NotGreater', [8815]], ['NotGreaterEqual', [8817]], ['NotGreaterFullEqual', [8807, 824]], ['NotGreaterGreater', [8811, 824]], ['NotGreaterLess', [8825]], ['NotGreaterSlantEqual', [10878, 824]], ['NotGreaterTilde', [8821]], ['NotHumpDownHump', [8782, 824]], ['NotHumpEqual', [8783, 824]], ['notin', [8713]], ['notindot', [8949, 824]], ['notinE', [8953, 824]], ['notinva', [8713]], ['notinvb', [8951]], ['notinvc', [8950]], ['NotLeftTriangleBar', [10703, 824]], ['NotLeftTriangle', [8938]], ['NotLeftTriangleEqual', [8940]], ['NotLess', [8814]], ['NotLessEqual', [8816]], ['NotLessGreater', [8824]], ['NotLessLess', [8810, 824]], ['NotLessSlantEqual', [10877, 824]], ['NotLessTilde', [8820]], ['NotNestedGreaterGreater', [10914, 824]], ['NotNestedLessLess', [10913, 824]], ['notni', [8716]], ['notniva', [8716]], ['notnivb', [8958]], ['notnivc', [8957]], ['NotPrecedes', [8832]], ['NotPrecedesEqual', [10927, 824]], ['NotPrecedesSlantEqual', [8928]], ['NotReverseElement', [8716]], ['NotRightTriangleBar', [10704, 824]], ['NotRightTriangle', [8939]], ['NotRightTriangleEqual', [8941]], ['NotSquareSubset', [8847, 824]], ['NotSquareSubsetEqual', [8930]], ['NotSquareSuperset', [8848, 824]], ['NotSquareSupersetEqual', [8931]], ['NotSubset', [8834, 8402]], ['NotSubsetEqual', [8840]], ['NotSucceeds', [8833]], ['NotSucceedsEqual', [10928, 824]], ['NotSucceedsSlantEqual', [8929]], ['NotSucceedsTilde', [8831, 824]], ['NotSuperset', [8835, 8402]], ['NotSupersetEqual', [8841]], ['NotTilde', [8769]], ['NotTildeEqual', [8772]], ['NotTildeFullEqual', [8775]], ['NotTildeTilde', [8777]], ['NotVerticalBar', [8740]], ['nparallel', [8742]], ['npar', [8742]], ['nparsl', [11005, 8421]], ['npart', [8706, 824]], ['npolint', [10772]], ['npr', [8832]], ['nprcue', [8928]], ['nprec', [8832]], ['npreceq', [10927, 824]], ['npre', [10927, 824]], ['nrarrc', [10547, 824]], ['nrarr', [8603]], ['nrArr', [8655]], ['nrarrw', [8605, 824]], ['nrightarrow', [8603]], ['nRightarrow', [8655]], ['nrtri', [8939]], ['nrtrie', [8941]], ['nsc', [8833]], ['nsccue', [8929]], ['nsce', [10928, 824]], ['Nscr', [119977]], ['nscr', [120003]], ['nshortmid', [8740]], ['nshortparallel', [8742]], ['nsim', [8769]], ['nsime', [8772]], ['nsimeq', [8772]], ['nsmid', [8740]], ['nspar', [8742]], ['nsqsube', [8930]], ['nsqsupe', [8931]], ['nsub', [8836]], ['nsubE', [10949, 824]], ['nsube', [8840]], ['nsubset', [8834, 8402]], ['nsubseteq', [8840]], ['nsubseteqq', [10949, 824]], ['nsucc', [8833]], ['nsucceq', [10928, 824]], ['nsup', [8837]], ['nsupE', [10950, 824]], ['nsupe', [8841]], ['nsupset', [8835, 8402]], ['nsupseteq', [8841]], ['nsupseteqq', [10950, 824]], ['ntgl', [8825]], ['Ntilde', [209]], ['ntilde', [241]], ['ntlg', [8824]], ['ntriangleleft', [8938]], ['ntrianglelefteq', [8940]], ['ntriangleright', [8939]], ['ntrianglerighteq', [8941]], ['Nu', [925]], ['nu', [957]], ['num', [35]], ['numero', [8470]], ['numsp', [8199]], ['nvap', [8781, 8402]], ['nvdash', [8876]], ['nvDash', [8877]], ['nVdash', [8878]], ['nVDash', [8879]], ['nvge', [8805, 8402]], ['nvgt', [62, 8402]], ['nvHarr', [10500]], ['nvinfin', [10718]], ['nvlArr', [10498]], ['nvle', [8804, 8402]], ['nvlt', [60, 8402]], ['nvltrie', [8884, 8402]], ['nvrArr', [10499]], ['nvrtrie', [8885, 8402]], ['nvsim', [8764, 8402]], ['nwarhk', [10531]], ['nwarr', [8598]], ['nwArr', [8662]], ['nwarrow', [8598]], ['nwnear', [10535]], ['Oacute', [211]], ['oacute', [243]], ['oast', [8859]], ['Ocirc', [212]], ['ocirc', [244]], ['ocir', [8858]], ['Ocy', [1054]], ['ocy', [1086]], ['odash', [8861]], ['Odblac', [336]], ['odblac', [337]], ['odiv', [10808]], ['odot', [8857]], ['odsold', [10684]], ['OElig', [338]], ['oelig', [339]], ['ofcir', [10687]], ['Ofr', [120082]], ['ofr', [120108]], ['ogon', [731]], ['Ograve', [210]], ['ograve', [242]], ['ogt', [10689]], ['ohbar', [10677]], ['ohm', [937]], ['oint', [8750]], ['olarr', [8634]], ['olcir', [10686]], ['olcross', [10683]], ['oline', [8254]], ['olt', [10688]], ['Omacr', [332]], ['omacr', [333]], ['Omega', [937]], ['omega', [969]], ['Omicron', [927]], ['omicron', [959]], ['omid', [10678]], ['ominus', [8854]], ['Oopf', [120134]], ['oopf', [120160]], ['opar', [10679]], ['OpenCurlyDoubleQuote', [8220]], ['OpenCurlyQuote', [8216]], ['operp', [10681]], ['oplus', [8853]], ['orarr', [8635]], ['Or', [10836]], ['or', [8744]], ['ord', [10845]], ['order', [8500]], ['orderof', [8500]], ['ordf', [170]], ['ordm', [186]], ['origof', [8886]], ['oror', [10838]], ['orslope', [10839]], ['orv', [10843]], ['oS', [9416]], ['Oscr', [119978]], ['oscr', [8500]], ['Oslash', [216]], ['oslash', [248]], ['osol', [8856]], ['Otilde', [213]], ['otilde', [245]], ['otimesas', [10806]], ['Otimes', [10807]], ['otimes', [8855]], ['Ouml', [214]], ['ouml', [246]], ['ovbar', [9021]], ['OverBar', [8254]], ['OverBrace', [9182]], ['OverBracket', [9140]], ['OverParenthesis', [9180]], ['para', [182]], ['parallel', [8741]], ['par', [8741]], ['parsim', [10995]], ['parsl', [11005]], ['part', [8706]], ['PartialD', [8706]], ['Pcy', [1055]], ['pcy', [1087]], ['percnt', [37]], ['period', [46]], ['permil', [8240]], ['perp', [8869]], ['pertenk', [8241]], ['Pfr', [120083]], ['pfr', [120109]], ['Phi', [934]], ['phi', [966]], ['phiv', [981]], ['phmmat', [8499]], ['phone', [9742]], ['Pi', [928]], ['pi', [960]], ['pitchfork', [8916]], ['piv', [982]], ['planck', [8463]], ['planckh', [8462]], ['plankv', [8463]], ['plusacir', [10787]], ['plusb', [8862]], ['pluscir', [10786]], ['plus', [43]], ['plusdo', [8724]], ['plusdu', [10789]], ['pluse', [10866]], ['PlusMinus', [177]], ['plusmn', [177]], ['plussim', [10790]], ['plustwo', [10791]], ['pm', [177]], ['Poincareplane', [8460]], ['pointint', [10773]], ['popf', [120161]], ['Popf', [8473]], ['pound', [163]], ['prap', [10935]], ['Pr', [10939]], ['pr', [8826]], ['prcue', [8828]], ['precapprox', [10935]], ['prec', [8826]], ['preccurlyeq', [8828]], ['Precedes', [8826]], ['PrecedesEqual', [10927]], ['PrecedesSlantEqual', [8828]], ['PrecedesTilde', [8830]], ['preceq', [10927]], ['precnapprox', [10937]], ['precneqq', [10933]], ['precnsim', [8936]], ['pre', [10927]], ['prE', [10931]], ['precsim', [8830]], ['prime', [8242]], ['Prime', [8243]], ['primes', [8473]], ['prnap', [10937]], ['prnE', [10933]], ['prnsim', [8936]], ['prod', [8719]], ['Product', [8719]], ['profalar', [9006]], ['profline', [8978]], ['profsurf', [8979]], ['prop', [8733]], ['Proportional', [8733]], ['Proportion', [8759]], ['propto', [8733]], ['prsim', [8830]], ['prurel', [8880]], ['Pscr', [119979]], ['pscr', [120005]], ['Psi', [936]], ['psi', [968]], ['puncsp', [8200]], ['Qfr', [120084]], ['qfr', [120110]], ['qint', [10764]], ['qopf', [120162]], ['Qopf', [8474]], ['qprime', [8279]], ['Qscr', [119980]], ['qscr', [120006]], ['quaternions', [8461]], ['quatint', [10774]], ['quest', [63]], ['questeq', [8799]], ['quot', [34]], ['QUOT', [34]], ['rAarr', [8667]], ['race', [8765, 817]], ['Racute', [340]], ['racute', [341]], ['radic', [8730]], ['raemptyv', [10675]], ['rang', [10217]], ['Rang', [10219]], ['rangd', [10642]], ['range', [10661]], ['rangle', [10217]], ['raquo', [187]], ['rarrap', [10613]], ['rarrb', [8677]], ['rarrbfs', [10528]], ['rarrc', [10547]], ['rarr', [8594]], ['Rarr', [8608]], ['rArr', [8658]], ['rarrfs', [10526]], ['rarrhk', [8618]], ['rarrlp', [8620]], ['rarrpl', [10565]], ['rarrsim', [10612]], ['Rarrtl', [10518]], ['rarrtl', [8611]], ['rarrw', [8605]], ['ratail', [10522]], ['rAtail', [10524]], ['ratio', [8758]], ['rationals', [8474]], ['rbarr', [10509]], ['rBarr', [10511]], ['RBarr', [10512]], ['rbbrk', [10099]], ['rbrace', [125]], ['rbrack', [93]], ['rbrke', [10636]], ['rbrksld', [10638]], ['rbrkslu', [10640]], ['Rcaron', [344]], ['rcaron', [345]], ['Rcedil', [342]], ['rcedil', [343]], ['rceil', [8969]], ['rcub', [125]], ['Rcy', [1056]], ['rcy', [1088]], ['rdca', [10551]], ['rdldhar', [10601]], ['rdquo', [8221]], ['rdquor', [8221]], ['CloseCurlyDoubleQuote', [8221]], ['rdsh', [8627]], ['real', [8476]], ['realine', [8475]], ['realpart', [8476]], ['reals', [8477]], ['Re', [8476]], ['rect', [9645]], ['reg', [174]], ['REG', [174]], ['ReverseElement', [8715]], ['ReverseEquilibrium', [8651]], ['ReverseUpEquilibrium', [10607]], ['rfisht', [10621]], ['rfloor', [8971]], ['rfr', [120111]], ['Rfr', [8476]], ['rHar', [10596]], ['rhard', [8641]], ['rharu', [8640]], ['rharul', [10604]], ['Rho', [929]], ['rho', [961]], ['rhov', [1009]], ['RightAngleBracket', [10217]], ['RightArrowBar', [8677]], ['rightarrow', [8594]], ['RightArrow', [8594]], ['Rightarrow', [8658]], ['RightArrowLeftArrow', [8644]], ['rightarrowtail', [8611]], ['RightCeiling', [8969]], ['RightDoubleBracket', [10215]], ['RightDownTeeVector', [10589]], ['RightDownVectorBar', [10581]], ['RightDownVector', [8642]], ['RightFloor', [8971]], ['rightharpoondown', [8641]], ['rightharpoonup', [8640]], ['rightleftarrows', [8644]], ['rightleftharpoons', [8652]], ['rightrightarrows', [8649]], ['rightsquigarrow', [8605]], ['RightTeeArrow', [8614]], ['RightTee', [8866]], ['RightTeeVector', [10587]], ['rightthreetimes', [8908]], ['RightTriangleBar', [10704]], ['RightTriangle', [8883]], ['RightTriangleEqual', [8885]], ['RightUpDownVector', [10575]], ['RightUpTeeVector', [10588]], ['RightUpVectorBar', [10580]], ['RightUpVector', [8638]], ['RightVectorBar', [10579]], ['RightVector', [8640]], ['ring', [730]], ['risingdotseq', [8787]], ['rlarr', [8644]], ['rlhar', [8652]], ['rlm', [8207]], ['rmoustache', [9137]], ['rmoust', [9137]], ['rnmid', [10990]], ['roang', [10221]], ['roarr', [8702]], ['robrk', [10215]], ['ropar', [10630]], ['ropf', [120163]], ['Ropf', [8477]], ['roplus', [10798]], ['rotimes', [10805]], ['RoundImplies', [10608]], ['rpar', [41]], ['rpargt', [10644]], ['rppolint', [10770]], ['rrarr', [8649]], ['Rrightarrow', [8667]], ['rsaquo', [8250]], ['rscr', [120007]], ['Rscr', [8475]], ['rsh', [8625]], ['Rsh', [8625]], ['rsqb', [93]], ['rsquo', [8217]], ['rsquor', [8217]], ['CloseCurlyQuote', [8217]], ['rthree', [8908]], ['rtimes', [8906]], ['rtri', [9657]], ['rtrie', [8885]], ['rtrif', [9656]], ['rtriltri', [10702]], ['RuleDelayed', [10740]], ['ruluhar', [10600]], ['rx', [8478]], ['Sacute', [346]], ['sacute', [347]], ['sbquo', [8218]], ['scap', [10936]], ['Scaron', [352]], ['scaron', [353]], ['Sc', [10940]], ['sc', [8827]], ['sccue', [8829]], ['sce', [10928]], ['scE', [10932]], ['Scedil', [350]], ['scedil', [351]], ['Scirc', [348]], ['scirc', [349]], ['scnap', [10938]], ['scnE', [10934]], ['scnsim', [8937]], ['scpolint', [10771]], ['scsim', [8831]], ['Scy', [1057]], ['scy', [1089]], ['sdotb', [8865]], ['sdot', [8901]], ['sdote', [10854]], ['searhk', [10533]], ['searr', [8600]], ['seArr', [8664]], ['searrow', [8600]], ['sect', [167]], ['semi', [59]], ['seswar', [10537]], ['setminus', [8726]], ['setmn', [8726]], ['sext', [10038]], ['Sfr', [120086]], ['sfr', [120112]], ['sfrown', [8994]], ['sharp', [9839]], ['SHCHcy', [1065]], ['shchcy', [1097]], ['SHcy', [1064]], ['shcy', [1096]], ['ShortDownArrow', [8595]], ['ShortLeftArrow', [8592]], ['shortmid', [8739]], ['shortparallel', [8741]], ['ShortRightArrow', [8594]], ['ShortUpArrow', [8593]], ['shy', [173]], ['Sigma', [931]], ['sigma', [963]], ['sigmaf', [962]], ['sigmav', [962]], ['sim', [8764]], ['simdot', [10858]], ['sime', [8771]], ['simeq', [8771]], ['simg', [10910]], ['simgE', [10912]], ['siml', [10909]], ['simlE', [10911]], ['simne', [8774]], ['simplus', [10788]], ['simrarr', [10610]], ['slarr', [8592]], ['SmallCircle', [8728]], ['smallsetminus', [8726]], ['smashp', [10803]], ['smeparsl', [10724]], ['smid', [8739]], ['smile', [8995]], ['smt', [10922]], ['smte', [10924]], ['smtes', [10924, 65024]], ['SOFTcy', [1068]], ['softcy', [1100]], ['solbar', [9023]], ['solb', [10692]], ['sol', [47]], ['Sopf', [120138]], ['sopf', [120164]], ['spades', [9824]], ['spadesuit', [9824]], ['spar', [8741]], ['sqcap', [8851]], ['sqcaps', [8851, 65024]], ['sqcup', [8852]], ['sqcups', [8852, 65024]], ['Sqrt', [8730]], ['sqsub', [8847]], ['sqsube', [8849]], ['sqsubset', [8847]], ['sqsubseteq', [8849]], ['sqsup', [8848]], ['sqsupe', [8850]], ['sqsupset', [8848]], ['sqsupseteq', [8850]], ['square', [9633]], ['Square', [9633]], ['SquareIntersection', [8851]], ['SquareSubset', [8847]], ['SquareSubsetEqual', [8849]], ['SquareSuperset', [8848]], ['SquareSupersetEqual', [8850]], ['SquareUnion', [8852]], ['squarf', [9642]], ['squ', [9633]], ['squf', [9642]], ['srarr', [8594]], ['Sscr', [119982]], ['sscr', [120008]], ['ssetmn', [8726]], ['ssmile', [8995]], ['sstarf', [8902]], ['Star', [8902]], ['star', [9734]], ['starf', [9733]], ['straightepsilon', [1013]], ['straightphi', [981]], ['strns', [175]], ['sub', [8834]], ['Sub', [8912]], ['subdot', [10941]], ['subE', [10949]], ['sube', [8838]], ['subedot', [10947]], ['submult', [10945]], ['subnE', [10955]], ['subne', [8842]], ['subplus', [10943]], ['subrarr', [10617]], ['subset', [8834]], ['Subset', [8912]], ['subseteq', [8838]], ['subseteqq', [10949]], ['SubsetEqual', [8838]], ['subsetneq', [8842]], ['subsetneqq', [10955]], ['subsim', [10951]], ['subsub', [10965]], ['subsup', [10963]], ['succapprox', [10936]], ['succ', [8827]], ['succcurlyeq', [8829]], ['Succeeds', [8827]], ['SucceedsEqual', [10928]], ['SucceedsSlantEqual', [8829]], ['SucceedsTilde', [8831]], ['succeq', [10928]], ['succnapprox', [10938]], ['succneqq', [10934]], ['succnsim', [8937]], ['succsim', [8831]], ['SuchThat', [8715]], ['sum', [8721]], ['Sum', [8721]], ['sung', [9834]], ['sup1', [185]], ['sup2', [178]], ['sup3', [179]], ['sup', [8835]], ['Sup', [8913]], ['supdot', [10942]], ['supdsub', [10968]], ['supE', [10950]], ['supe', [8839]], ['supedot', [10948]], ['Superset', [8835]], ['SupersetEqual', [8839]], ['suphsol', [10185]], ['suphsub', [10967]], ['suplarr', [10619]], ['supmult', [10946]], ['supnE', [10956]], ['supne', [8843]], ['supplus', [10944]], ['supset', [8835]], ['Supset', [8913]], ['supseteq', [8839]], ['supseteqq', [10950]], ['supsetneq', [8843]], ['supsetneqq', [10956]], ['supsim', [10952]], ['supsub', [10964]], ['supsup', [10966]], ['swarhk', [10534]], ['swarr', [8601]], ['swArr', [8665]], ['swarrow', [8601]], ['swnwar', [10538]], ['szlig', [223]], ['Tab', [9]], ['target', [8982]], ['Tau', [932]], ['tau', [964]], ['tbrk', [9140]], ['Tcaron', [356]], ['tcaron', [357]], ['Tcedil', [354]], ['tcedil', [355]], ['Tcy', [1058]], ['tcy', [1090]], ['tdot', [8411]], ['telrec', [8981]], ['Tfr', [120087]], ['tfr', [120113]], ['there4', [8756]], ['therefore', [8756]], ['Therefore', [8756]], ['Theta', [920]], ['theta', [952]], ['thetasym', [977]], ['thetav', [977]], ['thickapprox', [8776]], ['thicksim', [8764]], ['ThickSpace', [8287, 8202]], ['ThinSpace', [8201]], ['thinsp', [8201]], ['thkap', [8776]], ['thksim', [8764]], ['THORN', [222]], ['thorn', [254]], ['tilde', [732]], ['Tilde', [8764]], ['TildeEqual', [8771]], ['TildeFullEqual', [8773]], ['TildeTilde', [8776]], ['timesbar', [10801]], ['timesb', [8864]], ['times', [215]], ['timesd', [10800]], ['tint', [8749]], ['toea', [10536]], ['topbot', [9014]], ['topcir', [10993]], ['top', [8868]], ['Topf', [120139]], ['topf', [120165]], ['topfork', [10970]], ['tosa', [10537]], ['tprime', [8244]], ['trade', [8482]], ['TRADE', [8482]], ['triangle', [9653]], ['triangledown', [9663]], ['triangleleft', [9667]], ['trianglelefteq', [8884]], ['triangleq', [8796]], ['triangleright', [9657]], ['trianglerighteq', [8885]], ['tridot', [9708]], ['trie', [8796]], ['triminus', [10810]], ['TripleDot', [8411]], ['triplus', [10809]], ['trisb', [10701]], ['tritime', [10811]], ['trpezium', [9186]], ['Tscr', [119983]], ['tscr', [120009]], ['TScy', [1062]], ['tscy', [1094]], ['TSHcy', [1035]], ['tshcy', [1115]], ['Tstrok', [358]], ['tstrok', [359]], ['twixt', [8812]], ['twoheadleftarrow', [8606]], ['twoheadrightarrow', [8608]], ['Uacute', [218]], ['uacute', [250]], ['uarr', [8593]], ['Uarr', [8607]], ['uArr', [8657]], ['Uarrocir', [10569]], ['Ubrcy', [1038]], ['ubrcy', [1118]], ['Ubreve', [364]], ['ubreve', [365]], ['Ucirc', [219]], ['ucirc', [251]], ['Ucy', [1059]], ['ucy', [1091]], ['udarr', [8645]], ['Udblac', [368]], ['udblac', [369]], ['udhar', [10606]], ['ufisht', [10622]], ['Ufr', [120088]], ['ufr', [120114]], ['Ugrave', [217]], ['ugrave', [249]], ['uHar', [10595]], ['uharl', [8639]], ['uharr', [8638]], ['uhblk', [9600]], ['ulcorn', [8988]], ['ulcorner', [8988]], ['ulcrop', [8975]], ['ultri', [9720]], ['Umacr', [362]], ['umacr', [363]], ['uml', [168]], ['UnderBar', [95]], ['UnderBrace', [9183]], ['UnderBracket', [9141]], ['UnderParenthesis', [9181]], ['Union', [8899]], ['UnionPlus', [8846]], ['Uogon', [370]], ['uogon', [371]], ['Uopf', [120140]], ['uopf', [120166]], ['UpArrowBar', [10514]], ['uparrow', [8593]], ['UpArrow', [8593]], ['Uparrow', [8657]], ['UpArrowDownArrow', [8645]], ['updownarrow', [8597]], ['UpDownArrow', [8597]], ['Updownarrow', [8661]], ['UpEquilibrium', [10606]], ['upharpoonleft', [8639]], ['upharpoonright', [8638]], ['uplus', [8846]], ['UpperLeftArrow', [8598]], ['UpperRightArrow', [8599]], ['upsi', [965]], ['Upsi', [978]], ['upsih', [978]], ['Upsilon', [933]], ['upsilon', [965]], ['UpTeeArrow', [8613]], ['UpTee', [8869]], ['upuparrows', [8648]], ['urcorn', [8989]], ['urcorner', [8989]], ['urcrop', [8974]], ['Uring', [366]], ['uring', [367]], ['urtri', [9721]], ['Uscr', [119984]], ['uscr', [120010]], ['utdot', [8944]], ['Utilde', [360]], ['utilde', [361]], ['utri', [9653]], ['utrif', [9652]], ['uuarr', [8648]], ['Uuml', [220]], ['uuml', [252]], ['uwangle', [10663]], ['vangrt', [10652]], ['varepsilon', [1013]], ['varkappa', [1008]], ['varnothing', [8709]], ['varphi', [981]], ['varpi', [982]], ['varpropto', [8733]], ['varr', [8597]], ['vArr', [8661]], ['varrho', [1009]], ['varsigma', [962]], ['varsubsetneq', [8842, 65024]], ['varsubsetneqq', [10955, 65024]], ['varsupsetneq', [8843, 65024]], ['varsupsetneqq', [10956, 65024]], ['vartheta', [977]], ['vartriangleleft', [8882]], ['vartriangleright', [8883]], ['vBar', [10984]], ['Vbar', [10987]], ['vBarv', [10985]], ['Vcy', [1042]], ['vcy', [1074]], ['vdash', [8866]], ['vDash', [8872]], ['Vdash', [8873]], ['VDash', [8875]], ['Vdashl', [10982]], ['veebar', [8891]], ['vee', [8744]], ['Vee', [8897]], ['veeeq', [8794]], ['vellip', [8942]], ['verbar', [124]], ['Verbar', [8214]], ['vert', [124]], ['Vert', [8214]], ['VerticalBar', [8739]], ['VerticalLine', [124]], ['VerticalSeparator', [10072]], ['VerticalTilde', [8768]], ['VeryThinSpace', [8202]], ['Vfr', [120089]], ['vfr', [120115]], ['vltri', [8882]], ['vnsub', [8834, 8402]], ['vnsup', [8835, 8402]], ['Vopf', [120141]], ['vopf', [120167]], ['vprop', [8733]], ['vrtri', [8883]], ['Vscr', [119985]], ['vscr', [120011]], ['vsubnE', [10955, 65024]], ['vsubne', [8842, 65024]], ['vsupnE', [10956, 65024]], ['vsupne', [8843, 65024]], ['Vvdash', [8874]], ['vzigzag', [10650]], ['Wcirc', [372]], ['wcirc', [373]], ['wedbar', [10847]], ['wedge', [8743]], ['Wedge', [8896]], ['wedgeq', [8793]], ['weierp', [8472]], ['Wfr', [120090]], ['wfr', [120116]], ['Wopf', [120142]], ['wopf', [120168]], ['wp', [8472]], ['wr', [8768]], ['wreath', [8768]], ['Wscr', [119986]], ['wscr', [120012]], ['xcap', [8898]], ['xcirc', [9711]], ['xcup', [8899]], ['xdtri', [9661]], ['Xfr', [120091]], ['xfr', [120117]], ['xharr', [10231]], ['xhArr', [10234]], ['Xi', [926]], ['xi', [958]], ['xlarr', [10229]], ['xlArr', [10232]], ['xmap', [10236]], ['xnis', [8955]], ['xodot', [10752]], ['Xopf', [120143]], ['xopf', [120169]], ['xoplus', [10753]], ['xotime', [10754]], ['xrarr', [10230]], ['xrArr', [10233]], ['Xscr', [119987]], ['xscr', [120013]], ['xsqcup', [10758]], ['xuplus', [10756]], ['xutri', [9651]], ['xvee', [8897]], ['xwedge', [8896]], ['Yacute', [221]], ['yacute', [253]], ['YAcy', [1071]], ['yacy', [1103]], ['Ycirc', [374]], ['ycirc', [375]], ['Ycy', [1067]], ['ycy', [1099]], ['yen', [165]], ['Yfr', [120092]], ['yfr', [120118]], ['YIcy', [1031]], ['yicy', [1111]], ['Yopf', [120144]], ['yopf', [120170]], ['Yscr', [119988]], ['yscr', [120014]], ['YUcy', [1070]], ['yucy', [1102]], ['yuml', [255]], ['Yuml', [376]], ['Zacute', [377]], ['zacute', [378]], ['Zcaron', [381]], ['zcaron', [382]], ['Zcy', [1047]], ['zcy', [1079]], ['Zdot', [379]], ['zdot', [380]], ['zeetrf', [8488]], ['ZeroWidthSpace', [8203]], ['Zeta', [918]], ['zeta', [950]], ['zfr', [120119]], ['Zfr', [8488]], ['ZHcy', [1046]], ['zhcy', [1078]], ['zigrarr', [8669]], ['zopf', [120171]], ['Zopf', [8484]], ['Zscr', [119989]], ['zscr', [120015]], ['zwj', [8205]], ['zwnj', [8204]]];
-var alphaIndex = {};
-var charIndex = {};
-createIndexes(alphaIndex, charIndex);
-var Html5Entities = /** @class */ (function () {
-    function Html5Entities() {
+var util = __webpack_require__(669)
+var TrackerBase = __webpack_require__(320)
+var Tracker = __webpack_require__(682)
+var TrackerStream = __webpack_require__(784)
+
+var TrackerGroup = module.exports = function (name) {
+  TrackerBase.call(this, name)
+  this.parentGroup = null
+  this.trackers = []
+  this.completion = {}
+  this.weight = {}
+  this.totalWeight = 0
+  this.finished = false
+  this.bubbleChange = bubbleChange(this)
+}
+util.inherits(TrackerGroup, TrackerBase)
+
+function bubbleChange (trackerGroup) {
+  return function (name, completed, tracker) {
+    trackerGroup.completion[tracker.id] = completed
+    if (trackerGroup.finished) return
+    trackerGroup.emit('change', name || trackerGroup.name, trackerGroup.completed(), trackerGroup)
+  }
+}
+
+TrackerGroup.prototype.nameInTree = function () {
+  var names = []
+  var from = this
+  while (from) {
+    names.unshift(from.name)
+    from = from.parentGroup
+  }
+  return names.join('/')
+}
+
+TrackerGroup.prototype.addUnit = function (unit, weight) {
+  if (unit.addUnit) {
+    var toTest = this
+    while (toTest) {
+      if (unit === toTest) {
+        throw new Error(
+          'Attempted to add tracker group ' +
+          unit.name + ' to tree that already includes it ' +
+          this.nameInTree(this))
+      }
+      toTest = toTest.parentGroup
     }
-    Html5Entities.prototype.decode = function (str) {
-        if (!str || !str.length) {
-            return '';
-        }
-        return str.replace(/&(#?[\w\d]+);?/g, function (s, entity) {
-            var chr;
-            if (entity.charAt(0) === "#") {
-                var code = entity.charAt(1) === 'x' ?
-                    parseInt(entity.substr(2).toLowerCase(), 16) :
-                    parseInt(entity.substr(1));
-                if (!(isNaN(code) || code < -32768 || code > 65535)) {
-                    chr = String.fromCharCode(code);
-                }
-            }
-            else {
-                chr = alphaIndex[entity];
-            }
-            return chr || s;
-        });
-    };
-    Html5Entities.decode = function (str) {
-        return new Html5Entities().decode(str);
-    };
-    Html5Entities.prototype.encode = function (str) {
-        if (!str || !str.length) {
-            return '';
-        }
-        var strLength = str.length;
-        var result = '';
-        var i = 0;
-        while (i < strLength) {
-            var charInfo = charIndex[str.charCodeAt(i)];
-            if (charInfo) {
-                var alpha = charInfo[str.charCodeAt(i + 1)];
-                if (alpha) {
-                    i++;
-                }
-                else {
-                    alpha = charInfo[''];
-                }
-                if (alpha) {
-                    result += "&" + alpha + ";";
-                    i++;
-                    continue;
-                }
-            }
-            result += str.charAt(i);
-            i++;
-        }
-        return result;
-    };
-    Html5Entities.encode = function (str) {
-        return new Html5Entities().encode(str);
-    };
-    Html5Entities.prototype.encodeNonUTF = function (str) {
-        if (!str || !str.length) {
-            return '';
-        }
-        var strLength = str.length;
-        var result = '';
-        var i = 0;
-        while (i < strLength) {
-            var c = str.charCodeAt(i);
-            var charInfo = charIndex[c];
-            if (charInfo) {
-                var alpha = charInfo[str.charCodeAt(i + 1)];
-                if (alpha) {
-                    i++;
-                }
-                else {
-                    alpha = charInfo[''];
-                }
-                if (alpha) {
-                    result += "&" + alpha + ";";
-                    i++;
-                    continue;
-                }
-            }
-            if (c < 32 || c > 126) {
-                result += '&#' + c + ';';
-            }
-            else {
-                result += str.charAt(i);
-            }
-            i++;
-        }
-        return result;
-    };
-    Html5Entities.encodeNonUTF = function (str) {
-        return new Html5Entities().encodeNonUTF(str);
-    };
-    Html5Entities.prototype.encodeNonASCII = function (str) {
-        if (!str || !str.length) {
-            return '';
-        }
-        var strLength = str.length;
-        var result = '';
-        var i = 0;
-        while (i < strLength) {
-            var c = str.charCodeAt(i);
-            if (c <= 255) {
-                result += str[i++];
-                continue;
-            }
-            result += '&#' + c + ';';
-            i++;
-        }
-        return result;
-    };
-    Html5Entities.encodeNonASCII = function (str) {
-        return new Html5Entities().encodeNonASCII(str);
-    };
-    return Html5Entities;
-}());
-exports.Html5Entities = Html5Entities;
-function createIndexes(alphaIndex, charIndex) {
-    var i = ENTITIES.length;
-    while (i--) {
-        var e = ENTITIES[i];
-        var alpha = e[0];
-        var chars = e[1];
-        var chr = chars[0];
-        var addChar = (chr < 32 || chr > 126) || chr === 62 || chr === 60 || chr === 38 || chr === 34 || chr === 39;
-        var charInfo = void 0;
-        if (addChar) {
-            charInfo = charIndex[chr] = charIndex[chr] || {};
-        }
-        if (chars[1]) {
-            var chr2 = chars[1];
-            alphaIndex[alpha] = String.fromCharCode(chr) + String.fromCharCode(chr2);
-            addChar && (charInfo[chr2] = alpha);
-        }
-        else {
-            alphaIndex[alpha] = String.fromCharCode(chr);
-            addChar && (charInfo[''] = alpha);
-        }
+    unit.parentGroup = this
+  }
+  this.weight[unit.id] = weight || 1
+  this.totalWeight += this.weight[unit.id]
+  this.trackers.push(unit)
+  this.completion[unit.id] = unit.completed()
+  unit.on('change', this.bubbleChange)
+  if (!this.finished) this.emit('change', unit.name, this.completion[unit.id], unit)
+  return unit
+}
+
+TrackerGroup.prototype.completed = function () {
+  if (this.trackers.length === 0) return 0
+  var valPerWeight = 1 / this.totalWeight
+  var completed = 0
+  for (var ii = 0; ii < this.trackers.length; ii++) {
+    var trackerId = this.trackers[ii].id
+    completed += valPerWeight * this.weight[trackerId] * this.completion[trackerId]
+  }
+  return completed
+}
+
+TrackerGroup.prototype.newGroup = function (name, weight) {
+  return this.addUnit(new TrackerGroup(name), weight)
+}
+
+TrackerGroup.prototype.newItem = function (name, todo, weight) {
+  return this.addUnit(new Tracker(name, todo), weight)
+}
+
+TrackerGroup.prototype.newStream = function (name, todo, weight) {
+  return this.addUnit(new TrackerStream(name, todo), weight)
+}
+
+TrackerGroup.prototype.finish = function () {
+  this.finished = true
+  if (!this.trackers.length) this.addUnit(new Tracker(), 1, true)
+  for (var ii = 0; ii < this.trackers.length; ii++) {
+    var tracker = this.trackers[ii]
+    tracker.finish()
+    tracker.removeListener('change', this.bubbleChange)
+  }
+  this.emit('change', this.name, 1, this)
+}
+
+var buffer = '                                  '
+TrackerGroup.prototype.debug = function (depth) {
+  depth = depth || 0
+  var indent = depth ? buffer.substr(0, depth) : ''
+  var output = indent + (this.name || 'top') + ': ' + this.completed() + '\n'
+  this.trackers.forEach(function (tracker) {
+    if (tracker instanceof TrackerGroup) {
+      output += tracker.debug(depth + 1)
+    } else {
+      output += indent + ' ' + tracker.name + ': ' + tracker.completed() + '\n'
     }
+  })
+  return output
 }
 
 
@@ -44833,7 +45964,7 @@ module.exports = function (x) {
 /* 537 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
-var parsePath = __webpack_require__(258)
+var parsePath = __webpack_require__(208)
 var setValue = __webpack_require__(918)
 
 function appendField (store, key, value) {
@@ -46372,7 +47503,7 @@ var appendField = __webpack_require__(537)
 var Counter = __webpack_require__(802)
 var MulterError = __webpack_require__(742)
 var FileAppender = __webpack_require__(786)
-var removeUploadedFiles = __webpack_require__(784)
+var removeUploadedFiles = __webpack_require__(706)
 
 function drainStream (stream) {
   stream.on('readable', stream.read.bind(stream))
@@ -46546,17 +47677,7 @@ module.exports = makeMiddleware
 
 
 /***/ }),
-/* 553 */
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-exports.TrackerGroup = __webpack_require__(584)
-exports.Tracker = __webpack_require__(682)
-exports.TrackerStream = __webpack_require__(203)
-
-
-/***/ }),
+/* 553 */,
 /* 554 */,
 /* 555 */,
 /* 556 */
@@ -48486,120 +49607,7 @@ module.exports = function query(options) {
 
 /***/ }),
 /* 583 */,
-/* 584 */
-/***/ (function(module, __unusedexports, __webpack_require__) {
-
-"use strict";
-
-var util = __webpack_require__(669)
-var TrackerBase = __webpack_require__(320)
-var Tracker = __webpack_require__(682)
-var TrackerStream = __webpack_require__(203)
-
-var TrackerGroup = module.exports = function (name) {
-  TrackerBase.call(this, name)
-  this.parentGroup = null
-  this.trackers = []
-  this.completion = {}
-  this.weight = {}
-  this.totalWeight = 0
-  this.finished = false
-  this.bubbleChange = bubbleChange(this)
-}
-util.inherits(TrackerGroup, TrackerBase)
-
-function bubbleChange (trackerGroup) {
-  return function (name, completed, tracker) {
-    trackerGroup.completion[tracker.id] = completed
-    if (trackerGroup.finished) return
-    trackerGroup.emit('change', name || trackerGroup.name, trackerGroup.completed(), trackerGroup)
-  }
-}
-
-TrackerGroup.prototype.nameInTree = function () {
-  var names = []
-  var from = this
-  while (from) {
-    names.unshift(from.name)
-    from = from.parentGroup
-  }
-  return names.join('/')
-}
-
-TrackerGroup.prototype.addUnit = function (unit, weight) {
-  if (unit.addUnit) {
-    var toTest = this
-    while (toTest) {
-      if (unit === toTest) {
-        throw new Error(
-          'Attempted to add tracker group ' +
-          unit.name + ' to tree that already includes it ' +
-          this.nameInTree(this))
-      }
-      toTest = toTest.parentGroup
-    }
-    unit.parentGroup = this
-  }
-  this.weight[unit.id] = weight || 1
-  this.totalWeight += this.weight[unit.id]
-  this.trackers.push(unit)
-  this.completion[unit.id] = unit.completed()
-  unit.on('change', this.bubbleChange)
-  if (!this.finished) this.emit('change', unit.name, this.completion[unit.id], unit)
-  return unit
-}
-
-TrackerGroup.prototype.completed = function () {
-  if (this.trackers.length === 0) return 0
-  var valPerWeight = 1 / this.totalWeight
-  var completed = 0
-  for (var ii = 0; ii < this.trackers.length; ii++) {
-    var trackerId = this.trackers[ii].id
-    completed += valPerWeight * this.weight[trackerId] * this.completion[trackerId]
-  }
-  return completed
-}
-
-TrackerGroup.prototype.newGroup = function (name, weight) {
-  return this.addUnit(new TrackerGroup(name), weight)
-}
-
-TrackerGroup.prototype.newItem = function (name, todo, weight) {
-  return this.addUnit(new Tracker(name, todo), weight)
-}
-
-TrackerGroup.prototype.newStream = function (name, todo, weight) {
-  return this.addUnit(new TrackerStream(name, todo), weight)
-}
-
-TrackerGroup.prototype.finish = function () {
-  this.finished = true
-  if (!this.trackers.length) this.addUnit(new Tracker(), 1, true)
-  for (var ii = 0; ii < this.trackers.length; ii++) {
-    var tracker = this.trackers[ii]
-    tracker.finish()
-    tracker.removeListener('change', this.bubbleChange)
-  }
-  this.emit('change', this.name, 1, this)
-}
-
-var buffer = '                                  '
-TrackerGroup.prototype.debug = function (depth) {
-  depth = depth || 0
-  var indent = depth ? buffer.substr(0, depth) : ''
-  var output = indent + (this.name || 'top') + ': ' + this.completed() + '\n'
-  this.trackers.forEach(function (tracker) {
-    if (tracker instanceof TrackerGroup) {
-      output += tracker.debug(depth + 1)
-    } else {
-      output += indent + ' ' + tracker.name + ': ' + tracker.completed() + '\n'
-    }
-  })
-  return output
-}
-
-
-/***/ }),
+/* 584 */,
 /* 585 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -48612,6 +49620,8 @@ const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-
 const saltRounds = 10;
 
 const utils = __webpack_require__(762);
+
+const database = process.env.MYSQL_HOST ? "mysql" : "sqlite";
 
 router.post("/sign_in", (req, res) => {
   let { email, password } = req.body.user;
@@ -48633,37 +49643,48 @@ router.post("/sign_in", (req, res) => {
     const FIND_USER_QUERY = `SELECT * from users WHERE email = ${'"' +
       email +
       '"'} `;
-
-    connection.query(FIND_USER_QUERY, (err, results) => {
-      if (err) {
-        console.log(err);
-        res.send(err);
-      } else {
-        if (results.length === 0) {
-          res.json({
-            error: "User does not exist"
-          });
-        } else {
-          const user = results[0];
-          // the password is encrypted, so we need to compare it.
-          if (bcrypt.compareSync(password, user.password)) {
-            // JSON web token
-
-            const token = utils.generateToken(user);
-            res.json({
-              name: user['name'],
-              token
-            });
-          } else {
-            res.json({
-              error: "Invalid Password"
-            });
-          }
-        }
-      }
-    });
+    if (database == "mysql") {
+      connection.query(FIND_USER_QUERY, (err, results) => {
+        res.json(handleLoginUser(err, results, password));
+      });
+    } else if (database == "sqlite") {
+      connection.all(FIND_USER_QUERY, [], (err, results) => {
+        res.json(handleLoginUser(err, results, password));
+      });
+    }
   }
 });
+
+function handleLoginUser(err, results, password) {
+  if (err) {
+    return {
+      error: err
+    };
+  } else {
+    if (results.length === 0) {
+      return {
+        error: "User does not exist"
+      };
+    } else {
+      const user = results[0];
+      // the password is encrypted, so we need to compare it.
+      console.log(password, user.password)
+      if (bcrypt.compareSync(password, user.password)) {
+        // JSON web token
+
+        const token = utils.generateToken(user);
+        return {
+          name: user["name"],
+          token
+        };
+      } else {
+        return {
+          error: "Invalid Password"
+        };
+      }
+    }
+  }
+}
 
 router.post("/register", (req, res) => {
   let { name, password, email } = req.body.user;
@@ -48686,29 +49707,35 @@ router.post("/register", (req, res) => {
     const hash_password = bcrypt.hashSync(password, saltRounds);
     const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
-    connection.query(CREATE_NEW_USER, (err, results) => {
-      if (err) {
-        if (err.code == "ER_DUP_ENTRY")
-          res.json({
-            error: "Account already exist"
-          });
-        else
-          res.json({
-            error: "Unable to register with provided credentials"
-          });
-      } else {
-        const token = utils.generateToken({
-          name,
-          user_id: results.insertId
-        });
-        res.json({
-          name: name,
-          token
-        });
-      }
-    });
+    if (database == "mysql") {
+      connection.query(CREATE_NEW_USER, (err, results) => {
+        res.json(handleRegister(err, results.insertId, name));
+      });
+    } else if (database == "sqlite") {
+      connection.run(CREATE_NEW_USER, function(err) {
+        res.json(handleRegister(err, this.lastID, name));
+      });
+    }
   }
 });
+
+function handleRegister(err, user_id, name) {
+  if (err) {
+    console.log(err.message);
+    return {
+      error: "Account exist or invalid entry"
+    };
+  } else {
+    const token = utils.generateToken({
+      name,
+      user_id
+    });
+    return {
+      name: name,
+      token
+    };
+  }
+}
 
 router.get("/validateToken", function(req, res) {
   var token = req.query.token;
@@ -49015,7 +50042,53 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 594 */,
+/* 594 */
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+// Inspired by https://github.com/tlrobinson/long-stack-traces
+var util = __webpack_require__(669);
+
+function extendTrace(object, property, pos) {
+    var old = object[property];
+    object[property] = function() {
+        var error = new Error();
+        var name = object.constructor.name + '#' + property + '(' + 
+            Array.prototype.slice.call(arguments).map(function(el) {
+                return util.inspect(el, false, 0);
+            }).join(', ') + ')';
+
+        if (typeof pos === 'undefined') pos = -1;
+        if (pos < 0) pos += arguments.length;
+        var cb = arguments[pos];
+        if (typeof arguments[pos] === 'function') {
+            arguments[pos] = function replacement() {
+                try {
+                    return cb.apply(this, arguments);
+                } catch (err) {
+                    if (err && err.stack && !err.__augmented) {
+                        err.stack = filter(err).join('\n');
+                        err.stack += '\n--> in ' + name;
+                        err.stack += '\n' + filter(error).slice(1).join('\n');
+                        err.__augmented = true;
+                    }
+                    throw err;
+                }
+            };
+        }
+        return old.apply(this, arguments);
+    };
+}
+exports.extendTrace = extendTrace;
+
+
+function filter(error) {
+    return error.stack.split('\n').filter(function(line) {
+        return line.indexOf(__filename) < 0;
+    });
+}
+
+
+/***/ }),
 /* 595 */
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -55940,7 +57013,40 @@ module.exports = (flag, argv) => {
 
 
 /***/ }),
-/* 706 */,
+/* 706 */
+/***/ (function(module) {
+
+function removeUploadedFiles (uploadedFiles, remove, cb) {
+  var length = uploadedFiles.length
+  var errors = []
+
+  if (length === 0) return cb(null, errors)
+
+  function handleFile (idx) {
+    var file = uploadedFiles[idx]
+
+    remove(file, function (err) {
+      if (err) {
+        err.file = file
+        err.field = file.fieldname
+        errors.push(err)
+      }
+
+      if (idx < length - 1) {
+        handleFile(idx + 1)
+      } else {
+        cb(null, errors)
+      }
+    })
+  }
+
+  handleFile(0)
+}
+
+module.exports = removeUploadedFiles
+
+
+/***/ }),
 /* 707 */,
 /* 708 */,
 /* 709 */,
@@ -59520,6 +60626,7 @@ module.exports = require("zlib");
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
 const jwt = __webpack_require__(455);
+const jwtToken = process.env.JWT_SECRET ? process.env.JWT_SECRET : "soundcool";
 
 module.exports = {
   generateToken: function(user) {
@@ -59527,14 +60634,14 @@ module.exports = {
       name: user.name,
       id: user.user_id
     };
-    let token = jwt.sign(u, process.env.JWT_SECRET, {
+    let token = jwt.sign(u, jwtToken, {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
     return token;
   },
 
   verifyToken: function(token, callback) {
-    jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
+    jwt.verify(token, jwtToken, function(err, user) {
       if (err) {
         callback(false);
       } else {
@@ -60865,36 +61972,45 @@ module.exports = function (blocking) {
 /***/ }),
 /* 783 */,
 /* 784 */
-/***/ (function(module) {
+/***/ (function(module, __unusedexports, __webpack_require__) {
 
-function removeUploadedFiles (uploadedFiles, remove, cb) {
-  var length = uploadedFiles.length
-  var errors = []
+"use strict";
 
-  if (length === 0) return cb(null, errors)
+var util = __webpack_require__(669)
+var stream = __webpack_require__(362)
+var delegate = __webpack_require__(731)
+var Tracker = __webpack_require__(682)
 
-  function handleFile (idx) {
-    var file = uploadedFiles[idx]
+var TrackerStream = module.exports = function (name, size, options) {
+  stream.Transform.call(this, options)
+  this.tracker = new Tracker(name, size)
+  this.name = name
+  this.id = this.tracker.id
+  this.tracker.on('change', delegateChange(this))
+}
+util.inherits(TrackerStream, stream.Transform)
 
-    remove(file, function (err) {
-      if (err) {
-        err.file = file
-        err.field = file.fieldname
-        errors.push(err)
-      }
-
-      if (idx < length - 1) {
-        handleFile(idx + 1)
-      } else {
-        cb(null, errors)
-      }
-    })
+function delegateChange (trackerStream) {
+  return function (name, completion, tracker) {
+    trackerStream.emit('change', name, completion, trackerStream)
   }
-
-  handleFile(0)
 }
 
-module.exports = removeUploadedFiles
+TrackerStream.prototype._transform = function (data, encoding, cb) {
+  this.tracker.completeWork(data.length ? data.length : 1)
+  this.push(data)
+  cb()
+}
+
+TrackerStream.prototype._flush = function (cb) {
+  this.tracker.finish()
+  cb()
+}
+
+delegate(TrackerStream.prototype, 'tracker')
+  .method('completed')
+  .method('addWork')
+  .method('finish')
 
 
 /***/ }),
@@ -72450,7 +73566,7 @@ Ping.prototype.start = function() {
 
 "use strict";
 
-var Progress = __webpack_require__(553)
+var Progress = __webpack_require__(258)
 var Gauge = __webpack_require__(960)
 var EE = __webpack_require__(614).EventEmitter
 var log = exports = module.exports = new EE()
