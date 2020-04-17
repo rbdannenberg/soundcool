@@ -5,7 +5,7 @@ const connection = require("../db");
 const multer = require("multer");
 var cTimeStamp = new Date().getTime();
 var fs = require("fs");
-const stream = require("youtube-audio-stream");
+const ytdl = require('ytdl-core');
 
 function updateTimeStamp() {
   cTimeStamp = new Date().getTime();
@@ -193,7 +193,7 @@ router.get("/youtubeAudio/:audioId/:token", function(req, res) {
         res.header({
           "Content-Type": "audio/mpeg"
         });
-        stream(requestUrl).pipe(res);
+        ytdl(requestUrl, { filter: format => format.container === 'mp4' }).pipe(res)
       } catch (exception) {
         res.status(500).send(exception);
       }
