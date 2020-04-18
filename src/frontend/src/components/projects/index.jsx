@@ -303,7 +303,7 @@ class Projects extends Component {
       let payload = {
         projectName: content.projectName,
         projectDescription: content.projectDescription,
-        content: JSON.stringify(content.blocks)
+        blocks: content.blocks
       };
       createProject(payload)
         .then(data => {

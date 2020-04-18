@@ -504,10 +504,18 @@ class ProjectEditor extends React.Component {
   exportProject = event => {
     event.preventDefault();
     const { projectName, projectDescription, items } = this.state;
+    let bs = items.reduce((a, b) => {
+      return a.concat(b);
+    });
+    let nowOut = this.props.blocks.nowOut;
+    let blocks = {
+      bs,
+      nowOut
+    };
     this.downloadFile({
       projectName,
       projectDescription,
-      items
+      blocks
     });
   };
 
