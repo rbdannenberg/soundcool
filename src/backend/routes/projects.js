@@ -137,7 +137,6 @@ router.post("/new", (req, res) => {
         if (err) {
           return res.json({ error: err });
         } else {
-          console.log(this.lastID);
           const QUERY =
             SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${this.lastID}`;
           connection.all(QUERY, [], (err, results) => {
