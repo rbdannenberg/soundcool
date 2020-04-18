@@ -35,7 +35,7 @@ CREATE TABLE `audioSharing` (
 
 LOCK TABLES `audioSharing` WRITE;
 /*!40000 ALTER TABLE `audioSharing` DISABLE KEYS */;
-INSERT INTO `audioSharing` VALUES (100,0),(101,0);
+INSERT INTO `audioSharing` VALUES (100,0);
 /*!40000 ALTER TABLE `audioSharing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -49,8 +49,8 @@ DROP TABLE IF EXISTS `presets`;
 CREATE TABLE `presets` (
   `preset_id` int NOT NULL AUTO_INCREMENT,
   `user` int DEFAULT NULL,
-  `name` varchar(500) DEFAULT NULL,
-  `location` varchar(500) DEFAULT NULL,
+  `name` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `location` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`preset_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -62,7 +62,6 @@ CREATE TABLE `presets` (
 
 LOCK TABLES `presets` WRITE;
 /*!40000 ALTER TABLE `presets` DISABLE KEYS */;
-INSERT INTO `presets` VALUES (1,NULL,'CCRMAStairwell.wav','/assets/presets/1578618278209-CCRMAStairwell.wav','2020-01-10 05:43:43'),(2,101,'RoomPool.wav','/assets/presets/1578618278209-RoomPool.wav','2020-01-10 06:34:44');
 /*!40000 ALTER TABLE `presets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,11 +75,11 @@ DROP TABLE IF EXISTS `projects`;
 CREATE TABLE `projects` (
   `project_id` int NOT NULL AUTO_INCREMENT,
   `user` int DEFAULT NULL,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `description` varchar(500) NOT NULL,
-  `content` varchar(15300) DEFAULT NULL,
-  `sharedUsers` varchar(500) DEFAULT NULL,
+  `description` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` varchar(15300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sharedUsers` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `isPublic` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`project_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -105,10 +104,10 @@ DROP TABLE IF EXISTS `sounds`;
 CREATE TABLE `sounds` (
   `sound_id` int NOT NULL AUTO_INCREMENT,
   `user` int DEFAULT NULL,
-  `name` varchar(500) DEFAULT NULL,
-  `fileLocation` varchar(500) DEFAULT NULL,
+  `name` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fileLocation` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `type` varchar(500) DEFAULT NULL,
+  `type` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`sound_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -119,7 +118,6 @@ CREATE TABLE `sounds` (
 
 LOCK TABLES `sounds` WRITE;
 /*!40000 ALTER TABLE `sounds` DISABLE KEYS */;
-INSERT INTO `sounds` VALUES (127,100,'sound.wav','/uploads/sounds/1582037622837-sound.wav','2020-02-18 20:24:11','upload'),(128,100,'Sound Link','https://freesound.org/data/previews/210/210533_985466-lq.mp3','2020-02-18 20:24:21','Sound Link'),(129,100,'Youtube','https://youtu.be/cphNpqKpKc4','2020-02-18 20:24:31','Youtube'),(130,101,'sound.wav','/uploads/sounds/1582037651668-sound.wav','2020-02-18 20:26:16','upload'),(131,101,'Sound Link','https://freesound.org/data/previews/210/210533_985466-lq.mp3','2020-02-18 20:26:25','Sound Link'),(132,101,'Youtube','https://youtu.be/cphNpqKpKc4','2020-02-18 20:26:32','Youtube');
 /*!40000 ALTER TABLE `sounds` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -132,9 +130,9 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `user_id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `password` varchar(100) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -159,4 +157,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-18 20:28:12
+-- Dump completed on 2020-04-18 13:39:05
