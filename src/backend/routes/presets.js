@@ -114,11 +114,11 @@ router.post("/upload", upload.single("file"), (req, res) => {
           }
         });
       } else if (database == "sqlite") {
-        connection.all(QUERY, [], (err, results) => {
+        connection.run(QUERY, [], err => {
           if (err) {
             return res.json({ err: err });
           } else {
-            const presetId = results.insertId;
+            const presetId = this.lastID;
             return res.json({
               presetId: presetId,
               user: user.id,
