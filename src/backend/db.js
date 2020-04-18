@@ -57,7 +57,7 @@ if (process.env.MYSQL_HOST) {
           "CREATE TABLE projects(project_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text NOT NULL, created_date DATETIME DEFAULT CURRENT_TIMESTAMP ,description text NOT NULL, content text, sharedUsers text, isPublic BOOLEAN default 0 )"
         )
         .run(
-          "CREATE TABLE sounds(sound_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text, file_location text, created_date DATETIME DEFAULT CURRENT_TIMESTAMP ,type text)"
+          "CREATE TABLE sounds(sound_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text, fileLocation text, created_date DATETIME DEFAULT CURRENT_TIMESTAMP ,type text)"
         );
     });
   }
