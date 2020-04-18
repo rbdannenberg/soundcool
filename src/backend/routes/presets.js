@@ -114,7 +114,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
           }
         });
       } else if (database == "sqlite") {
-        connection.run(QUERY, [], err => {
+        connection.run(QUERY, [], function(err){
           if (err) {
             return res.json({ err: err });
           } else {

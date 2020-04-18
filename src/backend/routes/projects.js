@@ -89,7 +89,7 @@ router.patch("/update", (req, res) => {
       }
     });
   } else if (database == "sqlite") {
-    connection.run(QUERY, [], err => {
+    connection.run(QUERY, [], function(err) {
       if (err) {
         console.log(err);
         return res.json({ err: err });
@@ -133,10 +133,11 @@ router.post("/new", (req, res) => {
         }
       });
     } else if (database == "sqlite") {
-      connection.run(QUERY, [], err => {
+      connection.run(QUERY, [], function(err) {
         if (err) {
           return res.json({ error: err });
         } else {
+          console.log(this.lastID);
           const QUERY =
             SELECT_ALL_PROJECTS_QUERY + `WHERE project_id = ${this.lastID}`;
           connection.all(QUERY, [], (err, results) => {
@@ -262,7 +263,7 @@ router.post("/clone", (req, res) => {
                   const QUERY = `insert into sounds(user,name,fileLocation) values(${user_id},'${
                     block["file"]["name"]
                   }','${result[0]["fileLocation"]}')`;
-                  connection.run(QUERY, [], err => {
+                  connection.run(QUERY, [], function(err) {
                     if (err) {
                       return res.json({ err: err });
                     } else {
@@ -278,7 +279,7 @@ router.post("/clone", (req, res) => {
         const CREATE_NEW_PROJECT = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
         // do the query case on the user
         const QUERY = CREATE_NEW_PROJECT;
-        connection.run(QUERY, [], err => {
+        connection.run(QUERY, [], function(err) {
           if (err) {
             return res.json({ err: err });
           } else {
@@ -317,7 +318,7 @@ router.patch("/remove", (req, res) => {
       }
     });
   } else if (database == "sqlite") {
-    connection.run(QUERY, [], err => {
+    connection.run(QUERY, [], function(err) {
       if (err) {
         console.log(err);
         return res.json({ err: err });
@@ -409,7 +410,7 @@ router.patch("/addShare", (req, res) => {
                 });
                 sharedUsers = JSON.stringify(sharedUsers);
                 const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
-                connection.run(QUERY, [], err => {
+                connection.run(QUERY, [], function(err) {
                   if (err) {
                     return res.json({ err: err });
                   } else {
