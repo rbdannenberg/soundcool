@@ -154,6 +154,7 @@ class ProjectEditor extends React.Component {
                     this.setState({ selectedBlock: b.id });
                   }
                 }}
+                style={{ transform: "scale(0.7)" }}
               >
                 <div
                   className="no-cursor"
@@ -200,6 +201,7 @@ class ProjectEditor extends React.Component {
                           key={item.id}
                           draggableId={item.id}
                           index={index}
+                          // style={{ transform: "scale(0.7)" }}
                         >
                           {(provided, snapshot) => (
                             <div
@@ -211,11 +213,14 @@ class ProjectEditor extends React.Component {
                                 provided.draggableProps.style
                               )}
                             >
-                              <WithHeader
-                                key={item.id}
-                                blockInfo={item}
-                                nowOut={nowOut}
-                              />
+                              <div style={{ transform: "scale(0.8)" }}>
+                                <WithHeader
+                                  key={item.id}
+                                  blockInfo={item}
+                                  nowOut={nowOut}
+                                  // style={{ transform: "scale(0.7)" }}
+                                />
+                              </div>
                             </div>
                           )}
                         </Draggable>

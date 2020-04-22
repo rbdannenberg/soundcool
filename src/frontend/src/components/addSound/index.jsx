@@ -1,7 +1,12 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import ReactAudioPlayer from "react-audio-player";
-import { serveAudio, fetchAudio, getAudio, youtubeAudio } from "../sounds/actions";
+import {
+  serveAudio,
+  fetchAudio,
+  getAudio,
+  youtubeAudio
+} from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
 import { isUserLoggedIn } from "../../actions/common";
@@ -25,11 +30,9 @@ class AddSound extends Component {
         .catch(error => {
           showToastrError(error);
         });
+    } else {
+      alert("You should be logged in to perform this action");
     }
-    else{
-      alert("You should be logged in to perform this action")
-    }
-
   };
 
   filterSounds = sound => {
@@ -73,12 +76,12 @@ class AddSound extends Component {
     let data = [];
 
     sounds.forEach(sound => {
-      let { name,type, sound_id } = sound;
+      let { name, type, sound_id } = sound;
       let src;
       if (type === "Sound Link") {
         this.getAudioUrl(sound_id);
       } else if (type === "Youtube") {
-        src =  youtubeAudio(sound_id);
+        src = youtubeAudio(sound_id);
       } else {
         src = serveAudio(sound_id);
       }
@@ -126,19 +129,19 @@ class AddSound extends Component {
           {this.props.minimal
             ? ""
             : this.props.file
-              ? this.props.file.name
-              : "Please select a sound"}{" "}
+            ? this.props.file.name
+            : "Please select a sound"}{" "}
           <button
             className="btn btn-info"
             style={
               this.props.minimal
                 ? {
-                  fontSize: "0.7rem",
-                  width: "60px",
-                  lineHeight: "1",
-                  margin: "0px",
-                  padding: "0.2rem"
-                }
+                    fontSize: "0.7rem",
+                    width: "40px",
+                    lineHeight: "1",
+                    margin: "0px",
+                    padding: "0.2rem"
+                  }
                 : { fontSize: "0.8rem", lineHeight: "1.5" }
             }
             onClick={this.addSound}
@@ -146,8 +149,8 @@ class AddSound extends Component {
             {this.props.file && this.props.file.name
               ? this.props.minimal
                 ? this.props.file.name
-                : "Update sound"
-              : "Select Sound"}
+                : "Upd"
+              : "Snd"}
           </button>
         </p>
         <Modal

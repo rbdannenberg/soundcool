@@ -36,20 +36,6 @@ const IndividualPlayer = ({
     window.aoplayer = audioObj.players[num];
   };
 
-  // if (file) {
-  //   const url = serveAudio(file.sound_id);
-  //   loadUrl(url);
-  //   // inDisabled = false;
-  //   //use changeblock
-  //   // store.dispatch({
-  //   //   type: "CHANGE_BLOCK",
-  //   //   id,
-  //   //   field: "inDisableds",
-  //   //   num,
-  //   //   value: false
-  //   // });
-  // }
-
   const onSoundSelect = audio_id => {
     if (audioObj.players[num].isPlaying) {
       audioObj.stop(num);
@@ -59,14 +45,6 @@ const IndividualPlayer = ({
 
     const url = serveAudio(audio_id.sound_id);
 
-    //use changeblock
-    // store.dispatch({
-    //   type: "CHANGE_BLOCK",
-    //   id,
-    //   field: "inDisableds",
-    //   num,
-    //   value: false
-    // });
     loadUrl(url);
   };
 
@@ -75,8 +53,8 @@ const IndividualPlayer = ({
       style={{
         position: "absolute",
         borderColor: "white",
-        width: "70px",
-        height: "75px",
+        width: "50px",
+        height: "105px",
         borderWidth: "1px",
         borderStyle: "solid"
       }}
@@ -89,7 +67,7 @@ const IndividualPlayer = ({
           ...circleStyle,
           position: "absolute",
           top: "10px",
-          left: "5px"
+          left: "10px"
         }}
         onClick={() => {
           console.log("playbutton" + num);
@@ -107,8 +85,8 @@ const IndividualPlayer = ({
         style={{
           ...circleStyle,
           position: "absolute",
-          top: "10px",
-          left: "31px"
+          top: "40px",
+          left: "10px"
         }}
         onClick={() => {
           console.log("i am playing: " + num + audioObj.players[num].isPlaying);
@@ -123,50 +101,19 @@ const IndividualPlayer = ({
       <div
         style={{
           position: "absolute",
-          top: "38px",
+          top: "68px",
           left: "4px",
           webkitTransform: "scale(0.8)"
         }}
       >
         <AddSound minimal={true} onSoundSelect={onSoundSelect} file={file} />
       </div>
-
-      {/* <div
-        className="dropdown"
-        style={{
-          position: "absolute",
-          top: "40px",
-          left: "5px"
-        }}
-      >
-        <button
-          className="btn-sm btn-light dropdown-toggle"
-          style={{
-            fontSize: "0.8rem",
-            padding: "0px",
-            width: "55px",
-            height: "25px"
-          }}
-          id="file dropdown"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-        >
-          {file}
-        </button>
-        <div
-          className="dropdown-menu"
-          style={{ fontSize: "0.8rem" }}
-          aria-labelledby="file dropdown"
-        >
-        </div>
-      </div> */}
     </div>
   );
 };
 
 const SamplePlayer = ({ blockInfo, changeBlock }) => {
-  let l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  let l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
   let { id, speed, files, inDisableds, masterVolume, audioObj } = blockInfo;
 
   return (
@@ -306,8 +253,8 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
 
         {/* individual players x12 */}
         {l.map(x => {
-          let top = Math.floor(x / 4) * 75 + 50 + "px";
-          let left = (x % 4) * 70 + 5 + "px";
+          let top = Math.floor(x / 5) * 105 + 50 + "px";
+          let left = (x % 5) * 50 + 15 + "px";
           return (
             <div
               key={x}
@@ -338,7 +285,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             width: "1.5rem",
             height: "220px",
             position: "absolute",
-            left: "288px",
+            left: "278px",
             top: "50px"
           }}
           onChange={e => changeBlock(id, "masterVolume", e.target.value)}

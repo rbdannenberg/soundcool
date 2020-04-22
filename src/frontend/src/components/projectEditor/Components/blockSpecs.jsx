@@ -191,8 +191,6 @@ const specValues = {
       false,
       false,
       false,
-      false,
-      false,
       false
     ],
     files: [
@@ -205,24 +203,9 @@ const specValues = {
       undefined,
       undefined,
       undefined,
-      undefined,
-      undefined,
       undefined
     ],
-    inDisableds: [
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true
-    ],
+    inDisableds: [true, true, true, true, true, true, true, true, true, true],
     masterVolume: 60
   },
   Keyboard: {

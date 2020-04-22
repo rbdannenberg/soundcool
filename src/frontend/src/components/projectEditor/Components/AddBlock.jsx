@@ -1,4 +1,6 @@
 import React from "react";
+import ReactTooltip from "react-tooltip";
+
 // #region images
 import specValues from "./blockSpecs";
 import blendingV from "../Components/pictures/blendingV.gif";
@@ -55,7 +57,13 @@ const AddBlock = props => {
         id="player"
         style={{ position: "absolute", left: "240px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Player")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="Player"
+          type="submit"
+          onClick={() => addBlock("Player")}
+        >
           <img src={player}></img>
         </button>
       </div>
@@ -64,9 +72,11 @@ const AddBlock = props => {
         id="sampleplayer"
         style={{ position: "absolute", left: "305px", top: "53px" }}
       >
+        <ReactTooltip place="top" type="info" effect="float" />
         <button
           name="boton"
           type="submit"
+          data-tip="SamplePlayer"
           onClick={() => addBlock("SamplePlayer")}
         >
           <img src={sampleplayer}></img>
@@ -77,7 +87,13 @@ const AddBlock = props => {
         id="keyboard"
         style={{ position: "absolute", left: "370px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Keyboard")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="keyboard"
+          type="submit"
+          onClick={() => addBlock("Keyboard")}
+        >
           <img src={keyboard}></img>
         </button>
       </div>
@@ -86,7 +102,13 @@ const AddBlock = props => {
         id="vst"
         style={{ position: "absolute", left: "435px", top: "53px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="GranSynth"
+          type="submit"
+          onClick={() => addBlock("GranSynth")}
+        >
           <img src={vst}></img>
         </button>
       </div>
@@ -95,7 +117,13 @@ const AddBlock = props => {
         id="mixer"
         style={{ position: "absolute", left: "500px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Mixer")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="mixer"
+          type="submit"
+          onClick={() => addBlock("Mixer")}
+        >
           <img src={mixer}></img>
         </button>
       </div>
@@ -104,7 +132,13 @@ const AddBlock = props => {
         id="routing"
         style={{ position: "absolute", left: "565px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Routing")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="routing"
+          type="submit"
+          onClick={() => addBlock("Routing")}
+        >
           <img src={routing}></img>
         </button>
       </div>
@@ -113,7 +147,13 @@ const AddBlock = props => {
         id="delay"
         style={{ position: "absolute", left: "630px", top: "54px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Delay")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="delay"
+          type="submit"
+          onClick={() => addBlock("Delay")}
+        >
           <img src={delay}></img>
         </button>
       </div>
@@ -122,9 +162,11 @@ const AddBlock = props => {
         id="transposer"
         style={{ position: "absolute", left: "695px", top: "53px" }}
       >
+        <ReactTooltip place="top" type="info" effect="float" />
         <button
           name="boton"
           type="submit"
+          data-tip="transposer"
           onClick={() => addBlock("Transposer")}
         >
           <img src={transposer}></img>
@@ -135,7 +177,13 @@ const AddBlock = props => {
         id="pitch"
         style={{ position: "absolute", left: "760px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Pitch")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="pitch"
+          type="submit"
+          onClick={() => addBlock("Pitch")}
+        >
           <img src={pitch}></img>
         </button>
       </div>
@@ -144,7 +192,13 @@ const AddBlock = props => {
         id="pan"
         style={{ position: "absolute", left: "825px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Pan")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="pan"
+          type="submit"
+          onClick={() => addBlock("Pan")}
+        >
           <img src={pan}></img>
         </button>
       </div>
@@ -153,7 +207,13 @@ const AddBlock = props => {
         id="filter"
         style={{ position: "absolute", left: "890px", top: "53px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Filter")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          data-tip="filter"
+          type="submit"
+          onClick={() => addBlock("Filter")}
+        >
           <img src={filter}></img>
         </button>
       </div>
@@ -162,9 +222,11 @@ const AddBlock = props => {
         id="oscilloscope"
         style={{ position: "absolute", left: "955px", top: "53px" }}
       >
+        <ReactTooltip place="top" type="info" effect="float" />
         <button
           name="boton"
           type="submit"
+          data-tip="Oscilloscope"
           onClick={() => addBlock("Oscilloscope")}
         >
           <img src={oscilloscope}></img>
@@ -176,7 +238,8 @@ const AddBlock = props => {
         id="playerV"
         style={{ position: "absolute", left: "10px", top: "110px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*playerV" type="submit">
           <img src={playerV}></img>
         </button>
       </div>
@@ -186,9 +249,11 @@ const AddBlock = props => {
         id="directinput"
         style={{ position: "absolute", right: "10px", top: "150px" }}
       >
+        <ReactTooltip place="top" type="info" effect="float" />
         <button
           name="boton"
           type="submit"
+          data-tip="DirectInput"
           onClick={() => addBlock("DirectInput")}
         >
           <img src={directinput}></img>
@@ -199,7 +264,8 @@ const AddBlock = props => {
         id="directinputV"
         style={{ position: "absolute", right: "10px", top: "205px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*directinputV" type="submit">
           <img src={directinputV}></img>
         </button>
       </div>
@@ -209,7 +275,13 @@ const AddBlock = props => {
         id="speaker"
         style={{ position: "absolute", right: "10px", top: "260px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Speaker")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          type="submit"
+          data-tip="speaker"
+          onClick={() => addBlock("Speaker")}
+        >
           <img src={speaker}></img>
         </button>
       </div>
@@ -218,7 +290,8 @@ const AddBlock = props => {
         id="screenV"
         style={{ position: "absolute", right: "10px", top: "315px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*screenV" type="submit">
           <img src={screenV}></img>
         </button>
       </div>
@@ -228,7 +301,13 @@ const AddBlock = props => {
         id="record"
         style={{ position: "absolute", right: "10px", top: "370px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Record")}>
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          type="submit"
+          data-tip="record"
+          onClick={() => addBlock("Record")}
+        >
           <img src={record}></img>
         </button>
       </div>
@@ -238,7 +317,8 @@ const AddBlock = props => {
         id="samplerV"
         style={{ position: "absolute", left: "10px", top: "165px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*samplerV" type="submit">
           <img src={samplerV}></img>
         </button>
       </div>
@@ -248,7 +328,7 @@ const AddBlock = props => {
         id="switcherV"
         style={{ position: "absolute", left: "10px", top: "385px" }}
       >
-        <button name="boton" type="submit">
+        <button name="boton" data-tip="*switcherV" type="submit">
           <img src={switcherV}></img>
         </button>
       </div>
@@ -257,7 +337,8 @@ const AddBlock = props => {
         id="blendingV"
         style={{ position: "absolute", left: "10px", top: "330px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*blendingV" type="submit">
           <img src={blendingV}></img>
         </button>
       </div>
@@ -266,7 +347,8 @@ const AddBlock = props => {
         id="colorV"
         style={{ position: "absolute", left: "10px", top: "275px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*colorV" type="submit">
           <img src={colorV}></img>
         </button>
       </div>
@@ -275,7 +357,8 @@ const AddBlock = props => {
         id="imagesampleV"
         style={{ position: "absolute", left: "10px", top: "220px" }}
       >
-        <button name="boton" type="submit">
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button name="boton" data-tip="*imagesampleV" type="submit">
           <img src={imagesampleV}></img>
         </button>
       </div>
