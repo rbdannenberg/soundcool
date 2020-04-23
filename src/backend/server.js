@@ -57,9 +57,9 @@ server.on("error", err => {
     console.log(
       `Failed to allocate server port ${PORT}.\nPerhaps you are already running a Soundcool server or some other process is using it.\n  - To quit, type return\n  - To start the soundcool server with a different port, type the port number`
     );
-    readline.question(`Enter port number or return to quit:  `, portNumber => {
+    readline.question(`Enter port number or return to quit: `, portNumber => {
       readline.close();
-      if (portNumber == "return") {
+      if (portNumber == "return" || portNumber == "RETURN" ) {
         console.log(`Exiting server`);
       } else {
         startServer(server, portNumber);
