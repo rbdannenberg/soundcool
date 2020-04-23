@@ -33,7 +33,6 @@ if (process.env.MYSQL_HOST) {
     if (err) {
       return console.error(err.message);
     }
-    console.log("Connected to the SQlite database.");
   });
 
   if (firstTime) {

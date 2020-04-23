@@ -9,8 +9,8 @@ const osc = require("osc-min");
 router.post("/openPort", (req, res) => {
   let portNumber = req.body.portNumber;
   portNumber = Number.isInteger(portNumber) ? portNumber : parseInt(portNumber);
-  if (portNumber < 2000) {
-    res.json({ message: "Please use port number greater than 2000" });
+  if (portNumber < 1024) {
+    res.json({ message: "Please use port number greater than 1023" });
   }
   if (initPort(portNumber)) res.json({ message: "Port opened successfully" });
   else res.json({ err: "Port already in use" });
