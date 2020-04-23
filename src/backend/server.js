@@ -5,6 +5,7 @@ const socketIo = require("socket.io");
 const path = require("path");
 const cors = require("cors");
 const helmet = require("helmet");
+const ip = require("ip");
 
 const sounds = require("./routes/sounds.js");
 const projects = require("./routes/projects.js");
@@ -47,4 +48,4 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname + "/public/index.html"));
 });
 
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+server.listen(PORT, () => console.log(`Listening on (IP ADDRESS @ PORT) ${ip.address()} @ ${PORT}`));

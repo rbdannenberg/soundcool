@@ -290,7 +290,7 @@ class ProjectEditor extends React.Component {
   findComponents(oscPort) {
     let components = [];
     this.props.blocks["bs"].forEach((comp, index) => {
-      if (comp.osc == oscPort) {
+      if (comp.osc && comp.oscPort == oscPort) {
         components.push({ typeName: comp.typeName, id: comp.id, index: index });
       }
     });
@@ -298,7 +298,6 @@ class ProjectEditor extends React.Component {
   }
 
   handleOscInput(comp, data) {
-    console.log(comp);
     switch (comp.typeName) {
       case "Delay":
         break;
@@ -409,9 +408,14 @@ class ProjectEditor extends React.Component {
 
   openNewPort(blocks) {
     blocks.forEach(block => {
-      if (block.osc && this.state.openPorts.indexOf(block.osc) === -1) {
-        this.setState({ openPorts: [...this.state.openPorts, block.osc] });
-        openPort({ portNumber: block.osc })
+      if (
+        block.osc &&
+        block.oscPort &&
+        this.state.openPorts.indexOf(block.oscPort) === -1
+      ) {
+        this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
+        console.log({ portNumber: block.oscPort });
+        openPort({ portNumber: block.oscPort })
           .then(data => {
             if (data.err) {
               showToastrError(data);
@@ -579,7 +583,11 @@ class ProjectEditor extends React.Component {
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
     blocks.forEach(block => {
-      if (block.osc && this.state.openPorts.indexOf(block.osc) === -1) {
+      if (
+        block.osc &&
+        block.oscPort &&
+        this.state.openPorts.indexOf(block.oscPort) === -1
+      ) {
         flag = false;
       }
     });
@@ -663,7 +671,7 @@ class ProjectEditor extends React.Component {
         >
           Floating View : {this.state.floatingView ? "On" : "Off"}
         </button>
-        {isUserLoggedIn() && openPortsButton && (
+        {openPortsButton && (
           <button
             className="btn btn-secondary m-2 float-right"
             onClick={() => this.openNewPort(this.props.blocks["bs"])}
