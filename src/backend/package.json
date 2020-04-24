@@ -6,7 +6,7 @@
   "bin": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "build": "pkg . -t node10-linux-x64 -o ../../dist/soundcool && cp ./node_modules/sqlite3/lib/binding/node-v64-linux-x64/node_sqlite3.node ../../dist/ && cp ./node_modules/bcrypt/lib/binding/bcrypt_lib.node ../../dist/"
+    "build": "pkg . -t node10-linux-x64,node10-win-x64,node10-macos-x64 -o ../../dist/soundcool && cp ./node_modules/sqlite3/lib/binding/node-v64-linux-x64/node_sqlite3.node ../../dist/ && cp ./node_modules/bcrypt/lib/binding/bcrypt_lib.node ../../dist/"
   },
   "engines": {
     "node": "10.16.0",
