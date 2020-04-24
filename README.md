@@ -2,21 +2,21 @@
 
 #### Linux(in shell/terminal)
 
-```
+```bash
     cd dist
     ./soundcool-linux
 ```
 
 #### Windows(in cmd/powershell)
 
-```
+```powershell
     cd dist
     start soundcool-win.exe
 ```
 
 #### Macos(in shell/terminal)
 
-```
+```bash
     cd dist
     ./soundcool-macos
 ```
