@@ -163,12 +163,14 @@ class ProjectEditor extends React.Component {
                   }}
                   style={this.blockStyle(b.id)}
                 >
-                  <WithHeader
-                    draggableButton={true}
-                    key={b.id}
-                    blockInfo={b}
-                    nowOut={nowOut}
-                  />
+                  <div style={{ transform: "scale(0.8)" }}>
+                    <WithHeader
+                      draggableButton={true}
+                      key={b.id}
+                      blockInfo={b}
+                      nowOut={nowOut}
+                    />
+                  </div>
                 </div>
               </RDraggable>
               // <ExampleWrapper />
