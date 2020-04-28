@@ -314,6 +314,54 @@ const AddBlock = props => {
 
       <div
         class="contenedor"
+        id="SignalGen"
+        style={{ position: "absolute", right: "10px", top: "425px" }}
+      >
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          type="submit"
+          data-tip="SignalGen"
+          onClick={() => addBlock("SignalGen")}
+        >
+          <img src={signalgen}></img>
+        </button>
+      </div>
+
+      <div
+        class="contenedor"
+        id="sequencer"
+        style={{ position: "absolute", right: "10px", top: "480px" }}
+      >
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          type="submit"
+          data-tip="sequencer"
+          onClick={() => addBlock("Sequencer")}
+        >
+          <img src={sequencer}></img>
+        </button>
+      </div>
+
+      <div
+        class="contenedor"
+        id="spectroscope"
+        style={{ position: "absolute", right: "10px", top: "535px" }}
+      >
+        <ReactTooltip place="top" type="info" effect="float" />
+        <button
+          name="boton"
+          type="submit"
+          data-tip="spectroscope"
+          onClick={() => addBlock("Spectroscope")}
+        >
+          <img src={spectroscope}></img>
+        </button>
+      </div>
+
+      <div
+        class="contenedor"
         id="samplerV"
         style={{ position: "absolute", left: "10px", top: "165px" }}
       >
