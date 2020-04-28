@@ -238,10 +238,9 @@ class ScGranSynth extends ScModule {
     this.grainDur = this.options.grainDur;
     this.buffTimeStamp = this.context.currentTime;
     this.dBufferWPtr = parseInt(this.sampleRate * (this.buffTimeStamp % this.dBufferDur));
-    this.prevGTime = null; //this.buffTimeStamp;
+    this.prevGTime = null;
     this.grainPlayer = new GrainPlayer(this.context, this.dBuffer, this.options.rate,
       this.outNode, this.options.schedLookAhead);
-    this.debugOnlyOnce = false;
 
     this.scriptNode.onaudioprocess = function(event) {
       let liveBuffer = event.inputBuffer;
@@ -268,20 +267,17 @@ class ScGranSynth extends ScModule {
         }
         let gWhen = this.prevGTime + ioi;
         let gDelay = this.computeGDelay();
-        //let offset = this.buffTimeStamp - gDelay + ioi;
-        let offset = gWhen - gDelay - 0.1;
+        let offset = gWhen - gDelay - this.options.expectedLatency;
         if (offset < 0) {
           this.prevGTime = null;
           continue;
         }
-        //let gStart = (offset + onsets) % this.dBufferDur;
         let gStart = offset % this.dBufferDur;
         let gPShift = this.computeGTranspose();
         let gPan = this.computeGPan();
         let gDur = this.options.dur;
 
         // schedule
-        this.debugOnlyOnce = true;
         this.grainPlayer.schedule(gStart, gDur, gWhen, gPShift, gPan);
         this.prevGTime = gWhen;
         onsets += ioi;
