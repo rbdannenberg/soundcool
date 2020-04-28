@@ -23,4 +23,4 @@
 
 ## Developers
 
-### Please go to src/README.md for instructions on installing and building your own Soundcool`
+### Please go to the [Github Soundcool Wiki](https://github.com/rbdannenberg/soundcool/wiki) for a guide to documentation and installation.
