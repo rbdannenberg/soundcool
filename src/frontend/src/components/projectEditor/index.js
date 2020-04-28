@@ -136,8 +136,8 @@ class ProjectEditor extends React.Component {
   };
 
   renderBlockList = (blocks, nowOut) => {
+    console.log(blocks);
     if (this.state.floatingView) {
-      blocks = blocks[0];
       let finalBlock = [];
       blocks.forEach(o => {
         finalBlock = finalBlock.concat(o);
