@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { FaPlay, FaSquare, FaPause, FaWindows } from "react-icons/fa";
 import AddSound from "../addSound";
 import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
+import ReactTooltip from "react-tooltip";
+
 const circleStyle = {
   width: "1.5rem",
   height: "1.5rem",
@@ -186,7 +188,7 @@ class Player extends React.Component {
               left: "10px"
             }}
           >
-            Speed
+            Speed: {speed}
           </div>
           <input
             className="slider mx-1 my-2 text-center"
@@ -198,9 +200,9 @@ class Player extends React.Component {
               top: "12px"
             }}
             onChange={e => this.props.changeBlock(id, "speed", e.target.value)}
-            min={0}
+            min={0.01}
             max={2}
-            step={0.1}
+            step={0.01}
             value={speed}
             id="speed"
           />
@@ -212,13 +214,25 @@ class Player extends React.Component {
               top: "36px"
             }}
           >
-            <span className="" style={{ position: "absolute", left: "5px" }}>
+            <span
+              className=""
+              style={{ position: "absolute", left: "5px", cursor: "pointer" }}
+              onClick={e => this.props.changeBlock(id, "speed", 0.01)}
+            >
               x0
             </span>
-            <span className="" style={{ position: "absolute", left: "92px" }}>
+            <span
+              className=""
+              style={{ position: "absolute", left: "92px", cursor: "pointer" }}
+              onClick={e => this.props.changeBlock(id, "speed", 1)}
+            >
               x1
             </span>
-            <span className="" style={{ position: "absolute", left: "180px" }}>
+            <span
+              className=""
+              style={{ position: "absolute", left: "180px", cursor: "pointer" }}
+              onClick={e => this.props.changeBlock(id, "speed", 2)}
+            >
               x2
             </span>
           </div>

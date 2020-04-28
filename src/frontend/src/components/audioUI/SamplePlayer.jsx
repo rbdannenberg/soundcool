@@ -187,10 +187,11 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
               style={{
                 fontSize: "0.8rem",
                 position: "absolute",
-                left: "10px"
+                left: "10px",
+                width: "80px"
               }}
             >
-              Speed
+              Speed: {speed}
             </div>
             <input
               className="slider mx-1 my-2 text-center"
@@ -202,9 +203,9 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
                 top: "6px"
               }}
               onChange={e => changeBlock(id, "speed", e.target.value)}
-              min={0}
+              min={0.01}
               max={2}
-              step={0.1}
+              step={0.01}
               value={speed}
               id="speed"
             />
@@ -216,15 +217,32 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
                 top: "28px"
               }}
             >
-              <span className="" style={{ position: "absolute", left: "5px" }}>
+              <span
+                className=""
+                style={{ position: "absolute", left: "5px", cursor: "pointer" }}
+                onClick={e => changeBlock(id, "speed", 0.01)}
+              >
                 x0
               </span>
-              <span className="" style={{ position: "absolute", left: "72px" }}>
+              <span
+                className=""
+                style={{
+                  position: "absolute",
+                  left: "72px",
+                  cursor: "pointer"
+                }}
+                onClick={e => changeBlock(id, "speed", 1)}
+              >
                 x1
               </span>
               <span
                 className=""
-                style={{ position: "absolute", left: "140px" }}
+                onClick={e => changeBlock(id, "speed", 2)}
+                style={{
+                  position: "absolute",
+                  left: "140px",
+                  cursor: "pointer"
+                }}
               >
                 x2
               </span>

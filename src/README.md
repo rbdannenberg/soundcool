@@ -137,6 +137,7 @@ If you are running the whole project, there are four steps.
   - Go to `backend` folder.
   - Run `npm start`
   - Go to http://localhost:5000 to see the project!
+  - Remember there are already two users: "User 1" as user1@welcome.com with password welcome, and "User 2" as user2@welcome.com with password welcome.
 
 - **Step 6(Optional)**: Development Tools 
   - To see the store state and actions you can install redux devtools extension in your browser
