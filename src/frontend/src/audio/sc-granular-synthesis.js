@@ -1,87 +1,230 @@
 import ScModule from "./sc-module.js";
 
-function makeEqualPowerCurve(buffLen = 4096) {
-  var buffer = new Float32Array(buffLen);
-  let x;
-  for (let i = 0; i < buffLen; i++) {
-    x = 2 * (i / (buffLen - 1)) - 1;
-    if (Math.abs(x) < 0.001) {
-      buffer[i] = 0;
-    } else {
-      buffer[i] = Math.sin(Math.PI * 0.5 * x);
-    }
+function sampleFloat(min, max) {
+  return (Math.random() * (max - min) + min);
+}
+
+function sampleJitterCoeff(min, max, param, jitter) {
+    let x = jitter === 0 ? 0 : 0.5 + ((min - param) / jitter);
+    let lowerBound = x > 0 ? -0.5 + x : -0.5;
+    let y = jitter === 0 ? 0 : ((max - param) / jitter) - 0.5;
+    let upperBound = y < 0 ? 0.5 + y : 0.5;
+    let R = sampleFloat(lowerBound, upperBound);
+    return R;
+}
+
+function sampleTruncExp(a, b, rate){
+  let x = Math.random();
+  return -Math.log(Math.exp(-rate * a) - x *
+    (Math.exp(-rate * a) - Math.exp(-rate * b))) / rate;
+}
+
+class Grain {
+
+  constructor(context, buffer, dest, envelopeBuffer) {
+    this.context = context;
+    this.dest = dest;
+    this.envelopeBuffer = envelopeBuffer;
+    this.setupNodes(buffer);
   }
-  return buffer;
+
+  setupNodes(buffer) {
+    // nodes
+    this.absn = this.context.createBufferSource();
+    this.absn.buffer = buffer;
+    this.absn.loop = true;
+    this.panner = this.context.createStereoPanner();
+    this.envelope = this.context.createBufferSource();
+    this.envelope.buffer = this.envelopeBuffer;
+    this.gain = this.context.createGain();
+    this.gain.gain.cancelScheduledValues(0);
+    this.gain.gain.setValueAtTime(0, 0);
+
+    // connections
+    this.absn.connect(this.gain);
+    this.envelope.connect(this.gain.gain);
+    this.gain.connect(this.panner);
+    this.panner.connect(this.dest);
+  }
+
+  destroy() {
+    // disassemble
+    this.absn.disconnect(this.gain);
+    this.envelope.disconnect(this.gain.gain);
+    this.gain.disconnect(this.panner);
+    this.panner.disconnect(this.dest);
+  }
 }
 
 class GrainPlayer {
-  constructor(context, numGrains, destination) {
-    let gains = [];
-    let curve = makeEqualPowerCurve();
-    for (let i = 0; i < numGrains; i++) {
-      let gain = context.createGain();
-      gain.cancelScheduledValues(0);
-      gain.setValueAtTime(0, 0);
-      let env = context.createWaveShaper();
-      env.curve = curve;
-      gain.connect(env);
-      env.connect(destination);
-      gains.push(gain);
+
+  constructor(context, buffer, rate, dest, schedAhead) {
+    this.grains = [];
+    this.context = context;
+    this.buffer = buffer;
+    this.rate = rate;
+    this.dest = dest;
+    this.envelopeBufferDur = 1; // in seconds
+    this.schedAhead = schedAhead;
+    this.computeEnvelopeBuffer(this.envelopeBufferDur);
+    this.grainScheduledTimes = [];
+  }
+
+  getPreScheduled(now) {
+    let count = 0;
+    for (let i = 0; i < this.grainScheduledTimes.length; i++) {
+      if (this.grainScheduledTimes[i] > now) {
+        count += 1;
+      }
     }
-    return gains;
+    return count;
+  }
+
+  grainCleanup(grain) {
+    let grainIndex = this.grains.indexOf(grain);
+    this.grains.splice(grainIndex, 1);
+    this.grainScheduledTimes.splice(grainIndex, 1);
+    grain.destroy();
+  }
+
+  schedule(gStart, gDur, gWhen, gPShift, gPan) {
+    let grain;
+    grain = new Grain(this.context, this.buffer, this.dest,
+      this.envelopeBuffer);
+    let gEnd = gWhen + gDur;
+    grain.absn.detune.value = gPShift;
+    grain.envelope.detune.value = gPShift;
+    let envPBRate = this.envelopeBufferDur /  (gDur * Math.pow(2, gPShift / 1200));
+    grain.envelope.playbackRate.value = envPBRate;
+    grain.panner.pan.value = gPan;
+    grain.envelope.start(gWhen, 0);
+    grain.absn.start(gWhen, gStart);
+    grain.envelope.onended = function(evt) {
+      this.grainCleanup(grain);
+    }.bind(this);
+    this.grains.push(grain);
+    this.grainScheduledTimes.push(gWhen);
+    /* // debugging
+    console.log('now: ', this.context.currentTime, ' | gWhen: ', gWhen,
+      ' | gStart: ', gStart, ' | gEnd: ', gEnd, ' | gDur: ', gDur,
+      ' | envPB: ', envPBRate, ' | gPShift: ', gPShift, ' | pan: ', gPan);
+    */
+  }
+
+  computeEnvelopeBuffer(buffDur) {
+    let buffLen = buffDur * this.context.sampleRate;
+    let nodeBuff = this.context.createBuffer(
+      2,
+      buffLen,
+      this.context.sampleRate
+    );
+    let bufferL = nodeBuff.getChannelData(0);
+    let bufferR = nodeBuff.getChannelData(1);
+    let step = 2 / (buffLen - 1);
+    let x = -1;
+    for (let i = 0; i < buffLen; i++) {
+      bufferL[i] = 0.5 * (1 + Math.cos(Math.PI * x));
+      bufferR[i] = 0.5 * (1 + Math.cos(Math.PI * x));
+      x += step;
+    }
+    this.envelopeBuffer = nodeBuff;
+  }
+
+  grainsToSchedule() {
+    let now = this.context.currentTime;
+    let schedEnd = now + this.schedAhead;
+    let n = Math.ceil(this.rate * this.schedAhead);
+    let preScheduled = this.getPreScheduled(now);
+    return n - preScheduled;
   }
 }
 
 class ScGranSynth extends ScModule {
-  constructor(context, options = {}) {
+
+  constructor(context, options={}) {
     super(context);
     let defOpts = {
-      grainsPS: 10, // grains per second
-      grainDur: 50, // in msec
-      dBufferDur: 5, // len of delay buffer in seconds
-      minGrainSize: 1, // in msec
-      maxGrainSize: 50, // in msec
-      expectedLatency: 0.1 // in msec
+      rate: 100,
+      dur: 0.05,
+      dBufferDur: 40, // len of delay buffer in seconds
+      expectedLatency: .1, // in msec
+      schedLookAhead: 2, // in sec
+
+      // Delay defaults
+      delay: 1,
+      delayJitter: 20,
+      minDelay: 0,
+      maxDelay: 20,
+
+      // Pitch shift defaults
+      pitchShift: 0,
+      pitchJitter: 0,
+      minPShift: -2400,
+      maxPShift: 2400,
+
+      // Pan defaults
+      pan: 0,
+      panJitter: 0,
+      minPan: -1,
+      maxPan: 1,
+
+      // IOI defaults
+      truncExpLow: 0,
+      truncExpHigh: 5,
+      ioiJitter: 0.5
+
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
   }
 
-  schedule(currTime) {
-    console.log("currTime: ", currTime);
-    let maxOffset = this.dBufferDur - this.options.grainDur;
-    let startOffset = Math.random() * maxOffset;
-    console.log("offset: ", startOffset);
-    let grain = this.context.createBufferSource();
-    grain.buffer = this.dBuffer;
-    grain.connect(this.outNode);
-    grain.start(currTime, startOffset, startOffset + this.options.grainDur);
-    grain.onended = this.schedule.bind(this, currTime + 1);
+  sampleIOI() {
+    let rate = this.options.rate;
+    let randInterval = sampleTruncExp(this.options.truncExpLow,
+      this.options.truncExpHigh, rate);
+    let jitter = this.options.ioiJitter;
+    return (1 - jitter) * (1 / rate) + jitter * randInterval;
   }
 
-  startGrainSampler() {
-    let currTime = this.context.currentTime;
-    let offsetUnits = 1 / this.options.grainsPS;
-    for (let i = 0; i < this.options.grainsPS; i++) {
-      let callback = this.schedule.bind(this, currTime);
-      callback();
-      currTime += offsetUnits;
-    }
+  computeGDelay() {
+    let min = this.options.minDelay;
+    let max = this.options.maxDelay;
+    let param = this.options.delay;
+    let jitter = this.options.delayJitter;
+    let R = sampleJitterCoeff(min, max, param, jitter);
+    param = param + (R * jitter);
+    return param;
+  }
+
+  computeGTranspose() {
+    let min = this.options.minPShift;
+    let max = this.options.maxPShift;
+    let param = this.options.pitchShift;
+    let jitter = this.options.pitchJitter;
+    let R = sampleJitterCoeff(min, max, param, jitter);
+    param = param + (R * jitter);
+    return param;
+  }
+
+  computeGPan() {
+    let min = this.options.minPan;
+    let max = this.options.maxPan;
+    let param = this.options.pan;
+    let jitter = this.options.panJitter;
+    let R = sampleJitterCoeff(min, max, param, jitter);
+    param = param + (R * jitter);
+    return param;
   }
 
   setupNodes() {
     this.inNode = this.context.createGain();
     this.outNode = this.context.createGain();
-    //this.grainPlayer = new GrainPlayer(this.context, this.options.grainPS,
-    //  this.outNode);
     this.inputs.push(this.inNode);
     this.outputs.push(this.outNode);
     this.scriptNode = this.context.createScriptProcessor(4096, 2, 2);
     this.inNode.connect(this.scriptNode);
     this.scriptNode.connect(this.outNode);
-    this.inNode.connect(this.outNode);
 
-    // Input buffer settings
     this.dBufferDur = this.options.dBufferDur;
     this.sampleRate = this.context.sampleRate;
     this.dBufferLen = this.sampleRate * this.dBufferDur;
@@ -92,34 +235,97 @@ class ScGranSynth extends ScModule {
     );
     this.dBufferArrL = this.dBuffer.getChannelData(0);
     this.dBufferArrR = this.dBuffer.getChannelData(1);
-    this.dBufferWPtr = -1;
     this.grainDur = this.options.grainDur;
+    this.buffTimeStamp = this.context.currentTime;
+    this.dBufferWPtr = parseInt(this.sampleRate * (this.buffTimeStamp % this.dBufferDur));
+    this.prevGTime = null; //this.buffTimeStamp;
+    this.grainPlayer = new GrainPlayer(this.context, this.dBuffer, this.options.rate,
+      this.outNode, this.options.schedLookAhead);
+    this.debugOnlyOnce = false;
 
     this.scriptNode.onaudioprocess = function(event) {
       let liveBuffer = event.inputBuffer;
       let liveBuffDataL = liveBuffer.getChannelData(0);
       let liveBuffDataR = liveBuffer.getChannelData(1);
+      // need to do this for it to work in FF
+      this.dBufferArrL = this.dBuffer.getChannelData(0);
+      this.dBufferArrR = this.dBuffer.getChannelData(1);
       for (let i = 0; i < liveBuffDataL.length; i++) {
         this.dBufferWPtr = (this.dBufferWPtr + 1) % this.dBufferLen;
         this.dBufferArrL[this.dBufferWPtr] = liveBuffDataL[i];
         this.dBufferArrR[this.dBufferWPtr] = liveBuffDataR[i];
       }
-      let currDur = this.dBufferWPtr / this.sampleRate;
-      this.sampleRPtr = (currDur + 0.1) % this.dBufferDur;
-      this.sampleLPtr = currDur - this.grainDur / 1000;
-      if (this.sampleLPtr < 0) {
-        // sample from RPtr to dBufferDur - this.grainDur / 1000
-      } else if (this.sampleRPtr < this.sampleLPtr) {
-        // sample from RPtr to LPtr
-      } else {
-        // sample from 0 to currDur - [LPtr, RPtr]
-        console.log(currDur, this.sampleRPtr, this.sampleLPtr);
-      }
-    }.bind(this);
 
-    // start grain sampler
-    //this.startGrainSampler();
+      let grainsToSchedule = this.grainPlayer.grainsToSchedule();
+      let liveBuffDur = liveBuffDataL.length / this.sampleRate;
+      this.buffTimeStamp += liveBuffDur;
+      let now = this.context.currentTime;
+      let onsets = 0;
+      for (let i = 0; i < grainsToSchedule; i++) {
+        let ioi = this.sampleIOI();
+        if (this.prevGTime === null) { 
+          this.prevGTime = this.context.currentTime;
+        }
+        let gWhen = this.prevGTime + ioi;
+        let gDelay = this.computeGDelay();
+        //let offset = this.buffTimeStamp - gDelay + ioi;
+        let offset = gWhen - gDelay - 0.1;
+        if (offset < 0) {
+          this.prevGTime = null;
+          continue;
+        }
+        //let gStart = (offset + onsets) % this.dBufferDur;
+        let gStart = offset % this.dBufferDur;
+        let gPShift = this.computeGTranspose();
+        let gPan = this.computeGPan();
+        let gDur = this.options.dur;
+
+        // schedule
+        this.debugOnlyOnce = true;
+        this.grainPlayer.schedule(gStart, gDur, gWhen, gPShift, gPan);
+        this.prevGTime = gWhen;
+        onsets += ioi;
+      }
+
+    }.bind(this);
   }
+
+  set rate(desiredRate) {
+    this.options.rate = parseInt(desiredRate);
+  }
+
+  set ioiJitter(desiredJitter) {
+    this.options.ioiJitter = parseFloat(desiredJitter);
+  }
+
+  set dur(desiredDur) {
+    this.options.dur = parseFloat(desiredDur);
+  }
+
+  set pitchShift(desiredPitch) {
+    this.options.pitchShift = parseInt(desiredPitch);
+  }
+
+  set pitchJitter(desiredJitter) {
+    this.options.pitchJitter = parseInt(desiredJitter);
+  }
+
+  set pan(desiredPan) {
+    this.options.pan = parseFloat(desiredPan);
+  }
+
+  set panJitter(desiredJitter) {
+    this.options.panJitter = parseFloat(desiredJitter);
+  }
+
+  set delay(desiredDelay) {
+    this.options.delay = parseFloat(desiredDelay);
+  }
+
+  set delayJitter(desiredJitter) {
+    this.options.delayJitter = parseFloat(desiredJitter);
+  }
+
 }
 
 export default ScGranSynth;
