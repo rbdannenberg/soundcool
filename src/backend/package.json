@@ -2,9 +2,11 @@
   "name": "soundcool-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
+  "bin": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "pkg . -t node10-linux-x64,node10-win-x64,node10-macos-x64 -o ../../dist/soundcool && cp ./node_modules/sqlite3/lib/binding/node-v64-linux-x64/node_sqlite3.node ../../dist/ && cp ./node_modules/bcrypt/lib/binding/bcrypt_lib.node ../../dist/"
   },
   "engines": {
     "node": "10.16.0",
@@ -15,16 +17,15 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "cors": "^2.8.5",
-    "dgram": "^1.0.1",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "helmet": "^3.21.2",
+    "ip": "^1.1.5",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "mysql": "^2.17.1",
     "nodemon": "^1.19.1",
     "osc-min": "^1.1.2",
-    "redux-thunk": "^2.3.0",
     "socket.io": "^2.3.0",
     "sqlite3": "^4.1.1",
     "ytdl-core": "^2.1.0"
@@ -33,5 +34,24 @@
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2"
+  },
+  "pkg": {
+    "assets": [
+      "./node_modules/ytdl-core/**",
+      "./node_modules/sqlite3/**",
+      "./node_modules/socket.io/**",
+      "./node_modules/osc-min/**",
+      "./node_modules/nodemon/**",
+      "./node_modules/mysql/**",
+      "./node_modules/multer/**",
+      "./node_modules/jsonwebtoken/**",
+      "./node_modules/ip/**",
+      "./node_modules/helmet/**",
+      "./node_modules/express/**",
+      "./node_modules/dotenv/**",
+      "./node_modules/cors/**",
+      "./node_modules/bcrypt/**",
+      "./public/**"
+    ]
   }
 }
