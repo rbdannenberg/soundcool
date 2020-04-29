@@ -176,48 +176,57 @@ class ScMixer extends ScModule {
   }
 
   getMasterAudioData() {
-    let data = this.masterAnalyzer.getData();
-    return [data];
+    let dataL = this.masterAnalyzerL.getData();
+    let dataR = this.masterAnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode0AudioData() {
-    let data = this.node0Analyzer.getData();
-    return [data];
+    let dataL = this.node0AnalyzerL.getData();
+    let dataR = this.node0AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode1AudioData() {
-    let data = this.node1Analyzer.getData();
-    return [data];
+    let dataL = this.node1AnalyzerL.getData();
+    let dataR = this.node1AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode2AudioData() {
-    let data = this.node2Analyzer.getData();
-    return [data];
+    let dataL = this.node2AnalyzerL.getData();
+    let dataR = this.node2AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode3AudioData() {
-    let data = this.node3Analyzer.getData();
-    return [data];
+    let dataL = this.node3AnalyzerL.getData();
+    let dataR = this.node3AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode4AudioData() {
-    let data = this.node4Analyzer.getData();
-    return [data];
+    let dataL = this.node4AnalyzerL.getData();
+    let dataR = this.node4AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode5AudioData() {
-    let data = this.node5Analyzer.getData();
-    return [data];
+    let dataL = this.node5AnalyzerL.getData();
+    let dataR = this.node5AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode6AudioData() {
-    let data = this.node6Analyzer.getData();
-    return [data];
+    let dataL = this.node6AnalyzerL.getData();
+    let dataR = this.node6AnalyzerR.getData();
+    return [dataL, dataR];
   }
 
   getNode7AudioData() {
-    let data = this.node7Analyzer.getData();
-    return [data];
+    let dataL = this.node7AnalyzerL.getData();
+    let dataR = this.node7AnalyzerR.getData();
+    return [dataL, dataR];
   }
 }
 
