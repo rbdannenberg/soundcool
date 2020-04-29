@@ -494,12 +494,14 @@ class ProjectEditor extends React.Component {
 
   saveProject = () => {
     if (isUserLoggedIn())
-      if (this.state.projectId !== "new")
+      if (this.state.projectId !== "new") {
         this.updateProject({
           projectId: this.state.projectId,
           content: JSON.stringify(this.props.blocks)
         });
-      else this.toggleModal();
+        console.log("done");
+        // console.log(JSON.stringify(this.props.blocks.bs[0]));
+      } else this.toggleModal();
     else this.toggleRegisterModal();
   };
 
