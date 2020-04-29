@@ -153,8 +153,8 @@ const WithHeader = ({
       border: "0px"
     };
     if (inNode[0]) {
-      // let backgroundColor = getCssPropById(inNode[0][0], "background-color");
-      style = { ...style };
+      let backgroundColor = getCssPropById(inNode[0][0], "background-color");
+      style = { ...style, backgroundColor };
       console.log(style);
     }
     inButton = (
@@ -209,8 +209,8 @@ const WithHeader = ({
   } else {
     let style = outId === id ? { ...circleStyle } : { ...style1 };
     if (outNode[0]) {
-      // let backgroundColor = getCssPropById(outNode[0][0], "background-color");
-      style = { ...style };
+      let backgroundColor = getCssPropById(outNode[0][0], "background-color");
+      style = { ...style, backgroundColor };
     }
     outButton = (
       <button
