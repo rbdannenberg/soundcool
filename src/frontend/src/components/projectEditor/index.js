@@ -341,15 +341,18 @@ class ProjectEditor extends React.Component {
       ignore = false;
     switch (data.type) {
       case "loop":
-        (field = "loop"), (value = data.value == 1 ? true : false);
+        field = "loop";
+        value = data.value == 1 ? true : false;
         break;
       case "playbackSpeed":
-        (field = "speed"), (value = data.value * 2);
+        field = "speed";
+        value = data.value * 2;
         break;
       case "volume":
-        (field = "volume"), (value = Math.round(data.value * 100));
+        field = "volume";
+        value = Math.round(data.value * 100);
         break;
-      case "playPause":
+      /*case "playPause":
         if (
           data.value == 0 &&
           this.props.blocks["bs"][index].audioObj.options.path != ""
@@ -396,7 +399,7 @@ class ProjectEditor extends React.Component {
         if (this.props.blocks["bs"][index].audioObj.options.path != "") {
           this.props.blocks["bs"][index].audioObj.seek(data.value);
         }
-        ignore = true;
+        ignore = true;*/
     }
     if (!ignore) {
       this.props.dispatch({

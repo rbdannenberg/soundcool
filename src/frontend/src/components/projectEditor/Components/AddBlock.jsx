@@ -30,6 +30,7 @@ import switcherV from "../Components/pictures/switcherV.gif";
 import transposer from "../Components/pictures/transposer.gif";
 import vst from "../Components/pictures/vst.gif";
 import imagesampleV from "../Components/pictures/imagesampleV.gif";
+import granSynth from "../Components/pictures/granSynth.png"
 
 // #endregion images
 
@@ -109,7 +110,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => addBlock("GranSynth")}
         >
-          <img src={vst}></img>
+          <img src={granSynth} style={{width: '46px'}}></img>
         </button>
       </div>
       <div
