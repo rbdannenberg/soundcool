@@ -11,7 +11,8 @@ import { StoreX as Store } from "../../storeX";
 import {
   isUserLoggedIn,
   showToastr,
-  showToastrError
+  showToastrError,
+  baseAddress
 } from "../../actions/common";
 import {
   updateProject,
@@ -65,7 +66,7 @@ class ProjectEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: "http://localhost:5000",
+      endpoint: baseAddress(),
       floatingView: false,
       projectId: this.props.match.params.id,
       items: [[], [], []],
@@ -341,62 +342,65 @@ class ProjectEditor extends React.Component {
       ignore = false;
     switch (data.type) {
       case "loop":
-        (field = "loop"), (value = data.value == 1 ? true : false);
+        field = "loop";
+        value = data.value == 1 ? true : false;
         break;
       case "playbackSpeed":
-        (field = "speed"), (value = data.value * 2);
+        field = "speed";
+        value = data.value * 2;
         break;
       case "volume":
-        (field = "volume"), (value = Math.round(data.value * 100));
+        field = "volume";
+        value = Math.round(data.value * 100);
         break;
-      case "playPause":
-        if (
-          data.value == 0 &&
-          this.props.blocks["bs"][index].audioObj.options.path != ""
-        ) {
-          if (this.props.blocks["bs"][index].audioObj.isPlaying) {
-            this.props.blocks["bs"][index].audioObj.pause();
-          } else {
-            this.props.blocks["bs"][index].audioObj.play();
-          }
+    //   case "playPause":
+    //     if (
+    //       data.value == 0 &&
+    //       this.props.blocks["bs"][index].audioObj.options.path != ""
+    //     ) {
+    //       if (this.props.blocks["bs"][index].audioObj.isPlaying) {
+    //         this.props.blocks["bs"][index].audioObj.pause();
+    //       } else {
+    //         this.props.blocks["bs"][index].audioObj.play();
+    //       }
 
-          field = "playing";
-          value = undefined;
-        } else {
-          ignore = true;
-        }
-        break;
-      case "stop":
-        if (
-          data.value == 0 &&
-          this.props.blocks["bs"][index].audioObj.options.path != ""
-        ) {
-          field = "playing";
-          value = undefined;
-          this.props.blocks["bs"][index].audioObj.stop();
-        } else {
-          ignore = true;
-        }
+    //       field = "playing";
+    //       value = undefined;
+    //     } else {
+    //       ignore = true;
+    //     }
+    //     break;
+    //   case "stop":
+    //     if (
+    //       data.value == 0 &&
+    //       this.props.blocks["bs"][index].audioObj.options.path != ""
+    //     ) {
+    //       field = "playing";
+    //       value = undefined;
+    //       this.props.blocks["bs"][index].audioObj.stop();
+    //     } else {
+    //       ignore = true;
+    //     }
 
-        break;
-      case "reverse":
-        if (
-          data.value == 0 &&
-          this.props.blocks["bs"][index].audioObj.options.path != ""
-        ) {
-          this.props.blocks["bs"][index].audioObj.reverse(res => {
-            console.log(res);
-          });
-        } else {
-          ignore = true;
-        }
+    //     break;
+    //   case "reverse":
+    //     if (
+    //       data.value == 0 &&
+    //       this.props.blocks["bs"][index].audioObj.options.path != ""
+    //     ) {
+    //       this.props.blocks["bs"][index].audioObj.reverse(res => {
+    //         console.log(res);
+    //       });
+    //     } else {
+    //       ignore = true;
+    //     }
 
-        break;
-      case "seek":
-        if (this.props.blocks["bs"][index].audioObj.options.path != "") {
-          this.props.blocks["bs"][index].audioObj.seek(data.value);
-        }
-        ignore = true;
+    //     break;
+    //   case "seek":
+    //     if (this.props.blocks["bs"][index].audioObj.options.path != "") {
+    //       this.props.blocks["bs"][index].audioObj.seek(data.value);
+    //     }
+    //     ignore = true;
     }
     if (!ignore) {
       this.props.dispatch({
@@ -682,8 +686,6 @@ class ProjectEditor extends React.Component {
           </button>
         )}
         <div
-          className="container"
-          style={{ position: "absolute", top: "120px" }}
         >
           <div className="row">
             {this.renderBlockList(items, this.props.blocks.nowOut)}

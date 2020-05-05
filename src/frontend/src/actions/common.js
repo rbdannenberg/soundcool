@@ -20,6 +20,10 @@ export const successErrorHandler = (resolve, reject) => {
   };
 };
 
+export const baseAddress = () => {
+  return window.location.href.split("//")[0]+"//"+window.location.href.split("//")[1].split("/")[0];
+};
+
 export const showToastrError = errObj => {
   showToastr("error", errObj.error || errObj.err || "Something went wrong.", null, {
     timeOut: 0,
