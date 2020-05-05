@@ -1,7 +1,11 @@
 import React from "react";
 import { changeBlock, connectBlock } from "./actions";
 import { connect } from "react-redux";
-import { getCssPropById, focusElementById, setCssPropById } from "../../actions/common";
+import {
+  getCssPropById,
+  focusElementById,
+  setCssPropById
+} from "../../actions/common";
 
 class Mixer extends React.Component {
   constructor(props) {
@@ -30,80 +34,80 @@ class Mixer extends React.Component {
 
   componentDidMount = () => {
     this.rendererCML = setInterval(
-      this.rendererMasterMeter.bind(this, this.canvasMasterLRef),
+      this.rendererMasterMeter.bind(this, this.canvasMasterLRef, 0),
       200
     );
     this.rendererCMR = setInterval(
-      this.rendererMasterMeter.bind(this, this.canvasMasterRRef),
+      this.rendererMasterMeter.bind(this, this.canvasMasterRRef, 1),
       200
     );
     this.renderer0L = setInterval(
-      this.rendererNode0Meter.bind(this, this.canvasGain0LRef),
+      this.rendererNode0Meter.bind(this, this.canvasGain0LRef, 0),
       200
     );
     this.renderer0R = setInterval(
-      this.rendererNode0Meter.bind(this, this.canvasGain0RRef),
+      this.rendererNode0Meter.bind(this, this.canvasGain0RRef, 1),
       200
     );
     this.renderer1L = setInterval(
-      this.rendererNode1Meter.bind(this, this.canvasGain1LRef),
+      this.rendererNode1Meter.bind(this, this.canvasGain1LRef, 0),
       200
     );
     this.renderer1R = setInterval(
-      this.rendererNode1Meter.bind(this, this.canvasGain1RRef),
+      this.rendererNode1Meter.bind(this, this.canvasGain1RRef, 1),
       200
     );
     this.renderer2L = setInterval(
-      this.rendererNode2Meter.bind(this, this.canvasGain2LRef),
+      this.rendererNode2Meter.bind(this, this.canvasGain2LRef, 0),
       200
     );
     this.renderer2R = setInterval(
-      this.rendererNode2Meter.bind(this, this.canvasGain2RRef),
+      this.rendererNode2Meter.bind(this, this.canvasGain2RRef, 1),
       200
     );
     this.renderer3L = setInterval(
-      this.rendererNode3Meter.bind(this, this.canvasGain3LRef),
+      this.rendererNode3Meter.bind(this, this.canvasGain3LRef, 0),
       200
     );
     this.renderer3R = setInterval(
-      this.rendererNode3Meter.bind(this, this.canvasGain3RRef),
+      this.rendererNode3Meter.bind(this, this.canvasGain3RRef, 1),
       200
     );
     this.renderer4L = setInterval(
-      this.rendererNode4Meter.bind(this, this.canvasGain4LRef),
+      this.rendererNode4Meter.bind(this, this.canvasGain4LRef, 0),
       200
     );
     this.renderer4R = setInterval(
-      this.rendererNode4Meter.bind(this, this.canvasGain4RRef),
+      this.rendererNode4Meter.bind(this, this.canvasGain4RRef, 1),
       200
     );
     this.renderer5L = setInterval(
-      this.rendererNode5Meter.bind(this, this.canvasGain5LRef),
+      this.rendererNode5Meter.bind(this, this.canvasGain5LRef, 0),
       200
     );
     this.renderer5R = setInterval(
-      this.rendererNode5Meter.bind(this, this.canvasGain5RRef),
+      this.rendererNode5Meter.bind(this, this.canvasGain5RRef, 1),
       200
     );
     this.renderer6L = setInterval(
-      this.rendererNode6Meter.bind(this, this.canvasGain6LRef),
+      this.rendererNode6Meter.bind(this, this.canvasGain6LRef, 0),
       200
     );
     this.renderer6R = setInterval(
-      this.rendererNode6Meter.bind(this, this.canvasGain6RRef),
+      this.rendererNode6Meter.bind(this, this.canvasGain6RRef, 1),
       200
     );
     this.renderer7L = setInterval(
-      this.rendererNode7Meter.bind(this, this.canvasGain7LRef),
+      this.rendererNode7Meter.bind(this, this.canvasGain7LRef, 0),
       200
     );
     this.renderer7R = setInterval(
-      this.rendererNode7Meter.bind(this, this.canvasGain7RRef),
+      this.rendererNode7Meter.bind(this, this.canvasGain7RRef, 1),
       200
     );
   };
 
-  rendererMasterMeter = ref => {
+  rendererMasterMeter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     // console.log(this.canvasGainRefs);
     // let canvas = this.canvasMasterRef.current;
@@ -115,7 +119,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getMasterAudioData()[0] * 4.65;
+    let x = audioObj.getMasterAudioData()[c] * 4.65;
     let data = Math.max(x, -200);
     let scaledData = 200 + data;
     renderCtx.clearRect(0, 0, 15, 200);
@@ -129,7 +133,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 200 - scaledData, 15, scaledData);
   };
 
-  rendererNode0Meter = ref => {
+  rendererNode0Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -139,7 +143,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode0AudioData()[0] * 1.82;
+    let x = audioObj.getNode0AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -154,7 +158,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode1Meter = ref => {
+  rendererNode1Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -164,7 +168,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode1AudioData()[0] * 1.82;
+    let x = audioObj.getNode1AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -179,7 +183,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode2Meter = ref => {
+  rendererNode2Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -189,7 +193,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode2AudioData()[0] * 1.82;
+    let x = audioObj.getNode2AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -204,7 +208,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode3Meter = ref => {
+  rendererNode3Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -214,7 +218,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode3AudioData()[0] * 1.82;
+    let x = audioObj.getNode3AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -231,7 +235,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode4Meter = ref => {
+  rendererNode4Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -241,7 +245,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode4AudioData()[0] * 1.82;
+    let x = audioObj.getNode4AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -256,7 +260,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode5Meter = ref => {
+  rendererNode5Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -266,7 +270,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode5AudioData()[0] * 1.82;
+    let x = audioObj.getNode5AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -283,7 +287,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode6Meter = ref => {
+  rendererNode6Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -293,7 +297,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode6AudioData()[0] * 1.82;
+    let x = audioObj.getNode6AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -310,7 +314,7 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
-  rendererNode7Meter = ref => {
+  rendererNode7Meter = (ref, c) => {
     let { audioObj } = this.props.blockInfo;
     let canvas = ref.current;
     if (canvas === null) {
@@ -320,7 +324,7 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode7AudioData()[0] * 1.82;
+    let x = audioObj.getNode7AudioData()[c] * 1.82;
 
     let data = Math.max(x, -100);
     let scaledData = 100 + data;
@@ -355,11 +359,11 @@ class Mixer extends React.Component {
     } = this.props.blockInfo;
     let changeBlock = this.props.changeBlock;
     let connectBlock = this.props.connectBlock;
-    let backgroundColor= [];
-    for(let i = 0;i< 8;i++){
-      if(inNode[i]){
-        backgroundColor[i] =  getCssPropById(inNode[i][0], "background-color"); 
-      }else{
+    let backgroundColor = [];
+    for (let i = 0; i < 8; i++) {
+      if (inNode[i]) {
+        backgroundColor[i] = getCssPropById(inNode[i][0], "background-color");
+      } else {
         backgroundColor[i] = "white";
       }
     }
@@ -390,7 +394,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[0]) {
                     focusElementById(inNode[0][0]);
-                    setCssPropById({ id: inNode[0][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[0][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -467,7 +475,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[1]) {
                     focusElementById(inNode[1][0]);
-                    setCssPropById({ id: inNode[1][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[1][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -544,7 +556,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[2]) {
                     focusElementById(inNode[2][0]);
-                    setCssPropById({ id: inNode[2][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[2][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -621,7 +637,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[3]) {
                     focusElementById(inNode[3][0]);
-                    setCssPropById({ id: inNode[3][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[3][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -698,7 +718,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[4]) {
                     focusElementById(inNode[4][0]);
-                    setCssPropById({ id: inNode[4][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[4][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -775,7 +799,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[5]) {
                     focusElementById(inNode[5][0]);
-                    setCssPropById({ id: inNode[5][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[5][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -858,7 +886,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[6]) {
                     focusElementById(inNode[6][0]);
-                    setCssPropById({ id: inNode[6][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[6][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >
@@ -941,7 +973,11 @@ class Mixer extends React.Component {
                   e.preventDefault();
                   if (inNode[7]) {
                     focusElementById(inNode[7][0]);
-                    setCssPropById({ id: inNode[7][0], prop: "boxShadow", temp: true });
+                    setCssPropById({
+                      id: inNode[7][0],
+                      prop: "boxShadow",
+                      temp: true
+                    });
                   }
                 }}
               >

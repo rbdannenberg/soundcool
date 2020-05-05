@@ -150,7 +150,7 @@ const WithHeader = ({
       height: "1.5rem",
       fontSize: "0.8rem",
       padding: "0px",
-      border:"0px"
+      border: "0px"
     };
     if (inNode[0]) {
       let backgroundColor = getCssPropById(inNode[0][0], "background-color");
@@ -242,6 +242,8 @@ const WithHeader = ({
     );
   }
 
+  console.log("hi");
+  console.log(Block.WrappedComponent);
   return (
     <div
       id={name}
@@ -251,71 +253,79 @@ const WithHeader = ({
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",
-        borderWidth: "2px"
+        borderWidth: "2px",
+        transformOrigin: "top left",
+        transform: "scale(0.8)",
+        clip: "rect(0px,60px,200px,0px)"
+        // transform: "scale(0.8) translate(-32px, -30px)"
       }}
     >
-      <div className="">
-        {draggableButton && (
-          <strong className="cursor pointer-cursor ml-1">
-            <FaArrowsAlt />
-          </strong>
-        )}
-        {inButton}
-        <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
-          {name}
-        </span>
-        <span
-          className="badge badge-secondary badge-pill m-1"
-          style={{ fontSize: "0.8rem" }}
-          id="typeName"
-        >
-          {typeName}
-        </span>
-        <span className="float-right">
-          <button
-            id="collapseButton"
-            className="btn btn-light btn-sm m-1 text-center"
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              fontSize: "0.4rem"
-            }}
-            onClick={() =>
-              dispatch({
-                type: "CHANGE_BLOCK",
-                id: id,
-                field: "collapse",
-                value: undefined
-              })
-            }
+      <div>
+        <div className="">
+          {draggableButton && (
+            <strong className="cursor pointer-cursor ml-1">
+              <FaArrowsAlt />
+            </strong>
+          )}
+          {inButton}
+          <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
+            {name}
+          </span>
+          <span
+            className="badge badge-secondary badge-pill m-1"
+            style={{ fontSize: "0.8rem" }}
+            id="typeName"
           >
-            <FaMinus style={{ marginLeft: "-1px" }} />
-          </button>
+            {typeName}
+          </span>
+          <span className="float-right">
+            <button
+              id="collapseButton"
+              className="btn btn-light btn-sm m-1 text-center"
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+                fontSize: "0.4rem"
+              }}
+              onClick={() =>
+                dispatch({
+                  type: "CHANGE_BLOCK",
+                  id: id,
+                  field: "collapse",
+                  value: undefined
+                })
+              }
+            >
+              <FaMinus style={{ marginLeft: "-1px" }} />
+            </button>
 
-          <button
-            id="closeButton"
-            className="btn btn-light btn-sm m-1 text-center"
-            style={{
-              width: "1.5rem",
-              height: "1.5rem",
-              fontSize: "0.4rem"
-            }}
-            onClick={() => {
-              // handleDelete();
-              dispatch({
-                type: "DELETE_BLOCK",
-                id: id
-              });
-            }}
-          >
-            <FaTimes style={{ marginLeft: "-1px" }} />
-          </button>
-          {outButton}
-        </span>
+            <button
+              id="closeButton"
+              className="btn btn-light btn-sm m-1 text-center"
+              style={{
+                width: "1.5rem",
+                height: "1.5rem",
+                fontSize: "0.4rem"
+              }}
+              onClick={() => {
+                // handleDelete();
+                dispatch({
+                  type: "DELETE_BLOCK",
+                  id: id
+                });
+              }}
+            >
+              <FaTimes style={{ marginLeft: "-1px" }} />
+            </button>
+            {outButton}
+          </span>
+        </div>
+        <Collapse isOpen={collapse}>
+          <div style={{ height: "80%" }}>
+            <Block blockInfo={blockInfo} />
+          </div>
+        </Collapse>
       </div>
-      <Collapse isOpen={collapse}>
-        <Block blockInfo={blockInfo} />
-      </Collapse>
     </div>
   );
 };

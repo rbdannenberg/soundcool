@@ -162,8 +162,9 @@ class Speaker extends React.Component {
               position: "absolute",
               padding: "0px",
               top: "5px",
-              left: "270px",
-              backgroundColor: "transparent"
+              left: "272px",
+              backgroundColor: "transparent",
+              border: "1px dotted"
             }}
             onClick={() => this.props.changeBlock(id, "muted", undefined)}
           >
@@ -190,7 +191,7 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
+};
 export default connect(
   mapStateToProps,
   { changeBlock }

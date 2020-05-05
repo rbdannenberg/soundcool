@@ -14,8 +14,22 @@ along with react frontend and mysql database.
       - `sudo apt -y install gcc g++ make`
       - `sudo apt -y install nodejs`
       - `curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -`
+    - OS X (this was tested on macOS 10.14.6:
+      - in a terminal, `node -v` to get the current version if any
+      - if the version is not v10.16.0, uninstall node.js:
+        - maybe `nvm` is the best approach
+        - if you used brew, `brew install nvm`, or you can also try 
+          - `brew uninstall node`
+          - `brew cleanup`
+          - `rm -f /usr/local/bin/npm /usr/local/lib/dtrace/node.d`
+          - `rm -rf ~/.npm`
+        - otherwise, the [brute force approach (tested) is here](https://gist.github.com/TonyMtz/d75101d9bdf764c890ef)
+      - install node 10.16.0
+        - again, mayb `nvm` is the best approach
+        - if you use brew, `brew install nmv`, or `brew install node@10`
+        - otherwise download and install [the .pkg file](https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg)
   - NPM 6.10.0+
-  	- Linux note: NPM version is 6.9.0 for Node 10.16
+  	- Linux/OS X note: NPM version is 6.9.0 for Node 10.16. They are installed together.
   - MySQL 8.0+
     - When installing, choose "Use Strong Password Encryption" if possible. 
     - Choose the option to start the server immediately. 
