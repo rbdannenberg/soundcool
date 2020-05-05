@@ -214,27 +214,45 @@ class Player extends React.Component {
               top: "36px"
             }}
           >
-            <span
+            <div
               className=""
-              style={{ position: "absolute", left: "5px", cursor: "pointer" }}
+              style={{
+                position: "absolute",
+                left: "5px",
+                cursor: "pointer",
+                border: "1px solid",
+                width: "20px"
+              }}
               onClick={e => this.props.changeBlock(id, "speed", 0.01)}
             >
               x0
-            </span>
-            <span
+            </div>
+            <div
               className=""
-              style={{ position: "absolute", left: "92px", cursor: "pointer" }}
+              style={{
+                position: "absolute",
+                left: "92px",
+                cursor: "pointer",
+                border: "1px solid",
+                width: "20px"
+              }}
               onClick={e => this.props.changeBlock(id, "speed", 1)}
             >
               x1
-            </span>
-            <span
+            </div>
+            <div
               className=""
-              style={{ position: "absolute", left: "180px", cursor: "pointer" }}
+              style={{
+                position: "absolute",
+                left: "180px",
+                cursor: "pointer",
+                border: "1px solid",
+                width: "20px"
+              }}
               onClick={e => this.props.changeBlock(id, "speed", 2)}
             >
               x2
-            </span>
+            </div>
           </div>
 
           <div

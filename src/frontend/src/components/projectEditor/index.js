@@ -57,7 +57,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const getListStyle = isDraggingOver => ({
-  width: "20rem",
+  width: "16rem",
   background: isDraggingOver ? "lightblue" : "transparent"
 });
 
@@ -188,10 +188,7 @@ class ProjectEditor extends React.Component {
                   {" "}
                   {"Columnn " + (listIndex + 1)}{" "}
                 </h5>
-                <Droppable
-                  style={{ padding: "10px" }}
-                  droppableId={"droppable_" + listIndex}
-                >
+                <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
                       {...provided.droppableProps}
@@ -203,26 +200,22 @@ class ProjectEditor extends React.Component {
                           key={item.id}
                           draggableId={item.id}
                           index={index}
-                          // style={{ transform: "scale(0.7)" }}
                         >
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style
-                              )}
+                              // style={getItemStyle(
+                              //   snapshot.isDragging,
+                              //   provided.draggableProps.style
+                              // )}
                             >
-                              <div style={{ transform: "scale(0.8)" }}>
-                                <WithHeader
-                                  key={item.id}
-                                  blockInfo={item}
-                                  nowOut={nowOut}
-                                  // style={{ transform: "scale(0.7)" }}
-                                />
-                              </div>
+                              <WithHeader
+                                key={item.id}
+                                blockInfo={item}
+                                nowOut={nowOut}
+                              />
                             </div>
                           )}
                         </Draggable>

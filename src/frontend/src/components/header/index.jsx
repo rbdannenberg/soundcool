@@ -56,11 +56,11 @@ export default class Header extends Component {
             </NavbarBrand>
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
-                <NavItem>
+                {/* <NavItem>
                   <NavLink className="nav-link" to="/project-editor/new">
                     <span className="fa fa-home " /> Create Project
                   </NavLink>
-                </NavItem>
+                </NavItem> */}
 
                 <NavItem>
                   <NavLink className="nav-link" to="/home">
@@ -75,9 +75,33 @@ export default class Header extends Component {
                 </NavItem>
                 {isUserLoggedIn() && (
                   <NavItem>
-                    <NavLink className="nav-link" to="/projects">
-                      <span className="fa fa-list " /> Projects
-                    </NavLink>
+                    <div
+                      className="nav-link dropdown"
+                      style={{ color: "white" }}
+                    >
+                      <span
+                        className="fa fa-list dropdown-toggle"
+                        id="proj dropdown"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      />
+                      Project
+                      <div
+                        className="dropdown-menu"
+                        aria-labelledby="proj dropdown"
+                      >
+                        <NavLink className="nav-link" to="/project-editor/new">
+                          <div className="dropdown-item">New</div>
+                        </NavLink>
+                        <NavLink className="nav-link" to="/projects">
+                          <div className="dropdown-item">Open</div>
+                        </NavLink>
+                        <div className="nav-link">
+                          <div className="dropdown-item">Save (TBD )</div>
+                        </div>
+                      </div>
+                    </div>
                   </NavItem>
                 )}
                 {isUserLoggedIn() && (
@@ -114,10 +138,7 @@ export default class Header extends Component {
                     </DropdownToggle>
                     <DropdownMenu tog>
                       <DropdownItem disabled>Edit Profile</DropdownItem>
-                      <DropdownItem
-                        to="/login"
-                        onClick={this.handleLogout}
-                      >
+                      <DropdownItem to="/login" onClick={this.handleLogout}>
                         Logout
                       </DropdownItem>
                     </DropdownMenu>
