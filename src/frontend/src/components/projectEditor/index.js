@@ -302,7 +302,7 @@ class ProjectEditor extends React.Component {
       case "Pan":
         break;
       case "Player":
-        this.handleOscPlayer(comp.id, data);
+        this.handleOscPlayer(comp.id, comp.index, data);
         break;
       case "SignalGen":
         break;
@@ -329,7 +329,7 @@ class ProjectEditor extends React.Component {
     }
   }
 
-  handleOscPlayer(id, data) {
+  handleOscPlayer(id, index, data) {
     let field,
       value,
       ignore = false;
@@ -346,7 +346,7 @@ class ProjectEditor extends React.Component {
         field = "volume";
         value = Math.round(data.value * 100);
         break;
-      /*case "playPause":
+      case "playPause":
         if (
           data.value == 0 &&
           this.props.blocks["bs"][index].audioObj.options.path != ""
@@ -393,7 +393,7 @@ class ProjectEditor extends React.Component {
         if (this.props.blocks["bs"][index].audioObj.options.path != "") {
           this.props.blocks["bs"][index].audioObj.seek(data.value);
         }
-        ignore = true;*/
+        ignore = true;
     }
     if (!ignore) {
       this.props.dispatch({
