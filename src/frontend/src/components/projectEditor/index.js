@@ -302,7 +302,7 @@ class ProjectEditor extends React.Component {
       case "Pan":
         break;
       case "Player":
-        this.handleOscPlayer(comp.id, data);
+        this.handleOscPlayer(comp.id, comp.index, data);
         break;
       case "SignalGen":
         break;
@@ -329,7 +329,7 @@ class ProjectEditor extends React.Component {
     }
   }
 
-  handleOscPlayer(id, data) {
+  handleOscPlayer(id, index, data) {
     let field,
       value,
       ignore = false;
@@ -346,54 +346,54 @@ class ProjectEditor extends React.Component {
         field = "volume";
         value = Math.round(data.value * 100);
         break;
-    //   case "playPause":
-    //     if (
-    //       data.value == 0 &&
-    //       this.props.blocks["bs"][index].audioObj.options.path != ""
-    //     ) {
-    //       if (this.props.blocks["bs"][index].audioObj.isPlaying) {
-    //         this.props.blocks["bs"][index].audioObj.pause();
-    //       } else {
-    //         this.props.blocks["bs"][index].audioObj.play();
-    //       }
+      case "playPause":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          if (this.props.blocks["bs"][index].audioObj.isPlaying) {
+            this.props.blocks["bs"][index].audioObj.pause();
+          } else {
+            this.props.blocks["bs"][index].audioObj.play();
+          }
 
-    //       field = "playing";
-    //       value = undefined;
-    //     } else {
-    //       ignore = true;
-    //     }
-    //     break;
-    //   case "stop":
-    //     if (
-    //       data.value == 0 &&
-    //       this.props.blocks["bs"][index].audioObj.options.path != ""
-    //     ) {
-    //       field = "playing";
-    //       value = undefined;
-    //       this.props.blocks["bs"][index].audioObj.stop();
-    //     } else {
-    //       ignore = true;
-    //     }
+          field = "playing";
+          value = undefined;
+        } else {
+          ignore = true;
+        }
+        break;
+      case "stop":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          field = "playing";
+          value = undefined;
+          this.props.blocks["bs"][index].audioObj.stop();
+        } else {
+          ignore = true;
+        }
 
-    //     break;
-    //   case "reverse":
-    //     if (
-    //       data.value == 0 &&
-    //       this.props.blocks["bs"][index].audioObj.options.path != ""
-    //     ) {
-    //       this.props.blocks["bs"][index].audioObj.reverse(res => {
-    //         console.log(res);
-    //       });
-    //     } else {
-    //       ignore = true;
-    //     }
+        break;
+      case "reverse":
+        if (
+          data.value == 0 &&
+          this.props.blocks["bs"][index].audioObj.options.path != ""
+        ) {
+          this.props.blocks["bs"][index].audioObj.reverse(res => {
+            console.log(res);
+          });
+        } else {
+          ignore = true;
+        }
 
-    //     break;
-    //   case "seek":
-    //     if (this.props.blocks["bs"][index].audioObj.options.path != "") {
-    //       this.props.blocks["bs"][index].audioObj.seek(data.value);
-    //     }
-    //     ignore = true;
+        break;
+      case "seek":
+        if (this.props.blocks["bs"][index].audioObj.options.path != "") {
+          this.props.blocks["bs"][index].audioObj.seek(data.value);
+        }
+        ignore = true;
     }
     if (!ignore) {
       this.props.dispatch({
