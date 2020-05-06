@@ -616,7 +616,7 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", left: "166px" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{3}</span>
+              <span style={{ position: "absolute", left: "8px" }}>{4}</span>
               <button
                 id={"inButton" + 3}
                 className="btn btn-light btn-sm"
@@ -697,7 +697,7 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", top: "140px", left: "10px" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{4}</span>
+              <span style={{ position: "absolute", left: "8px" }}>{5}</span>
               <button
                 id={"inButton" + 4}
                 className="btn btn-light btn-sm"
@@ -778,7 +778,7 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", top: "140px", left: "62px" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{5}</span>
+              <span style={{ position: "absolute", left: "8px" }}>{6}</span>
               <button
                 id={"inButton" + 5}
                 className="btn btn-light btn-sm"
@@ -865,7 +865,7 @@ class Mixer extends React.Component {
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{6}</span>
+              <span style={{ position: "absolute", left: "8px" }}>{7}</span>
               <button
                 id={"inButton" + 6}
                 className="btn btn-light btn-sm"
@@ -952,7 +952,7 @@ class Mixer extends React.Component {
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{7}</span>
+              <span style={{ position: "absolute", left: "8px" }}>{8}</span>
               <button
                 id={"inButton" + 7}
                 className="btn btn-light btn-sm"

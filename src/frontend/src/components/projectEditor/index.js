@@ -278,25 +278,27 @@ class ProjectEditor extends React.Component {
     });
     socket.on("oscData", data => {
       let portNumber = data.portNumber;
-      let targetComponent = this.findComponents(portNumber);
+      let targetType = data.component;
+      let targetComponent = this.findComponents(portNumber, targetType);
+      console.log(targetComponent);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
     });
   }
 
-  findComponents(oscPort) {
+  findComponents(oscPort, targetType) {
     let components = [];
     this.props.blocks["bs"].forEach((comp, index) => {
-      if (comp.osc && comp.oscPort == oscPort) {
-        components.push({ typeName: comp.typeName, id: comp.id, index: index });
+      if (comp.osc && comp.oscPort == oscPort && comp.typeName == targetType) {
+        components.push({ id: comp.id, index: index });
       }
     });
     return components;
   }
 
   handleOscInput(comp, data) {
-    switch (comp.typeName) {
+    switch (data.component) {
       case "Delay":
         break;
       case "Transposer":
@@ -321,6 +323,7 @@ class ProjectEditor extends React.Component {
       case "Routing":
         break;
       case "Mixer":
+        this.handleOscMixer(comp.id, data);
         break;
       case "Oscilloscope":
         break;
@@ -405,6 +408,27 @@ class ProjectEditor extends React.Component {
         value
       });
     }
+  }
+
+  handleOscMixer(id, data) {
+    let field,
+      value;
+    switch (data.type) {
+      case "playerVolume":
+        field = "node" + (data.value[0]-1) + "Gain";
+        value = data.value[1];
+        break;
+      case "mainVolume":
+        field = "masterGain";
+        value = data.value;
+        break;
+    }
+    this.props.dispatch({
+      type: "CHANGE_BLOCK",
+      id: id,
+      field,
+      value
+    });
   }
 
   openNewPort(blocks) {

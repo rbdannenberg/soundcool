@@ -13,7 +13,7 @@ router.post("/openPort", (req, res) => {
     res.json({ message: "Please use port number greater than 1023" });
   }
   if (initPort(portNumber)) res.json({ message: "Port opened successfully" });
-  else res.json({ err: "Port already in use" });
+  else res.json({ err: "Port is already open" });
 });
 
 module.exports = router;
@@ -45,7 +45,7 @@ function sendMessage(msg, socket, portNumber) {
         case "fader1":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "playbackSpeed",
               value,
               portNumber
@@ -56,7 +56,7 @@ function sendMessage(msg, socket, portNumber) {
         case "fader2":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "seek",
               value,
               portNumber
@@ -67,7 +67,7 @@ function sendMessage(msg, socket, portNumber) {
         case "fader3":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "volume",
               value,
               portNumber
@@ -78,7 +78,7 @@ function sendMessage(msg, socket, portNumber) {
         case "toggle1":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "loop",
               value,
               portNumber
@@ -89,7 +89,7 @@ function sendMessage(msg, socket, portNumber) {
         case "push1":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "playPause",
               value,
               portNumber
@@ -100,7 +100,7 @@ function sendMessage(msg, socket, portNumber) {
         case "push2":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "stop",
               value,
               portNumber
@@ -111,7 +111,7 @@ function sendMessage(msg, socket, portNumber) {
         case "push3":
           if (socket) {
             socket.emit("oscData", {
-              component: "player",
+              component: "Player",
               type: "reverse",
               value,
               portNumber
@@ -120,6 +120,40 @@ function sendMessage(msg, socket, portNumber) {
           // console.log("Reverse " + value);
           break;
 
+        default:
+          console.log(buttonType + " not registered");
+      }
+    } else if (baseAddress == 2) {
+      switch (buttonType) {
+        case "fader1":
+        case "fader2":
+        case "fader3":
+        case "fader4":
+        case "fader5":
+        case "fader6":
+        case "fader7":
+        case "fader8":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "Mixer",
+              type: "playerVolume",
+              value: [parseInt(buttonType.substring(5)), value],
+              portNumber
+            });
+          }
+          // console.log("playbackSpeed " + value);
+          break;
+        case "fader9":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "Mixer",
+              type: "mainVolume",
+              value,
+              portNumber
+            });
+          }
+          // console.log("seek " + value);
+          break;
         default:
           console.log(buttonType + " not registered");
       }
