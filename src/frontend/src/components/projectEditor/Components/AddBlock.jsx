@@ -89,7 +89,7 @@ const AddBlock = props => {
         id="vst"
         style={{ position: "absolute", left: "65px", top: "55px" }}
       >
-        <ReactTooltip place="top" type="info" effect="float" />
+
         <button
           name="boton"
           data-tip="GranSynth"
