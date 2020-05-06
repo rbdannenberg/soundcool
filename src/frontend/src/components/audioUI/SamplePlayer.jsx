@@ -3,7 +3,7 @@ import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 import { FaPlay, FaSquare } from "react-icons/fa";
 import AddSound from "../addSound";
-import { serveAudio } from "../sounds/actions";
+import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
 
 const circleStyle = {
   width: "1.5rem",
@@ -36,16 +36,34 @@ const IndividualPlayer = ({
     window.aoplayer = audioObj.players[num];
   };
 
-  const onSoundSelect = audio_id => {
+  // const onSoundSelect = audio_id => {
+  //   if (audioObj.players[num].isPlaying) {
+  //     audioObj.stop(num);
+  //   }
+
+  //   changeBlock(id, "files", audio_id, { num });
+
+  //   const url = serveAudio(audio_id.sound_id);
+
+  //   loadUrl(url);
+  // };
+
+  const onSoundSelect = sound => {
     if (audioObj.players[num].isPlaying) {
       audioObj.stop(num);
     }
+    let { name, type, sound_id } = sound;
+    changeBlock(id, "files", sound_id, { num });
 
-    changeBlock(id, "files", audio_id, { num });
-
-    const url = serveAudio(audio_id.sound_id);
-
-    loadUrl(url);
+    if (type === "Sound Link") {
+      getAudio(sound_id).then(res => {
+        loadUrl(res["location"]);
+      });
+    } else if (type === "Youtube") {
+      loadUrl(youtubeAudio(sound_id));
+    } else {
+      loadUrl(serveAudio(sound_id));
+    }
   };
 
   return (
