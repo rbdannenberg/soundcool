@@ -1,4 +1,6 @@
 import React from "react";
+import ReactTooltip from "react-tooltip";
+
 // #region images
 import specValues from "./blockSpecs";
 import blendingV from "../Components/pictures/blendingV.gif";
@@ -28,7 +30,7 @@ import switcherV from "../Components/pictures/switcherV.gif";
 import transposer from "../Components/pictures/transposer.gif";
 import vst from "../Components/pictures/vst.gif";
 import imagesampleV from "../Components/pictures/imagesampleV.gif";
-import granSynth from "../Components/pictures/granSynth.png"
+import granSynth from "../Components/pictures/granSynth.png";
 
 // #endregion images
 
@@ -85,7 +87,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="vst"
-        style={{ position: "absolute", left: "435px", top: "53px" }}
+        style={{ position: "absolute", left: "65px", top: "55px" }}
       >
         <ReactTooltip place="top" type="info" effect="float" />
         <button
@@ -94,7 +96,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => addBlock("GranSynth")}
         >
-          <img src={granSynth} style={{width: '46px'}}></img>
+          <img src={granSynth} style={{ width: "46px" }}></img>
         </button>
       </div>
       <div

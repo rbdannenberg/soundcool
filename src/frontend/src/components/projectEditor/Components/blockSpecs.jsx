@@ -101,7 +101,8 @@ const specValues = {
     node5Gain: 0.6,
     node6Gain: 0.6,
     node7Gain: 0.6,
-    osc: undefined
+    osc: false,
+    oscPort: undefined
   },
   Record: {
     color: toHex(159, 125, 119),

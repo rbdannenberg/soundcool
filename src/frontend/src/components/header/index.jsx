@@ -98,7 +98,9 @@ export default class Header extends Component {
                           <div className="dropdown-item">Open</div>
                         </NavLink>
                         <div className="nav-link">
-                          <div className="dropdown-item">Save (TBD )</div>
+                          <div className="dropdown-item">
+                            floating view.. (TBD )
+                          </div>
                         </div>
                       </div>
                     </div>

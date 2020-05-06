@@ -255,8 +255,8 @@ const WithHeader = ({
         borderStyle: "solid",
         borderWidth: "2px",
         transformOrigin: "top left",
-        transform: "scale(0.8)",
-        clip: "rect(0px,60px,200px,0px)"
+        transform: "scale(0.8)"
+        // clip: "rect(0px,60px,200px,0px)"
         // transform: "scale(0.8) translate(-32px, -30px)"
       }}
     >
@@ -321,7 +321,7 @@ const WithHeader = ({
           </span>
         </div>
         <Collapse isOpen={collapse}>
-          <div style={{ height: "80%" }}>
+          <div>
             <Block blockInfo={blockInfo} />
           </div>
         </Collapse>

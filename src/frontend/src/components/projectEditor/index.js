@@ -184,7 +184,7 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ padding: "10px" }}>
+              <div style={{ padding: "60px" }}>
                 <h5 className="text-center">
                   {" "}
                   {"Columnn " + (listIndex + 1)}{" "}
@@ -207,16 +207,18 @@ class ProjectEditor extends React.Component {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              // style={getItemStyle(
-                              //   snapshot.isDragging,
-                              //   provided.draggableProps.style
-                              // )}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
+                              )}
                             >
-                              <WithHeader
-                                key={item.id}
-                                blockInfo={item}
-                                nowOut={nowOut}
-                              />
+                              <div style={{ height: "80%", width: "80%" }}>
+                                <WithHeader
+                                  key={item.id}
+                                  blockInfo={item}
+                                  nowOut={nowOut}
+                                />
+                              </div>
                             </div>
                           )}
                         </Draggable>
@@ -680,8 +682,7 @@ class ProjectEditor extends React.Component {
             Open Required Ports
           </button>
         )}
-        <div
-        >
+        <div>
           <div className="row">
             {this.renderBlockList(items, this.props.blocks.nowOut)}
           </div>
