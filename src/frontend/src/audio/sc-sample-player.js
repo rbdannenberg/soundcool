@@ -73,8 +73,11 @@ class ScSamplePlayer extends ScModule {
 
   playRandomSample() {
     let arr = this.loadedSampleIndex;
-    let playerIndex = arr[Math.floor(Math.random() * arr.length)];
-    this.play(playerIndex);
+    if (arr.length > 0) {
+      let playerIndex = arr[Math.floor(Math.random() * arr.length)];
+      console.log(playerIndex);
+      this.play(playerIndex);
+    }
   }
 
   onPlayBackEnd() {
@@ -123,9 +126,26 @@ class ScSamplePlayer extends ScModule {
     }
   }
 
+  set speed(value) {
+    this.players.forEach(player => {
+      player.speed = value;
+    });
+  }
+
+  set reversed(value) {
+    this.reverse();
+  }
+
   set random(value) {
     this.options.random = value;
   }
+
+  set masterVolume(value){
+    this.players.forEach(player => {
+      player.volume = value;
+    });
+  }
+  
 }
 
 export default ScSamplePlayer;

@@ -207,7 +207,7 @@ const specValues = {
       undefined
     ],
     inDisableds: [true, true, true, true, true, true, true, true, true, true],
-    masterVolume: 60
+    masterVolume: 100
   },
   Keyboard: {
     color: toHex(89, 162, 179),
