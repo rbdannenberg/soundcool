@@ -8,3 +8,4 @@ build
 *.swp
 src/backend/public
 soundcool.db
+dist/
