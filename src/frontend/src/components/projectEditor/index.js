@@ -330,7 +330,85 @@ class ProjectEditor extends React.Component {
       case "Spectroscope":
         break;
       case "SamplePlayer":
+        this.handleOscSamplePlayer(comp.id, comp.index, data);
         break;
+    }
+  }
+
+  handleOscSamplePlayer(id, index, data) {
+    let field,
+      value,
+      num = {},
+      ignore = false,
+      ind;
+    switch (data.type) {
+      case "random":
+        field = "random";
+        value = data.value == 1 ? true : false;
+        break;
+      case "loop":
+        field = "loop";
+        value = data.value == 1 ? true : false;
+        break;
+      case "playbackSpeed":
+        field = "speed";
+        value = data.value * 2;
+        break;
+      case "volume":
+        field = "masterVolume";
+        value = Math.round(data.value * 100);
+        break;
+      case "playPause":
+        ind = data.value[0] - 1;
+        if (
+          data.value[1] == 0 &&
+          this.props.blocks["bs"][index].audioObj.options[`path${ind}`] != ""
+        ) {
+          if (this.props.blocks["bs"][index].audioObj.players[ind].isPlaying) {
+            this.props.blocks["bs"][index].audioObj.pause(ind);
+          } else {
+            this.props.blocks["bs"][index].audioObj.play(ind);
+          }
+          field = "playings";
+          value = undefined;
+          num = { ind };
+        } else {
+          ignore = true;
+        }
+        break;
+      case "stop":
+        ind = data.value[0] - 11;
+        if (
+          data.value[1] == 0 &&
+          this.props.blocks["bs"][index].audioObj.options[`path${ind}`] != ""
+        ) {
+          field = "playings";
+          value = undefined;
+          num = { ind };
+          this.props.blocks["bs"][index].audioObj.stop(ind);
+        } else {
+          ignore = true;
+        }
+
+        break;
+      case "reverse":
+        if (data.value == 0) {
+          field = "reversed";
+          value = undefined;
+        } else {
+          ignore = true;
+        }
+
+        break;
+    }
+    if (!ignore) {
+      this.props.dispatch({
+        type: "CHANGE_BLOCK",
+        id: id,
+        field,
+        value,
+        ...num
+      });
     }
   }
 
@@ -411,11 +489,10 @@ class ProjectEditor extends React.Component {
   }
 
   handleOscMixer(id, data) {
-    let field,
-      value;
+    let field, value;
     switch (data.type) {
       case "playerVolume":
-        field = "node" + (data.value[0]-1) + "Gain";
+        field = "node" + (data.value[0] - 1) + "Gain";
         value = data.value[1];
         break;
       case "mainVolume":

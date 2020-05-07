@@ -95,8 +95,12 @@ const IndividualPlayer = ({
           changeBlock(id, "playings", undefined, { num });
         }}
       >
-        {!audioObj.players[num].isPlaying && (<FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />)}
-        {audioObj.players[num].isPlaying && (<FaPause style={{ fontSize: "12px", marginLeft: "2.5px" }} />)}
+        {!audioObj.players[num].isPlaying && (
+          <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
+        )}
+        {audioObj.players[num].isPlaying && (
+          <FaPause style={{ fontSize: "12px", marginLeft: "2.5px" }} />
+        )}
       </button>
       <button
         disabled={inDisabled}
@@ -133,7 +137,16 @@ const IndividualPlayer = ({
 
 const SamplePlayer = ({ blockInfo, changeBlock }) => {
   let l = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  let { id, speed, files, inDisableds, masterVolume, audioObj } = blockInfo;
+  let {
+    id,
+    speed,
+    files,
+    inDisableds,
+    masterVolume,
+    loop,
+    random,
+    audioObj
+  } = blockInfo;
 
   return (
     <React.Fragment>
@@ -164,6 +177,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             Random
           </label>
           <input
+            checked={random}
             type="checkbox"
             className=""
             id="random"
@@ -188,6 +202,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             Loop
           </label>
           <input
+            checked={loop}
             type="checkbox"
             className=""
             id="loop"

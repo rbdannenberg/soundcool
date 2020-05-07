@@ -157,6 +157,107 @@ function sendMessage(msg, socket, portNumber) {
         default:
           console.log(buttonType + " not registered");
       }
+    } else if (baseAddress == 4) {
+      switch (buttonType) {
+        case "fader1":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "playbackSpeed",
+              value,
+              portNumber
+            });
+          }
+          // console.log("playbackSpeed " + value);
+          break;
+        case "fader2":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "volume",
+              value,
+              portNumber
+            });
+          }
+          // console.log("volume " + value);
+          break;
+        case "toggle1":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "random",
+              value,
+              portNumber
+            });
+          }
+          // console.log("Loop " + value);
+          break;
+        case "toggle2":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "loop",
+              value,
+              portNumber
+            });
+          }
+          // console.log("Loop " + value);
+          break;
+        case "push1":
+        case "push2":
+        case "push3":
+        case "push4":
+        case "push5":
+        case "push6":
+        case "push7":
+        case "push8":
+        case "push9":
+        case "push10":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "playPause",
+              value: [parseInt(buttonType.substring(4)), value],
+              portNumber
+            });
+          }
+          // console.log("Play/Pause " + value);
+          break;
+        case "push11":
+        case "push12":
+        case "push13":
+        case "push14":
+        case "push15":
+        case "push16":
+        case "push17":
+        case "push18":
+        case "push19":
+        case "push20":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "stop",
+              value: [parseInt(buttonType.substring(4)), value],
+              portNumber
+            });
+          }
+          // console.log("Stop " + value);
+          break;
+        case "push21":
+          if (socket) {
+            socket.emit("oscData", {
+              component: "SamplePlayer",
+              type: "reverse",
+              value,
+              portNumber
+            });
+          }
+          // console.log("Reverse " + value);
+          break;
+
+        default:
+          console.log(buttonType + " not registered");
+      }
     }
   } catch (err) {
     console.log(err);
