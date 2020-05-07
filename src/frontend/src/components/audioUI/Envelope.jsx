@@ -24,10 +24,10 @@ class Envelope extends React.Component {
       bufferEnv[pairs[0]] = pairs[1];
       // fill in the connecting line
     });
-    console.log("xyEnv");
-    console.log(xyEnv);
-    console.log("bufferEnv");
-    console.log(bufferEnv);
+    // console.log("xyEnv");
+    // console.log(xyEnv);
+    // console.log("bufferEnv");
+    // console.log(bufferEnv);
   }
 
   checkCanvasLocation(e) {
@@ -50,8 +50,8 @@ class Envelope extends React.Component {
     let { left } = c.getBoundingClientRect();
     let canvasCtx = c.getContext("2d");
     canvasCtx.clearRect(0, 0, 300, 200);
-    console.log("this is envelope");
-    console.log(this.props.blockInfo.envelope);
+    // console.log("this is envelope");
+    // console.log(this.props.blockInfo.envelope);
     let sortedPoints = this.props.blockInfo.envelope.sort(
       ([a, b], [c, d]) => a - c
     );
@@ -163,7 +163,7 @@ class Envelope extends React.Component {
             }}
             onClick={e => {
               e.persist();
-              console.log(e);
+              // console.log(e);
               this.checkCanvasLocation(e);
             }}
           ></canvas>

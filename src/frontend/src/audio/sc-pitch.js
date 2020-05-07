@@ -116,7 +116,7 @@ class ScPitch extends ScModule {
     let ratio = Math.pow(2, interval / 12);
     let slope = (1.2 * Math.abs(1 - ratio)) / this.frequency.offset.value;
     // let slope = Math.abs(1 - ratio) / this.frequency.offset.value;
-    console.log("slope: ", slope);
+    // console.log("slope: ", slope);
     if (interval < 0) {
       this.lfo1Mul.gain.value = slope;
       this.lfo1Add.offset.value = 0;
@@ -134,7 +134,7 @@ class ScPitch extends ScModule {
   set grainSize(seconds) {
     let frequency = 1 / seconds;
     this.frequency.offset.value = frequency;
-    console.log("saw frequency: ", frequency);
+    // console.log("saw frequency: ", frequency);
     this.options.grainSize = seconds;
     this.pitch = this.options.pitch;
   }

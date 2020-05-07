@@ -38,7 +38,7 @@ class Projects extends Component {
     if (this.props.user) {
       fetchUserProjects()
         .then(data => {
-          console.log(data);
+          // console.log(data);
           this.setState({ projects: data });
         })
         .catch(error => {
@@ -58,7 +58,7 @@ class Projects extends Component {
     let { project_id, sharedUsers } = projectState;
     removeSharedUser({ projectId: project_id, sharedUsers })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         showToastr("success", res.message);
         let index = -1;
         this.state.projects.some(project => {
@@ -84,7 +84,7 @@ class Projects extends Component {
     let { project_id } = projectState;
     setProjectPublic({ projectId: project_id, isPublic: checked })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         showToastr("success", res.message);
         let index = -1;
         this.state.projects.some(project => {
@@ -116,7 +116,7 @@ class Projects extends Component {
         } else {
           showToastr("success", "Project cloned successfully");
           this.setState({ projects: [...this.state.projects, data] });
-          console.log([...this.state.projects, data]);
+          // console.log([...this.state.projects, data]);
         }
       })
       .catch(error => {

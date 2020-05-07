@@ -105,7 +105,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             }}
             onClick={() => {
               let x = 0 - sliderCents;
-              console.log(x);
+              // console.log(x);
               changeBlock(id,"buttonCents",x)
             }}
           >

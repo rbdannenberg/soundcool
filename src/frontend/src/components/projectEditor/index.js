@@ -91,7 +91,7 @@ class ProjectEditor extends React.Component {
     if (!destination) {
       return;
     }
-    console.log(source, destination);
+    // console.log(source, destination);
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
         this.getList(source.droppableId),
@@ -137,7 +137,7 @@ class ProjectEditor extends React.Component {
   };
 
   renderBlockList = (blocks, nowOut) => {
-    console.log(blocks);
+    // console.log(blocks);
     if (this.state.floatingView) {
       let finalBlock = [];
       blocks.forEach(o => {
@@ -271,7 +271,7 @@ class ProjectEditor extends React.Component {
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on("openPort", data => {
-      console.log(data);
+      // console.log(data);
       this.setState({
         openPorts: data
       });
@@ -280,7 +280,7 @@ class ProjectEditor extends React.Component {
       let portNumber = data.portNumber;
       let targetType = data.component;
       let targetComponent = this.findComponents(portNumber, targetType);
-      console.log(targetComponent);
+      // console.log(targetComponent);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
@@ -387,7 +387,7 @@ class ProjectEditor extends React.Component {
           this.props.blocks["bs"][index].audioObj.options.path != ""
         ) {
           this.props.blocks["bs"][index].audioObj.reverse(res => {
-            console.log(res);
+            // console.log(res);
           });
         } else {
           ignore = true;
@@ -439,7 +439,7 @@ class ProjectEditor extends React.Component {
         this.state.openPorts.indexOf(block.oscPort) === -1
       ) {
         this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
-        console.log({ portNumber: block.oscPort });
+        // console.log({ portNumber: block.oscPort });
         openPort({ portNumber: block.oscPort })
           .then(data => {
             if (data.err) {
@@ -522,7 +522,7 @@ class ProjectEditor extends React.Component {
           projectId: this.state.projectId,
           content: JSON.stringify(this.props.blocks)
         });
-        console.log("done");
+        // console.log("done");
         // console.log(JSON.stringify(this.props.blocks.bs[0]));
       } else this.toggleModal();
     else this.toggleRegisterModal();
@@ -576,8 +576,8 @@ class ProjectEditor extends React.Component {
     const { projectName, projectDescription, items } = this.state;
     const blocks = this.props.blocks;
 
-    console.log("blocks is: ");
-    console.log(blocks);
+    // console.log("blocks is: ");
+    // console.log(blocks);
 
     if (blocks.length === 0) {
       error = "Project is Empty";

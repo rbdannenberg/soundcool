@@ -1,7 +1,7 @@
 import React from "react";
 import { changeBlock } from "./actions";
 import { connect } from "react-redux";
-import { FaPlay, FaSquare } from "react-icons/fa";
+import { FaPlay, FaSquare, FaPause } from "react-icons/fa";
 import AddSound from "../addSound";
 import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
 
@@ -28,10 +28,10 @@ const IndividualPlayer = ({
   // let inDisabled = true;
   const loadUrl = url => {
     audioObj.load(num, url).then(res => {
-      console.log("load called");
+      // console.log("load called");
       if (inDisabled) changeBlock(id, "inDisableds", false, { num });
-      console.log(res);
-      console.log(inDisabled);
+      // console.log(res);
+      // console.log(inDisabled);
     });
     window.aoplayer = audioObj.players[num];
   };
@@ -88,14 +88,15 @@ const IndividualPlayer = ({
           left: "10px"
         }}
         onClick={() => {
-          console.log("playbutton" + num);
+          // console.log("playbutton" + num);
           audioObj.players[num].isPlaying
             ? audioObj.pause(num)
             : audioObj.play(num);
           changeBlock(id, "playings", undefined, { num });
         }}
       >
-        <FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />
+        {!audioObj.players[num].isPlaying && (<FaPlay style={{ fontSize: "12px", marginLeft: "2.5px" }} />)}
+        {audioObj.players[num].isPlaying && (<FaPause style={{ fontSize: "12px", marginLeft: "2.5px" }} />)}
       </button>
       <button
         disabled={inDisabled}
@@ -107,9 +108,9 @@ const IndividualPlayer = ({
           left: "10px"
         }}
         onClick={() => {
-          console.log("i am playing: " + num + audioObj.players[num].isPlaying);
+          // console.log("i am playing: " + num + audioObj.players[num].isPlaying);
           audioObj.stop(num);
-          console.log("i am playing: " + num + audioObj.players[num].isPlaying);
+          // console.log("i am playing: " + num + audioObj.players[num].isPlaying);
           changeBlock(id, "playings", undefined, { num });
         }}
       >

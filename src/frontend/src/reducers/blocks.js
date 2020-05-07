@@ -48,13 +48,13 @@ const blocks = (
   let { bs, nextBlockId, nextTypeId, nowIn, nowOut, cns } = state;
   switch (action.type) {
     case "ADD_BLOCK": {
-      console.log("cns is:" + cns);
+      // console.log("cns is:" + cns);
       // add the count information into action, so block knows the count when newing
       // there can only be one speaker module
       if (action.typeName === "Speaker") {
         const found = bs.find(element => element["typeName"] == "Speaker");
         if (found !== undefined) {
-          console.log("Can only have one speaker per project!");
+          // console.log("Can only have one speaker per project!");
           return state;
         }
       }
@@ -104,7 +104,7 @@ const blocks = (
     case "CONNECTING_BLOCK":
       let s = { ...state };
       if (action.isload !== true) {
-        console.log("not isload");
+        // console.log("not isload");
         s.cns = [...cns, action];
       }
       // in or out?
@@ -116,7 +116,7 @@ const blocks = (
         s.bs.filter(t => t.id === s.nowIn[2]).length === 1 &&
         s.bs.filter(t => t.id === s.nowOut[2]).length === 1
       ) {
-        console.log("connecting stuff 3.2..");
+        // console.log("connecting stuff 3.2..");
         return {
           // go to each block and change the inNode and outNode for the connected block
           ...s,

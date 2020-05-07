@@ -30,7 +30,7 @@ class Sounds extends React.Component {
     if (this.props.user) {
       fetchAudio()
         .then(data => {
-          console.log(data.audios);
+          // console.log(data.audios);
           this.setState({
             sounds: data.audios,
             audioSharing: data.sharing
@@ -78,7 +78,7 @@ class Sounds extends React.Component {
           showToastr("success", "Audio deleted successfully");
           this.setState({
             sounds: this.state.sounds.filter(function(sound) {
-              console.log(sound, sound.sound_id, soundId);
+              // console.log(sound, sound.sound_id, soundId);
               return sound.sound_id !== soundId;
             })
           });

@@ -39,7 +39,7 @@ class Player extends React.Component {
       // audio don't start after seek
       // the audioObj.seek function will assume a playing state and resume playing
       // if (audioObj.isPlaying) {
-      console.log("seeking...");
+      // console.log("seeking...");
       var rect = canvas.getBoundingClientRect();
       window.rect = rect;
       let pos = e.clientX - rect.left;
@@ -144,7 +144,7 @@ class Player extends React.Component {
     const loadUrl = url => {
       audioObj.load(url).then(res => {
         if (inDisabled) this.props.changeBlock(id, "inDisabled", false);
-        console.log(res);
+        // console.log(res);
       });
     };
 
@@ -376,7 +376,7 @@ class Player extends React.Component {
               }}
               onClick={() => {
                 audioObj.reverse(res => {
-                  console.log(res);
+                  // console.log(res);
                 });
               }}
             >

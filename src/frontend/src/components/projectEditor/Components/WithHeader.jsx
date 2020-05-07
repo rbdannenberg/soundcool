@@ -155,7 +155,7 @@ const WithHeader = ({
     if (inNode[0]) {
       let backgroundColor = getCssPropById(inNode[0][0], "background-color");
       style = { ...style, backgroundColor };
-      console.log(style);
+      // console.log(style);
     }
     inButton = (
       <button
@@ -242,8 +242,8 @@ const WithHeader = ({
     );
   }
 
-  console.log("hi");
-  console.log(Block.WrappedComponent);
+  // console.log("hi");
+  // console.log(Block.WrappedComponent);
   return (
     <div
       id={name}

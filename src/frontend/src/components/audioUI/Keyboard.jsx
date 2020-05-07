@@ -209,7 +209,7 @@ const Keyboard = ({ blockInfo, changeBlock }) => {
           </div>
         </div>
 
-        {console.log(midiMessage)}
+        {/* {console.log(midiMessage)} */}
 
         {/* Output selection */}
         <button

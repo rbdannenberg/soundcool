@@ -28,7 +28,7 @@ class ScModule {
       "[" +
       destInIndex +
       "]";
-    console.log(outStr);
+    // console.log(outStr);
   }
 
   connectAsync(destination) {
@@ -42,7 +42,7 @@ class ScModule {
               this.constructor.name +
               " --> " +
               destination.constructor.name;
-            console.log(outStr);
+            // console.log(outStr);
 
             this.outputs.push(destination);
             destination.inputs.push(this);
@@ -80,7 +80,7 @@ class ScModule {
       "[" +
       destInIndex +
       "]";
-    console.log(outStr);
+    // console.log(outStr);
   }
 
   set volume(value) {

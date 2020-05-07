@@ -21,7 +21,7 @@ class ScPhasor {
     }
     this.node.buffer = nodeBuff;
     this.node.loop = true;
-    console.log(buffer[this.options.buffLen - 1]);
+    // console.log(buffer[this.options.buffLen - 1]);
   }
 }
 
