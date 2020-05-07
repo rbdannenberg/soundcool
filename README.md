@@ -1,4 +1,4 @@
-### How to run?
+<!-- ### How to run?
 
 #### Linux(in shell/terminal)
 
@@ -19,7 +19,7 @@
 ```bash
     cd dist
     ./soundcool-macos
-```
+``` -->
 
 ## Developers
 
