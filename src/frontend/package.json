@@ -12,6 +12,7 @@
     "node": "10.16.0",
     "npm": "6.10.0"
   },
+  "proxy": "http://localhost:5000",
   "author": "",
   "license": "ISC",
   "dependencies": {
