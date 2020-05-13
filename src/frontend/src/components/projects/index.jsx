@@ -17,8 +17,8 @@ import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput.jsx";
 
 class Projects extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       userId: "",
       userEmail: "",
@@ -297,6 +297,8 @@ class Projects extends Component {
   };
 
   render() {
+    console.log("rendering projects");
+    console.log(this.props);
     let fileReader;
     const handleFileRead = e => {
       const content = JSON.parse(fileReader.result);

@@ -186,7 +186,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("Signalgen")}
+          onClick={() => addBlock("SignalGen")}
         >
           <img src={signalgen}></img>
         </button>

@@ -67,7 +67,7 @@ class ProjectEditor extends React.Component {
     super(props);
     this.state = {
       endpoint: baseAddress(),
-      floatingView: false,
+      floatingView: this.props.projectControl.floatingView,
       projectId: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -138,13 +138,16 @@ class ProjectEditor extends React.Component {
 
   renderBlockList = (blocks, nowOut) => {
     // console.log(blocks);
-    if (this.state.floatingView) {
+    if (this.props.projectControl.floatingView) {
       let finalBlock = [];
       blocks.forEach(o => {
         finalBlock = finalBlock.concat(o);
       });
       return (
-        <div className="box" style={{ height: "70vh" }}>
+        <div
+          className="box"
+          style={{ left: "60px", top: "20px", height: "80vh", width: "155vh" }}
+        >
           <div className="boxContainer">
             {finalBlock.map(b => (
               <RDraggable
@@ -164,7 +167,7 @@ class ProjectEditor extends React.Component {
                   }}
                   style={this.blockStyle(b.id)}
                 >
-                  <div style={{ transform: "scale(0.8)" }}>
+                  <div>
                     <WithHeader
                       draggableButton={true}
                       key={b.id}
@@ -533,8 +536,8 @@ class ProjectEditor extends React.Component {
   }
 
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
-  toggleFloatingView = () =>
-    this.setState({ floatingView: !this.state.floatingView });
+  // toggleFloatingView = () =>
+  //   this.setState({ floatingView: !this.state.floatingView });
   toggleRegisterModal = () =>
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
 
@@ -698,6 +701,9 @@ class ProjectEditor extends React.Component {
     return flag;
   }
   render() {
+    console.log(this.props);
+    const { floatingView } = this.props.projectControl;
+    console.log(this.props.projectControl.floatingView);
     const { projectName, projectDescription, items, portOpened } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
@@ -724,7 +730,7 @@ class ProjectEditor extends React.Component {
             Export Project
           </button>
         )}
-        {!this.state.floatingView && (
+        {!floatingView && (
           <div style={{ position: "absolute", left: "165px", top: "53px" }}>
             <button
               className="btn btn-danger btn-sm"
@@ -749,7 +755,7 @@ class ProjectEditor extends React.Component {
             </button>
           </div>
         )}
-        {!this.state.floatingView && (
+        {!floatingView && (
           <div
             class="contenedor"
             id="oscilloscope"
@@ -768,13 +774,13 @@ class ProjectEditor extends React.Component {
           </div>
         )}
         <AddBlock />
-        <button
+        {/* <button
           className=" btn btn-danger m-2"
           style={{ position: "absolute", top: "620px", left: "1040px" }}
-          onClick={this.toggleFloatingView}
+          // onClick={this.toggleFloatingView}
         >
-          Floating View : {this.state.floatingView ? "On" : "Off"}
-        </button>
+          Floating View : {floatingView ? "On" : "Off"}
+        </button> */}
         {openPortsButton && (
           <button
             className="btn btn-secondary m-2 float-right"
@@ -843,6 +849,7 @@ class ProjectEditor extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  projectControl: state.projectControl,
   blocks: state.blocks
 });
 
