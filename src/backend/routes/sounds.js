@@ -207,7 +207,8 @@ router.post("/addYoutubeLink", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation = req.body["youtubeLink"];
-  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'Youtube','Youtube','${fileLocation}')`;
+  const name = req.body["name"]?req.body["name"]:"Youtube";
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${name}','Youtube','${fileLocation}')`;
   if (database == "mysql") {
     connection.query(QUERY, (err, results) => {
       if (err) {
@@ -217,7 +218,7 @@ router.post("/addYoutubeLink", (req, res) => {
         return res.json({
           sound_id: soundId,
           user: user_id,
-          name: "Youtube",
+          name: name,
           type: "Youtube"
         });
       }
@@ -231,7 +232,7 @@ router.post("/addYoutubeLink", (req, res) => {
         return res.json({
           sound_id: soundId,
           user: user_id,
-          name: "Youtube",
+          name: name,
           type: "Youtube"
         });
       }

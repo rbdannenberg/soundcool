@@ -57,9 +57,10 @@ class Sounds extends React.Component {
   }
 
   addYoutubeLink() {
-    var youtubeLink = prompt("Please enter Youtube URL");
-    if (youtubeLink) {
-      addYoutubeLink({ youtubeLink })
+    var link = prompt("Please enter Youtube URL");
+    var name = prompt("Please enter a name");
+    if (link && name) {
+      addYoutubeLink({ youtubeLink: link, name })
         .then(data => {
           showToastr("success", "Youtube link added successfully");
           this.setState({ sounds: [...this.state.sounds, data] });
