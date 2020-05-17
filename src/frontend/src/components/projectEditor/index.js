@@ -23,6 +23,9 @@ import {
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {specValues, audioDefaults} from "./Components/blockSpecs.jsx";
+import {asyncAddBlock, loadProject} from "./thunks.js";
+//import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -538,16 +541,14 @@ class ProjectEditor extends React.Component {
   toggleRegisterModal = () =>
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
 
+
   loadState() {
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
         .then(res => {
           let { name, description, content } = res;
 
-          this.props.dispatch({
-            type: "LOAD_STATE",
-            content
-          });
+          this.props.dispatch(loadProject(content));
 
           this.setState({
             projectName: name,

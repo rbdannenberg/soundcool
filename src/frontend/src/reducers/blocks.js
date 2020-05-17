@@ -1,5 +1,5 @@
 import block from "./block";
-import specValues from "../components/projectEditor/Components/blockSpecs.jsx";
+import {specValues, audioDefaults} from "../components/projectEditor/Components/blockSpecs.jsx";
 const allTypes = {
   Delay: 1,
   Transposer: 1,
@@ -139,20 +139,39 @@ const blocks = (
 
       if (newState && JSON.parse(newState) !== null) {
         newState = JSON.parse(newState);
+        let promiseStore = [];
         newState["bs"].forEach((element, index) => {
+          delete element.audioObj;
+          let audioConfig = audioDefaults[element.typeName];
+          for (let key in audioConfig) {
+            audioConfig[key] = element[key];
+          }
+          /*let prom = block(undefined, {
+            type: "ADD_BLOCK",
+            typeName: element.typeName,
+            newId: element.id,
+            newTypeId: element.typeId,
+            audioConfig: audioConfig,
+            values: {
+              ...element,
+              inNode: [],
+              outNode: [],
+              collapse: true,
+            }
+          });*/
+
           newState["bs"][index] = block(undefined, {
             type: "ADD_BLOCK",
             typeName: element.typeName,
+            newId: element.id,
+            newTypeId: element.typeId,
+            audioConfig: audioConfig,
             values: {
-              // inNode: element.inNode,
+              ...element,
               inNode: [],
-              // outNode: element.outNode,
               outNode: [],
               collapse: true,
-              ...specValues[element.typeName]
-            },
-            newId: element.id,
-            newTypeId: element.typeId
+            }
           });
         });
         // let tmp = undefined;
