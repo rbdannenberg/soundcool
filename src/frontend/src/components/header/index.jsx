@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { isUserLoggedIn } from "../../actions/common";
 import {
   Navbar,
@@ -14,7 +15,7 @@ import {
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
-export default class Header extends Component {
+class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,9 +99,25 @@ export default class Header extends Component {
                           <div className="dropdown-item">Open</div>
                         </NavLink>
                         <div className="nav-link">
-                          <div className="dropdown-item">
-                            floating view.. (TBD )
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
+                              console.log("trying to dispatch");
+                              this.props.dispatch({
+                                type: "FLOATING_VIEW",
+                                value: undefined
+                              });
+                              console.log("done");
+                            }}
+                          >
+                            Floating View:
+                            {this.props.projectControl.floatingView
+                              ? " On"
+                              : " Off"}
                           </div>
+                        </div>
+                        <div className="nav-link">
+                          <div className="dropdown-item">Save... (TBD)</div>
                         </div>
                       </div>
                     </div>
@@ -154,3 +171,9 @@ export default class Header extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  projectControl: state.projectControl
+});
+
+export default connect(mapStateToProps)(Header);

@@ -39,7 +39,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="player"
-        style={{ position: "absolute", left: "10px", top: "55px" }}
+        style={{ position: "absolute", left: "0px", top: "160px" }}
       >
         <button 
           name="boton"
@@ -52,7 +52,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="sampleplayer"
-        style={{ position: "absolute", left: "10px", top: "90px" }}
+        style={{ position: "absolute", left: "0px", top: "195px" }}
       >
         <button
           name="boton"
@@ -65,7 +65,7 @@ const AddBlock = props => {
       <div
         class="keyboard"
         id="keyboard"
-        style={{ position: "absolute", left: "10px", top: "125px" }}
+        style={{ position: "absolute", left: "0px", top: "230px" }}
       >
         <button 
           name="boton"
@@ -74,11 +74,7 @@ const AddBlock = props => {
           <img src={keyboard}></img>
         </button>
       </div>
-      <div
-        class="contenedor"
-        id="vst"
-        style={{ position: "absolute", left: "65px", top: "55px" }}
-      >
+
 
         <button
           name="boton"
@@ -89,10 +85,11 @@ const AddBlock = props => {
           <img src={granSynth} style={{ width: "46px" }}></img>
         </button>
       </div>
+
       <div
         class="contenedor"
         id="mixer"
-        style={{ position: "absolute", left: "10px", top: "160px" }}
+        style={{ position: "absolute", left: "0px", top: "265px" }}
       >
         <button
           name="boton"
@@ -104,7 +101,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="routing"
-        style={{ position: "absolute", left: "10px", top: "195px" }}
+        style={{ position: "absolute", left: "0px", top: "300px" }}
       >
         <button
           name="boton"
@@ -116,7 +113,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="delay"
-        style={{ position: "absolute", left: "10px", top: "230px" }}
+        style={{ position: "absolute", left: "0px", top: "335px" }}
       >
         <button
           name="boton"
@@ -128,7 +125,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="transposer"
-        style={{ position: "absolute", left: "10px", top: "265px" }}
+        style={{ position: "absolute", left: "0px", top: "370px" }}
       >
         <button
           name="boton"
@@ -141,7 +138,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="pitch"
-        style={{ position: "absolute", left: "10px", top: "300px" }}
+        style={{ position: "absolute", left: "0px", top: "405px" }}
       >
         <button
           name="boton"
@@ -153,7 +150,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="pan"
-        style={{ position: "absolute", left: "10px", top: "335px" }}
+        style={{ position: "absolute", left: "0px", top: "440px" }}
       >
         <button
           name="boton"
@@ -165,7 +162,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="filter"
-        style={{ position: "absolute", left: "10px", top: "370px" }}
+        style={{ position: "absolute", left: "0px", top: "475px" }}
       >
         <button
           name="boton"
@@ -177,7 +174,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="oscilloscope"
-        style={{ position: "absolute", left: "10px", top: "405px" }}
+        style={{ position: "absolute", left: "50px", top: "160px" }}
       >
         <button
           name="boton"
@@ -191,7 +188,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="spectroscope"
-        style={{ position: "absolute", left: "10px", top: "440px" }}
+        style={{ position: "absolute", left: "50px", top: "195px" }}
       >
         <button
           name="boton"
@@ -204,6 +201,7 @@ const AddBlock = props => {
 
       <div
         class="contenedor"
+
         id="envelope"
         style={{ position: "absolute", left: "10px", top: "475px" }}
       >
@@ -224,16 +222,18 @@ const AddBlock = props => {
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
+
         >
-          <img src={directinput}></img>
+          <img src={signalgen}></img>
         </button>
       </div>
 
       <div
         class="contenedor"
-        id="speaker"
-        style={{ position: "absolute", left: "10px", top: "580px" }}
+        id="granular"
+        style={{ position: "absolute", left: "50px", top: "265px" }}
       >
+
         <button
           name="boton"
           type="submit"
@@ -244,8 +244,8 @@ const AddBlock = props => {
 
       <div
         class="contenedor"
-        id="record"
-        style={{ position: "absolute", left: "10px", top: "615px" }}
+        id="envelope"
+        style={{ position: "absolute", left: "50px", top: "300px" }}
       >
         <button
           name="boton"
@@ -258,7 +258,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="sequencer"
-        style={{ position: "absolute", left: "10px", top: "510px" }}
+        style={{ position: "absolute", left: "50px", top: "335px" }}
       >
         <button
           name="boton"
@@ -271,15 +271,35 @@ const AddBlock = props => {
 
       <div
         class="contenedor"
-        id="SignalGen"
-        style={{ position: "absolute", left: "10px", top: "650px" }}
+        id="directinput"
+        style={{ position: "absolute", left: "50px", top: "370px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SignalGen"))}
         >
-          <img src={signalgen}></img>
+          <img src={directinput}></img>
+        </button>
+      </div>
+
+      <div
+        class="contenedor"
+        id="speaker"
+        style={{ position: "absolute", left: "50px", top: "405px" }}
+      >
+        <button name="boton" type="submit" onClick={() => addBlock("Speaker")}>
+          <img src={speaker}></img>
+        </button>
+      </div>
+
+      <div
+        class="contenedor"
+        id="record"
+        style={{ position: "absolute", left: "50px", top: "440px" }}
+      >
+        <button name="boton" type="submit" onClick={() => addBlock("Record")}>
+          <img src={record}></img>
         </button>
       </div>
     </React.Fragment>
