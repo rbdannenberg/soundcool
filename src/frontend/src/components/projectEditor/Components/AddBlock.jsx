@@ -29,7 +29,7 @@ import switcherV from "../Components/pictures/switcherV.gif";
 import transposer from "../Components/pictures/transposer.gif";
 import vst from "../Components/pictures/vst.gif";
 import imagesampleV from "../Components/pictures/imagesampleV.gif";
-import granSynth from "../Components/pictures/granSynth.png";
+import granSynth from "../Components/pictures/granular.gif";
 import {asyncAddBlock} from "../thunks.js"
 
 const AddBlock = props => {
@@ -75,7 +75,11 @@ const AddBlock = props => {
         </button>
       </div>
 
-
+      <div
+        class="contenedor"
+        id="gransynth"
+        style={{ position: "absolute", left: "0px", top: "300px" }}
+      >
         <button
           name="boton"
           data-tip="GranSynth"
