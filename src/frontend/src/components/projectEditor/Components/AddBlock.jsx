@@ -194,7 +194,7 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="signalgen"
-        style={{ position: "absolute", left: "10px", top: "545px" }}
+        style={{ position: "absolute", left: "50px", top: "230px" }}
       >
         <button
           name="boton"
