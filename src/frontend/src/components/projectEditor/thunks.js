@@ -91,6 +91,7 @@ function initAudioObj(typeName, audioConfig) {
         break;
       default:
         t = undefined;
+        reject(t);
     }
     //return t;
   });
