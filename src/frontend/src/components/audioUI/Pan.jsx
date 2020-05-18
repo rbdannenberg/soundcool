@@ -29,9 +29,10 @@ const Pan = ({ blockInfo, changeBlock }) => {
             left: "24px",
             top: "12px"
           }}
+          step="0.1"
           onChange={e => changeBlock(id, "panVal", e.target.value)}
-          min={-50}
-          max={50}
+          min={-1}
+          max={1}
           value={panVal}
           id="panVal"
         />

@@ -16,7 +16,7 @@ class ScPan extends ScModule {
     this.outputs.push(this.outNode);
   }
 
-  set pan(value) {
+  set panVal(value) {
     value = parseFloat(value);
     this.options.panVal = value;
     this.inNode.pan.value = value;
