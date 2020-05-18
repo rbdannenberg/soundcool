@@ -35,19 +35,6 @@ import granular from "../Components/pictures/granular.gif";
 import { connect } from "react-redux";
 
 const AddBlock = props => {
-  const addBlock = typeName => {
-    props.dispatch({
-      type: "ADD_BLOCK",
-      typeName,
-      values: {
-        // inNode and outNode are a list, since a block can have multiple input and output
-        inNode: [],
-        outNode: [],
-        collapse: true,
-        ...specValues[typeName]
-      }
-    });
-  };
 
   return (
     <React.Fragment>
@@ -56,7 +43,11 @@ const AddBlock = props => {
         id="player"
         style={{ position: "absolute", left: "0px", top: "160px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Player")}>
+        <button 
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Player"))}
+        >
           <img src={player}></img>
         </button>
       </div>
@@ -68,7 +59,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("SamplePlayer")}
+          onClick={() => props.dispatch(asyncAddBlock("SamplePlayer"))}
         >
           <img src={sampleplayer}></img>
         </button>
@@ -78,7 +69,10 @@ const AddBlock = props => {
         id="keyboard"
         style={{ position: "absolute", left: "0px", top: "230px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Keyboard")}>
+        <button 
+          name="boton"
+          type="submit"
+          onClick={() =>  props.dispatch(asyncAddBlock("Keyboard"))}>
           <img src={keyboard}></img>
         </button>
       </div>
@@ -88,7 +82,10 @@ const AddBlock = props => {
         id="mixer"
         style={{ position: "absolute", left: "0px", top: "265px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Mixer")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Mixer"))}>
           <img src={mixer}></img>
         </button>
       </div>
@@ -97,7 +94,10 @@ const AddBlock = props => {
         id="routing"
         style={{ position: "absolute", left: "0px", top: "300px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Routing")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Routing"))}>
           <img src={routing}></img>
         </button>
       </div>
@@ -106,7 +106,10 @@ const AddBlock = props => {
         id="delay"
         style={{ position: "absolute", left: "0px", top: "335px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Delay")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Delay"))}>
           <img src={delay}></img>
         </button>
       </div>
@@ -118,7 +121,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("Transposer")}
+          onClick={() => props.dispatch(asyncAddBlock("Transposer"))}
         >
           <img src={transposer}></img>
         </button>
@@ -128,7 +131,10 @@ const AddBlock = props => {
         id="pitch"
         style={{ position: "absolute", left: "0px", top: "405px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Pitch")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Pitch"))}>
           <img src={pitch}></img>
         </button>
       </div>
@@ -137,7 +143,10 @@ const AddBlock = props => {
         id="pan"
         style={{ position: "absolute", left: "0px", top: "440px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Pan")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Pan"))}>
           <img src={pan}></img>
         </button>
       </div>
@@ -146,7 +155,10 @@ const AddBlock = props => {
         id="filter"
         style={{ position: "absolute", left: "0px", top: "475px" }}
       >
-        <button name="boton" type="submit" onClick={() => addBlock("Filter")}>
+        <button
+          name="boton"
+          type="submit"
+          onClick={() => props.dispatch(asyncAddBlock("Filter"))}>
           <img src={filter}></img>
         </button>
       </div>
@@ -158,7 +170,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("Oscilloscope")}
+          onClick={() => props.dispatch(asyncAddBlock("Oscilloscope"))}
         >
           <img src={oscilloscope}></img>
         </button>
@@ -172,7 +184,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("Spectroscope")}
+          onClick={() => props.dispatch(asyncAddBlock("Spectroscope"))}
         >
           <img src={spectroscope}></img>
         </button>
@@ -220,7 +232,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => addBlock("Sequencer")}
+          onClick={() => props.dispatch(asyncAddBlock("Sequencer"))}
         >
           <img src={sequencer1}></img>
         </button>

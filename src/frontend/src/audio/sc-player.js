@@ -21,7 +21,8 @@ class ScPlayer extends ScModule {
       path: "",
       loop: false,
       speed: 1.0,
-      reverse: false
+      //reverse: false,
+      reversed: false
     };
     this.offset = 0;
     this.options = Object.assign(defOpts, options);
@@ -112,7 +113,7 @@ class ScPlayer extends ScModule {
     this.pause();
     seekPosition = parseFloat(seekPosition);
     this.offset = this.duration * seekPosition;
-    if (this.options.reverse) {
+    if (this.options.reversed) {
       this.offset = this.duration - this.offset;
     }
     this.play();
@@ -125,7 +126,7 @@ class ScPlayer extends ScModule {
     for (let i = 0; i < this.bufferChannels; i++) {
       this.buffer.getChannelData(i).reverse();
     }
-    this.options.reverse = !this.options.reverse;
+    this.options.reversed = !this.options.reversed;
     if (isNotAtStart) {
       this.offset = this.duration - this.offset;
     }
