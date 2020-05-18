@@ -143,8 +143,8 @@ class Player extends React.Component {
 
     const loadUrl = url => {
       audioObj.load(url).then(res => {
+        this.props.blockInfo.URL = url;
         if (inDisabled) this.props.changeBlock(id, "inDisabled", false);
-        // console.log(res);
       });
     };
 
