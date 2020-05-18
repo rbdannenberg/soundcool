@@ -23,8 +23,8 @@ import {
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import {specValues, audioDefaults} from "./Components/blockSpecs.jsx";
-import {asyncAddBlock, loadProject} from "./thunks.js";
+import { specValues, audioDefaults } from "./Components/blockSpecs.jsx";
+import { asyncAddBlock, loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
 
 // a little function to help us with reordering the result
@@ -625,6 +625,9 @@ class ProjectEditor extends React.Component {
       return a.concat(b);
     });
     let nowOut = this.props.blocks.nowOut;
+    bs.forEach(b => {
+      b["audioObj"] = {};
+    });
     let blocks = {
       bs,
       nowOut

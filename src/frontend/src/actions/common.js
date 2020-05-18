@@ -65,3 +65,11 @@ export const focusElementById = (id) => {
   var elem = document.getElementById(id);
   elem.scrollIntoView();
 };
+
+export const cleanPayload = (pd) => {
+  pd["bs"].forEach(o => {
+    o["audioObj"] = {};
+  });
+  pd["cns"] = {};
+  return pd;
+}
