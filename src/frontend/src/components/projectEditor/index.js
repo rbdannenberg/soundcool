@@ -12,7 +12,8 @@ import {
   isUserLoggedIn,
   showToastr,
   showToastrError,
-  baseAddress
+  baseAddress,
+  cleanPayload
 } from "../../actions/common";
 import {
   updateProject,
@@ -625,9 +626,6 @@ class ProjectEditor extends React.Component {
       return a.concat(b);
     });
     let nowOut = this.props.blocks.nowOut;
-    bs.forEach(b => {
-      b["audioObj"] = {};
-    });
     let blocks = {
       bs,
       nowOut
@@ -642,7 +640,10 @@ class ProjectEditor extends React.Component {
   downloadFile = async myData => {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\t");
-    const blob = new Blob([json], { type: "application/json" });
+    let readData = JSON.parse(json);
+    readData.blocks = cleanPayload(readData.blocks);
+    const updatedJson = JSON.stringify(readData, null, "\t");
+    const blob = new Blob([updatedJson], { type: "application/json" });
     const href = await URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = href;
