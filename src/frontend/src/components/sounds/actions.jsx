@@ -11,6 +11,7 @@ export const addYoutubeLinkUrl = () => `${BASE_URL}/sounds/addYoutubeLink`;
 export const getAudioUrl = () => `${BASE_URL}/sounds/getAudio`;
 export const serveAudioUrl = () => `${BASE_URL}/sounds/serveAudio`;
 export const youtubeAudioUrl = () => `${BASE_URL}/sounds/youtubeAudio`;
+export const syncWithDatabaseUrl = () => `${BASE_URL}/sounds/sync`;
 
 export const uploadSound = payload => {
   const url = uploadSoundUrl();
@@ -55,4 +56,9 @@ export const getAudio = sound_id => {
   const url =
     getAudioUrl() + "/" + sound_id + "/" + Store.headers["X-Auth-Token"];
   return getRequest(url);
+};
+
+export const syncWithDatabase = sounds => {
+  const url = syncWithDatabaseUrl();
+  return postRequest(url, sounds);
 };

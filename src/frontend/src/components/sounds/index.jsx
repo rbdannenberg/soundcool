@@ -4,6 +4,7 @@ import {
   uploadSound,
   fetchAudio,
   toggleAudioSharing,
+  syncWithDatabase,
   addSoundLink,
   serveAudio,
   getAudio,
@@ -54,6 +55,19 @@ class Sounds extends React.Component {
           showToastrError(error);
         });
     }
+  }
+
+  syncFiles() {
+    syncWithDatabase({ sounds: this.state.sounds })
+      .then(data => {
+        showToastr("success", "Files has been synced");
+        if (data.data) {
+          setTimeout(() => window.location.reload(false), 2000);
+        }
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
   }
 
   addYoutubeLink() {
@@ -213,6 +227,13 @@ class Sounds extends React.Component {
                 onClick={e => this.addYoutubeLink()}
               >
                 Add Youtube Sound
+              </button>
+              &nbsp;
+              <button
+                className="btn btn-primary"
+                onClick={e => this.syncFiles()}
+              >
+                Sync Files
               </button>
             </div>
           </div>

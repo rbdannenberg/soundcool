@@ -207,7 +207,7 @@ router.post("/addYoutubeLink", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation = req.body["youtubeLink"];
-  const name = req.body["name"]?req.body["name"]:"Youtube";
+  const name = req.body["name"] ? req.body["name"] : "Youtube";
   const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${name}','Youtube','${fileLocation}')`;
   if (database == "mysql") {
     connection.query(QUERY, (err, results) => {
@@ -239,6 +239,75 @@ router.post("/addYoutubeLink", (req, res) => {
     });
   }
 });
+
+router.post("/sync", (req, res) => {
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
+  const user_id = user.id;
+  var fileExists = [];
+  const { sounds } = req.body;
+  var uploadedSounds = [];
+  var soundLinks = [];
+  sounds.forEach(sound => {
+    if (sound.type == "upload") {
+      uploadedSounds.push(sound);
+    } else {
+      soundLinks.push(sound);
+    }
+  });
+  uploadedSounds.forEach(sound => {
+    isSoundExist(sound.sound_id, user_id);
+  });
+  return res.json({
+    data: true
+  });
+});
+
+function deleteEntry(sound_id, user_id) {
+  const QUERY = `delete from sounds where sound_id= ${sound_id} and user= ${user_id};`;
+  if (database == "mysql") {
+    connection.query(QUERY, err => {
+      if (err) {
+        console.log(err);
+      }
+    });
+  } else if (database == "sqlite") {
+    connection.run(QUERY, [], function(err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
+}
+
+async function isSoundExist(sound_id, user_id) {
+  const QUERY = `select fileLocation from sounds where sound_id= ${sound_id} and user= ${user_id};`;
+  if (database == "mysql") {
+    let res = await connection.query(QUERY);
+    connection.query(QUERY, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.json({ err: err });
+      } else {
+        var music = "." + results[0]["fileLocation"];
+        if (!fs.existsSync(music)) {
+          deleteEntry(sound_id, user_id);
+        }
+      }
+    });
+  } else if (database == "sqlite") {
+    connection.all(QUERY, [], (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.json({ err: err });
+      } else {
+        var music = "." + results[0]["fileLocation"];
+        if (!fs.existsSync(music)) {
+          deleteEntry(sound_id, user_id);
+        }
+      }
+    });
+  }
+}
 
 router.post("/toggleAudioSharing", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
@@ -364,46 +433,52 @@ router.get("/serveAudio/:audioId/:token", function(req, res) {
         return res.json({ err: err });
       } else {
         var music = "." + results[0]["fileLocation"];
+        try {
+          var stat = fs.statSync(music);
+          range = req.headers.range;
+          var readStream;
 
-        var stat = fs.statSync(music);
-        range = req.headers.range;
-        var readStream;
+          if (range !== undefined) {
+            var parts = range.replace(/bytes=/, "").split("-");
 
-        if (range !== undefined) {
-          var parts = range.replace(/bytes=/, "").split("-");
+            var partial_start = parts[0];
+            var partial_end = parts[1];
 
-          var partial_start = parts[0];
-          var partial_end = parts[1];
+            if (
+              (isNaN(partial_start) && partial_start.length > 1) ||
+              (isNaN(partial_end) && partial_end.length > 1)
+            ) {
+              return res.sendStatus(500);
+            }
 
-          if (
-            (isNaN(partial_start) && partial_start.length > 1) ||
-            (isNaN(partial_end) && partial_end.length > 1)
-          ) {
-            return res.sendStatus(500);
+            var start = parseInt(partial_start, 10);
+            var end = partial_end ? parseInt(partial_end, 10) : stat.size - 1;
+            var content_length = end - start + 1;
+
+            res.status(206).header({
+              "Content-Type": "audio/mpeg",
+              "Content-Length": content_length,
+              "Content-Range": "bytes " + start + "-" + end + "/" + stat.size
+            });
+
+            readStream = fs.createReadStream(music, {
+              start: start,
+              end: end
+            });
+          } else {
+            res.header({
+              "Content-Type": "audio/mpeg",
+              "Content-Length": stat.size
+            });
+            readStream = fs.createReadStream(music);
           }
-
-          var start = parseInt(partial_start, 10);
-          var end = partial_end ? parseInt(partial_end, 10) : stat.size - 1;
-          var content_length = end - start + 1;
-
-          res.status(206).header({
-            "Content-Type": "audio/mpeg",
-            "Content-Length": content_length,
-            "Content-Range": "bytes " + start + "-" + end + "/" + stat.size
-          });
-
-          readStream = fs.createReadStream(music, {
-            start: start,
-            end: end
-          });
-        } else {
-          res.header({
-            "Content-Type": "audio/mpeg",
-            "Content-Length": stat.size
-          });
-          readStream = fs.createReadStream(music);
+          readStream.pipe(res);
+        } catch (err) {
+          res.sendStatus(422);
+          console.error(
+            "Some files has been moved from their location, please sync audio files"
+          );
         }
-        readStream.pipe(res);
       }
     });
   } else if (database == "sqlite") {
@@ -412,47 +487,54 @@ router.get("/serveAudio/:audioId/:token", function(req, res) {
         console.log(err);
         return res.json({ err: err });
       } else {
-        var music = "." + results[0]["fileLocation"];
+        try {
+          var music = "." + results[0]["fileLocation"];
 
-        var stat = fs.statSync(music);
-        range = req.headers.range;
-        var readStream;
+          var stat = fs.statSync(music);
+          range = req.headers.range;
+          var readStream;
 
-        if (range !== undefined) {
-          var parts = range.replace(/bytes=/, "").split("-");
+          if (range !== undefined) {
+            var parts = range.replace(/bytes=/, "").split("-");
 
-          var partial_start = parts[0];
-          var partial_end = parts[1];
+            var partial_start = parts[0];
+            var partial_end = parts[1];
 
-          if (
-            (isNaN(partial_start) && partial_start.length > 1) ||
-            (isNaN(partial_end) && partial_end.length > 1)
-          ) {
-            return res.sendStatus(500);
+            if (
+              (isNaN(partial_start) && partial_start.length > 1) ||
+              (isNaN(partial_end) && partial_end.length > 1)
+            ) {
+              return res.sendStatus(500);
+            }
+
+            var start = parseInt(partial_start, 10);
+            var end = partial_end ? parseInt(partial_end, 10) : stat.size - 1;
+            var content_length = end - start + 1;
+
+            res.status(206).header({
+              "Content-Type": "audio/mpeg",
+              "Content-Length": content_length,
+              "Content-Range": "bytes " + start + "-" + end + "/" + stat.size
+            });
+
+            readStream = fs.createReadStream(music, {
+              start: start,
+              end: end
+            });
+          } else {
+            res.header({
+              "Content-Type": "audio/mpeg",
+              "Content-Length": stat.size
+            });
+            readStream = fs.createReadStream(music);
           }
-
-          var start = parseInt(partial_start, 10);
-          var end = partial_end ? parseInt(partial_end, 10) : stat.size - 1;
-          var content_length = end - start + 1;
-
-          res.status(206).header({
-            "Content-Type": "audio/mpeg",
-            "Content-Length": content_length,
-            "Content-Range": "bytes " + start + "-" + end + "/" + stat.size
-          });
-
-          readStream = fs.createReadStream(music, {
-            start: start,
-            end: end
-          });
-        } else {
-          res.header({
-            "Content-Type": "audio/mpeg",
-            "Content-Length": stat.size
-          });
-          readStream = fs.createReadStream(music);
+          readStream.pipe(res);
+        } catch (err) {
+          res.sendStatus(422);
+          console.error(
+            "Some files has been moved from their location, please sync audio files"
+          );
         }
-        readStream.pipe(res);
       }
     });
   }
