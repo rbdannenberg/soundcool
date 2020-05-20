@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 function About(props) {
   const leaders = props.leaders.map(leader => {
     return (
-      <div key={leader.id} className="col-12 mt-5">
+      <div key={leader.id} className="col mt-1">
         <RenderLeader leader={leader} />
       </div>
     );
@@ -21,10 +21,10 @@ function About(props) {
   function RenderLeader({ leader }) {
     return (
       <Media tag="li">
-        <Media left middle>
+        {/* <Media left middle>
           <Media object width="120px" src={leader.image} alt={leader.name} />
-        </Media>
-        <Media body className="ml-5">
+        </Media> */}
+        <Media body className="">
           <Media heading>{leader.name}</Media>
           <p>{leader.designation}</p>
           <p>{leader.description}</p>
@@ -47,7 +47,10 @@ function About(props) {
           <hr />
         </div>
       </div>
-      <div className="row row-content">
+      <div
+        className="row row-content"
+        style={{ padding: "0px", minHeight: "0px" }}
+      >
         <div className="col-12 col-md-6">
           <h2>Our Goal</h2>
           <p>
@@ -59,25 +62,6 @@ function About(props) {
             Valencia with the collaboration of different universities and
             institutions.
           </p>
-        </div>
-        <div className="col-12 col-md-5">
-          <Card>
-            <CardHeader className="bg-primary text-white">
-              Facts At a Glance
-            </CardHeader>
-            <CardBody>
-              <dl className="row p-1">
-                <dt className="col-6">Started</dt>
-                <dd className="col-6">mm dd. yyyy</dd>
-                <dt className="col-6">Major Stake Holder</dt>
-                <dd className="col-6">CMU </dd>
-                <dt className="col-6">Last Year's Turnover</dt>
-                <dd className="col-6">$1,250,375</dd>
-                <dt className="col-6">Employees</dt>
-                <dd className="col-6">10</dd>
-              </dl>
-            </CardBody>
-          </Card>
         </div>
         <div className="col-12">
           <Card>
@@ -93,12 +77,17 @@ function About(props) {
           </Card>
         </div>
       </div>
-      <div className="row row-content">
+      <div
+        className="row row-content"
+        style={{ padding: "0px", minHeight: "0px" }}
+      >
         <div className="col-12">
           <h2>Partners</h2>
         </div>
         <div className="col-12">
-          <Media list>{leaders}</Media>
+          <Media list className="row" style={{ padding: "0px" }}>
+            {leaders}
+          </Media>
         </div>
       </div>
     </div>

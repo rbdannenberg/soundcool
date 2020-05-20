@@ -274,6 +274,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentDidMount() {
+    console.log("mounted");
     this.loadState();
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
@@ -545,7 +546,6 @@ class ProjectEditor extends React.Component {
   toggleRegisterModal = () =>
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
 
-
   loadState() {
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
@@ -557,6 +557,13 @@ class ProjectEditor extends React.Component {
           this.setState({
             projectName: name,
             projectDescription: description
+          });
+
+          this.props.dispatch({
+            type: "WORKING_PROJ",
+            id: this.state.projectId,
+            name: this.state.projectName,
+            description: this.state.projectDescription
           });
         })
         .catch(err => {
@@ -622,6 +629,7 @@ class ProjectEditor extends React.Component {
   exportProject = event => {
     event.preventDefault();
     const { projectName, projectDescription, items } = this.state;
+    console.log(items);
     let bs = items.reduce((a, b) => {
       return a.concat(b);
     });
@@ -707,15 +715,25 @@ class ProjectEditor extends React.Component {
   }
   render() {
     console.log(this.props);
+    // console.log(this.state.projectId);
+    // console.log(this.props.projectControl.projectId);
+    if (this.state.projectId !== this.props.projectControl.projectId) {
+      console.log("?");
+      this.props.dispatch({
+        type: "WORKING_PROJ",
+        id: this.state.projectId,
+        name: this.state.projectName,
+        description: this.state.projectDescription
+      });
+    }
     const { floatingView } = this.props.projectControl;
-    console.log(this.props.projectControl.floatingView);
     const { projectName, projectDescription, items, portOpened } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
     return (
       <div className="container">
-        <button
+        {/* <button
           className=" btn btn-success m-2"
           style={{ position: "absolute", top: "620px", left: "820px" }}
           onClick={this.saveProject}
@@ -725,8 +743,8 @@ class ProjectEditor extends React.Component {
               ? "Create"
               : "Save"
             : "Register to save"}
-        </button>
-        {isUserLoggedIn() && this.state.projectId !== "new" && (
+        </button> */}
+        {/* {isUserLoggedIn() && this.state.projectId !== "new" && (
           <button
             className=" btn btn-warning m-2"
             style={{ position: "absolute", top: "620px", left: "900px" }}
@@ -734,7 +752,7 @@ class ProjectEditor extends React.Component {
           >
             Export Project
           </button>
-        )}
+        )} */}
         {!floatingView && (
           <div style={{ position: "absolute", left: "165px", top: "53px" }}>
             <button

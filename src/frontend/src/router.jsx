@@ -43,7 +43,30 @@ class Main extends Component {
             component={() => <Sounds user={user} />}
           />
           <Route exact path="/contact" component={Contact} />
-          <Route exact path="/about" component={() => <About leaders={[]} />} />
+          <Route
+            exact
+            path="/about"
+            component={() => (
+              <About
+                leaders={[
+                  {
+                    id: 1,
+                    name: "Roger Dannenberg",
+                    description: "description"
+                  },
+                  {
+                    id: 2,
+                    name: "Jorge Sastre Martinez",
+                    description: "description"
+                  },
+                  { id: 3, name: "Amit Meena", description: "description" },
+                  { id: 4, name: "Ankit Joshi", description: "description" },
+                  { id: 5, name: "Manuel Alcañiz", description: "description" },
+                  { id: 6, name: "Huan Zhang", description: "description" }
+                ]}
+              />
+            )}
+          />
           <Route path="/" component={Home} />
         </Switch>
       </div>
