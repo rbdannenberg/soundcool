@@ -194,7 +194,7 @@ class Player extends React.Component {
             className="slider mx-1 my-2 text-center"
             type="range"
             style={{
-              width: "190px",
+              width: "196px",
               position: "absolute",
               left: "5px",
               top: "12px"
@@ -211,7 +211,7 @@ class Player extends React.Component {
             style={{
               fontSize: "0.8rem",
               position: "absolute",
-              top: "36px"
+              top: "40px"
             }}
           >
             <div
@@ -225,20 +225,20 @@ class Player extends React.Component {
               }}
               onClick={e => this.props.changeBlock(id, "speed", 0.01)}
             >
-              x0
+              &#215;0
             </div>
             <div
               className=""
               style={{
                 position: "absolute",
-                left: "92px",
+                left: "90px",
                 cursor: "pointer",
                 border: "1px solid",
                 width: "20px"
               }}
               onClick={e => this.props.changeBlock(id, "speed", 1)}
             >
-              x1
+              &#215;1
             </div>
             <div
               className=""
@@ -251,16 +251,16 @@ class Player extends React.Component {
               }}
               onClick={e => this.props.changeBlock(id, "speed", 2)}
             >
-              x2
+              &#215;2
             </div>
           </div>
 
           <div
             className="progress"
             style={{
-              width: "190px",
+              width: "196px",
               position: "absolute",
-              top: "60px",
+              top: "65px",
               left: "8px",
               backgroundColor: "black"
             }}
@@ -273,7 +273,7 @@ class Player extends React.Component {
               fontSize: "0.8rem",
               textAlign: "right",
               position: "absolute",
-              top: "80px",
+              top: "84px",
               right: "110px"
             }}
           >
