@@ -191,11 +191,11 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ padding: "60px" }}>
-                <h5 className="text-center">
+              <div style={{ paddingTop: "30px", paddingLeft: "60px" }}>
+                {/* <h5 className="text-center">
                   {" "}
                   {"Columnn " + (listIndex + 1)}{" "}
-                </h5>
+                </h5> */}
                 <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
@@ -753,7 +753,7 @@ class ProjectEditor extends React.Component {
             Export Project
           </button>
         )} */}
-        {!floatingView && (
+        {/* {!floatingView && (
           <div style={{ position: "absolute", left: "165px", top: "53px" }}>
             <button
               className="btn btn-danger btn-sm"
@@ -777,8 +777,8 @@ class ProjectEditor extends React.Component {
               Column
             </button>
           </div>
-        )}
-        {!floatingView && (
+        )} */}
+        {/* {!floatingView && (
           <div
             class="contenedor"
             id="oscilloscope"
@@ -795,7 +795,7 @@ class ProjectEditor extends React.Component {
               Column
             </button>
           </div>
-        )}
+        )} */}
         <AddBlock />
         {/* <button
           className=" btn btn-danger m-2"
