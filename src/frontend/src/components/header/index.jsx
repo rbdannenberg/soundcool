@@ -211,13 +211,14 @@ class Header extends Component {
                       style={{ color: "white" }}
                     >
                       <span
-                        className="fa fa-list dropdown-toggle"
+                        className="dropdown-toggle"
                         id="proj dropdown"
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
-                      />
-                      Project
+                      >
+                        <span className="fa fa-list" /> Project
+                      </span>
                       <div
                         className="dropdown-menu"
                         aria-labelledby="proj dropdown"
