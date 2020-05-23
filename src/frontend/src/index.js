@@ -2,7 +2,8 @@ import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import registerServiceWorker from './registerServiceWorker';
+import registerServiceWorker from "./registerServiceWorker";
+import { CookiesProvider } from "react-cookie";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-table/react-table.css";
@@ -14,7 +15,9 @@ import "bootstrap/dist/js/bootstrap.min.js";
 
 render(
   <BrowserRouter>
-    <App />
+    <CookiesProvider>
+      <App />
+    </CookiesProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

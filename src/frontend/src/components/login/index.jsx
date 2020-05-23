@@ -5,15 +5,26 @@ import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from "../../actions/common";
 import LoginForm from "./form";
 
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
+
 class Login extends React.Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
+  constructor(props) {
+    super(props);
+  }
+
   afterSignin = res => {
+    const { cookies } = this.props;
     const { token, error, name } = res;
     if (error) {
       showToastrError(res);
     } else {
       showToastr("success", "Logged in successfully.");
-      sessionStorage.setItem("jwtToken", token);
-      sessionStorage.setItem("name", name);
+      cookies.set("name", name);
+      cookies.set("token", token);
       redirectToHome();
     }
   };
@@ -36,4 +47,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default withCookies(Login);

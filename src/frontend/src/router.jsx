@@ -11,12 +11,24 @@ import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
 
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
+
 class Main extends Component {
-  state = {};
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
   componentDidMount() {
+    const { cookies } = this.props;
+    console.log(cookies);
     try {
-      const jwt = sessionStorage.getItem("jwtToken");
+      const jwt = cookies.get("token");
       const user = jwtDecode(jwt);
       this.setState({ user: user });
     } catch (ex) {}
@@ -24,9 +36,10 @@ class Main extends Component {
 
   render() {
     const { user } = this.state;
+    const { cookies } = this.props;
     return (
       <div>
-        <Header user={user} name={sessionStorage.getItem("name")} />
+        <Header user={user} name={cookies.get("name")} />
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/project-editor/:id" component={ProjectEditor} />
@@ -74,4 +87,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default withCookies(Main);

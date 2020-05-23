@@ -8,8 +8,9 @@ import WithHeader from "./Components/WithHeader";
 import RegisterForm from "../register/form";
 import AddBlock from "./Components/AddBlock";
 import { StoreX as Store } from "../../storeX";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 import {
-  isUserLoggedIn,
   showToastr,
   showToastrError,
   baseAddress,
@@ -67,6 +68,9 @@ const getListStyle = isDraggingOver => ({
 });
 
 class ProjectEditor extends React.Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -83,6 +87,7 @@ class ProjectEditor extends React.Component {
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
   }
 
   getList = id => {
@@ -588,8 +593,8 @@ class ProjectEditor extends React.Component {
     if (error) {
       showToastrError(res);
     } else {
-      sessionStorage.setItem("jwtToken", token);
-      sessionStorage.setItem("name", name);
+      cookies.set("name", name);
+      cookies.set("token", token);
       Store.populateFromProps({
         userToken: { email: undefined, token: token }
       });
@@ -603,9 +608,13 @@ class ProjectEditor extends React.Component {
     const params = { [name]: value };
     this.setState(params);
   };
+  isUserLoggedIn() {
+    const { cookies } = this.props;
+    return cookies.get("token") || "";
+  }
 
   saveProject = () => {
-    if (isUserLoggedIn())
+    if (this.isUserLoggedIn())
       if (this.state.projectId !== "new") {
         this.updateProject({
           projectId: this.state.projectId,
@@ -876,4 +885,4 @@ const mapStateToProps = state => ({
   blocks: state.blocks
 });
 
-export default connect(mapStateToProps)(ProjectEditor);
+export default withCookies(connect(mapStateToProps)(ProjectEditor));

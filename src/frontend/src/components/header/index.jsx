@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { isUserLoggedIn } from "../../actions/common";
 import {
   Navbar,
   NavbarBrand,
@@ -15,6 +14,8 @@ import {
 } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
+import { instanceOf } from "prop-types";
+import { withCookies, Cookies } from "react-cookie";
 
 import {
   updateProject,
@@ -32,6 +33,9 @@ import {
 import { NavLink } from "react-router-dom";
 
 class Header extends Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -50,6 +54,13 @@ class Header extends Component {
 
     this.toggleNav = this.toggleNav.bind(this);
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
+  }
+
+  isUserLoggedIn() {
+    const { cookies } = this.props;
+    return cookies.get("token") || "";
   }
 
   toggleDropdown() {
@@ -61,7 +72,9 @@ class Header extends Component {
   }
 
   handleLogout() {
-    sessionStorage.clear();
+    const { cookies } = this.props;
+    cookies.remove("name");
+    cookies.remove("token");
     window.location = "/login";
   }
 
@@ -71,7 +84,7 @@ class Header extends Component {
   };
 
   saveProject = () => {
-    if (isUserLoggedIn())
+    if (this.isUserLoggedIn())
       if (this.props.projectControl.projectId !== "new") {
         console.log("here ?");
         this.updateProject({
@@ -204,7 +217,7 @@ class Header extends Component {
                     <span className="fa fa-info " /> About us
                   </NavLink>
                 </NavItem>
-                {isUserLoggedIn() && (
+                {this.isUserLoggedIn() && (
                   <NavItem>
                     <div
                       className="nav-link dropdown"
@@ -272,7 +285,7 @@ class Header extends Component {
                     </div>
                   </NavItem>
                 )}
-                {isUserLoggedIn() && (
+                {this.isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link" to="/sounds">
                       <span className="fa fa-list " /> Sounds
@@ -285,7 +298,7 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
 
-                {!isUserLoggedIn() && (
+                {!this.isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link" to="/login">
                       <span className="fa fa-address-card " /> Login
@@ -293,7 +306,7 @@ class Header extends Component {
                   </NavItem>
                 )}
               </Nav>
-              {isUserLoggedIn() && (
+              {this.isUserLoggedIn() && (
                 <Nav className="ml-auto" navbar>
                   <Dropdown
                     nav
@@ -363,4 +376,4 @@ const mapStateToProps = state => ({
   blocks: state.blocks
 });
 
-export default connect(mapStateToProps)(Header);
+export default withCookies(connect(mapStateToProps)(Header));

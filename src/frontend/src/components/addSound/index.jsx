@@ -9,19 +9,27 @@ import {
 } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
-import { isUserLoggedIn } from "../../actions/common";
+import { instanceOf } from 'prop-types';
+import { withCookies, Cookies } from 'react-cookie';
 
 class AddSound extends Component {
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       search: "",
       isModalOpen: false
     };
+    this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
   }
-
+  isUserLoggedIn() {
+    const { cookies } = this.props;
+    return cookies.get("token") || "";
+  }
   addSound = () => {
-    if (isUserLoggedIn()) {
+    if (this.isUserLoggedIn()) {
       fetchAudio()
         .then(data => {
           this.setState({ sounds: data.audios });
@@ -182,4 +190,4 @@ class AddSound extends Component {
   }
 }
 
-export default AddSound;
+export default withCookies(AddSound);
