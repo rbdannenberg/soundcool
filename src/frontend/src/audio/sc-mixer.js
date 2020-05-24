@@ -122,56 +122,65 @@ class ScMixer extends ScModule {
   }
 
   set node0Gain(value) {
-    value = parseFloat(value);
-    this.inNode0.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode0.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node0Gain = value;
   }
 
   set node1Gain(value) {
-    value = parseFloat(value);
-    this.inNode1.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode1.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node1Gain = value;
   }
 
   set node2Gain(value) {
-    value = parseFloat(value);
-    this.inNode2.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode2.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node2Gain = value;
   }
 
   set node3Gain(value) {
-    value = parseFloat(value);
-    this.inNode3.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode3.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node3Gain = value;
   }
 
   set node4Gain(value) {
-    value = parseFloat(value);
-    this.inNode4.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode4.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node4Gain = value;
   }
 
   set node5Gain(value) {
-    value = parseFloat(value);
-    this.inNode5.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode5.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node5Gain = value;
   }
 
   set node6Gain(value) {
-    value = parseFloat(value);
-    this.inNode6.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode6.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node6Gain = value;
   }
 
   set node7Gain(value) {
-    value = parseFloat(value);
-    this.inNode7.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.inNode7.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.node7Gain = value;
   }
 
   set masterGain(value) {
-    value = parseFloat(value);
-    this.outNode.gain.value = value;
+    value = Math.max(parseFloat(value), 1.40130e-45);
+    this.outNode.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
     this.options.masterGain = value;
   }
 

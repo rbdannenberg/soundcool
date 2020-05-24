@@ -84,7 +84,9 @@ class ScModule {
   }
 
   set volume(value) {
-    this.outNode.gain.value = parseFloat(value / 100);
+    value = Math.max(parseFloat(value / 100), 1.40130e-45);
+    this.outNode.gain.exponentialRampToValueAtTime(value,
+      this.context.currentTime + 0.5);
   }
 
   destroy() {}
