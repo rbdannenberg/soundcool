@@ -723,7 +723,7 @@ class ProjectEditor extends React.Component {
     return flag;
   }
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     // console.log(this.state.projectId);
     // console.log(this.props.projectControl.projectId);
     if (this.state.projectId !== this.props.projectControl.projectId) {

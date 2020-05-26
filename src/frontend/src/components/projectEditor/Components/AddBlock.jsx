@@ -35,15 +35,17 @@ import { asyncAddBlock } from "../thunks.js";
 const AddBlock = props => {
   return (
     <React.Fragment>
+      <ReactTooltip place="top" type="info" effect="float" />
       <div
         class="contenedor"
         id="player"
-        style={{ position: "absolute", left: "0px", top: "160px" }}
+        style={{ position: "absolute", left: "0px", top: "52px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Player"))}
+          data-tip="Player"
         >
           <img src={player}></img>
         </button>
@@ -51,12 +53,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="sampleplayer"
-        style={{ position: "absolute", left: "0px", top: "195px" }}
+        style={{ position: "absolute", left: "0px", top: "87px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SamplePlayer"))}
+          data-tip="Sampleplayer"
         >
           <img src={sampleplayer}></img>
         </button>
@@ -78,12 +81,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="mixer"
-        style={{ position: "absolute", left: "0px", top: "265px" }}
+        style={{ position: "absolute", left: "0px", top: "157px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Mixer"))}
+          data-tip="Mixer"
         >
           <img src={mixer}></img>
         </button>
@@ -103,12 +107,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="delay"
-        style={{ position: "absolute", left: "0px", top: "230px" }}
+        style={{ position: "absolute", left: "0px", top: "122px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Delay"))}
+          data-tip="Delay"
         >
           <img src={delay}></img>
         </button>
@@ -116,12 +121,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="transposer"
-        style={{ position: "absolute", left: "0px", top: "370px" }}
+        style={{ position: "absolute", left: "0px", top: "262px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Transposer"))}
+          data-tip="Transposer"
         >
           <img src={transposer}></img>
         </button>
@@ -129,12 +135,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="pitch"
-        style={{ position: "absolute", left: "0px", top: "405px" }}
+        style={{ position: "absolute", left: "0px", top: "297px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Pitch"))}
+          data-tip="Pitch"
         >
           <img src={pitch}></img>
         </button>
@@ -142,12 +149,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="pan"
-        style={{ position: "absolute", left: "0px", top: "300px" }}
+        style={{ position: "absolute", left: "0px", top: "192px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Pan"))}
+          data-tip="Pan"
         >
           <img src={pan}></img>
         </button>
@@ -156,12 +164,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="filter"
-        style={{ position: "absolute", left: "0px", top: "335px" }}
+        style={{ position: "absolute", left: "0px", top: "227px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Filter"))}
+          data-tip="Filter"
         >
           <img src={filter}></img>
         </button>
@@ -169,12 +178,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="oscilloscope"
-        style={{ position: "absolute", left: "50px", top: "160px" }}
+        style={{ position: "absolute", left: "50px", top: "52px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Oscilloscope"))}
+          data-tip="Oscilloscope"
         >
           <img src={oscilloscope}></img>
         </button>
@@ -183,12 +193,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="spectroscope"
-        style={{ position: "absolute", left: "50px", top: "195px" }}
+        style={{ position: "absolute", left: "50px", top: "87px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Spectroscope"))}
+          data-tip="Spectroscope"
         >
           <img src={spectroscope}></img>
         </button>
@@ -197,12 +208,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="signalgen"
-        style={{ position: "absolute", left: "50px", top: "230px" }}
+        style={{ position: "absolute", left: "50px", top: "122px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SignalGen"))}
+          data-tip="Signalgen"
         >
           <img src={signalgen}></img>
         </button>
@@ -211,12 +223,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="granular"
-        style={{ position: "absolute", left: "50px", top: "265px" }}
+        style={{ position: "absolute", left: "50px", top: "157px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("GranSynth"))}
+          data-tip="Granular Synthesis"
         >
           <img src={granSynth}></img>
         </button>
@@ -252,12 +265,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="directinput"
-        style={{ position: "absolute", left: "50px", top: "370px" }}
+        style={{ position: "absolute", left: "50px", top: "262px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
+          data-tip="Direct Input"
         >
           <img src={directinput}></img>
         </button>
@@ -266,12 +280,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="speaker"
-        style={{ position: "absolute", left: "50px", top: "335px" }}
+        style={{ position: "absolute", left: "50px", top: "227px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Speaker"))}
+          data-tip="Speaker"
         >
           <img src={speaker}></img>
         </button>
@@ -280,12 +295,13 @@ const AddBlock = props => {
       <div
         class="contenedor"
         id="record"
-        style={{ position: "absolute", left: "50px", top: "300px" }}
+        style={{ position: "absolute", left: "50px", top: "192px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Record"))}
+          data-tip="Record"
         >
           <img src={record}></img>
         </button>

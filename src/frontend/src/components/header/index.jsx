@@ -13,6 +13,7 @@ import {
   Collapse
 } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
+import RegisterForm from "../register/form";
 import FormInput from "../form/FormInput";
 import { instanceOf } from "prop-types";
 import { withCookies, Cookies } from "react-cookie";
@@ -86,7 +87,6 @@ class Header extends Component {
   saveProject = () => {
     if (this.isUserLoggedIn())
       if (this.props.projectControl.projectId !== "new") {
-        console.log("here ?");
         this.updateProject({
           projectId: this.props.projectControl.projectId,
           content: JSON.stringify(this.props.blocks)
@@ -94,7 +94,10 @@ class Header extends Component {
         console.log("done");
         // console.log(JSON.stringify(this.props.blocks.bs[0]));
       } else this.toggleModal();
-    else this.toggleRegisterModal();
+    else {
+      console.log("here 1");
+      this.toggleRegisterModal();
+    }
   };
 
   updateProject(payload) {
@@ -180,8 +183,10 @@ class Header extends Component {
 
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
-  toggleRegisterModal = () =>
+  toggleRegisterModal = () => {
+    console.log("here?");
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
+  };
 
   render() {
     const { dropdownOpen } = this.state;
@@ -217,74 +222,72 @@ class Header extends Component {
                     <span className="fa fa-info " /> About us
                   </NavLink>
                 </NavItem>
-                {this.isUserLoggedIn() && (
-                  <NavItem>
-                    <div
-                      className="nav-link dropdown"
-                      style={{ color: "white" }}
+                <NavItem>
+                  <div className="nav-link dropdown" style={{ color: "white" }}>
+                    <span
+                      className="dropdown-toggle"
+                      id="proj dropdown"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      <span
-                        className="dropdown-toggle"
-                        id="proj dropdown"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <span className="fa fa-list" /> Project
-                      </span>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="proj dropdown"
-                      >
-                        <NavLink className="nav-link" to="/project-editor/new">
-                          <div className="dropdown-item">New</div>
-                        </NavLink>
+                      <span className="fa fa-list" /> Project
+                    </span>
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="proj dropdown"
+                    >
+                      <NavLink className="nav-link" to="/project-editor/new">
+                        <div className="dropdown-item">New</div>
+                      </NavLink>
+
+                      {this.isUserLoggedIn() && (
                         <NavLink className="nav-link" to="/projects">
                           <div className="dropdown-item">Open</div>
                         </NavLink>
-                        <div className="nav-link">
-                          <div
-                            className="dropdown-item"
-                            onClick={() => {
-                              console.log("hi");
-                              this.props.dispatch({
-                                type: "FLOATING_VIEW",
-                                value: undefined
-                              });
-                            }}
-                          >
-                            Floating View:
-                            {this.props.projectControl.floatingView
-                              ? " On"
-                              : " Off"}
-                          </div>
+                      )}
+                      <div className="nav-link">
+                        <div
+                          className="dropdown-item"
+                          onClick={() => {
+                            console.log("trying?");
+                            this.props.dispatch({
+                              type: "FLOATING_VIEW",
+                              value: undefined
+                            });
+                          }}
+                        >
+                          {this.props.projectControl.floatingView
+                            ? "Floating View"
+                            : "Column View"}
                         </div>
-                        <div className="nav-link">
-                          <div
-                            className="dropdown-item"
-                            onClick={() => {
-                              console.log("trying to save");
-                              this.saveProject();
-                            }}
-                          >
-                            Save
-                          </div>
+                      </div>
+                      <div className="nav-link">
+                        <div
+                          className="dropdown-item"
+                          onClick={() => {
+                            console.log("trying to save");
+                            this.saveProject();
+                          }}
+                        >
+                          Save
                         </div>
-                        <div className="nav-link">
-                          <div
-                            className="dropdown-item"
-                            onClick={() => {
-                              console.log("trying to export");
-                              this.exportProject();
-                            }}
-                          >
-                            Export
-                          </div>
+                      </div>
+                      <div className="nav-link">
+                        <div
+                          className="dropdown-item"
+                          onClick={() => {
+                            console.log("trying to export");
+                            this.exportProject();
+                          }}
+                        >
+                          Export
                         </div>
                       </div>
                     </div>
-                  </NavItem>
-                )}
+                  </div>
+                </NavItem>
+
                 {this.isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link" to="/sounds">
@@ -329,6 +332,18 @@ class Header extends Component {
             </Collapse>
           </div>
         </Navbar>
+        <Modal
+          centered
+          show={this.state.isRegisterModalOpen}
+          onHide={this.toggleRegisterModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Create new account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegisterForm afterRegister={this.afterRegister} />
+          </Modal.Body>
+        </Modal>
         <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
           <form id="project_create" method="post">
             <Modal.Header closeButton>
