@@ -108,7 +108,7 @@ const Delay = ({ blockInfo, changeBlock }) => {
               top: "22px",
               left: "194px"
             }}
-            data-tip="feedback in ms: range [0, 1]"
+            data-tip="Feedback: range [0, 1]"
           >
             feedback:
           </label>
