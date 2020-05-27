@@ -41,7 +41,7 @@ class Main extends Component {
       <div>
         <Header user={user} name={cookies.get("name")} />
         <Switch>
-          <Route path="/login" component={Login} />
+          <Route path="/signIn" component={Login} />
           <Route path="/project-editor/:id" component={ProjectEditor} />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />

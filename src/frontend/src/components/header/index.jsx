@@ -74,7 +74,7 @@ class Header extends Component {
     const { cookies } = this.props;
     cookies.remove("name");
     cookies.remove("token");
-    this.props.history.push("/login");
+    this.props.history.push("/signIn");
   }
 
   handleOnChange = (name, value) => {
@@ -301,7 +301,7 @@ class Header extends Component {
 
                 {!this.isUserLoggedIn() && (
                   <NavItem>
-                    <NavLink className="nav-link" to="/login">
+                    <NavLink className="nav-link" to="/signIn">
                       <span className="fa fa-address-card " /> Login
                     </NavLink>
                   </NavItem>
