@@ -5,10 +5,11 @@ class ScSignalGen extends ScModule {
   constructor(context, options = {}) {
     super(context);
     let defOpts = {
-      waveType: "Silence",
-      freq: 440,
-      mod: "No Mod",
-      modParam: 1.0
+      waveform: "Silence",
+      frequency: 440,
+      modulation: "No Mod",
+      modParam: 1.0,
+      volume: 100
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
@@ -24,9 +25,10 @@ class ScSignalGen extends ScModule {
     this.modParamNode.start();
 
     this.connectNodes();
+    this.presetVolume = this.options.volume;
 
-    this.waveform = this.options.waveType;
-    this.frequency = parseInt(this.options.freq);
+    this.waveform = this.options.waveform;
+    this.frequency = parseInt(this.options.frequency);
     this.modParam = parseFloat(this.options.modParam);
 
     this.inputs.push(this.inNode);
@@ -34,7 +36,7 @@ class ScSignalGen extends ScModule {
   }
 
   connectNodes() {
-    switch (this.options.mod) {
+    switch (this.options.modulation) {
       case "RM":
         this.carr.connect(this.gainNode);
         this.mod.connect(this.gainNode.gain);
@@ -61,7 +63,7 @@ class ScSignalGen extends ScModule {
   }
 
   disconnectNodes() {
-    switch (this.options.mod) {
+    switch (this.options.modulation) {
       case "RM":
         this.carr.disconnect(this.gainNode);
         this.mod.disconnect(this.gainNode.gain);
@@ -89,7 +91,7 @@ class ScSignalGen extends ScModule {
 
   set modulation(modNew) {
     this.disconnectNodes();
-    this.options.mod = modNew;
+    this.options.modulation = modNew;
     this.connectNodes();
   }
 
@@ -103,12 +105,12 @@ class ScSignalGen extends ScModule {
 
   set frequency(value) {
     value = parseFloat(value);
-    this.options.freq = value;
+    this.options.frequency = value;
     this.carr.frequency = value;
   }
 
   set waveform(type) {
-    this.options.waveType = type;
+    this.options.waveform = type;
     this.carr.waveform = type;
   }
 

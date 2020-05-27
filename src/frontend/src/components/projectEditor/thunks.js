@@ -42,12 +42,7 @@ function initAudioObj(typeName, audioConfig) {
         }
         break;
       case "SignalGen":
-        t = new ScSignalGen(scContext, {
-          waveType: "Silence",
-          freq: 440,
-          mod: "No Mod",
-          modParam: 1.0
-        });
+        t = new ScSignalGen(scContext, audioConfig);
         resolve(t);
         break;
       case "Speaker":

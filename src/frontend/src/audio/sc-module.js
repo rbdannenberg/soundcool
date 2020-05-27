@@ -83,6 +83,11 @@ class ScModule {
     // console.log(outStr);
   }
 
+  set presetVolume(value) {
+    value = Math.max(parseFloat(value / 100), 1.40130e-45);
+    this.outNode.gain.value = value;
+  }
+
   set volume(value) {
     value = Math.max(parseFloat(value / 100), 1.40130e-45);
     this.outNode.gain.exponentialRampToValueAtTime(value,
