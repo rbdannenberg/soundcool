@@ -3,34 +3,34 @@ class ScOscillator {
     this.context = context;
     let defOpts;
     defOpts = {
-      waveType: "Silence",
-      freq: 440
+      waveform: "Silence",
+      frequency: 440
     };
     this.options = Object.assign(defOpts, options);
     this.bufferSources = ["Silence", "White Noise", "Pink Noise"];
     this.oscSources = ["Sine Wave", "Triangle", "Sawtooth", "Square"];
     this.outNode = this.context.createGain();
-    this.connectSource(this.options.waveType);
-    this.frequency = this.options.freq;
+    this.connectSource(this.options.waveform);
+    this.frequency = this.options.frequency;
   }
 
-  connectSource(waveType) {
-    switch (waveType) {
+  connectSource(waveform) {
+    switch (waveform) {
       case "Sine Wave":
         this.inNode = this.context.createOscillator();
-        this.setOscType(waveType);
+        this.setOscType(waveform);
         break;
       case "Triangle":
         this.inNode = this.context.createOscillator();
-        this.setOscType(waveType);
+        this.setOscType(waveform);
         break;
       case "Sawtooth":
         this.inNode = this.context.createOscillator();
-        this.setOscType(waveType);
+        this.setOscType(waveform);
         break;
       case "Square":
         this.inNode = this.context.createOscillator();
-        this.setOscType(waveType);
+        this.setOscType(waveform);
         break;
       case "White Noise":
         this.inNode = this.createAndFillBuffer("White Noise");
@@ -114,12 +114,12 @@ class ScOscillator {
 
   set waveform(newSoundType) {
     if (
-      this.bufferSources.includes(this.options.waveType) &&
+      this.bufferSources.includes(this.options.waveform) &&
       this.bufferSources.includes(newSoundType)
     ) {
       this.fillBuffer(this.inNode.buffer, newSoundType);
     } else if (
-      this.oscSources.includes(this.options.waveType) &&
+      this.oscSources.includes(this.options.waveform) &&
       this.oscSources.includes(newSoundType)
     ) {
       this.setOscType(newSoundType);
@@ -127,13 +127,13 @@ class ScOscillator {
       this.detachSource();
       this.connectSource(newSoundType);
     }
-    this.options.waveType = newSoundType;
-    this.frequency = this.options.freq;
+    this.options.waveform = newSoundType;
+    this.frequency = this.options.frequency;
   }
 
   set frequency(value) {
-    this.options.freq = value;
-    if (this.oscSources.includes(this.options.waveType)) {
+    this.options.frequency = value;
+    if (this.oscSources.includes(this.options.waveform)) {
       this.inNode.frequency.value = value;
     } else {
       let errStr =
