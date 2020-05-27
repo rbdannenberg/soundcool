@@ -172,7 +172,7 @@ class Speaker extends React.Component {
           </button>
         </div>
 
-        <div className="text-center" style={{ backgroundColor: "grey" }}>
+        {/* <div className="text-center" style={{ backgroundColor: "grey" }}>
           <span className="col-md-4">
             <button
               className="badge-pill badge-light badge-sm mx-2 my-1"
@@ -181,7 +181,7 @@ class Speaker extends React.Component {
               Audio Settings
             </button>
           </span>
-        </div>
+        </div> */}
       </React.Fragment>
     );
   }
@@ -192,7 +192,4 @@ const mapStateToProps = state => {
     state
   };
 };
-export default connect(
-  mapStateToProps,
-  { changeBlock }
-)(Speaker);
+export default connect(mapStateToProps, { changeBlock })(Speaker);

@@ -13,21 +13,21 @@ import {
   showToastr,
   showToastrError,
   baseAddress,
-  cleanPayload,
+  cleanPayload
 } from "../../actions/common";
 import {
   updateProject,
   createProject,
   fetchUserProject,
-  openPort,
+  openPort
 } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
-import Cookies from 'universal-cookie';
- 
+import Cookies from "universal-cookie";
+
 const cookies = new Cookies();
 
 // a little function to help us with reordering the result
@@ -44,7 +44,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
   boxShadow: isDragging
     ? `0 25px 50px rgba(255,20,147,0.50), 0 20px 15px rgba(255,20,147,0.42)`
-    : "",
+    : ""
 });
 
 const move = (source, destination, droppableSource, droppableDestination) => {
@@ -61,14 +61,14 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-const getListStyle = (isDraggingOver) => ({
+const getListStyle = isDraggingOver => ({
   width: "16rem",
-  background: isDraggingOver ? "lightblue" : "transparent",
+  background: isDraggingOver ? "lightblue" : "transparent"
 });
 
 class ProjectEditor extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired,
+    cookies: instanceOf(Cookies).isRequired
   };
   constructor(props) {
     super(props);
@@ -82,18 +82,18 @@ class ProjectEditor extends React.Component {
       projectDescription: "",
       isModalOpen: false,
       isRegisterModalOpen: false,
-      openPorts: [],
+      openPorts: []
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
     this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
   }
 
-  getList = (id) => {
+  getList = id => {
     let x = this.state["items"];
     return x[id.split("_")[1]];
   };
-  onDragEnd = (result) => {
+  onDragEnd = result => {
     const { source, destination } = result;
     // dropped outside the list
     if (!destination) {
@@ -122,12 +122,12 @@ class ProjectEditor extends React.Component {
       finalResult[parseInt(result[0]["id"].split("_")[1])] = result[0]["value"];
       finalResult[parseInt(result[1]["id"].split("_")[1])] = result[1]["value"];
       this.setState({
-        items: finalResult,
+        items: finalResult
       });
     }
   };
 
-  blockStyle = (id) => {
+  blockStyle = id => {
     const top = (id % 15) * 20 + "px";
     const left = (id % 15) * 20 + "px";
     const zIndex = this.state.selectedBlock
@@ -140,7 +140,7 @@ class ProjectEditor extends React.Component {
       position: "absolute",
       top: top,
       left: left,
-      zIndex: zIndex,
+      zIndex: zIndex
     };
   };
 
@@ -148,16 +148,16 @@ class ProjectEditor extends React.Component {
     // console.log(blocks);
     if (this.props.projectControl.floatingView) {
       let finalBlock = [];
-      blocks.forEach((o) => {
+      blocks.forEach(o => {
         finalBlock = finalBlock.concat(o);
       });
       return (
         <div
           className="box"
-          style={{ left: "60px", top: "20px", height: "80vh", width: "155vh" }}
+          style={{ left: "30px", top: "2px", height: "91vh", width: "320vh" }}
         >
           <div className="boxContainer">
-            {finalBlock.map((b) => (
+            {finalBlock.map(b => (
               <RDraggable
                 handle="strong"
                 bounds="parent"
@@ -257,9 +257,9 @@ class ProjectEditor extends React.Component {
       for (let i = 0; i < length; i++) {
         newValue[i] = [];
       }
-      nextProps.blocks.bs.forEach((o) => {
+      nextProps.blocks.bs.forEach(o => {
         this.state.items.every((arr, index) => {
-          const found = arr.find((element) => element["id"] === o["id"]);
+          const found = arr.find(element => element["id"] === o["id"]);
           if (found === undefined) {
             if (index === length - 1) {
               newValue[0].push(o);
@@ -273,7 +273,7 @@ class ProjectEditor extends React.Component {
       });
       this.setState({
         items: newValue,
-        prevItems: nextProps.blocks.bs,
+        prevItems: nextProps.blocks.bs
       });
     }
   }
@@ -283,18 +283,18 @@ class ProjectEditor extends React.Component {
     this.loadState();
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
-    socket.on("openPort", (data) => {
+    socket.on("openPort", data => {
       // console.log(data);
       this.setState({
-        openPorts: data,
+        openPorts: data
       });
     });
-    socket.on("oscData", (data) => {
+    socket.on("oscData", data => {
       let portNumber = data.portNumber;
       let targetType = data.component;
       let targetComponent = this.findComponents(portNumber, targetType);
       // console.log(targetComponent);
-      targetComponent.forEach((comp) => {
+      targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
     });
@@ -428,7 +428,7 @@ class ProjectEditor extends React.Component {
         id: id,
         field,
         value,
-        ...num,
+        ...num
       });
     }
   }
@@ -485,7 +485,7 @@ class ProjectEditor extends React.Component {
           data.value === 0 &&
           this.props.blocks["bs"][index].audioObj.options.path !== ""
         ) {
-          this.props.blocks["bs"][index].audioObj.reverse((res) => {
+          this.props.blocks["bs"][index].audioObj.reverse(res => {
             // console.log(res);
           });
         } else {
@@ -507,7 +507,7 @@ class ProjectEditor extends React.Component {
         type: "CHANGE_BLOCK",
         id: id,
         field,
-        value,
+        value
       });
     }
   }
@@ -530,12 +530,12 @@ class ProjectEditor extends React.Component {
       type: "CHANGE_BLOCK",
       id: id,
       field,
-      value,
+      value
     });
   }
 
   openNewPort(blocks) {
-    blocks.forEach((block) => {
+    blocks.forEach(block => {
       if (
         block.osc &&
         block.oscPort &&
@@ -544,14 +544,14 @@ class ProjectEditor extends React.Component {
         this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
         // console.log({ portNumber: block.oscPort });
         openPort({ portNumber: block.oscPort })
-          .then((data) => {
+          .then(data => {
             if (data.err) {
               showToastrError(data);
             } else {
               showToastr("success", data["message"]);
             }
           })
-          .catch((error) => {
+          .catch(error => {
             showToastrError(error);
           });
       }
@@ -567,48 +567,48 @@ class ProjectEditor extends React.Component {
   loadState() {
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
-        .then((res) => {
+        .then(res => {
           let { name, description, content } = res;
 
           this.props.dispatch(loadProject(content));
 
           this.setState({
             projectName: name,
-            projectDescription: description,
+            projectDescription: description
           });
 
           this.props.dispatch({
             type: "WORKING_PROJ",
             id: this.state.projectId,
             name: this.state.projectName,
-            description: this.state.projectDescription,
+            description: this.state.projectDescription
           });
         })
-        .catch((err) => {
+        .catch(err => {
           showToastrError(err);
         });
     } else {
       this.props.dispatch({
         type: "LOAD_STATE",
-        content: undefined,
+        content: undefined
       });
 
       this.setState({
         projectName: "",
-        projectDescription: "",
+        projectDescription: ""
       });
     }
   }
 
-  afterRegister = (res) => {
+  afterRegister = res => {
     const { token, error, name } = res;
     if (error) {
       showToastrError(res);
     } else {
-      cookies.set("name", name, { path: '/' });
-      cookies.set("token", token, { path: '/' });
+      cookies.set("name", name, { path: "/" });
+      cookies.set("token", token, { path: "/" });
       Store.populateFromProps({
-        userToken: { email: undefined, token: token },
+        userToken: { email: undefined, token: token }
       });
       showToastr("success", "Please enter project details");
       this.toggleRegisterModal();
@@ -629,7 +629,7 @@ class ProjectEditor extends React.Component {
       if (this.state.projectId !== "new") {
         this.updateProject({
           projectId: this.state.projectId,
-          content: JSON.stringify(this.props.blocks),
+          content: JSON.stringify(this.props.blocks)
         });
         // console.log("done");
         // console.log(JSON.stringify(this.props.blocks.bs[0]));
@@ -642,11 +642,11 @@ class ProjectEditor extends React.Component {
       .then(() => {
         showToastr("success", "Project successfully updated");
       })
-      .catch((error) => {
+      .catch(error => {
         showToastrError(error);
       });
   }
-  exportProject = (event) => {
+  exportProject = event => {
     event.preventDefault();
     const { projectName, projectDescription, items } = this.state;
     console.log(items);
@@ -656,16 +656,16 @@ class ProjectEditor extends React.Component {
     let nowOut = this.props.blocks.nowOut;
     let blocks = {
       bs,
-      nowOut,
+      nowOut
     };
     this.downloadFile({
       projectName,
       projectDescription,
-      blocks,
+      blocks
     });
   };
 
-  downloadFile = async (myData) => {
+  downloadFile = async myData => {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\t");
     let readData = JSON.parse(json);
@@ -681,7 +681,7 @@ class ProjectEditor extends React.Component {
     document.body.removeChild(link);
   };
 
-  createProject = (event) => {
+  createProject = event => {
     event.preventDefault();
     let isFormValid = true,
       error = "";
@@ -704,16 +704,16 @@ class ProjectEditor extends React.Component {
       let payload = {
         projectName,
         projectDescription,
-        blocks,
+        blocks
       };
 
       createProject(payload)
-        .then((data) => {
+        .then(data => {
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
           window.location = "/project-editor/" + data.project_id;
         })
-        .catch((error) => {
+        .catch(error => {
           showToastrError(error);
         });
     } else {
@@ -722,7 +722,7 @@ class ProjectEditor extends React.Component {
   };
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
-    blocks.forEach((block) => {
+    blocks.forEach(block => {
       if (
         block.osc &&
         block.oscPort &&
@@ -743,7 +743,7 @@ class ProjectEditor extends React.Component {
         type: "WORKING_PROJ",
         id: this.state.projectId,
         name: this.state.projectName,
-        description: this.state.projectDescription,
+        description: this.state.projectDescription
       });
     }
     const { projectName, projectDescription, items } = this.state;
@@ -890,9 +890,9 @@ class ProjectEditor extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   projectControl: state.projectControl,
-  blocks: state.blocks,
+  blocks: state.blocks
 });
 
 export default connect(mapStateToProps)(ProjectEditor);
