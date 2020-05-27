@@ -1,6 +1,5 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
 import { instanceOf } from 'prop-types';
 
 import Main from "./router";
@@ -54,7 +53,6 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <BrowserRouter>
           <div>
             <Main />
             <ToastContainer
@@ -68,7 +66,6 @@ class App extends React.Component {
               pauseOnHover={true}
             />
           </div>
-        </BrowserRouter>
       </Provider>
     );
   }
