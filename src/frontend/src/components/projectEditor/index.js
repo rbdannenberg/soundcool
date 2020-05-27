@@ -589,7 +589,7 @@ class ProjectEditor extends React.Component {
 
   afterRegister = res => {
     const { token, error, name } = res;
-
+    const { cookies } = this.props;
     if (error) {
       showToastrError(res);
     } else {
