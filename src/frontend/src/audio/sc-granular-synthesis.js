@@ -91,7 +91,7 @@ class GrainPlayer {
     let grain;
     grain = new Grain(this.context, this.buffer, this.dest,
       this.envelopeBuffer);
-    let gEnd = gWhen + gDur;
+    // let gEnd = gWhen + gDur;
     grain.absn.detune.value = gPShift;
     grain.envelope.detune.value = gPShift;
     let envPBRate = this.envelopeBufferDur /  (gDur * Math.pow(2, gPShift / 1200));
@@ -132,7 +132,7 @@ class GrainPlayer {
 
   grainsToSchedule() {
     let now = this.context.currentTime;
-    let schedEnd = now + this.schedAhead;
+    // let schedEnd = now + this.schedAhead;
     let n = Math.ceil(this.rate * this.schedAhead);
     let preScheduled = this.getPreScheduled(now);
     return n - preScheduled;
@@ -258,8 +258,8 @@ class ScGranSynth extends ScModule {
       let grainsToSchedule = this.grainPlayer.grainsToSchedule();
       let liveBuffDur = liveBuffDataL.length / this.sampleRate;
       this.buffTimeStamp += liveBuffDur;
-      let now = this.context.currentTime;
-      let onsets = 0;
+      // let now = this.context.currentTime;
+      // let onsets = 0;
       for (let i = 0; i < grainsToSchedule; i++) {
         let ioi = this.sampleIOI();
         if (this.prevGTime === null) { 
@@ -280,7 +280,7 @@ class ScGranSynth extends ScModule {
         // schedule
         this.grainPlayer.schedule(gStart, gDur, gWhen, gPShift, gPan);
         this.prevGTime = gWhen;
-        onsets += ioi;
+        // onsets += ioi;
       }
 
     }.bind(this);

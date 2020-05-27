@@ -1,10 +1,9 @@
 import React from "react";
 import { changeBlock } from "./actions";
 import { connect } from "react-redux";
-import { FaPlay, FaSquare, FaPause, FaWindows } from "react-icons/fa";
+import { FaPlay, FaSquare, FaPause } from "react-icons/fa";
 import AddSound from "../addSound";
 import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
-import ReactTooltip from "react-tooltip";
 
 const circleStyle = {
   width: "1.5rem",
@@ -84,14 +83,14 @@ class Player extends React.Component {
             audioObj.duration - data
           );
         } else {
-          if (playedTime != data)
+          if (playedTime !== data)
             this.props.changeBlock(this.id, "playedTime", data);
           renderCtx.fillRect(0, 0, data * step, 140);
         }
       } else if (audioObj.isPaused) {
       } else {
         renderCtx.clearRect(0, 0, 190, 140);
-        if (playedTime != 0) this.props.changeBlock(this.id, "playedTime", 0);
+        if (playedTime !== 0) this.props.changeBlock(this.id, "playedTime", 0);
       }
     }
   };
@@ -151,7 +150,7 @@ class Player extends React.Component {
     const onSoundSelect = sound => {
       audioObj.stop();
       this.props.changeBlock(id, "file", sound);
-      let { name, type, sound_id } = sound;
+      let { type, sound_id } = sound;
       if (type === "Sound Link") {
         getAudio(sound_id).then(res => {
           loadUrl(res["location"]);
@@ -164,7 +163,7 @@ class Player extends React.Component {
     };
 
     const timeFormat = time => {
-      if (time === NaN || time == "NaN") {
+      if (isNaN(time) || time === "NaN") {
         return "00";
       }
       time = parseInt(time);

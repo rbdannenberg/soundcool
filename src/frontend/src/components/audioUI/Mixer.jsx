@@ -441,13 +441,13 @@ class Mixer extends React.Component {
                     top: "28px"
                   }}
                   onChange={e => {
-                    changeBlock(id, "node" + "0" + "Gain", e.target.value);
+                    changeBlock(id, "node0Gain", e.target.value);
                   }}
                   min={0}
                   max={1}
                   step={0.01}
                   value={node0Gain}
-                  id={"node" + "0" + "Gain"}
+                  id={"node0Gain"}
                 />
               </div>
             </React.Fragment>
@@ -522,13 +522,13 @@ class Mixer extends React.Component {
                     top: "28px"
                   }}
                   onChange={e => {
-                    changeBlock(id, "node" + "1" + "Gain", e.target.value);
+                    changeBlock(id, "node1Gain", e.target.value);
                   }}
                   min={0}
                   max={1}
                   step={0.01}
                   value={node1Gain}
-                  id={"node" + "1" + "Gain"}
+                  id={"node1Gain"}
                 />
               </div>
             </React.Fragment>

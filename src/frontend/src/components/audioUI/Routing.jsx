@@ -1,5 +1,5 @@
 import React from "react";
-import { changeBlock, connectBlock } from "./actions";
+import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 
 const Routing = ({ blockInfo, changeBlock,connectBlock }) => {

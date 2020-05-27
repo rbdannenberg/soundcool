@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom'    
 import {
   Navbar,
   NavbarBrand,
@@ -21,13 +22,10 @@ import { withCookies, Cookies } from "react-cookie";
 import {
   updateProject,
   createProject,
-  fetchUserProject,
-  openPort
 } from "../projectEditor/actions";
 import {
   showToastr,
   showToastrError,
-  baseAddress,
   cleanPayload
 } from "../../actions/common";
 
@@ -76,7 +74,7 @@ class Header extends Component {
     const { cookies } = this.props;
     cookies.remove("name");
     cookies.remove("token");
-    window.location = "/login";
+    this.props.history.push("/login");
   }
 
   handleOnChange = (name, value) => {
@@ -114,7 +112,7 @@ class Header extends Component {
     event.preventDefault();
     let isFormValid = true,
       error = "";
-    const { projectName, projectDescription, items } = this.state;
+    const { projectName, projectDescription } = this.state;
     const blocks = this.props.blocks;
 
     if (blocks.length === 0) {
@@ -322,7 +320,7 @@ class Header extends Component {
                     </DropdownToggle>
                     <DropdownMenu tog>
                       <DropdownItem disabled>Edit Profile</DropdownItem>
-                      <DropdownItem to="/login" onClick={this.handleLogout}>
+                      <DropdownItem onClick={this.handleLogout}>
                         Logout
                       </DropdownItem>
                     </DropdownMenu>
@@ -391,4 +389,4 @@ const mapStateToProps = state => ({
   blocks: state.blocks
 });
 
-export default withCookies(connect(mapStateToProps)(Header));
+export default withRouter(withCookies(connect(mapStateToProps)(Header)));

@@ -5,13 +5,7 @@ import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 import { CookiesProvider } from "react-cookie";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-table/react-table.css";
-import "bootstrap-social/bootstrap-social.css";
-import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
-import "jquery/dist/jquery.min.js";
-import "bootstrap/dist/js/bootstrap.min.js";
 
 render(
   <BrowserRouter>

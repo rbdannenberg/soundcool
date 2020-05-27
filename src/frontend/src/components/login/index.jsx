@@ -12,9 +12,6 @@ class Login extends React.Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
-  constructor(props) {
-    super(props);
-  }
 
   afterSignin = res => {
     const { cookies } = this.props;
