@@ -10,17 +10,15 @@ import { StoreX as Store } from "./storeX";
 import { ToastContainer } from "react-toastify";
 import { validateUser } from "./actions/validation";
 import { showToastrError } from "./actions/common";
-import { withCookies, Cookies } from "react-cookie";
 import store from "./store";
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 
 class App extends React.Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
 
   constructor(props) {
     super(props);
-    const { cookies } = props;
     const token = cookies.get("token") || "";
     if (token)
       Store.populateFromProps({
@@ -33,21 +31,20 @@ class App extends React.Component {
   }
 
   validateToken = () => {
-    const { cookies } = this.props;
-    console.log(cookies.get("token"));
     let token = cookies.get("token") || "";
     if (!token || token === "") {
       //if there is no token, dont bother
       return;
     }
-    validateUser(token)
-      .then(res => {
-        cookies.set("token", res.token);
-      })
-      .catch(err => {
-        cookies.remove("token");
-        showToastrError({ error: "Session expired" });
-      });
+    // validateUser(token)
+    //   .then(res => {
+    //     cookies.set("token", token, { path: '/' });
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     cookies.remove("token", { path: '/' });
+    //     showToastrError({ error: "Session expired" });
+    //   });
   };
 
   render() {
@@ -71,4 +68,4 @@ class App extends React.Component {
   }
 }
 
-export default withCookies(App);
+export default App;

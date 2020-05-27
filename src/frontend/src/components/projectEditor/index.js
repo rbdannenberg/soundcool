@@ -9,7 +9,6 @@ import RegisterForm from "../register/form";
 import AddBlock from "./Components/AddBlock";
 import { StoreX as Store } from "../../storeX";
 import { instanceOf } from "prop-types";
-import { withCookies, Cookies } from "react-cookie";
 import {
   showToastr,
   showToastrError,
@@ -27,6 +26,9 @@ import FormInput from "../form/FormInput";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -600,12 +602,11 @@ class ProjectEditor extends React.Component {
 
   afterRegister = (res) => {
     const { token, error, name } = res;
-    const { cookies } = this.props;
     if (error) {
       showToastrError(res);
     } else {
-      cookies.set("name", name);
-      cookies.set("token", token);
+      cookies.set("name", name, { path: '/' });
+      cookies.set("token", token, { path: '/' });
       Store.populateFromProps({
         userToken: { email: undefined, token: token },
       });
@@ -620,7 +621,6 @@ class ProjectEditor extends React.Component {
     this.setState(params);
   };
   isUserLoggedIn() {
-    const { cookies } = this.props;
     return cookies.get("token") || "";
   }
 
@@ -895,4 +895,4 @@ const mapStateToProps = (state) => ({
   blocks: state.blocks,
 });
 
-export default withCookies(connect(mapStateToProps)(ProjectEditor));
+export default connect(mapStateToProps)(ProjectEditor);

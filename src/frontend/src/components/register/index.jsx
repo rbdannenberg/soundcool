@@ -4,24 +4,20 @@ import { Link } from "react-router-dom";
 import RegisterForm from "./form";
 import { redirectToRoot } from "./actions";
 import { showToastr, showToastrError } from "../../actions/common";
-import { instanceOf } from 'prop-types';
-import { withCookies, Cookies } from 'react-cookie';
-
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 class Register extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
   
   afterRegister = res => {
-    const { cookies } = this.props;
     const { token, error, name } = res;
 
     if (error) {
       showToastrError(res);
     } else {
       showToastr("success", "User registered successfully");
-      cookies.set('name', name);
-      cookies.set('token', token);
+      cookies.set('name', name, { path: '/' });
+      cookies.set('token', token, { path: '/' });
       redirectToRoot();
     }
   };
@@ -44,4 +40,4 @@ class Register extends Component {
   }
 }
 
-export default withCookies(Register);
+export default Register;

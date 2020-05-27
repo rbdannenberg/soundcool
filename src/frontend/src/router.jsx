@@ -12,12 +12,10 @@ import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
 
 import { instanceOf } from "prop-types";
-import { withCookies, Cookies } from "react-cookie";
-
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 class Main extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
 
   constructor(props) {
     super(props);
@@ -25,7 +23,6 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    const { cookies } = this.props;
     console.log(cookies);
     try {
       const jwt = cookies.get("token");
@@ -36,7 +33,6 @@ class Main extends Component {
 
   render() {
     const { user } = this.state;
-    const { cookies } = this.props;
     return (
       <div>
         <Header user={user} name={cookies.get("name")} />
@@ -87,4 +83,4 @@ class Main extends Component {
   }
 }
 
-export default withCookies(Main);
+export default Main;

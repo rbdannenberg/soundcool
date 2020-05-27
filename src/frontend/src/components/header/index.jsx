@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from 'react-router-dom'    
+import Cookies from 'universal-cookie';
 import {
   Navbar,
   NavbarBrand,
@@ -17,7 +18,7 @@ import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
 import FormInput from "../form/FormInput";
 import { instanceOf } from "prop-types";
-import { withCookies, Cookies } from "react-cookie";
+
 
 import {
   updateProject,
@@ -31,10 +32,9 @@ import {
 
 import { NavLink } from "react-router-dom";
 
+const cookies = new Cookies();
+
 class Header extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +58,7 @@ class Header extends Component {
   }
 
   isUserLoggedIn() {
-    const { cookies } = this.props;
+    console.log(cookies.getAll())
     return cookies.get("token") || "";
   }
 
@@ -71,9 +71,9 @@ class Header extends Component {
   }
 
   handleLogout() {
-    const { cookies } = this.props;
-    cookies.remove("name");
-    cookies.remove("token");
+    cookies.remove("name", { path: '/' });
+    cookies.remove("token", { path: '/' });
+    cookies.remove("token", { path: '/project-editor' });
     this.props.history.push("/signIn");
   }
 
@@ -389,4 +389,4 @@ const mapStateToProps = state => ({
   blocks: state.blocks
 });
 
-export default withRouter(withCookies(connect(mapStateToProps)(Header)));
+export default withRouter(connect(mapStateToProps)(Header));

@@ -9,13 +9,10 @@ import {
 } from "../sounds/actions";
 import ReactTable from "react-table";
 import { showToastrError } from "../../actions/common";
-import { instanceOf } from 'prop-types';
-import { withCookies, Cookies } from 'react-cookie';
-
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 class AddSound extends Component {
-  static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +22,6 @@ class AddSound extends Component {
     this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
   }
   isUserLoggedIn() {
-    const { cookies } = this.props;
     return cookies.get("token") || "";
   }
   addSound = () => {
@@ -190,4 +186,4 @@ class AddSound extends Component {
   }
 }
 
-export default withCookies(AddSound);
+export default AddSound;
