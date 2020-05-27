@@ -1,6 +1,5 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { instanceOf } from 'prop-types';
 
 import Main from "./router";
 import 'react-toastify/dist/ReactToastify.css';
@@ -36,15 +35,15 @@ class App extends React.Component {
       //if there is no token, dont bother
       return;
     }
-    // validateUser(token)
-    //   .then(res => {
-    //     cookies.set("token", token, { path: '/' });
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     cookies.remove("token", { path: '/' });
-    //     showToastrError({ error: "Session expired" });
-    //   });
+    validateUser(token)
+      .then(res => {
+        cookies.set("token", token, { path: '/' });
+      })
+      .catch(err => {
+        cookies.remove("token", { path: '/' });
+        cookies.remove("token", { path: '/project-editor' });
+        showToastrError({ error: "Session expired" });
+      });
   };
 
   render() {

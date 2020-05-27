@@ -17,7 +17,6 @@ import {
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
 import FormInput from "../form/FormInput";
-import { instanceOf } from "prop-types";
 
 
 import {

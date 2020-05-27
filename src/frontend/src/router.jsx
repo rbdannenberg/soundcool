@@ -10,8 +10,6 @@ import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
-
-import { instanceOf } from "prop-types";
 import Cookies from 'universal-cookie';
  
 const cookies = new Cookies();
