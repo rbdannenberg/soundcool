@@ -190,7 +190,7 @@ class Header extends Component {
     const { dropdownOpen } = this.state;
     return (
       <React.Fragment>
-        <Navbar dark expand="md" style={{ padding: "0" }}>
+        <Navbar dark expand="md" style={{ padding: "0", zIndex: 10 }}>
           <div className="container">
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
