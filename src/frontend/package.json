@@ -6,7 +6,8 @@
   "scripts": {
     "start": "react-scripts start",
     "webpack": "webpack -w",
-    "build": "webpack"
+    "build": "react-scripts build",
+    "webpack-build": "webpack",
   },
   "engines": {
     "node": "10.16.0",

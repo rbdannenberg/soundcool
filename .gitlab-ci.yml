@@ -1,0 +1,12 @@
+image: node:10.16.3
+ 
+stages:
+    - test
+ 
+run-build:
+    stage: test
+    script:
+        - cd src/frontend/
+        - npm install # Install all dependencies
+        - npm run build
+        - npm run webpack-build
