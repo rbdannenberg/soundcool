@@ -2,37 +2,37 @@ import React from "react";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 // icons
-import blendingV from "../Components/pictures/blendingV.gif";
-import colorV from "../Components/pictures/colorV.gif";
+// import blendingV from "../Components/pictures/blendingV.gif";
+// import colorV from "../Components/pictures/colorV.gif";
 import delay from "../Components/pictures/delay.gif";
 import directinput from "../Components/pictures/directinput.gif";
-import directinputV from "../Components/pictures/directinputV.gif";
-import envelope from "../Components/pictures/envelope.gif";
+// import directinputV from "../Components/pictures/directinputV.gif";
+// import envelope from "../Components/pictures/envelope.gif";
 import filter from "../Components/pictures/filter.gif";
-import keyboard from "../Components/pictures/keyboard.gif";
+// import keyboard from "../Components/pictures/keyboard.gif";
 import mixer from "../Components/pictures/mixer.gif";
 import oscilloscope from "../Components/pictures/oscilloscope.gif";
 import pan from "../Components/pictures/pan.gif";
 import pitch from "../Components/pictures/pitch.gif";
 import player from "../Components/pictures/player.gif";
-import playerV from "../Components/pictures/playerV.gif";
+// import playerV from "../Components/pictures/playerV.gif";
 import record from "../Components/pictures/record.gif";
-import routing from "../Components/pictures/routing.gif";
+// import routing from "../Components/pictures/routing.gif";
 import sampleplayer from "../Components/pictures/sampleplayer.gif";
-import samplerV from "../Components/pictures/samplerV.gif";
-import screenV from "../Components/pictures/screenV.gif";
-import sequencer1 from "../Components/pictures/sequencer1.gif";
+// import samplerV from "../Components/pictures/samplerV.gif";
+// import screenV from "../Components/pictures/screenV.gif";
+// import sequencer1 from "../Components/pictures/sequencer1.gif";
 import signalgen from "../Components/pictures/signalgen.gif";
 import speaker from "../Components/pictures/speaker.gif";
 import spectroscope from "../Components/pictures/spectroscope.gif";
-import switcherV from "../Components/pictures/switcherV.gif";
+// import switcherV from "../Components/pictures/switcherV.gif";
 import transposer from "../Components/pictures/transposer.gif";
-import vst from "../Components/pictures/vst.gif";
-import imagesampleV from "../Components/pictures/imagesampleV.gif";
+// import vst from "../Components/pictures/vst.gif";
+// import imagesampleV from "../Components/pictures/imagesampleV.gif";
 import granSynth from "../Components/pictures/granular.gif";
 import { asyncAddBlock } from "../thunks.js";
 
-const AddBlock = props => {
+const AddBlock = (props) => {
   return (
     <React.Fragment>
       <ReactTooltip place="top" type="info" effect="float" />
@@ -47,7 +47,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Player"))}
           data-tip="Player"
         >
-          <img src={player}></img>
+          <img alt="Player" src={player}></img>
         </button>
       </div>
       <div
@@ -61,7 +61,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("SamplePlayer"))}
           data-tip="Sampleplayer"
         >
-          <img src={sampleplayer}></img>
+          <img alt="Sample Player" src={sampleplayer}></img>
         </button>
       </div>
       {/* <div
@@ -89,7 +89,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Mixer"))}
           data-tip="Mixer"
         >
-          <img src={mixer}></img>
+          <img alt="Mixer" src={mixer}></img>
         </button>
       </div>
       {/* <div
@@ -115,7 +115,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Delay"))}
           data-tip="Delay"
         >
-          <img src={delay}></img>
+          <img alt="Delay" src={delay}></img>
         </button>
       </div>
       <div
@@ -129,7 +129,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Transposer"))}
           data-tip="Transposer"
         >
-          <img src={transposer}></img>
+          <img alt="Transposer" src={transposer}></img>
         </button>
       </div>
       <div
@@ -143,7 +143,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Pitch"))}
           data-tip="Pitch"
         >
-          <img src={pitch}></img>
+          <img alt="Pitch" src={pitch}></img>
         </button>
       </div>
       <div
@@ -157,7 +157,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Pan"))}
           data-tip="Pan"
         >
-          <img src={pan}></img>
+          <img alt="Pan" src={pan}></img>
         </button>
       </div>
 
@@ -172,7 +172,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Filter"))}
           data-tip="Filter"
         >
-          <img src={filter}></img>
+          <img alt="Filter" src={filter}></img>
         </button>
       </div>
       <div
@@ -186,7 +186,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Oscilloscope"))}
           data-tip="Oscilloscope"
         >
-          <img src={oscilloscope}></img>
+          <img alt="Oscilloscope" src={oscilloscope}></img>
         </button>
       </div>
 
@@ -201,7 +201,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Spectroscope"))}
           data-tip="Spectroscope"
         >
-          <img src={spectroscope}></img>
+          <img alt="Spectroscope" src={spectroscope}></img>
         </button>
       </div>
 
@@ -216,7 +216,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("SignalGen"))}
           data-tip="Signalgen"
         >
-          <img src={signalgen}></img>
+          <img alt="Signal Genrator" src={signalgen}></img>
         </button>
       </div>
 
@@ -231,7 +231,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("GranSynth"))}
           data-tip="Granular Synthesis"
         >
-          <img src={granSynth}></img>
+          <img alt="Granular Synthesis" src={granSynth}></img>
         </button>
       </div>
 
@@ -273,7 +273,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
           data-tip="Direct Input"
         >
-          <img src={directinput}></img>
+          <img alt="Direct Input" src={directinput}></img>
         </button>
       </div>
 
@@ -288,7 +288,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Speaker"))}
           data-tip="Speaker"
         >
-          <img src={speaker}></img>
+          <img alt="Speaker" src={speaker}></img>
         </button>
       </div>
 
@@ -303,7 +303,7 @@ const AddBlock = props => {
           onClick={() => props.dispatch(asyncAddBlock("Record"))}
           data-tip="Record"
         >
-          <img src={record}></img>
+          <img alt="Record" src={record}></img>
         </button>
       </div>
     </React.Fragment>

@@ -12,7 +12,6 @@ const block = (state, action) => {
         ...action.values
       };
       //});
-      break;
     case "CHANGE_BLOCK":
       if (state.id === action.id) {
         // The case that field is an array since the module has a lot of

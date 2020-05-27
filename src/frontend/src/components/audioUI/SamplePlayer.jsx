@@ -52,7 +52,7 @@ const IndividualPlayer = ({
     if (audioObj.players[num].isPlaying) {
       audioObj.stop(num);
     }
-    let { name, type, sound_id } = sound;
+    let { type, sound_id } = sound;
     changeBlock(id, "files", sound_id, { num });
 
     if (type === "Sound Link") {

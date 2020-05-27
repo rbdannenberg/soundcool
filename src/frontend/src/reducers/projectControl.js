@@ -1,10 +1,3 @@
-const emptyState = {
-  floatingView: false,
-  // the current project being worked on
-  projectId: "new",
-  projectName: "",
-  projectDescription: ""
-};
 const projectControl = (
   state = {
     floatingView: false,

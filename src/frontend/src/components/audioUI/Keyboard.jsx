@@ -12,7 +12,6 @@ const Keyboard = ({ blockInfo, changeBlock }) => {
     module,
     octave,
     noteOn,
-    midiMessage
   } = blockInfo;
   // a list of 128 general midi instruments
 

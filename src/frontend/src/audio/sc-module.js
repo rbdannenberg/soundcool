@@ -18,17 +18,6 @@ class ScModule {
     let sourceAudioNode = this.outputs[sourceOutIndex];
     let destAudioNode = destination.inputs[destInIndex];
     sourceAudioNode.connect(destAudioNode);
-    let outStr =
-      "Successful connect: " +
-      this.constructor.name +
-      "[" +
-      sourceOutIndex +
-      "] --> " +
-      destination.constructor.name +
-      "[" +
-      destInIndex +
-      "]";
-    // console.log(outStr);
   }
 
   connectAsync(destination) {
@@ -37,13 +26,6 @@ class ScModule {
         function() {
           if (destination instanceof ScModule) {
             this.outNode.connect(destination.inNode);
-            let outStr =
-              "Connection successful: " +
-              this.constructor.name +
-              " --> " +
-              destination.constructor.name;
-            // console.log(outStr);
-
             this.outputs.push(destination);
             destination.inputs.push(this);
             destination.connPromise.resolve();
@@ -70,16 +52,16 @@ class ScModule {
     let sourceAudioNode = this.outputs[sourceOutIndex];
     let destAudioNode = destination.inputs[destInIndex];
     sourceAudioNode.disconnect(destAudioNode);
-    let outStr =
-      "Successful disconnect: " +
-      this.constructor.name +
-      "[" +
-      sourceOutIndex +
-      "] --> " +
-      destination.constructor.name +
-      "[" +
-      destInIndex +
-      "]";
+    // let outStr =
+    //   "Successful disconnect: " +
+    //   this.constructor.name +
+    //   "[" +
+    //   sourceOutIndex +
+    //   "] --> " +
+    //   destination.constructor.name +
+    //   "[" +
+    //   destInIndex +
+    //   "]";
     // console.log(outStr);
   }
 

@@ -43,17 +43,6 @@ module.exports = {
           "css-loader"
         ]
       },
-      // {
-      //   test: /\.(png|jpg|gif)$/i,
-      //   use: [
-      //     {
-      //       loader: "url-loader",
-      //       options: {
-      //         limit: 8192
-      //       }
-      //     }
-      //   ]
-      // }
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         use: [

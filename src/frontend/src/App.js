@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { instanceOf } from 'prop-types';
 
 import Main from "./router";
+import 'react-toastify/dist/ReactToastify.css';
 import "./App.css";
 
 import { StoreX as Store } from "./storeX";

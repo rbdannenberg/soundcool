@@ -45,7 +45,7 @@ class AddSound extends Component {
 
   filterSounds = sound => {
     let qry = this.state.search;
-    if (qry == "") return true;
+    if (qry === "") return true;
     else if (sound.name.toLowerCase().includes(qry.toLowerCase())) return true;
     else return false;
   };

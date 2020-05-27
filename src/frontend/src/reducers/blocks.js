@@ -1,5 +1,5 @@
 import block from "./block";
-import {specValues, audioDefaults} from "../components/projectEditor/Components/blockSpecs.jsx";
+import { audioDefaults} from "../components/projectEditor/Components/blockSpecs.jsx";
 const allTypes = {
   Delay: 1,
   Transposer: 1,
@@ -52,7 +52,7 @@ const blocks = (
       // add the count information into action, so block knows the count when newing
       // there can only be one speaker module
       if (action.typeName === "Speaker") {
-        const found = bs.find(element => element["typeName"] == "Speaker");
+        const found = bs.find(element => element["typeName"] === "Speaker");
         if (found !== undefined) {
           // console.log("Can only have one speaker per project!");
           return state;
@@ -139,7 +139,6 @@ const blocks = (
 
       if (newState && JSON.parse(newState) !== null) {
         newState = JSON.parse(newState);
-        let promiseStore = [];
         newState["bs"].forEach((element, index) => {
           delete element.audioObj;
           let audioConfig = audioDefaults[element.typeName];

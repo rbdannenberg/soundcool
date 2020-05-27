@@ -1,5 +1,4 @@
 import React from "react";
-import { changeBlock, connectBlock } from "../../audioUI/actions";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes, FaArrowsAlt } from "react-icons/fa";
