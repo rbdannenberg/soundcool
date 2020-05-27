@@ -1,12 +1,22 @@
 image: node:10.16.3
- 
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+#AWS access keys stored as secret variables 
+
+variables:
+  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID 
+  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+
+#This declares the pipeline stages  
 stages:
-    - test
- 
-run-build:
-    stage: test
-    script:
-        - cd src/frontend/
-        - npm install # Install all dependencies
-        - npm run build
-        - npm run webpack-build
+  - buildthendeploy
+
+buildbuildthendeploy:
+  stage: buildthendeploy
+  script:
+    - cd src/frontend/
+    - npm install
+    - npm run build
+    - apt update
+    - apt -y install awscli
+    - npm run-script deploy
