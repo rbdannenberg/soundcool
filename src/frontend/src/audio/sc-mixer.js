@@ -122,65 +122,56 @@ class ScMixer extends ScModule {
   }
 
   set node0Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode0.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode0.gain, value);
     this.options.node0Gain = value;
   }
 
   set node1Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode1.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode1.gain, value);
     this.options.node1Gain = value;
   }
 
   set node2Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode2.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode2.gain, value);
     this.options.node2Gain = value;
   }
 
   set node3Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode3.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode3.gain, value);
     this.options.node3Gain = value;
   }
 
   set node4Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode4.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode4.gain, value);
     this.options.node4Gain = value;
   }
 
   set node5Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode5.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode5.gain, value);
     this.options.node5Gain = value;
   }
 
   set node6Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode6.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode6.gain, value);
     this.options.node6Gain = value;
   }
 
   set node7Gain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.inNode7.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.inNode7.gain, value);
     this.options.node7Gain = value;
   }
 
   set masterGain(value) {
-    value = Math.max(parseFloat(value), 1.40130e-45);
-    this.outNode.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value);
+    this.applyWithSmoothing(this.outNode.gain, value);
     this.options.masterGain = value;
   }
 

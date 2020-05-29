@@ -65,15 +65,15 @@ class ScModule {
     // console.log(outStr);
   }
 
-  set presetVolume(value) {
-    value = Math.max(parseFloat(value / 100), 1.40130e-45);
-    this.outNode.gain.value = value;
+  applyWithSmoothing(audioParam, value, timeConstant=5e-3) {
+    let currentTime = this.context.currentTime;
+    audioParam.setTargetAtTime(value, currentTime,
+      timeConstant);
   }
 
   set volume(value) {
-    value = Math.max(parseFloat(value / 100), 1.40130e-45);
-    this.outNode.gain.exponentialRampToValueAtTime(value,
-      this.context.currentTime + 0.5);
+    value = parseFloat(value / 100);
+    this.applyWithSmoothing(this.outNode.gain, value);
   }
 
   destroy() {}
