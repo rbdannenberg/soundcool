@@ -123,56 +123,65 @@ class ScMixer extends ScModule {
 
   set node0Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode0.gain, value);
     this.options.node0Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode0.gain, value);
   }
 
   set node1Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode1.gain, value);
     this.options.node1Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode1.gain, value);
   }
 
   set node2Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode2.gain, value);
     this.options.node2Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode2.gain, value);
   }
 
   set node3Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode3.gain, value);
     this.options.node3Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode3.gain, value);
   }
 
   set node4Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode4.gain, value);
     this.options.node4Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode4.gain, value);
   }
 
   set node5Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode5.gain, value);
     this.options.node5Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode5.gain, value);
   }
 
   set node6Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode6.gain, value);
     this.options.node6Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode6.gain, value);
   }
 
   set node7Gain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.inNode7.gain, value);
     this.options.node7Gain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.inNode7.gain, value);
   }
 
   set masterGain(value) {
     value = parseFloat(value);
-    this.applyWithSmoothing(this.outNode.gain, value);
     this.options.masterGain = value;
+    value = this.linearToExp(value);
+    this.applyWithSmoothing(this.outNode.gain, value);
   }
 
   getMasterAudioData() {

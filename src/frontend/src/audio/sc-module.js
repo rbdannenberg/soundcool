@@ -3,15 +3,6 @@ class ScModule {
     this.context = context;
     this.inputs = [];
     this.outputs = [];
-    /*
-        var connReady, connFailed;
-        this.connPromise = new Promise((resolve, reject) => {
-            connReady = resolve;
-            connFailed = reject;
-        });
-        this.connPromise.resolve = connReady;
-        this.connPromise.reject = connFailed;
-        */
   }
 
   connectTo(destination, sourceOutIndex = 0, destInIndex = 0) {
@@ -71,8 +62,13 @@ class ScModule {
       timeConstant);
   }
 
+  linearToExp(value) {
+    return Math.pow(value, 4);
+  }
+
   set volume(value) {
     value = parseFloat(value / 100);
+    value = this.linearToExp(value);
     this.applyWithSmoothing(this.outNode.gain, value);
   }
 
