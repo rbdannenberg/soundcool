@@ -2,9 +2,13 @@ import ScModule from "./sc-module.js";
 import ScAnalyzer from "./sc-analyzer.js";
 
 class ScSpeakers extends ScModule {
-  constructor(context) {
+  constructor(context, options = {}) {
     super(context);
     this.setupNodes();
+    let defOpts = {
+      muted: false
+    };
+    this.options = Object.assign(defOpts, options);
   }
 
   setupNodes() {
@@ -28,6 +32,15 @@ class ScSpeakers extends ScModule {
     let dataL = this.analyzerL.getData();
     let dataR = this.analyzerR.getData();
     return [dataL, dataR];
+  }
+
+  set muted(value) {
+    console.log("here");
+    if (value) {
+      this.inNode.gain.value = 0;
+    } else {
+      this.inNode.gain.value = 1;
+    }
   }
 }
 

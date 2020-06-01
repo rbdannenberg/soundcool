@@ -624,18 +624,19 @@ class ProjectEditor extends React.Component {
     return cookies.get("token") || "";
   }
 
-  saveProject = () => {
+  saveProject(id, content) {
+    console.log(this.props);
     if (this.isUserLoggedIn())
-      if (this.state.projectId !== "new") {
+      if (id !== "new") {
         this.updateProject({
-          projectId: this.state.projectId,
-          content: JSON.stringify(this.props.blocks)
+          projectId: id,
+          content: JSON.stringify(content)
         });
         // console.log("done");
         // console.log(JSON.stringify(this.props.blocks.bs[0]));
       } else this.toggleModal();
     else this.toggleRegisterModal();
-  };
+  }
 
   updateProject(payload) {
     updateProject(payload)
@@ -646,26 +647,21 @@ class ProjectEditor extends React.Component {
         showToastrError(error);
       });
   }
-  exportProject = event => {
-    event.preventDefault();
-    const { projectName, projectDescription, items } = this.state;
-    console.log(items);
-    let bs = items.reduce((a, b) => {
-      return a.concat(b);
-    });
-    let nowOut = this.props.blocks.nowOut;
-    let blocks = {
+  exportProject(projectName, projectDescription, blocks) {
+    let bs = blocks.bs;
+    let nowOut = blocks.nowOut;
+    let content = {
       bs,
       nowOut
     };
     this.downloadFile({
       projectName,
       projectDescription,
-      blocks
+      content
     });
-  };
+  }
 
-  downloadFile = async myData => {
+  async downloadFile(myData) {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\t");
     let readData = JSON.parse(json);
@@ -679,7 +675,7 @@ class ProjectEditor extends React.Component {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }
 
   createProject = event => {
     event.preventDefault();

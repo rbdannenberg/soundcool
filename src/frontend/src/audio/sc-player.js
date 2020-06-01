@@ -14,7 +14,6 @@ function loadBufferError(error) {
 }
 
 class ScPlayer extends ScModule {
-
   constructor(context, options = {}) {
     super(context);
     let defOpts = {
@@ -41,7 +40,6 @@ class ScPlayer extends ScModule {
     this.outNode.connect(this.analyzer.inNode);
     this.outputs.push(this.outNode);
   }
-
 
   load(path) {
     this.offset = 0;

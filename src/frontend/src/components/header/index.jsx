@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from 'react-router-dom'    
-import Cookies from 'universal-cookie';
+import { withRouter } from "react-router-dom";
+import Cookies from "universal-cookie";
 import {
   Navbar,
   NavbarBrand,
@@ -17,12 +17,9 @@ import {
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
 import FormInput from "../form/FormInput";
+import projectEditor from "../projectEditor/index";
 
-
-import {
-  updateProject,
-  createProject,
-} from "../projectEditor/actions";
+import { updateProject, createProject } from "../projectEditor/actions";
 import {
   showToastr,
   showToastrError,
@@ -57,7 +54,7 @@ class Header extends Component {
   }
 
   isUserLoggedIn() {
-    console.log(cookies.getAll())
+    // console.log(cookies.getAll());
     return cookies.get("token") || "";
   }
 
@@ -70,9 +67,9 @@ class Header extends Component {
   }
 
   handleLogout() {
-    cookies.remove("name", { path: '/' });
-    cookies.remove("token", { path: '/' });
-    cookies.remove("token", { path: '/project-editor' });
+    cookies.remove("name", { path: "/" });
+    cookies.remove("token", { path: "/" });
+    cookies.remove("token", { path: "/project-editor" });
     this.props.history.push("/signIn");
   }
 
@@ -264,7 +261,15 @@ class Header extends Component {
                           className="dropdown-item"
                           onClick={() => {
                             console.log("trying to save");
+                            console.log(
+                              projectEditor.WrappedComponent.prototype
+                                .saveProject
+                            );
                             this.saveProject();
+                            // projectEditor.WrappedComponent.prototype.saveProject(
+                            //   this.props.projectControl.projectId,
+                            //   this.props.blocks
+                            // );
                           }}
                         >
                           Save
@@ -275,7 +280,17 @@ class Header extends Component {
                           className="dropdown-item"
                           onClick={() => {
                             console.log("trying to export");
+                            // let {
+                            //   projectName,
+                            //   projectDescription
+                            // } = this.props.projectControl;
+
                             this.exportProject();
+                            // projectEditor.WrappedComponent.prototype.exportProject(
+                            //   projectName,
+                            //   projectDescription,
+                            //   this.props.blocks
+                            // );
                           }}
                         >
                           Export
