@@ -57,8 +57,8 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
             top: "24px"
           }}
           onChange={e => changeBlock(id, "frequency", e.target.value)}
-          min={0}
-          max={15000}
+          min={40}
+          max={10000}
           value={frequency}
           id="frequency"
         />
