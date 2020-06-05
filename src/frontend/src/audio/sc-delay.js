@@ -26,6 +26,13 @@ class ScDelay extends ScModule {
     this.outputs.push(this.outNode);
   }
 
+  destroy() {
+    this.inNode.disconnect(this.delayNode);
+    this.delayNode.disconnect(this.delayGain);
+    this.delayGain.disconnect(this.delayNode);
+    this.delayNode.disconnect(this.outNode);
+  }
+
   set delayFeedback(val) {
     this.options.feedback = val;
     this.delayGain.gain.value = val;

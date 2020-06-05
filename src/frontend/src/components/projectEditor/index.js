@@ -279,7 +279,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentDidMount() {
-    console.log("mounted");
+    console.log("mounted?");
     this.loadState();
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);

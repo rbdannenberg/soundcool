@@ -133,6 +133,11 @@ class ScPlayer extends ScModule {
     }
   }
 
+  destroy() {
+    this.inNode.disconnect(this.outNode);
+    this.outNode.disconnect(this.analyzer.inNode);
+  }
+
   set speed(value) {
     value = parseFloat(value);
     let currTime = this.context.currentTime;

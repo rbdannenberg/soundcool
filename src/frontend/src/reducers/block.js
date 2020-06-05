@@ -11,7 +11,7 @@ const block = (state, action) => {
         // contains generic values like in, out, collapse and also personal values
         ...action.values
       };
-      //});
+    //});
     case "CHANGE_BLOCK":
       if (state.id === action.id) {
         // The case that field is an array since the module has a lot of
@@ -41,10 +41,13 @@ const block = (state, action) => {
       let newOutNode;
       // if the connected block no longer exist, we change the
       // entry back to undefined
+      console.log(state.inNode);
       newInNode = state.inNode.map(n => {
-        return action.blocks.filter(t => t.id === n[1]).length === 0
-          ? undefined
-          : n;
+        if (n) {
+          return action.blocks.filter(t => t.id === n[1]).length === 0
+            ? undefined
+            : n;
+        }
       });
       newOutNode = state.outNode.map(n => {
         return action.blocks.filter(t => t.id === n[1]).length === 0

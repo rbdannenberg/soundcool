@@ -4,11 +4,12 @@ import ScAnalyzer from "./sc-analyzer.js";
 class ScSpeakers extends ScModule {
   constructor(context, options = {}) {
     super(context);
-    this.setupNodes();
+
     let defOpts = {
       muted: false
     };
     this.options = Object.assign(defOpts, options);
+    this.setupNodes();
   }
 
   setupNodes() {
@@ -26,6 +27,16 @@ class ScSpeakers extends ScModule {
 
     this.inputs.push(this.inNode);
     this.outputs.push(this.outNode);
+    if (this.options.muted) {
+      this.inNode.gain.value = 0;
+    }
+  }
+
+  destroy() {
+    this.inNode.disconnect(this.splitter);
+    this.inNode.disconnect(this.outNode);
+    this.splitter.disconnect(this.analyzerL.inNode, 0);
+    this.splitter.disconnect(this.analyzerR.inNode, 1);
   }
 
   getAudioData() {
@@ -35,8 +46,9 @@ class ScSpeakers extends ScModule {
   }
 
   set muted(value) {
-    console.log("here");
-    if (value) {
+    console.log("changing muted");
+    this.options.muted = value;
+    if (this.options.muted) {
       this.inNode.gain.value = 0;
     } else {
       this.inNode.gain.value = 1;

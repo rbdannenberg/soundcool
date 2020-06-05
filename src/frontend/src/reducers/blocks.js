@@ -1,5 +1,5 @@
 import block from "./block";
-import { audioDefaults} from "../components/projectEditor/Components/blockSpecs.jsx";
+import { audioDefaults } from "../components/projectEditor/Components/blockSpecs.jsx";
 const allTypes = {
   Delay: 1,
   Transposer: 1,
@@ -82,6 +82,10 @@ const blocks = (
       };
     case "DELETE_BLOCK":
       let filteredBs = bs.filter(t => t.id !== action.id);
+      let deletedBlock = bs.filter(t => t.id === action.id)[0];
+      if (deletedBlock.audioObj) {
+        deletedBlock.audioObj.destroy();
+      }
       // let deletedBlock = bs.filter(t => t.id === action.id)[0];
       // console.log("hello: " + deletedBlock.unbindCanvas);
       // deletedBlock.unbindCanvas();
@@ -143,6 +147,7 @@ const blocks = (
           delete element.audioObj;
           let audioConfig = audioDefaults[element.typeName];
           for (let key in audioConfig) {
+            console.log(key);
             audioConfig[key] = element[key];
           }
           /*let prom = block(undefined, {
@@ -169,7 +174,7 @@ const blocks = (
               ...element,
               inNode: [],
               outNode: [],
-              collapse: true,
+              collapse: true
             }
           });
         });

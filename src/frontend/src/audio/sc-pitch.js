@@ -111,6 +111,35 @@ class ScPitch extends ScModule {
     this.outputs.push(this.outNode);
   }
 
+  destroy() {
+    this.lfo1.outNode.disconnect(this.scale1);
+    this.scale1.disconnect(this.lfo1Mul);
+    this.lfo1Mul.disconnect(this.lfo1Out);
+    this.lfo1Add.disconnect(this.lfo1Out);
+
+    this.lfo2.outNode.disconnect(this.scale2);
+    this.scale2.disconnect(this.lfo2Mul);
+    this.lfo2Mul.disconnect(this.lfo2Out);
+    this.lfo2Add.disconnect(this.lfo2Out);
+
+    this.clfo.outNode.disconnect(this.scale3);
+
+    this.lfo1Out.disconnect(this.delayNode1.delayTime);
+    this.lfo2Out.disconnect(this.delayNode2.delayTime);
+
+    this.scale3.disconnect(this.crossfade.fader.offset);
+
+    this.inNode.disconnect(this.delayNode1);
+    this.inNode.disconnect(this.delayNode2);
+    this.delayNode1.disconnect(this.crossfade.inNode1);
+    this.delayNode2.disconnect(this.crossfade.inNode2);
+
+    this.frequency.disconnect(this.lfo1.osc.frequency);
+    this.frequency.disconnect(this.lfo2.osc.frequency);
+    this.frequency.disconnect(this.clfo.osc.frequency);
+    this.crossfade.outNode.disconnect(this.outNode);
+  }
+
   set pitch(cents) {
     let interval = cents / 100;
     let ratio = Math.pow(2, interval / 12);

@@ -121,6 +121,62 @@ class ScMixer extends ScModule {
     this.outputs.push(this.outNode);
   }
 
+  destroy() {
+    this.inNode0.disconnect(this.splitter0);
+    this.splitter0.disconnect(this.node0AnalyzerL.inNode, 0);
+    this.splitter0.disconnect(this.node0AnalyzerR.inNode, 1);
+    this.node0Gain = this.options.node0Gain;
+
+    this.inNode1.disconnect(this.splitter1);
+    this.splitter1.disconnect(this.node1AnalyzerL.inNode, 0);
+    this.splitter1.disconnect(this.node1AnalyzerR.inNode, 1);
+    this.node1Gain = this.options.node1Gain;
+
+    this.inNode2.disconnect(this.splitter2);
+    this.splitter2.disconnect(this.node2AnalyzerL.inNode, 0);
+    this.splitter2.disconnect(this.node2AnalyzerR.inNode, 1);
+    this.node2Gain = this.options.node2Gain;
+
+    this.inNode3.disconnect(this.splitter3);
+    this.splitter3.disconnect(this.node3AnalyzerL.inNode, 0);
+    this.splitter3.disconnect(this.node3AnalyzerR.inNode, 1);
+    this.node3Gain = this.options.node3Gain;
+
+    this.inNode4.disconnect(this.splitter4);
+    this.splitter4.disconnect(this.node4AnalyzerL.inNode, 0);
+    this.splitter4.disconnect(this.node4AnalyzerR.inNode, 1);
+    this.node4Gain = this.options.node4Gain;
+
+    this.inNode5.disconnect(this.splitter5);
+    this.splitter5.disconnect(this.node5AnalyzerL.inNode, 0);
+    this.splitter5.disconnect(this.node5AnalyzerR.inNode, 1);
+    this.node5Gain = this.options.node5Gain;
+
+    this.inNode6.disconnect(this.splitter6);
+    this.splitter6.disconnect(this.node6AnalyzerL.inNode, 0);
+    this.splitter6.disconnect(this.node6AnalyzerR.inNode, 1);
+    this.node6Gain = this.options.node6Gain;
+
+    this.inNode7.disconnect(this.splitter7);
+    this.splitter7.disconnect(this.node7AnalyzerL.inNode, 0);
+    this.splitter7.disconnect(this.node7AnalyzerR.inNode, 1);
+    this.node7Gain = this.options.node7Gain;
+
+    this.outNode.disconnect(this.masterSplitter);
+    this.masterSplitter.disconnect(this.masterAnalyzerL.inNode, 0);
+    this.masterSplitter.disconnect(this.masterAnalyzerR.inNode, 1);
+    this.masterGain = this.options.masterGain;
+
+    this.inNode0.disconnect(this.outNode);
+    this.inNode1.disconnect(this.outNode);
+    this.inNode2.disconnect(this.outNode);
+    this.inNode3.disconnect(this.outNode);
+    this.inNode4.disconnect(this.outNode);
+    this.inNode5.disconnect(this.outNode);
+    this.inNode6.disconnect(this.outNode);
+    this.inNode7.disconnect(this.outNode);
+  }
+
   set node0Gain(value) {
     value = parseFloat(value);
     this.options.node0Gain = value;

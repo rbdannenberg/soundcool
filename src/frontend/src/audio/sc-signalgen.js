@@ -91,6 +91,10 @@ class ScSignalGen extends ScModule {
     }
   }
 
+  destroy() {
+    this.disconnectNodes();
+  }
+
   set modulation(modNew) {
     this.disconnectNodes();
     this.options.modulation = modNew;

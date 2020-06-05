@@ -37,6 +37,12 @@ class ScSamplePlayer extends ScModule {
     }
   }
 
+  destroy() {
+    for (let i = 0; i <= 9; i++) {
+      this.players[i].outNode.disconnect(this.outNode);
+    }
+  }
+
   load(playerIndex, path) {
     let res, rej;
     let loadPromise = new Promise(function(resolve, reject) {
@@ -140,12 +146,11 @@ class ScSamplePlayer extends ScModule {
     this.options.random = value;
   }
 
-  set masterVolume(value){
+  set masterVolume(value) {
     this.players.forEach(player => {
       player.volume = value;
     });
   }
-  
 }
 
 export default ScSamplePlayer;

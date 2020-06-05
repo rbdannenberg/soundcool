@@ -13,7 +13,7 @@ import ScPitch from "../../audio/sc-pitch-phasor";
 import ScMixer from "../../audio/sc-mixer";
 import ScReverb from "../../audio/sc-reverb";
 import ScGranSynth from "../../audio/sc-granular-synthesis";
-import {specValues, audioDefaults} from "./Components/blockSpecs";
+import { specValues, audioDefaults } from "./Components/blockSpecs";
 
 function initAudioObj(typeName, audioConfig) {
   let t;
@@ -36,7 +36,7 @@ function initAudioObj(typeName, audioConfig) {
           let loadPromise = t.load(audioConfig.URL);
           loadPromise.then(() => {
             resolve(t);
-          })
+          });
         } else {
           resolve(t);
         }
@@ -46,7 +46,8 @@ function initAudioObj(typeName, audioConfig) {
         resolve(t);
         break;
       case "Speaker":
-        t = new ScSpeakers(scContext);
+        t = new ScSpeakers(scContext, audioConfig);
+        console.log(audioConfig);
         resolve(t);
         break;
       case "DirectInput":
@@ -91,14 +92,14 @@ function initAudioObj(typeName, audioConfig) {
     //return t;
   });
   return audioObjPromise;
-};
+}
 
-function asyncAddBlock(moduleType, audioConfig={}, moduleConfig={}) {
+function asyncAddBlock(moduleType, audioConfig = {}, moduleConfig = {}) {
   return function(dispatch) {
     return initAudioObj(moduleType, audioConfig)
-      .then((audioObj) => dispatch(addBlock(audioObj, moduleType, moduleConfig)))
-      .catch((error) => dispatch(addBlock(undefined, moduleType)));
-  }
+      .then(audioObj => dispatch(addBlock(audioObj, moduleType, moduleConfig)))
+      .catch(error => dispatch(addBlock(undefined, moduleType)));
+  };
 }
 
 const addBlock = (audioObj, typeName, moduleConfig) => {
@@ -114,8 +115,9 @@ const addBlock = (audioObj, typeName, moduleConfig) => {
       inNode: [],
       outNode: [],
       collapse: true,
-      ...config}
-  }
+      ...config
+    }
+  };
 };
 
 function loadProject(content) {
@@ -134,48 +136,56 @@ function loadProject(content) {
         jsonContent["bs"].forEach((element, index) => {
           if (element.outNode.length > 0) {
             let connection = {
-              'nowOut' : element,
-              'nowIn': element.outNode[0]
-            }
+              nowOut: element,
+              nowIn: element.outNode[0]
+            };
             connections.push(connection);
           }
           delete element.audioObj;
           let audioConfig = audioDefaults[element.typeName];
           for (let key in audioConfig) {
+            // console.log(key);
             audioConfig[key] = element[key];
+            // console.log(audioConfig[key]);
           }
-          let prom = dispatch(asyncAddBlock(element.typeName, audioConfig, element));
+          let prom = dispatch(
+            asyncAddBlock(element.typeName, audioConfig, element)
+          );
           promiseStore.push(prom);
         });
         Promise.all(promiseStore).then(function() {
           let state = getState();
           let idMapper = {};
-          state.blocks['bs'].forEach((element) => {
+          state.blocks["bs"].forEach(element => {
             idMapper[element.id] = element;
           });
           connections.forEach((conn, index) => {
             dispatch({
               type: "CONNECTING_BLOCK",
               node: "nowOut",
-              value: [conn.nowOut.name,
-                      conn.nowOut.outNode[0][2],
-                      conn.nowOut.id,
-                      idMapper[conn.nowOut.id].audioObj]
+              value: [
+                conn.nowOut.name,
+                conn.nowOut.outNode[0][2],
+                conn.nowOut.id,
+                idMapper[conn.nowOut.id].audioObj
+              ]
             });
             dispatch({
               type: "CONNECTING_BLOCK",
               node: "nowIn",
-              value: [conn.nowIn[0],
-                      conn.nowIn[3],
-                      conn.nowIn[1],
-                      idMapper[conn.nowIn[1]].audioObj]
+              value: [
+                conn.nowIn[0],
+                conn.nowIn[3],
+                conn.nowIn[1],
+                idMapper[conn.nowIn[1]].audioObj
+              ]
             });
           });
         });
       }
     });
     return loadProjectProm;
-  }
+  };
 }
 
-export {asyncAddBlock, loadProject};
+export { asyncAddBlock, loadProject };
