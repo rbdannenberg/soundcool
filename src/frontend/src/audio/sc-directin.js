@@ -7,6 +7,9 @@ function connectStream(stream) {
 
   this.inputs.push(this.inNode);
   this.outputs.push(this.outNode);
+  if (this.options.muted) {
+    this.outNode.gain.value = 0;
+  }
 }
 
 function connectError(error) {
@@ -14,8 +17,12 @@ function connectError(error) {
 }
 
 class ScDirectIn extends ScModule {
-  constructor(context) {
+  constructor(context, options = {}) {
     super(context);
+    let defOpts = {
+      muted: false
+    };
+    this.options = Object.assign(defOpts, options);
     this.connectStream = connectStream.bind(this);
     this.connectError = connectError.bind(this);
     this.setupNodes();
@@ -26,6 +33,15 @@ class ScDirectIn extends ScModule {
       .getUserMedia({ audio: { channelCount: 2 } })
       .then(this.connectStream)
       .catch(this.connectError);
+  }
+  set muted(value) {
+    console.log("changing muted");
+    this.options.muted = value;
+    if (this.options.muted) {
+      this.outNode.gain.value = 0;
+    } else {
+      this.outNode.gain.value = 1;
+    }
   }
 }
 
