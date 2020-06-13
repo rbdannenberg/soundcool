@@ -1,4 +1,5 @@
 const block = (state, action) => {
+  let nameOut, idOut, portOut, nameIn, idIn, portIn;
   switch (action.type) {
     case "ADD_BLOCK":
       return {
@@ -55,24 +56,19 @@ const block = (state, action) => {
           : n;
       });
       return { ...state, inNode: newInNode, outNode: newOutNode };
-
     case "CONNECTING_BLOCK":
-      // The name of in and out blocks
-      let [nameIn, nameOut] = [action.nowIn[0], action.nowOut[0]];
-      // The numbering of in/out port (some blocks will have multiple in/out)
-      let [indexIn, indexOut] = [action.nowIn[1], action.nowOut[1]];
-      // The id of the blocks that we are connecting
-      let [idIn, idOut] = [action.nowIn[2], action.nowOut[2]];
-      // eslint-disable-next-line
-      let [audioObjIn, audioObjOut] = [action.nowIn[3], action.nowOut[3]];
+      [nameIn, portIn, idIn] = [...action.nowIn];
+      let audioObjIn = action.nowIn[3];
+      [nameOut, portOut, idOut] = [...action.nowOut];
+
       if (state.id === idIn) {
         if (state.id === idOut) {
-          // don't connect to itself, except special case (Routing)
+          // don't connect to itself, except special case (Routing), TBD
           return state;
         } else {
           // if this is the nowin node, we shoud update its inNode information
           let newInNode = [...state.inNode];
-          newInNode[indexIn] = [nameOut, idOut];
+          newInNode[portIn] = [nameOut, idOut, portOut];
           return { ...state, inNode: newInNode };
         }
       } else {
@@ -81,19 +77,34 @@ const block = (state, action) => {
           if (state.audioObj !== undefined) {
             state.audioObj.connectTo(
               audioObjIn,
-              parseInt(indexOut, 10),
-              parseInt(indexIn, 10)
+              parseInt(portOut, 10),
+              parseInt(portIn, 10)
             );
           }
           // then update the ui information
           let newOutNode = [...state.outNode];
-          newOutNode[indexOut] = [nameIn, idIn, indexOut, indexIn];
+          newOutNode[portOut] = [nameIn, idIn, portIn];
           return { ...state, outNode: newOutNode };
         } else {
           return state;
         }
       }
 
+    case "DISCONNECTING_BLOCK":
+      [nameOut, idOut, portOut] = action.outNode;
+      [nameIn, idIn, portIn] = action.inNode;
+      if (state.id === idOut) {
+        let newOutNode = state.outNode;
+        newOutNode[portOut] = [];
+        return { ...state, outNode: newOutNode };
+      } else if (state.id === idIn) {
+        console.log("here 1");
+        let newInNode = state.inNode;
+        newInNode[portIn] = [];
+        return { ...state, inNode: newInNode };
+      } else {
+        return state;
+      }
     default:
       return state;
   }

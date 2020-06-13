@@ -1,4 +1,5 @@
 import React from "react";
+import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes, FaArrowsAlt } from "react-icons/fa";
@@ -150,22 +151,34 @@ const WithHeader = ({
       padding: "0px",
       border: "0px"
     };
-    if (inNode[0]) {
+    if (inNode[0] && inNode[0].length > 0) {
       let backgroundColor = getCssPropById(inNode[0][0], "background-color");
-      style = { ...style, backgroundColor };
-      // console.log(style);
+      style = {
+        ...style,
+        backgroundColor
+      };
     }
     inButton = (
       <button
         id="inButton"
         className="btn btn-light btn-sm m-1 text-center"
-        style={style}
         onClick={() => {
-          dispatch({
-            type: "CONNECTING_BLOCK",
-            node: "nowIn",
-            value: [name, "0", id, audioObj]
-          });
+          if (inNode[0] && inNode[0].length > 0) {
+            dispatch({
+              type: "DISCONNECTING_BLOCK",
+              node: "nowIn",
+              value: [name, "0", id, audioObj]
+            });
+          } else {
+            dispatch({
+              type: "CONNECTING_BLOCK",
+              node: "nowIn",
+              value: [name, "0", id, audioObj]
+            });
+          }
+        }}
+        onMouseEnter={() => {
+          console.log("try hover");
         }}
         onContextMenu={e => {
           e.preventDefault();
@@ -174,8 +187,9 @@ const WithHeader = ({
             setCssPropById({ id: inNode[0][0], prop: "boxShadow", temp: true });
           }
         }}
+        style={style}
       >
-        <div>{inNode[0] === undefined ? "In" : inNode[0][0]}</div>
+        <div>{inNode[0] && inNode[0].length > 0 ? inNode[0][0] : "In"}</div>
       </button>
     );
   }
@@ -206,9 +220,10 @@ const WithHeader = ({
     outButton = <span />;
   } else {
     let style = outId === id ? { ...circleStyle } : { ...style1 };
-    if (outNode[0]) {
-      let backgroundColor = getCssPropById(outNode[0][0], "background-color");
-      style = { ...style, backgroundColor };
+    if (outNode[0] && outNode[0].length > 0) {
+      let backgroundColor = "black";
+      let color = "white";
+      style = { ...style, backgroundColor, color };
     }
     outButton = (
       <button
@@ -235,7 +250,7 @@ const WithHeader = ({
           });
         }}
       >
-        <div>{outNode[0] === undefined ? "Out" : outNode[0][0]}</div>
+        <div>{outNode[0] && outNode[0].length > 0 ? outNode[0][0] : "Out"}</div>
       </button>
     );
   }

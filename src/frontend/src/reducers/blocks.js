@@ -111,7 +111,7 @@ const blocks = (
         // console.log("not isload");
         s.cns = [...cns, action];
       }
-      // in or out?
+      // assign to nowIn or nowOut
       s[action.node] = action.value;
       // if both nowIn and nowOut are assigned and the blocks exists
       if (
@@ -120,7 +120,6 @@ const blocks = (
         s.bs.filter(t => t.id === s.nowIn[2]).length === 1 &&
         s.bs.filter(t => t.id === s.nowOut[2]).length === 1
       ) {
-        // console.log("connecting stuff 3.2..");
         return {
           // go to each block and change the inNode and outNode for the connected block
           ...s,
@@ -137,6 +136,31 @@ const blocks = (
       } else {
         return s;
       }
+
+    case "DISCONNECTING_BLOCK":
+      console.log("disconnecting!");
+      // disconnecting only happens from destination
+      let [nameIn, portIn, idIn, audioObjIn] = action.value;
+      let inBlockInfo = state.bs.filter(t => t.id === idIn)[0];
+      // get the outNode info of the port that we are disconnecting
+      let [nameOut, idOut, portOut] = inBlockInfo.inNode[parseInt(portIn, 10)];
+      let outBlockInfo = state.bs.filter(t => t.id === idOut)[0];
+
+      // disconnect audioObjects
+      let audioObjOut = outBlockInfo.audioObj;
+      audioObjOut.disconnect(audioObjIn, 0, parseInt(portIn, 10));
+
+      return {
+        // go to each block and change the inNode and outNode for the connected block
+        ...state,
+        bs: state.bs.map(t =>
+          block(t, {
+            ...action,
+            inNode: [nameIn, idIn, portIn],
+            outNode: [nameOut, idOut, portOut]
+          })
+        )
+      };
 
     case "LOAD_STATE":
       let newState = action.content ? action.content : undefined;
