@@ -152,7 +152,8 @@ const WithHeader = ({
       border: "0px"
     };
     if (inNode[0] && inNode[0].length > 0) {
-      let backgroundColor = getCssPropById(inNode[0][0], "background-color");
+      console.log(inNode[0][0]);
+      let backgroundColor = getCssPropById(inNode[0][1], "background-color");
       style = {
         ...style,
         backgroundColor
@@ -250,7 +251,7 @@ const WithHeader = ({
           });
         }}
       >
-        <div>{outNode[0] && outNode[0].length > 0 ? outNode[0][0] : "Out"}</div>
+        <div>{"Out"}</div>
       </button>
     );
   }
@@ -259,7 +260,7 @@ const WithHeader = ({
   // console.log(Block.WrappedComponent);
   return (
     <div
-      id={name}
+      id={id}
       className="text-left my-1"
       style={{
         width: "20rem",

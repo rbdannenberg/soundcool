@@ -18,14 +18,23 @@ export const successErrorHandler = (resolve, reject) => {
 };
 
 export const baseAddress = () => {
-  return window.location.href.split("//")[0]+"//"+window.location.href.split("//")[1].split("/")[0];
+  return (
+    window.location.href.split("//")[0] +
+    "//" +
+    window.location.href.split("//")[1].split("/")[0]
+  );
 };
 
 export const showToastrError = errObj => {
-  showToastr("error", errObj.error || errObj.err || "Something went wrong.", null, {
-    timeOut: 0,
-    extendedTimeOut: 0
-  });
+  showToastr(
+    "error",
+    errObj.error || errObj.err || "Something went wrong.",
+    null,
+    {
+      timeOut: 0,
+      extendedTimeOut: 0
+    }
+  );
 };
 
 export const getHeaders = ({ email, token }) => ({
@@ -39,34 +48,34 @@ export const getCssPropById = (id, prop) => {
   return theCSSprop;
 };
 
-export const highlightElementById = (id,time = 3000) => {
+export const highlightElementById = (id, time = 3000) => {
   var elem = document.getElementById(id);
-   elem.style.boxShadow = '10px 10px 10px darkred';
-   setTimeout(function(){
-    elem.style.boxShadow = '';
-   }, time);
+  elem.style.boxShadow = "10px 10px 10px darkred";
+  setTimeout(function() {
+    elem.style.boxShadow = "";
+  }, time);
 };
 
-export const setCssPropById = ({id, prop, time = 3000, temp = false}) => {
+export const setCssPropById = ({ id, prop, time = 3000, temp = false }) => {
   var elem = document.getElementById(id);
-  var orig =  elem.style[prop];
-  elem.style[prop] = '10px 10px 10px darkred';
-   if(temp){
-    setTimeout(function(){
+  var orig = elem.style[prop];
+  elem.style[prop] = "10px 10px 10px darkred";
+  if (temp) {
+    setTimeout(function() {
       elem.style[prop] = orig;
-     }, time);
-   }
+    }, time);
+  }
 };
 
-export const focusElementById = (id) => {
+export const focusElementById = id => {
   var elem = document.getElementById(id);
   elem.scrollIntoView();
 };
 
-export const cleanPayload = (pd) => {
+export const cleanPayload = pd => {
   pd["bs"].forEach(o => {
     o["audioObj"] = {};
   });
   pd["cns"] = {};
   return pd;
-}
+};
