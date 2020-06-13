@@ -2,12 +2,16 @@ import React from "react";
 import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 import "./custom.css";
+import LogInput from "./LogInput";
 // import oscDemo from "../../player-module";
+
+
 
 const SignalGen = ({ blockInfo, changeBlock }) => {
   let { id, frequency, waveform, modulation, volume, MI, FD } = blockInfo;
   let modParam;
-
+  const minFrequencySlider = 40;
+  const maxFrequencySlider = 10000;
   const changeWaveform = (w, id) => changeBlock(id, "waveform", w);
 
   const changeMod = (w, id) => {
@@ -36,7 +40,7 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
         </label>
         <input
           type="number"
-          value={frequency}
+          value={parseInt(frequency)}
           style={{
             position: "absolute",
             width: "60px",
@@ -45,10 +49,13 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
             top: "7px",
             fontSize: "0.7rem"
           }}
-          onChange={e => changeBlock(id, "frequency", e.target.value)}
+          onChange={e => {
+            let value = parseInt(e.target.value);
+            value = isNaN(value) ? 0 : value;
+            changeBlock(id, "frequency", value);
+          }}
         />
-        <input
-          type="range"
+        <LogInput
           className="slider"
           style={{
             width: "250px",
@@ -56,13 +63,14 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
             left: "5px",
             top: "24px"
           }}
-          onChange={e => changeBlock(id, "frequency", e.target.value)}
-          min={40}
-          max={10000}
-          value={frequency}
+          type="range"
           id="frequency"
+          blockID={id}
+          frequency={frequency}
+          changeBlock={changeBlock}
+          maxrange={maxFrequencySlider}
+          minrange={minFrequencySlider}
         />
-
         {/* modParam slider */}
         <label
           htmlFor="param"

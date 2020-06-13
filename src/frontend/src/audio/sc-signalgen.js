@@ -10,8 +10,6 @@ class ScSignalGen extends ScModule {
       modulation: "No Mod",
       modParam: 1.0,
       volume: 100,
-      LOWEST_FREQUENCY: 40,
-      HIGHEST_FREQUENCY: 10000
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
@@ -109,24 +107,10 @@ class ScSignalGen extends ScModule {
     this.carr.stop();
   }
 
-  computeExpScaleFactor(value) {
-    if (value >= this.options.LOWEST_FREQUENCY &&
-      value <= this.options.HIGHEST_FREQUENCY) {
-      //value -= this.options.LOWEST_FREQUENCY;
-      value /= (this.options.HIGHEST_FREQUENCY - this.options.LOWEST_FREQUENCY);
-      value = this.linearToExp(value);
-      return value;
-    } else {
-      return 1.0;
-    }
-  }
-
   set frequency(value) {
     value = parseFloat(value);
     this.options.frequency = value;
-    let scaleFactor = this.computeExpScaleFactor(value);
-    console.log('multiplier=', scaleFactor);
-    this.carr.frequency = value * scaleFactor;
+    this.carr.frequency = value;
   }
 
   set waveform(type) {
