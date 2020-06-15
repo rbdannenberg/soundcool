@@ -6,35 +6,33 @@ class ScSpeakers extends ScModule {
     super(context);
 
     let defOpts = {
-      muted: false
+      suspended: false
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
   }
 
   setupNodes() {
-    this.inNode = this.context.createGain();
-    this.outNode = this.context.destination;
+    this.inNode = this.outNode = this.context.createGain();
+    this.dest = this.context.destination;
     this.splitter = new ChannelSplitterNode(this.context, {
       numberOfOutputs: 2
     });
     this.analyzerL = new ScAnalyzer(this.context, { type: "level" });
     this.analyzerR = new ScAnalyzer(this.context, { type: "level" });
     this.inNode.connect(this.splitter);
-    this.inNode.connect(this.outNode);
+    this.inNode.connect(this.dest);
     this.splitter.connect(this.analyzerL.inNode, 0);
     this.splitter.connect(this.analyzerR.inNode, 1);
 
     this.inputs.push(this.inNode);
-    this.outputs.push(this.outNode);
-    if (this.options.muted) {
-      this.inNode.gain.value = 0;
-    }
+    this.outputs.push(this.inNode);
+    this.suspended = this.options.suspended;
   }
 
   destroy() {
     this.inNode.disconnect(this.splitter);
-    this.inNode.disconnect(this.outNode);
+    this.inNode.disconnect(this.dest);
     this.splitter.disconnect(this.analyzerL.inNode, 0);
     this.splitter.disconnect(this.analyzerR.inNode, 1);
   }
@@ -45,13 +43,16 @@ class ScSpeakers extends ScModule {
     return [dataL, dataR];
   }
 
-  set muted(value) {
-    console.log("changing muted");
-    this.options.muted = value;
-    if (this.options.muted) {
-      this.inNode.gain.value = 0;
-    } else {
-      this.inNode.gain.value = 1;
+  set suspended(value) {
+    this.options.suspended = value;
+    if (this.context.state === 'running' && this.options.suspended) {
+      this.volume = 0;
+      setTimeout(() => {
+        this.context.suspend();
+      }, 250);
+    } else if (this.context.state === 'suspended' && !this.options.suspended){
+      this.context.resume();
+      this.volume = 100;
     }
   }
 }

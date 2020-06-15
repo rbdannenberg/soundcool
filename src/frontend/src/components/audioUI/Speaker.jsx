@@ -84,9 +84,9 @@ class Speaker extends React.Component {
   };
 
   render() {
-    let { id, muted } = this.props.blockInfo;
+    let { id, suspended } = this.props.blockInfo;
     let playButton;
-    if (muted) {
+    if (suspended) {
       playButton = <FaVolumeMute />;
     } else {
       playButton = <FaVolumeUp />;
@@ -166,7 +166,7 @@ class Speaker extends React.Component {
               backgroundColor: "transparent",
               border: "1px dotted"
             }}
-            onClick={() => this.props.changeBlock(id, "muted", undefined)}
+            onClick={() => this.props.changeBlock(id, "suspended", undefined)}
           >
             {playButton}
           </button>

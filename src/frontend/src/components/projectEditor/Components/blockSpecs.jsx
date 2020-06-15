@@ -33,7 +33,7 @@ const audioDefaults = {
     volume: 100
   },
   Speaker: {
-    muted: false,
+    suspended: false,
     meterL: 60,
     meterR: 60
   },

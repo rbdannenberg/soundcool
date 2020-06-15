@@ -56,7 +56,7 @@ class ScModule {
     // console.log(outStr);
   }
 
-  applyWithSmoothing(audioParam, value, timeConstant=5e-3) {
+  applyWithSmoothing(audioParam, value, timeConstant=50e-3) {
     let currentTime = this.context.currentTime;
     audioParam.setTargetAtTime(value, currentTime,
       timeConstant);
