@@ -9,6 +9,7 @@ import ScPan from "../../audio/sc-pan";
 import ScOscilloscope from "../../audio/sc-oscilloscope";
 import ScSpectroscope from "../../audio/sc-spectroscope";
 import ScPitch from "../../audio/sc-pitch-phasor";
+import ScTransposer from "../../audio/sc-transposer";
 //import ScPitch from "../audio/sc-pitch";
 import ScMixer from "../../audio/sc-mixer";
 import ScReverb from "../../audio/sc-reverb";
@@ -23,9 +24,10 @@ function initAudioObj(typeName, audioConfig) {
         t = new ScDelay(scContext);
         resolve(t);
         break;
-      // case "Transposer":
-      //   t = new ScTransposer(scContext);
-      //   break;
+       case "Transposer":
+        t = new ScTransposer(scContext, audioConfig);
+        resolve(t);
+        break;
       case "Pan":
         t = new ScPan(scContext);
         resolve(t);

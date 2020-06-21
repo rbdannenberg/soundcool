@@ -31,6 +31,7 @@ import transposer from "../Components/pictures/transposer.gif";
 // import imagesampleV from "../Components/pictures/imagesampleV.gif";
 import granSynth from "../Components/pictures/granular.gif";
 import { asyncAddBlock } from "../thunks.js";
+import { audioDefaults } from "./blockSpecs";
 
 const AddBlock = (props) => {
   return (

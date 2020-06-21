@@ -44,7 +44,13 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               left: "10px",
               top: "20px"
             }}
-            onChange={e => changeBlock(id,"sliderCents",e.target.value)}
+            onChange={e => {
+              changeBlock(id,
+                "sliderCents",
+                e.target.value);
+              changeBlock(id, "pitchShift",
+                parseInt(e.target.value) + parseInt(buttonCents));
+              }}
             min={-50}
             max={50}
             value={c === 0 ? 0 : sliderCents}
@@ -92,6 +98,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             onClick={e => {
               let x = buttonCents - 100;
               changeBlock(id,"buttonCents",x)
+              changeBlock(id, "pitchShift", parseInt(x) + parseInt(sliderCents));
             }}
           >
             &#9837;
@@ -104,9 +111,11 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               left: "116px"
             }}
             onClick={() => {
-              let x = 0 - sliderCents;
+              //let x = 0 - sliderCents;
               // console.log(x);
-              changeBlock(id,"buttonCents",x)
+              changeBlock(id,"buttonCents", 0);
+              changeBlock(id,"sliderCents", 0);
+              changeBlock(id,"pitchShift", 0);
             }}
           >
             &#9838;
@@ -120,8 +129,8 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             }}
             onClick={e => {
               let x = buttonCents + 100;
-              changeBlock(id,"buttonCents",x)
-              
+              changeBlock(id,"buttonCents", x);
+              changeBlock(id, "pitchShift", parseInt(x) + parseInt(sliderCents));
             }}
           >
             &#9839;

@@ -10,7 +10,8 @@ const audioDefaults = {
   },
   Transposer: {
     buttonCents: 0,
-    sliderCents: 0
+    sliderCents: 0,
+    pitchShift: 0
   },
   Pan: {
     panVal: 0
