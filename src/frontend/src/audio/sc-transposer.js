@@ -1,4 +1,3 @@
-import ScModule from "./sc-module.js";
 import ScPitch from "./sc-pitch-phasor.js";
 
 class ScTransposer extends ScPitch {
