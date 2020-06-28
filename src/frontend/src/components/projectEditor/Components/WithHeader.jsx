@@ -116,6 +116,7 @@ const WithHeader = ({
   let {
     typeName,
     name,
+    givenName,
     id,
     audioObj,
     inDisabled,
@@ -285,13 +286,30 @@ const WithHeader = ({
           <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
             {name}
           </span>
-          <span
-            className="badge badge-secondary badge-pill m-1"
-            style={{ fontSize: "0.8rem" }}
-            id="typeName"
-          >
-            {typeName}
-          </span>
+          <input
+            // className=""
+            class="form-control badge-secondary badge-pill m-1"
+            placeholder={typeName}
+            style={{
+              fontSize: "0.8rem",
+              color: "black",
+              backgroundColor: "white",
+              textAlign: "center",
+              fontWeight: "bold",
+              width: "140px",
+              height: "20px",
+              display: "inline"
+            }}
+            id="givenName"
+            onChange={e => {
+              dispatch({
+                type: "CHANGE_BLOCK",
+                id: id,
+                field: "givenName",
+                value: e.target.value
+              });
+            }}
+          />
           <span className="float-right">
             <button
               id="collapseButton"

@@ -7,6 +7,7 @@ const block = (state, action) => {
         id: action.newId,
         typeId: action.newTypeId,
         name: action.typeName.charAt(0) + action.newTypeId,
+        givenName: action.typeName,
         collapse: false,
         audioObj: action.audioObj,
         // contains generic values like in, out, collapse and also personal values
