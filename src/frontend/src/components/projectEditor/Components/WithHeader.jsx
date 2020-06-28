@@ -33,6 +33,7 @@ import {
   focusElementById,
   setCssPropById
 } from "../../../actions/common";
+import { element } from "prop-types";
 
 const eva = typeName => {
   let t;
@@ -180,7 +181,18 @@ const WithHeader = ({
           }
         }}
         onMouseEnter={() => {
-          console.log("try hover");
+          if (inNode[0] && inNode[0].length > 0) {
+            let inId = inNode[0][1];
+            var elem = document.getElementById(inId);
+            elem.style.opacity = 0.5;
+          }
+        }}
+        onMouseLeave={() => {
+          if (inNode[0] && inNode[0].length > 0) {
+            let inId = inNode[0][1];
+            var elem = document.getElementById(inId);
+            elem.style.opacity = 1;
+          }
         }}
         onContextMenu={e => {
           e.preventDefault();
@@ -250,6 +262,28 @@ const WithHeader = ({
             node: "nowOut",
             value: [name, "0", id, audioObj]
           });
+        }}
+        onMouseEnter={() => {
+          if (outNode) {
+            let outId;
+            outNode.forEach(node => {
+              if (node.length > 0) {
+                outId = node[1];
+                document.getElementById(outId).style.opacity = 0.5;
+              }
+            });
+          }
+        }}
+        onMouseLeave={() => {
+          if (outNode) {
+            let outId;
+            outNode.forEach(node => {
+              if (node.length > 0) {
+                outId = node[1];
+                document.getElementById(outId).style.opacity = 1;
+              }
+            });
+          }
         }}
       >
         <div>{"Out"}</div>
