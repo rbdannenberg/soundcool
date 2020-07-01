@@ -14,13 +14,13 @@ const circleStyle = {
 };
 
 const Transposer = ({ blockInfo, changeBlock }) => {
-  let { id, sliderCents, buttonCents } = blockInfo;
+  let { id, sliderCents, buttonCents, grainDur } = blockInfo;
   const c = parseInt(buttonCents) + parseInt(sliderCents);
   return (
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "88px", position: "relative" }}
+        style={{ width: "288px", height: "140px", position: "relative" }}
       >
         <label
           htmlFor="cents"
@@ -51,8 +51,8 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               changeBlock(id, "pitchShift",
                 parseInt(e.target.value) + parseInt(buttonCents));
               }}
-            min={-50}
-            max={50}
+            min={-400}
+            max={400}
             value={c === 0 ? 0 : sliderCents}
             id="cents"
           />
@@ -68,7 +68,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               className="float-left"
               style={{ position: "absolute", left: "5px" }}
             >
-              -50
+              -400
             </span>
             <span
               className="float-center"
@@ -80,13 +80,73 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               className="float-right"
               style={{ position: "absolute", left: "235px" }}
             >
-              +50
+              +400
             </span>
           </div>
         </div>
+
+
+
+        <label
+          htmlFor="grainDur"
+          style={{
+            fontSize: "0.8rem",
+            position: "absolute",
+            right: "24px",
+            top: "55px"
+          }}
+          className="float-right mx-2"
+        >
+          {"GrainSize (ms): " + grainDur}
+        </label>
+        <div className="text-center">
+          <input
+            className="slider mx-2"
+            type="range"
+            style={{
+              width: "15rem",
+              position: "absolute",
+              left: "10px",
+              top: "65px"
+            }}
+            onChange={e => {
+              changeBlock(id,
+                "grainDur",
+                parseInt(e.target.value));
+              }}
+            min={10}
+            max={1000}
+            id="grainDur"
+            value={grainDur}
+          />
+          <div
+            className="mx-2"
+            style={{
+              fontSize: "0.8rem",
+              position: "absolute",
+              top: "80px"
+            }}
+          >
+            <span
+              className="float-left"
+              style={{ position: "absolute", left: "5px" }}
+            >
+              10
+            </span>
+            <span
+              className="float-right"
+              style={{ position: "absolute", left: "235px" }}
+            >
+              1000
+            </span>
+          </div>
+        </div>
+
+
+
         <div
           className="text-center"
-          style={{ position: "absolute", top: "50px" }}
+          style={{ position: "absolute", top: "87px" }}
         >
           <button
             className="btn btn-light m-2"

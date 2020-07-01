@@ -11,7 +11,8 @@ const audioDefaults = {
   Transposer: {
     buttonCents: 0,
     sliderCents: 0,
-    pitchShift: 0
+    pitchShift: 0,
+    grainDur: 50
   },
   Pan: {
     panVal: 0
