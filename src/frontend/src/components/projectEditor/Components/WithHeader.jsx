@@ -330,7 +330,7 @@ const WithHeader = ({
               backgroundColor: "white",
               textAlign: "center",
               fontWeight: "bold",
-              width: "140px",
+              width: "130px",
               height: "20px",
               display: "inline"
             }}

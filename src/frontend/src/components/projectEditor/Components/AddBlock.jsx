@@ -33,7 +33,7 @@ import granSynth from "../Components/pictures/granular.gif";
 import { asyncAddBlock } from "../thunks.js";
 import { audioDefaults } from "./blockSpecs";
 
-const AddBlock = (props) => {
+const AddBlock = props => {
   return (
     <React.Fragment>
       <ReactTooltip place="top" type="info" effect="float" />
@@ -122,7 +122,7 @@ const AddBlock = (props) => {
       <div
         class="contenedor"
         id="transposer"
-        style={{ position: "absolute", left: "0px", top: "262px" }}
+        style={{ position: "absolute", left: "0px", top: "227px" }}
       >
         <button
           name="boton"
@@ -133,7 +133,7 @@ const AddBlock = (props) => {
           <img alt="Transposer" src={transposer}></img>
         </button>
       </div>
-      <div
+      {/* <div
         class="contenedor"
         id="pitch"
         style={{ position: "absolute", left: "0px", top: "297px" }}
@@ -146,7 +146,7 @@ const AddBlock = (props) => {
         >
           <img alt="Pitch" src={pitch}></img>
         </button>
-      </div>
+      </div> */}
       <div
         class="contenedor"
         id="pan"
@@ -162,7 +162,7 @@ const AddBlock = (props) => {
         </button>
       </div>
 
-      <div
+      {/* <div
         class="contenedor"
         id="filter"
         style={{ position: "absolute", left: "0px", top: "227px" }}
@@ -175,7 +175,7 @@ const AddBlock = (props) => {
         >
           <img alt="Filter" src={filter}></img>
         </button>
-      </div>
+      </div> */}
       <div
         class="contenedor"
         id="oscilloscope"
@@ -215,7 +215,7 @@ const AddBlock = (props) => {
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SignalGen"))}
-          data-tip="Signalgen"
+          data-tip="SignalGen"
         >
           <img alt="Signal Genrator" src={signalgen}></img>
         </button>
@@ -230,7 +230,7 @@ const AddBlock = (props) => {
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("GranSynth"))}
-          data-tip="Granular Synthesis"
+          data-tip="GranSynth"
         >
           <img alt="Granular Synthesis" src={granSynth}></img>
         </button>
@@ -266,13 +266,13 @@ const AddBlock = (props) => {
       <div
         class="contenedor"
         id="directinput"
-        style={{ position: "absolute", left: "50px", top: "262px" }}
+        style={{ position: "absolute", left: "50px", top: "192px" }}
       >
         <button
           name="boton"
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
-          data-tip="Direct Input"
+          data-tip="DirectInput"
         >
           <img alt="Direct Input" src={directinput}></img>
         </button>
@@ -293,7 +293,7 @@ const AddBlock = (props) => {
         </button>
       </div>
 
-      <div
+      {/* <div
         class="contenedor"
         id="record"
         style={{ position: "absolute", left: "50px", top: "192px" }}
@@ -306,7 +306,7 @@ const AddBlock = (props) => {
         >
           <img alt="Record" src={record}></img>
         </button>
-      </div>
+      </div> */}
     </React.Fragment>
   );
 };

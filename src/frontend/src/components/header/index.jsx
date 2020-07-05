@@ -187,7 +187,10 @@ class Header extends Component {
     return (
       <React.Fragment>
         <Navbar dark expand="md" style={{ padding: "0", zIndex: 10 }}>
-          <div className="container">
+          <div
+            className="container"
+            style={{ marginLeft: "0", paddingLeft: "5px" }}
+          >
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
               <img
@@ -251,9 +254,15 @@ class Header extends Component {
                             });
                           }}
                         >
-                          {this.props.projectControl.floatingView
-                            ? "Floating View"
-                            : "Column View"}
+                          {this.props.projectControl.floatingView ? (
+                            <div>
+                              <b> &#9746;</b> Column View
+                            </div>
+                          ) : (
+                            <div>
+                              <b>&#9745;</b> Column View
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="nav-link">

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Card,
-  CardBody,
-  Media
-} from "reactstrap";
+import { Breadcrumb, BreadcrumbItem, Card, CardBody, Media } from "reactstrap";
 import { Link } from "react-router-dom";
 
 function About(props) {
@@ -26,7 +20,7 @@ function About(props) {
         <Media body className="">
           <Media heading>{leader.name}</Media>
           <p>{leader.designation}</p>
-          <p>{leader.description}</p>
+          {/* <p>{leader.description}</p> */}
         </Media>
       </Media>
     );
@@ -62,7 +56,7 @@ function About(props) {
             institutions.
           </p>
         </div>
-        <div className="col-12">
+        {/* <div className="col-12">
           <Card>
             <CardBody className="bg-faded">
               <blockquote className="blockquote">
@@ -74,14 +68,14 @@ function About(props) {
               </blockquote>
             </CardBody>
           </Card>
-        </div>
+        </div> */}
       </div>
       <div
         className="row row-content"
         style={{ padding: "0px", minHeight: "0px" }}
       >
         <div className="col-12">
-          <h2>Partners</h2>
+          <h2>Contributors</h2>
         </div>
         <div className="col-12">
           <Media list className="row" style={{ padding: "0px" }}>
