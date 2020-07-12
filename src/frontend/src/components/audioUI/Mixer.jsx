@@ -1,5 +1,5 @@
 import React from "react";
-import { changeBlock, connectBlock } from "./actions";
+import { changeBlock, connectOrDisconnectBlock, setOpacity } from "./actions";
 import { connect } from "react-redux";
 import {
   getCssPropById,
@@ -358,11 +358,12 @@ class Mixer extends React.Component {
       audioObj
     } = this.props.blockInfo;
     let changeBlock = this.props.changeBlock;
-    let connectBlock = this.props.connectBlock;
+    let connectOrDisconnectBlock = this.props.connectOrDisconnectBlock;
+    let setOpacity = this.props.setOpacity;
     let backgroundColor = [];
     for (let i = 0; i < 8; i++) {
-      if (inNode[i]) {
-        backgroundColor[i] = getCssPropById(inNode[i][0], "background-color");
+      if (inNode[i] && inNode[i].length > 0) {
+        backgroundColor[i] = getCssPropById(inNode[i][1], "background-color");
       } else {
         backgroundColor[i] = "white";
       }
@@ -388,7 +389,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[0]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 0, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 0, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 0, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 0, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -402,7 +413,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[0] === undefined ? "In" : inNode[0][0]}
+                {inNode[0] && inNode[0].length > 0 ? inNode[0][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -469,7 +480,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[1]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 1, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 1, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 1, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 1, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -483,7 +504,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[1] === undefined ? "In" : inNode[1][0]}
+                {inNode[1] && inNode[1].length > 0 ? inNode[1][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -550,7 +571,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[2]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 2, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 2, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 2, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 2, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -564,7 +595,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[2] === undefined ? "In" : inNode[2][0]}
+                {inNode[2] && inNode[2].length > 0 ? inNode[2][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -631,7 +662,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[3]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 3, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 3, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 3, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 3, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -645,7 +686,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[3] === undefined ? "In" : inNode[3][0]}
+                {inNode[3] && inNode[3].length > 0 ? inNode[3][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -712,7 +753,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[4]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 4, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 4, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 4, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 4, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -726,7 +777,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[4] === undefined ? "In" : inNode[4][0]}
+                {inNode[4] && inNode[4].length > 0 ? inNode[4][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -793,7 +844,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[5]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 5, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 5, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 5, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 5, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -807,7 +868,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[5] === undefined ? "In" : inNode[5][0]}
+                {inNode[5] && inNode[5].length > 0 ? inNode[5][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -880,7 +941,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[6]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 6, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 6, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 6, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 6, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -894,7 +965,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[6] === undefined ? "In" : inNode[6][0]}
+                {inNode[6] && inNode[6].length > 0 ? inNode[6][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -967,7 +1038,17 @@ class Mixer extends React.Component {
                   backgroundColor: backgroundColor[7]
                 }}
                 onClick={() => {
-                  connectBlock("nowIn", [name, 7, id, audioObj]);
+                  connectOrDisconnectBlock(
+                    "nowIn",
+                    [name, 7, id, audioObj],
+                    inNode
+                  );
+                }}
+                onMouseEnter={() => {
+                  setOpacity(inNode, 7, 0.5);
+                }}
+                onMouseLeave={() => {
+                  setOpacity(inNode, 7, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -981,7 +1062,7 @@ class Mixer extends React.Component {
                   }
                 }}
               >
-                {inNode[7] === undefined ? "In" : inNode[7][0]}
+                {inNode[7] && inNode[7].length > 0 ? inNode[7][0] : "In"}
               </button>
               <div className="">
                 <div
@@ -1122,7 +1203,8 @@ const mapStateToProps = state => {
     state
   };
 };
-export default connect(
-  mapStateToProps,
-  { changeBlock, connectBlock }
-)(Mixer);
+export default connect(mapStateToProps, {
+  changeBlock,
+  connectOrDisconnectBlock,
+  setOpacity
+})(Mixer);

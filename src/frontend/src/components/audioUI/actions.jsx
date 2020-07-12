@@ -8,13 +8,41 @@ export const changeBlock = (id, field, value, optional) => dispatch => {
   });
 };
 
-export const connectBlock = (node, value, optional) => dispatch => {
-  // console.log(node);
-  // console.log(value);
-  dispatch({
-    type: "CONNECTING_BLOCK",
-    node,
-    value,
-    ...optional
-  });
+export const connectOrDisconnectBlock = (
+  node,
+  value,
+  inNode,
+  optional
+) => dispatch => {
+  let [name, port, id, audioObj] = value;
+  // if there is, disconnect
+  if (inNode[port] && inNode[port].length > 0) {
+    dispatch({
+      type: "DISCONNECTING_BLOCK",
+      node,
+      value,
+      ...optional
+    });
+  } else {
+    dispatch({
+      type: "CONNECTING_BLOCK",
+      node,
+      value,
+      ...optional
+    });
+    // dispatch({
+    //   type: "CONNECTING_BLOCK",
+    //   node,
+    //   value,
+    //   ...optional
+    // });
+  }
+};
+
+export const setOpacity = (inNode, port, opacity) => {
+  if (inNode[port] && inNode[port].length > 0) {
+    let inId = inNode[port][1];
+    var elem = document.getElementById(inId);
+    elem.style.opacity = opacity;
+  }
 };
