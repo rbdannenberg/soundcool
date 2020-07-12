@@ -323,7 +323,7 @@ const WithHeader = ({
           <input
             // className=""
             class="form-control badge-secondary badge-pill m-1"
-            placeholder={typeName}
+            // placeholder={typeName}
             style={{
               fontSize: "0.8rem",
               color: "black",
@@ -335,6 +335,7 @@ const WithHeader = ({
               display: "inline"
             }}
             id="givenName"
+            value={givenName}
             onChange={e => {
               dispatch({
                 type: "CHANGE_BLOCK",
