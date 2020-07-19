@@ -49,18 +49,18 @@ class Oscilloscope extends React.Component {
         <div
           className=""
           style={{
-            width: "288px",
-            height: "188px",
+            width: "234px",
+            height: "150px",
             position: "relative"
           }}
         >
           <div
             style={{
               position: "absolute",
-              width: "293px",
-              height: "168px",
-              top: "10px",
-              left: "10px",
+              width: "11.8125rem",
+              height: "136px",
+              top: "8px",
+              left: "8px",
               backgroundColor: "#DCDEE0"
             }}
           >
@@ -68,8 +68,8 @@ class Oscilloscope extends React.Component {
               ref={this.canvasRef}
               style={{
                 position: "absolute",
-                width: "293px",
-                height: "168px"
+                width: "11.8125rem",
+                height: "136px"
               }}
             />
           </div>

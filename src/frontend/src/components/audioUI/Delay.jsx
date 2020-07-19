@@ -9,7 +9,7 @@ const Delay = ({ blockInfo, changeBlock }) => {
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "44px", position: "relative" }}
+        style={{ width: "230px", height: "35px", position: "relative" }}
       >
         <ReactTooltip place="top" type="info" effect="float" />
 
@@ -18,9 +18,9 @@ const Delay = ({ blockInfo, changeBlock }) => {
           className="slider"
           type="range"
           style={{
-            width: "178px",
+            width: "7.5rem",
             position: "absolute",
-            top: "6px",
+            top: "-0.375rem",
             left: "6px"
           }}
           onChange={e => changeBlock(id, "delayTime", e.target.value)}
@@ -32,10 +32,10 @@ const Delay = ({ blockInfo, changeBlock }) => {
         <div class="form-group">
           <label
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "-15px",
-              left: "194px"
+              top: "-1.0625rem",
+              left: "7.5rem"
             }}
             data-tip="the amount of delay in ms: range [1, maxDelay]"
           >
@@ -48,20 +48,20 @@ const Delay = ({ blockInfo, changeBlock }) => {
             onChange={e => changeBlock(id, "delayTime", e.target.value)}
             style={{
               position: "absolute",
-              width: "55px",
-              height: "16px",
-              left: "194px",
-              top: "5px",
-              fontSize: "0.7rem",
+              width: "2.1875rem",
+              height: "12px",
+              left: "8.125rem",
+              top: "-2px",
+              fontSize: "0.64rem",
               padding: "0.0rem"
             }}
           />
           <label
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "-15px",
-              left: "264px"
+              top: "-1.0625rem",
+              left: "11.25rem"
             }}
             data-tip="max delay in ms: range [1, 60000]"
           >
@@ -73,11 +73,11 @@ const Delay = ({ blockInfo, changeBlock }) => {
             onChange={e => changeBlock(id, "maxDelayTime", e.target.value)}
             style={{
               position: "absolute",
-              width: "50px",
-              height: "16px",
-              left: "260px",
-              top: "5px",
-              fontSize: "0.7rem",
+              width: "2.1875rem",
+              height: "12px",
+              left: "10.6rem",
+              top: "-2px",
+              fontSize: "0.64rem",
               padding: "0.0rem"
             }}
           />
@@ -88,9 +88,9 @@ const Delay = ({ blockInfo, changeBlock }) => {
           className="slider "
           type="range"
           style={{
-            width: "178px",
+            width: "7.5rem",
             position: "absolute",
-            top: "24px",
+            top: "13px",
             left: "6px"
           }}
           onChange={e => changeBlock(id, "delayFeedback", e.target.value)}
@@ -103,10 +103,10 @@ const Delay = ({ blockInfo, changeBlock }) => {
         <div class="form-group">
           <label
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "22px",
-              left: "194px"
+              top: "1rem",
+              left: "8.125rem"
             }}
             data-tip="Feedback: range [0, 1]"
           >
@@ -118,11 +118,11 @@ const Delay = ({ blockInfo, changeBlock }) => {
             value={delayFeedback}
             style={{
               position: "absolute",
-              width: "50px",
-              height: "16px",
-              left: "260px",
-              top: "24px",
-              fontSize: "0.7rem",
+              width: "1.6875rem",
+              height: "12px",
+              left: "10.9375rem",
+              top: "1rem",
+              fontSize: "0.64rem",
               padding: "0.0rem"
             }}
             onChange={e => changeBlock(id, "delayFeedback", e.target.value)}
@@ -133,10 +133,11 @@ const Delay = ({ blockInfo, changeBlock }) => {
       {/* Footer */}
       <div
         className="text-center"
-        style={{ backgroundColor: "grey", height: "30px" }}
+        style={{ backgroundColor: "grey", height: "24px" }}
       >
         <span className="col text-center">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="osc" style={{ fontSize: "0.64rem", 
+            marginBottom: "0"}}>
             OSC
           </label>
           <input
@@ -147,13 +148,14 @@ const Delay = ({ blockInfo, changeBlock }) => {
           />
         </span>
         <span className="col text-center">
-          <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC port:
           </label>
           <input
             type="text"
             className="my-1"
-            style={{ height: "1.5rem", width: "3rem" }}
+            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
             id="oscPort"
             onChange={e => changeBlock(id, "oscPort", e.target.value)}
           />

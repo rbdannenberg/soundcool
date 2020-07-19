@@ -6,11 +6,11 @@ import AddSound from "../addSound";
 import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
 
 const circleStyle = {
-  width: "1.5rem",
-  height: "1.5rem",
+  width: "1.2rem",
+  height: "1.2rem",
   textAlign: "center",
   padding: "0px",
-  fontSize: "10px",
+  fontSize: "0.64rem",
   // lineHeight: 1.428571429,
   borderRadius: "1rem",
   borderColor: "black"
@@ -179,12 +179,12 @@ class Player extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="" style={{ position: "relative", height: "140px" }}>
+        <div className="" style={{ position: "relative", height: "6.25rem" }}>
           <div
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "10px"
+              left: "8px"
             }}
           >
             Speed: {speed}
@@ -193,10 +193,10 @@ class Player extends React.Component {
             className="slider mx-1 my-2 text-center"
             type="range"
             style={{
-              width: "196px",
+              width: "10rem",
               position: "absolute",
-              left: "5px",
-              top: "12px"
+              left: "0.3125rem",
+              top: "2px"
             }}
             onChange={e => this.props.changeBlock(id, "speed", e.target.value)}
             min={0.01}
@@ -208,19 +208,20 @@ class Player extends React.Component {
           <div
             className="text-center mx-1"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "40px"
+              top: "30px"
             }}
           >
             <div
               className=""
               style={{
                 position: "absolute",
-                left: "5px",
+                left: "0.3125rem",
                 cursor: "pointer",
                 border: "1px solid",
-                width: "20px"
+                width: "1.25rem",
+                fontSize: "0.64rem"
               }}
               onClick={e => this.props.changeBlock(id, "speed", 0.01)}
             >
@@ -230,10 +231,11 @@ class Player extends React.Component {
               className=""
               style={{
                 position: "absolute",
-                left: "90px",
+                left: "4.7rem",
                 cursor: "pointer",
                 border: "1px solid",
-                width: "20px"
+                width: "1.25rem",
+                fontSize: "0.64rem"
               }}
               onClick={e => this.props.changeBlock(id, "speed", 1)}
             >
@@ -243,10 +245,11 @@ class Player extends React.Component {
               className=""
               style={{
                 position: "absolute",
-                left: "180px",
+                left: "9rem",
                 cursor: "pointer",
                 border: "1px solid",
-                width: "20px"
+                width: "1.25rem",
+                fontSize: "0.64rem"
               }}
               onClick={e => this.props.changeBlock(id, "speed", 2)}
             >
@@ -257,11 +260,12 @@ class Player extends React.Component {
           <div
             className="progress"
             style={{
-              width: "196px",
+              width: "10.2rem",
               position: "absolute",
-              top: "65px",
-              left: "8px",
-              backgroundColor: "black"
+              top: "52px",
+              left: "0.5rem",
+              backgroundColor: "black",
+              height: "12px"
             }}
           >
             <canvas style={{ position: "relative" }} ref={this.canvasSeekRef} />
@@ -269,11 +273,11 @@ class Player extends React.Component {
 
           <div
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               textAlign: "right",
               position: "absolute",
-              top: "84px",
-              right: "110px"
+              top: "64px",
+              right: "2.2rem"
             }}
           >
             {(isNaN(hour) ? "00" : hour) +
@@ -286,15 +290,15 @@ class Player extends React.Component {
           {/* check and buttons */}
           <span
             className="text-center"
-            style={{ position: "absolute", top: "100px" }}
+            style={{ position: "absolute", top: "73px" }}
           >
             <label
               htmlFor="loop"
               style={{
-                fontSize: "0.8rem",
+                fontSize: "0.64rem",
                 position: "absolute",
-                left: "10px",
-                top: "4px"
+                left: "0.5rem",
+                top: "0.25rem"
               }}
             >
               Loop
@@ -306,10 +310,8 @@ class Player extends React.Component {
               id="loop"
               style={{
                 position: "absolute",
-                left: "45px",
-                top: "5px",
-                height: "20px",
-                width: "20px"
+                left: "2.375rem",
+                top: "0.25rem",
               }}
               onClick={() =>
                 this.props.changeBlock(id, "loop", !audioObj.options.loop)
@@ -322,7 +324,7 @@ class Player extends React.Component {
               style={{
                 ...circleStyle,
                 position: "absolute",
-                left: "78px"
+                left: "4.0625rem"
               }}
               onClick={() => {
                 audioObj.isPlaying
@@ -336,15 +338,14 @@ class Player extends React.Component {
               {!audioObj.isPlaying && (
                 <FaPlay
                   style={{
-                    fontSize: "12px",
-                    marginLeft: "2.5px"
+                    fontSize: "0.64rem",
                   }}
                 />
               )}
               {audioObj.isPlaying && (
                 <FaPause
                   style={{
-                    fontSize: "12px",
+                    fontSize: "0.64rem",
                     marginLeft: "0px"
                   }}
                 />
@@ -356,14 +357,14 @@ class Player extends React.Component {
               style={{
                 ...circleStyle,
                 position: "absolute",
-                left: "120px"
+                left: "96px"
               }}
               onClick={() => {
                 audioObj.stop();
                 this.props.changeBlock(id, "playing", undefined);
               }}
             >
-              <FaSquare style={{ fontSize: "12px" }} />
+              <FaSquare style={{ fontSize: "0.64rem" }} />
             </button>
             <button
               disabled={inDisabled}
@@ -371,7 +372,7 @@ class Player extends React.Component {
               style={{
                 ...circleStyle,
                 position: "absolute",
-                left: "160px"
+                left: "128px"
               }}
               onClick={() => {
                 audioObj.reverse(res => {
@@ -381,7 +382,7 @@ class Player extends React.Component {
             >
               <FaPlay
                 style={{
-                  fontSize: "12px",
+                  //fontSize: "0.64",
                   marginLeft: "-2px",
                   transform: "scaleX(-1)"
                 }}
@@ -393,10 +394,10 @@ class Player extends React.Component {
             className="progress progress-bar-vertical"
             style={{
               position: "absolute",
-              left: "235px",
-              top: "30px",
-              height: "100px",
-              width: "15px",
+              left: "10.8125rem",
+              top: "0.875rem",
+              minHeight: "80px",
+              width: "12px",
               backgroundColor: "black"
             }}
           >
@@ -405,13 +406,14 @@ class Player extends React.Component {
 
           <div
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "260px",
-              top: "5px"
+              left: "10.5rem",
+              top: "-1px",
+              width: "2.4rem"
             }}
           >
-            {"Vol. " + volume}{" "}
+            {"Vol. " + volume}
           </div>
           <input
             className="slider text-center"
@@ -419,10 +421,10 @@ class Player extends React.Component {
             type="range"
             style={{
               width: "1.5rem",
-              height: "110px",
+              height: "80px",
               position: "absolute",
-              left: "268px",
-              top: "26px"
+              left: "11.5625rem",
+              top: "0.875rem"
             }}
             onChange={e => this.props.changeBlock(id, "volume", e.target.value)}
             min={0}
@@ -436,7 +438,8 @@ class Player extends React.Component {
           <AddSound onSoundSelect={onSoundSelect} file={file} />
 
           <span className="col text-center">
-            <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            <label htmlFor="osc" style={{ fontSize: "0.64rem",
+              marginBottom: "0"}}>
               OSC
             </label>
             <input
@@ -447,13 +450,14 @@ class Player extends React.Component {
             />
           </span>
           <span className="col text-center">
-            <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
+            <label htmlFor="oscPort" style={{ fontSize: "0.64rem", 
+              marginBottom: "0"}}>
               OSC port:
             </label>
             <input
               type="text"
               className=""
-              style={{ height: "1.5rem", width: "3rem" }}
+              style={{ height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
               id="oscPort"
               onChange={e =>
                 this.props.changeBlock(id, "oscPort", e.target.value)

@@ -6,12 +6,12 @@ import AddSound from "../addSound";
 import { serveAudio, getAudio, youtubeAudio } from "../sounds/actions";
 
 const circleStyle = {
-  width: "1.5rem",
-  height: "1.5rem",
+  width: "1.2rem",
+  height: "1.2rem",
   textAlign: "center",
   padding: "0px",
-  fontSize: "10px",
-  borderRadius: "1rem",
+  fontSize: "8px",
+  borderRadius: "0.8rem",
   borderColor: "black"
 };
 
@@ -71,21 +71,21 @@ const IndividualPlayer = ({
       style={{
         position: "absolute",
         borderColor: "white",
-        width: "50px",
-        height: "105px",
+        width: "35px",
+        height: "84px",
         borderWidth: "1px",
         borderStyle: "solid"
       }}
     >
-      <div style={{ position: "absolute", left: "2px" }}>{num + 1}</div>
+      <div style={{ position: "absolute", left: "2px", fontSize: "0.8rem" }}>{num + 1}</div>
       <button
         disabled={inDisabled}
         className="btn btn-light m-1"
         style={{
           ...circleStyle,
           position: "absolute",
-          top: "10px",
-          left: "10px"
+          top: "8px",
+          left: "0.25rem"
         }}
         onClick={() => {
           // console.log("playbutton" + num);
@@ -108,8 +108,8 @@ const IndividualPlayer = ({
         style={{
           ...circleStyle,
           position: "absolute",
-          top: "40px",
-          left: "10px"
+          top: "34px",
+          left: "0.25rem"
         }}
         onClick={() => {
           // console.log("i am playing: " + num + audioObj.players[num].isPlaying);
@@ -124,8 +124,8 @@ const IndividualPlayer = ({
       <div
         style={{
           position: "absolute",
-          top: "68px",
-          left: "4px",
+          top: "3.9375rem",
+          left: "-0.1875rem",
           webkitTransform: "scale(0.8)"
         }}
       >
@@ -153,8 +153,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
       <div
         className=""
         style={{
-          width: "288px",
-          height: "290px",
+          height: "13.9rem",
           position: "relative"
         }}
       >
@@ -162,15 +161,15 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
         <div
           style={{
             position: "absolute",
-            top: "2px"
+            top: "-1px"
           }}
         >
           <label
             htmlFor="random"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "3px",
+              left: "0.0625rem",
               top: "4px"
             }}
           >
@@ -183,19 +182,19 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             id="random"
             style={{
               position: "absolute",
-              left: "50px",
-              top: "5px",
-              height: "20px",
-              width: "20px"
+              left: "0.75rem",
+              top: "17px",
+              height: "0.8rem",
+              width: "0.8rem"
             }}
             onClick={() => changeBlock(id, "random", undefined)}
           />
           <label
             htmlFor="loop"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "70px",
+              left: "2.75rem",
               top: "4px"
             }}
           >
@@ -208,20 +207,20 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             id="loop"
             style={{
               position: "absolute",
-              left: "100px",
-              top: "5px",
-              height: "20px",
-              width: "20px"
+              left: "2.9375rem",
+              top: "17px",
+              height: "0.8rem",
+              width: "0.8rem"
             }}
             onClick={() => changeBlock(id, "loop", undefined)}
           />
 
-          <div style={{ position: "absolute", left: "115px" }}>
+          <div style={{ position: "absolute", left: "4.0625rem" }}>
             <div
               style={{
-                fontSize: "0.8rem",
+                fontSize: "0.64rem",
                 position: "absolute",
-                left: "10px",
+                left: "0.625rem",
                 width: "80px"
               }}
             >
@@ -231,10 +230,10 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
               className="slider mx-1 my-2 text-center"
               type="range"
               style={{
-                width: "150px",
+                width: "6.5625rem",
                 position: "absolute",
                 left: "5px",
-                top: "6px"
+                top: "0.125rem"
               }}
               onChange={e => changeBlock(id, "speed", e.target.value)}
               min={0.01}
@@ -248,12 +247,17 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
               style={{
                 fontSize: "0.8rem",
                 position: "absolute",
-                top: "28px"
+                top: "23px"
               }}
             >
               <span
                 className=""
-                style={{ position: "absolute", left: "5px", cursor: "pointer" }}
+                style={{ position: "absolute",
+                    left: "5px",
+                    cursor: "pointer",
+                    fontSize : "0.64rem",
+                    top: "0.25rem"
+                }}
                 onClick={e => changeBlock(id, "speed", 0.01)}
               >
                 x0
@@ -262,8 +266,10 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
                 className=""
                 style={{
                   position: "absolute",
-                  left: "72px",
-                  cursor: "pointer"
+                  left: "3.25rem",
+                  cursor: "pointer",
+                  fontSize : "0.64rem",
+                  top: "0.25rem"
                 }}
                 onClick={e => changeBlock(id, "speed", 1)}
               >
@@ -274,8 +280,10 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
                 onClick={e => changeBlock(id, "speed", 2)}
                 style={{
                   position: "absolute",
-                  left: "140px",
-                  cursor: "pointer"
+                  left: "6.0625rem",
+                  cursor: "pointer",
+                  fontSize : "0.64rem",
+                  top: "0.25rem"
                 }}
               >
                 x2
@@ -288,7 +296,8 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             style={{
               ...circleStyle,
               position: "absolute",
-              left: "275px"
+              left: "11.25rem",
+              top: "0.25rem"
             }}
             onClick={() => changeBlock(id, "reversed", undefined)}
           >
@@ -305,8 +314,8 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
 
         {/* individual players x12 */}
         {l.map(x => {
-          let top = Math.floor(x / 5) * 105 + 50 + "px";
-          let left = (x % 5) * 50 + 15 + "px";
+          let top = Math.floor(x / 5) * 84 + 45 + "px";
+          let left = (x % 5) * 35 + 2 + "px"; //12
           return (
             <div
               key={x}
@@ -334,11 +343,11 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
           orient="vertical"
           type="range"
           style={{
-            width: "1.5rem",
-            height: "220px",
+            width: "1.2rem",
+            height: "170px",
             position: "absolute",
-            left: "278px",
-            top: "50px"
+            left: "11.5rem",
+            top: "2.5rem"
           }}
           onChange={e => changeBlock(id, "masterVolume", e.target.value)}
           min={0}
@@ -352,10 +361,11 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
       {/* footer */}
       <div
         className="text-center"
-        style={{ backgroundColor: "grey", height: "30px" }}
+        style={{ backgroundColor: "grey", height: "24px" }}
       >
         <span className="col text-center">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="osc" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC
           </label>
           <input
@@ -366,13 +376,14 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
           />
         </span>
         <span className="col text-center">
-          <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC port:
           </label>
           <input
             type="text"
             className="my-1"
-            style={{ height: "1.5rem", width: "3rem" }}
+            style={{ height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
             id="oscPort"
             onChange={e => changeBlock(id, "oscPort", e.target.value)}
           />

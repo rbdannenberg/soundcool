@@ -9,23 +9,23 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
   let { id, direction, volume } = blockInfo;
   return (
     <React.Fragment>
-      <div className="" style={{ position: "relative", height: "100px" }}>
+      <div className="" style={{ position: "relative", height: "5rem", width: "13rem" }}>
         <div
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
             top: "0px",
-            left: "125px"
+            left: "5.4375rem"
           }}
         >
           Pan
         </div>
         <span
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            left: "15px",
-            top: "18px"
+            left: "5px",
+            top: "15px"
           }}
         >
           L
@@ -34,10 +34,10 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
           className="slider"
           type="range"
           style={{
-            width: "218px",
+            width: "160px",
             position: "absolute",
-            left: "28px",
-            top: "20px"
+            left: "15px",
+            top: "12px"
           }}
           onChange={e => changeBlock(id, "direction", e.target.value)}
           min={-50}
@@ -47,10 +47,10 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
         />
         <span
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            left: "254px",
-            top: "18px"
+            left: "177px",
+            top: "15px"
           }}
         >
           R
@@ -60,11 +60,12 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
         <div
           className="progress"
           style={{
-            width: "250px",
+            width: "10rem",
             position: "absolute",
-            top: "42px",
-            left: "15px",
-            backgroundColor: "black"
+            top: "2.3875rem",
+            left: "0.9375rem",
+            backgroundColor: "black",
+            height: "0.7rem"
           }}
         >
           <div
@@ -73,39 +74,39 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
             aria-valuenow="60"
             aria-valuemin="0"
             aria-valuemax="100"
-            style={{ width: "60%", backgroundColor: "green" }}
+            style={{ width: "50%", backgroundColor: "green" }}
           />
         </div>
 
         {/* Mute and Channel */}
         <div
           className="text-center"
-          style={{ position: "absolute", top: "68px" }}
+          style={{ position: "absolute", top: "3.625rem" }}
         >
           <label
             htmlFor="muted"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "35px",
+              left: "0.9375rem",
               top: "2px"
             }}
           >
-            MUTE
+            Mute
           </label>
           <input
             type="checkbox"
             className="my-1"
             id="muted"
-            style={{ position: "absolute", left: "80px" }}
+            style={{ position: "absolute", left: "2.525rem", top: "-0.125rem" }}
             onClick={() =>changeBlock(id, "muted", undefined)}
           />
           <label
             htmlFor="channel"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              left: "125px",
+              left: "4.6875rem",
               top: "2px"
             }}
           >
@@ -115,10 +116,11 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
             type="text"
             className=""
             style={{
-              height: "1.5rem",
-              width: "3rem",
+              height: "1.2rem",
+              width: "1.8rem",
               position: "absolute",
-              left: "190px"
+              left: "7.5rem",
+              fontSize: "0.64rem"
             }}
             id="channel"
             onChange={e => changeBlock(id, "channel", e.target.value)}
@@ -131,11 +133,11 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
           orient="vertical"
           type="range"
           style={{
-            width: "1.5rem",
-            height: "90px",
+            width: "1.2rem",
+            height: "72px",
             position: "absolute",
-            left: "278px",
-            top: "5px"
+            left: "185px",
+            top: "2px"
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
@@ -148,22 +150,23 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
 
       <div
         className="text-center"
-        style={{ backgroundColor: "grey", height: "32px" }}
+        style={{ backgroundColor: "grey", height: "24px" }}
       >
         <button
           className="badge-pill badge-light badge-sm mx-2 my-1"
-          style={{ fontSize: "0.8rem" }}
+          style={{ fontSize: "0.64rem" }}
         >
           Audio Settings
         </button>
         <span className="">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="osc" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC port:
           </label>
           <input
             type="text"
             className="m-1"
-            style={{ height: "1.5rem", width: "3rem" }}
+            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
             id="osc"
             onChange={e => changeBlock(id, "osc", e.target.value)}
           />

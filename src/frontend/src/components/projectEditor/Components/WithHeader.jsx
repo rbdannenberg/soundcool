@@ -139,17 +139,17 @@ const WithHeader = ({
         className="btn btn-sm m-1 text-center"
         style={{
           // width: "1.5rem",
-          height: "1.5rem",
-          fontSize: "0.8rem",
+          height: "1rem",
+          fontSize: "0.64rem",
           padding: "0px"
         }}
       />
     );
   } else {
     let style = {
-      width: "1.5rem",
-      height: "1.5rem",
-      fontSize: "0.8rem",
+      width: "1rem",
+      height: "1rem",
+      fontSize: "0.5rem",
       padding: "0px",
       border: "0px"
     };
@@ -212,15 +212,15 @@ const WithHeader = ({
     backgroundColor: "white",
     textAlign: "center",
     padding: "0px",
-    width: "1.5rem",
-    height: "1.5rem",
-    fontSize: "0.8rem"
+    width: "1rem",
+    height: "1rem",
+    fontSize: "0.5rem"
   };
   const circleStyle = {
-    width: "1.5rem",
-    height: "1.5rem",
+    width: "1rem",
+    height: "1rem",
     textAlign: "center",
-    fontSize: "0.8rem",
+    fontSize: "0.5rem",
     padding: "0px",
     lineHeight: 1.428571429,
     borderRadius: "0.5rem",
@@ -298,13 +298,13 @@ const WithHeader = ({
       id={id}
       className="text-left my-1"
       style={{
-        width: "20rem",
+        width: "13rem",
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",
         borderWidth: "2px",
-        transformOrigin: "top left",
-        transform: "scale(0.8)"
+        //transformOrigin: "top left",
+        //transform: "scale(0.8)"
         // clip: "rect(0px,60px,200px,0px)"
         // transform: "scale(0.8) translate(-32px, -30px)"
       }}
@@ -317,7 +317,7 @@ const WithHeader = ({
             </strong>
           )}
           {inButton}
-          <span className="m-1" style={{ fontSize: "0.8rem" }} id="blockName">
+          <span className="m-1" style={{ fontSize: "0.64rem" }} id="blockName">
             {name}
           </span>
           <input
@@ -325,13 +325,13 @@ const WithHeader = ({
             class="form-control badge-secondary badge-pill m-1"
             // placeholder={typeName}
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               color: "black",
               backgroundColor: "white",
               textAlign: "center",
               fontWeight: "bold",
-              width: "130px",
-              height: "20px",
+              width: "4rem",
+              height: "0.7rem",
               display: "inline"
             }}
             id="givenName"
@@ -350,9 +350,11 @@ const WithHeader = ({
               id="collapseButton"
               className="btn btn-light btn-sm m-1 text-center"
               style={{
-                width: "1.5rem",
-                height: "1.5rem",
-                fontSize: "0.4rem"
+                width: "1rem",
+                height: "1rem",
+                fontSize: "0.4rem",
+                padding: "0rem",
+                border: "0.0625rem solid black"
               }}
               onClick={() =>
                 dispatch({
@@ -363,16 +365,18 @@ const WithHeader = ({
                 })
               }
             >
-              <FaMinus style={{ marginLeft: "-1px" }} />
+              <FaMinus/>
             </button>
 
             <button
               id="closeButton"
               className="btn btn-light btn-sm m-1 text-center"
               style={{
-                width: "1.5rem",
-                height: "1.5rem",
-                fontSize: "0.4rem"
+                width: "1rem",
+                height: "1rem",
+                fontSize: "0.4rem",
+                padding: "0rem",
+                border: "0.0625rem solid black"
               }}
               onClick={() => {
                 // handleDelete();
@@ -382,7 +386,7 @@ const WithHeader = ({
                 });
               }}
             >
-              <FaTimes style={{ marginLeft: "-1px" }} />
+              <FaTimes/>
             </button>
             {outButton}
           </span>

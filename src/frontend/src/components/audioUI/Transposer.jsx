@@ -3,13 +3,13 @@ import { changeBlock } from "./actions";
 import { connect } from "react-redux";
 
 const circleStyle = {
-  width: "1.5rem",
-  height: "1.5rem",
+  width: "1.2rem",
+  height: "1.2rem",
   textAlign: "center",
   padding: "0px",
-  fontSize: "16px",
+  fontSize: "13px",
   lineHeight: 1.428571429,
-  borderRadius: "1rem",
+  borderRadius: "0.8rem",
   borderColor: "black"
 };
 
@@ -20,14 +20,14 @@ const Transposer = ({ blockInfo, changeBlock }) => {
     <React.Fragment>
       <div
         className=""
-        style={{ width: "288px", height: "140px", position: "relative" }}
+        style={{ width: "230", height: "103px", position: "relative" }}
       >
         <label
           htmlFor="cents"
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            right: "24px",
+            right: "0.5rem",
             top: "4px"
           }}
           className="float-right mx-2"
@@ -39,10 +39,10 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             className="slider mx-2"
             type="range"
             style={{
-              width: "15rem",
+              width: "11rem",
               position: "absolute",
-              left: "10px",
-              top: "20px"
+              left: "8px",
+              top: "16px"
             }}
             onChange={e => {
               changeBlock(id,
@@ -59,26 +59,26 @@ const Transposer = ({ blockInfo, changeBlock }) => {
           <div
             className="mx-2"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
               top: "36px"
             }}
           >
             <span
               className="float-left"
-              style={{ position: "absolute", left: "5px" }}
+              style={{ position: "absolute", left: "0.3125rem", top: "-6px" }}
             >
               -400
             </span>
             <span
               className="float-center"
-              style={{ position: "absolute", left: "126px" }}
+              style={{ position: "absolute", left: "5.8125rem", top: "-6px" }}
             >
               0
             </span>
             <span
               className="float-right"
-              style={{ position: "absolute", left: "235px" }}
+              style={{ position: "absolute", left: "10.3125rem", top: "-6px" }}
             >
               +400
             </span>
@@ -90,10 +90,10 @@ const Transposer = ({ blockInfo, changeBlock }) => {
         <label
           htmlFor="grainDur"
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            right: "24px",
-            top: "55px"
+            right: "0.5rem",
+            top: "44px"
           }}
           className="float-right mx-2"
         >
@@ -104,10 +104,10 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             className="slider mx-2"
             type="range"
             style={{
-              width: "15rem",
+              width: "11rem",
               position: "absolute",
-              left: "10px",
-              top: "65px"
+              left: "8px",
+              top: "55px"
             }}
             onChange={e => {
               changeBlock(id,
@@ -122,9 +122,9 @@ const Transposer = ({ blockInfo, changeBlock }) => {
           <div
             className="mx-2"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "80px"
+              top: "70px"
             }}
           >
             <span
@@ -135,7 +135,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             </span>
             <span
               className="float-right"
-              style={{ position: "absolute", left: "235px" }}
+              style={{ position: "absolute", left: "10.3125rem" }}
             >
               1000
             </span>
@@ -146,14 +146,14 @@ const Transposer = ({ blockInfo, changeBlock }) => {
 
         <div
           className="text-center"
-          style={{ position: "absolute", top: "87px" }}
+          style={{ position: "absolute", top: "72px" }}
         >
           <button
             className="btn btn-light m-2"
             style={{
               ...circleStyle,
               position: "absolute",
-              left: "56px"
+              left: "2.25rem"
             }}
             onClick={e => {
               let x = buttonCents - 100;
@@ -168,7 +168,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             style={{
               ...circleStyle,
               position: "absolute",
-              left: "116px"
+              left: "5.375rem"
             }}
             onClick={() => {
               //let x = 0 - sliderCents;
@@ -185,7 +185,7 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             style={{
               ...circleStyle,
               position: "absolute",
-              left: "176px"
+              left: "8.5rem"
             }}
             onClick={e => {
               let x = buttonCents + 100;
@@ -200,16 +200,16 @@ const Transposer = ({ blockInfo, changeBlock }) => {
 
       <div
         className="text-center"
-        style={{ height: "30px", backgroundColor: "grey" }}
+        style={{ height: "24px", backgroundColor: "grey" }}
       >
         <div className="col-md-12">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="osc" style={{ fontSize: "0.64rem" }}>
             OSC port:
           </label>
           <input
             type="text"
             className="m-1"
-            style={{ height: "1.5rem", width: "3rem" }}
+            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
             id="osc"
             onChange={e => changeBlock(id,"osc",e.target.value)}
           />

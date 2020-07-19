@@ -129,7 +129,7 @@ class AddSound extends Component {
     const { sounds } = this.state;
     return (
       <React.Fragment>
-        <p>
+        <p style={{fontSize : "0.64rem", marginBottom : "0"}}>
           {this.props.minimal
             ? ""
             : this.props.file
@@ -140,13 +140,13 @@ class AddSound extends Component {
             style={
               this.props.minimal
                 ? {
-                    fontSize: "0.7rem",
+                    fontSize: "0.64rem",
                     width: "40px",
                     lineHeight: "1",
                     margin: "0px",
                     padding: "0.2rem"
                   }
-                : { fontSize: "0.8rem", lineHeight: "1.5" }
+                : { fontSize: "0.64rem", lineHeight: "1.0" }
             }
             onClick={this.addSound}
           >

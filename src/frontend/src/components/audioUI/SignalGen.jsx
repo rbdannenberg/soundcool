@@ -25,15 +25,15 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
   }
   return (
     <React.Fragment>
-      <div className="" style={{ position: "relative", height: "134px" }}>
+      <div className="" style={{ position: "relative", height: "100px" }}>
         {/* frequency slider */}
         <label
           htmlFor="frequency"
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            left: "8px",
-            top: "5px"
+            left: "6px",
+            top: "4px"
           }}
         >
           {"Frequency(hz): "}
@@ -43,11 +43,11 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           value={parseInt(frequency)}
           style={{
             position: "absolute",
-            width: "60px",
-            height: "16px",
-            left: "110px",
-            top: "7px",
-            fontSize: "0.7rem"
+            width: "48px",
+            height: "12px",
+            left: "78px",
+            top: "2px",
+            fontSize: "0.64rem"
           }}
           onChange={e => {
             let value = parseInt(e.target.value);
@@ -58,10 +58,10 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
         <LogInput
           className="slider"
           style={{
-            width: "250px",
+            width: "10rem",
             position: "absolute",
             left: "5px",
-            top: "24px"
+            top: "16px"
           }}
           type="range"
           id="frequency"
@@ -75,10 +75,10 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
         <label
           htmlFor="param"
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
             left: "8px",
-            top: "40px"
+            top: "35px"
           }}
         >
           {modParam}
@@ -87,10 +87,10 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           className="slider"
           type="range"
           style={{
-            width: "250px",
+            width: "10rem",
             position: "absolute",
             left: "5px",
-            top: "58px"
+            top: "45px"
           }}
           onChange={e => {
             if (modulation === "No Mod" || modulation === "RM") {
@@ -121,17 +121,17 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           className="dropdown"
           style={{
             position: "absolute",
-            top: "80px",
+            top: "66px",
             left: "5px"
           }}
         >
           <button
             className="btn-sm btn-light dropdown-toggle l-6 "
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               padding: "0px",
-              width: "100px",
-              height: "25px"
+              width: "64px",
+              height: "20px"
             }}
             id="waveform dropdown"
             data-toggle="dropdown"
@@ -142,7 +142,7 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           </button>
           <div
             className="dropdown-menu"
-            style={{ fontSize: "0.8rem" }}
+            style={{ fontSize: "0.64rem", minWidth: "0rem" }}
             aria-labelledby="waveform dropdown"
           >
             <div
@@ -195,17 +195,17 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           className="dropdown"
           style={{
             position: "absolute",
-            top: "80px",
-            left: "120px"
+            top: "66px",
+            left: "100px"
           }}
         >
           <button
             className="btn-sm btn-light dropdown-toggle"
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               padding: "0px",
-              width: "80px",
-              height: "25px"
+              width: "64px",
+              height: "20px"
             }}
             id="mod dropdown"
             data-toggle="dropdown"
@@ -216,7 +216,7 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           </button>
           <div
             className="dropdown-menu"
-            style={{ fontSize: "0.8rem" }}
+            style={{ fontSize: "0.64rem", minWidth: "0rem" }}
             aria-labelledby="mod dropdown"
           >
             <div
@@ -240,24 +240,25 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
         {/* Volume Slider */}
         <div
           style={{
-            fontSize: "0.8rem",
+            fontSize: "0.64rem",
             position: "absolute",
-            left: "260px",
-            top: "5px"
+            left: "10.55rem",
+            top: "-1px",
+            width: "3rem",
           }}
         >
-          {"Vol: " + volume}{" "}
+          {"Vol: " + volume}
         </div>
         <input
           className="slider text-center"
           orient="vertical"
           type="range"
           style={{
-            width: "1.5rem",
-            height: "100px",
+            width: "1.2rem",
+            height: "80px",
             position: "absolute",
-            left: "275px",
-            top: "26px"
+            left: "11.0625rem",
+            top: "12px"
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
@@ -270,10 +271,11 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
 
       <div
         className="text-center"
-        style={{ backgroundColor: "grey", height: "32px" }}
+        style={{ backgroundColor: "grey", height: "24px" }}
       >
         <span className="col text-center">
-          <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="osc" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC
           </label>
           <input
@@ -284,13 +286,14 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           />
         </span>
         <span className="col text-center">
-          <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
+          <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
+            marginBottom: "0"}}>
             OSC port:
           </label>
           <input
             type="text"
             className="my-1"
-            style={{ height: "1.5rem", width: "3rem" }}
+            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
             id="oscPort"
             onChange={e => changeBlock(id, "oscPort", e.target.value)}
           />

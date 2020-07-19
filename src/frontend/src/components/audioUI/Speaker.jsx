@@ -4,8 +4,8 @@ import { changeBlock } from "./actions";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 
 const circleStyle = {
-  width: "2rem",
-  height: "2rem",
+  width: "1.6rem",
+  height: "1.6rem",
   textAlign: "center",
   fontSize: "15px",
   lineHeight: 1.428571429,
@@ -95,16 +95,16 @@ class Speaker extends React.Component {
       <React.Fragment>
         <div
           className="text-center"
-          style={{ position: "relative", height: "48px" }}
+          style={{ position: "relative", height: "38px" }}
         >
           {/* L and R Progress Bars */}
           <div
             className=""
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "3px",
-              left: "12px"
+              top: "0px",
+              left: "0.1875rem"
             }}
           >
             L
@@ -112,11 +112,12 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "230px",
+              width: "10.25rem",
               position: "absolute",
-              top: "5px",
-              left: "30px",
-              backgroundColor: "black"
+              top: "0.125rem",
+              left: "0.75rem",
+              backgroundColor: "black",
+              height: "0.7rem"
             }}
           >
             <canvas ref={this.canvasLRef} />
@@ -133,10 +134,10 @@ class Speaker extends React.Component {
           <div
             className=""
             style={{
-              fontSize: "0.8rem",
+              fontSize: "0.64rem",
               position: "absolute",
-              top: "23px",
-              left: "12px"
+              top: "19px",
+              left: "0.1875rem"
             }}
           >
             R
@@ -144,11 +145,12 @@ class Speaker extends React.Component {
           <div
             className="progress"
             style={{
-              width: "230px",
+              width: "10.25rem",
               position: "absolute",
-              top: "25px",
-              left: "30px",
-              backgroundColor: "black"
+              top: "19px",
+              left: "0.75rem",
+              backgroundColor: "black",
+              height: "0.7rem"
             }}
           >
             <canvas ref={this.canvasRRef} />
@@ -161,8 +163,8 @@ class Speaker extends React.Component {
               ...circleStyle,
               position: "absolute",
               padding: "0px",
-              top: "5px",
-              left: "272px",
+              top: "0.25rem",
+              left: "11.0625rem",
               backgroundColor: "transparent",
               border: "1px dotted"
             }}

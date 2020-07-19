@@ -371,17 +371,17 @@ class Mixer extends React.Component {
     // #endregion
     return (
       <React.Fragment>
-        <div style={{ position: "relative", height: "280px" }}>
-          <div style={{ position: "absolute", left: "10px" }}>
+        <div style={{ position: "relative", height: "224px" }}>
+          <div style={{ position: "absolute", left: "0rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{1}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{1}</span>
               <button
                 id={"inButton" + 1}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",
                   padding: "0px",
                   position: "absolute",
                   left: "20px",
@@ -421,9 +421,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain0LRef} />
@@ -433,9 +434,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain0RRef} />
@@ -446,10 +448,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node0Gain", e.target.value);
@@ -463,17 +465,16 @@ class Mixer extends React.Component {
               </div>
             </React.Fragment>
           </div>
-          <div style={{ position: "absolute", left: "62px" }}>
+          <div style={{ position: "absolute", left: "2.625rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{2}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{2}</span>
               <button
                 id={"inButton" + 2}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -512,9 +513,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain1LRef} />
@@ -524,9 +526,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain1RRef} />
@@ -537,10 +540,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node1Gain", e.target.value);
@@ -554,17 +557,16 @@ class Mixer extends React.Component {
               </div>
             </React.Fragment>
           </div>
-          <div style={{ position: "absolute", left: "114px" }}>
+          <div style={{ position: "absolute", left: "5.25rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{3}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{3}</span>
               <button
                 id={"inButton" + 3}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -603,9 +605,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain2LRef} />
@@ -615,9 +618,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain2RRef} />
@@ -628,10 +632,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 2 + "Gain", e.target.value);
@@ -645,17 +649,16 @@ class Mixer extends React.Component {
               </div>
             </React.Fragment>
           </div>
-          <div style={{ position: "absolute", left: "166px" }}>
+          <div style={{ position: "absolute", left: "7.875rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{4}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{4}</span>
               <button
                 id={"inButton" + 3}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -694,9 +697,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain3LRef} />
@@ -706,9 +710,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain3RRef} />
@@ -719,10 +724,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 3 + "Gain", e.target.value);
@@ -736,17 +741,16 @@ class Mixer extends React.Component {
               </div>
             </React.Fragment>
           </div>
-          <div style={{ position: "absolute", top: "140px", left: "10px" }}>
+          <div style={{ position: "absolute", top: "116px", left: "0rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{5}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{5}</span>
               <button
                 id={"inButton" + 4}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -785,9 +789,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain4LRef} />
@@ -797,9 +802,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain4RRef} />
@@ -810,10 +816,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 4 + "Gain", e.target.value);
@@ -827,17 +833,16 @@ class Mixer extends React.Component {
               </div>
             </React.Fragment>
           </div>
-          <div style={{ position: "absolute", top: "140px", left: "62px" }}>
+          <div style={{ position: "absolute", top: "116px", left: "2.625rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{6}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{6}</span>
               <button
                 id={"inButton" + 5}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -876,9 +881,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain5LRef} />
@@ -888,9 +894,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain5RRef} />
@@ -901,10 +908,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 5 + "Gain", e.target.value);
@@ -921,20 +928,19 @@ class Mixer extends React.Component {
           <div
             style={{
               position: "absolute",
-              top: "140px",
-              left: "114px"
+              top: "116px",
+              left: "5.25rem"
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{7}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{7}</span>
               <button
                 id={"inButton" + 6}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
-                  padding: "0px",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -973,9 +979,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain6LRef} />
@@ -985,9 +992,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain6RRef} />
@@ -998,10 +1006,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 6 + "Gain", e.target.value);
@@ -1018,19 +1026,19 @@ class Mixer extends React.Component {
           <div
             style={{
               position: "absolute",
-              top: "140px",
-              left: "166px"
+              top: "116px",
+              left: "7.875rem"
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px" }}>{8}</span>
+              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{8}</span>
               <button
                 id={"inButton" + 7}
                 className="btn btn-light btn-sm"
                 style={{
-                  width: "1.5rem",
-                  height: "1.5rem",
-                  fontSize: "0.8rem",
+                  width: "1.2rem",
+                  height: "1.2rem",
+                  fontSize: "0.64rem",
                   padding: "0px",
                   position: "absolute",
                   left: "20px",
@@ -1070,9 +1078,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "7px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain7LRef} />
@@ -1082,9 +1091,10 @@ class Mixer extends React.Component {
                   style={{
                     position: "absolute",
                     backgroundColor: "black",
-                    width: "10px",
+                    width: "8px",
                     left: "20px",
-                    top: "30px"
+                    top: "24px",
+                    minHeight: "80px"
                   }}
                 >
                   <canvas height="100" ref={this.canvasGain7RRef} />
@@ -1095,10 +1105,10 @@ class Mixer extends React.Component {
                   type="range"
                   style={{
                     width: "1rem",
-                    height: "102px",
+                    height: "84px",
                     position: "absolute",
                     left: "32px",
-                    top: "28px"
+                    top: "24px"
                   }}
                   onChange={e => {
                     changeBlock(id, "node" + 7 + "Gain", e.target.value);
@@ -1113,16 +1123,16 @@ class Mixer extends React.Component {
             </React.Fragment>
           </div>
 
-          <div className="" style={{ position: "absolute", left: "220px" }}>
+          <div className="" style={{ position: "absolute", left: "176px" }}>
             <div className="">
               <div
                 className="progress progress-bar-vertical"
                 style={{
                   position: "absolute",
                   backgroundColor: "black",
-                  height: "200px",
-                  width: "10px",
-                  left: "7px",
+                  height: "160px",
+                  width: "7px",
+                  left: "0px",
                   top: "30px"
                 }}
               >
@@ -1133,9 +1143,9 @@ class Mixer extends React.Component {
                 style={{
                   position: "absolute",
                   backgroundColor: "black",
-                  height: "200px",
-                  width: "10px",
-                  left: "20px",
+                  height: "160px",
+                  width: "7px",
+                  left: "9px",
                   top: "30px"
                 }}
               >
@@ -1147,10 +1157,10 @@ class Mixer extends React.Component {
                 type="range"
                 style={{
                   width: "1rem",
-                  height: "200px",
+                  height: "160px",
                   position: "absolute",
-                  left: "32px",
-                  top: "28px"
+                  left: "15px",
+                  top: "29px"
                 }}
                 onChange={e => {
                   changeBlock(id, "masterGain", e.target.value);
@@ -1167,10 +1177,11 @@ class Mixer extends React.Component {
 
         <div
           className="text-center"
-          style={{ backgroundColor: "grey", height: "30px" }}
+          style={{ backgroundColor: "grey", height: "24px" }}
         >
           <span className="col text-center">
-            <label htmlFor="osc" style={{ fontSize: "0.8rem" }}>
+            <label htmlFor="osc" style={{ fontSize: "0.64rem",
+              marginBottom: "0"}}>
               OSC
             </label>
             <input
@@ -1181,13 +1192,14 @@ class Mixer extends React.Component {
             />
           </span>
           <span className="col text-center">
-            <label htmlFor="oscPort" style={{ fontSize: "0.8rem" }}>
+            <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
+              marginBottom: "0"}}>
               OSC port:
             </label>
             <input
               type="text"
               className="my-1"
-              style={{ height: "1.5rem", width: "3rem" }}
+              style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
               id="oscPort"
               onChange={e => changeBlock(id, "oscPort", e.target.value)}
             />

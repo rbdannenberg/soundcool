@@ -59,7 +59,7 @@ export const highlightElementById = (id, time = 3000) => {
 export const setCssPropById = ({ id, prop, time = 3000, temp = false }) => {
   var elem = document.getElementById(id);
   var orig = elem.style[prop];
-  elem.style[prop] = "10px 10px 10px darkred";
+  elem.style[prop] = "8px 8px 8px darkred";
   if (temp) {
     setTimeout(function() {
       elem.style[prop] = orig;

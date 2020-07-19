@@ -62,7 +62,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 };
 
 const getListStyle = isDraggingOver => ({
-  width: "16rem",
+  width: "13rem",
   background: isDraggingOver ? "lightblue" : "transparent"
 });
 
@@ -223,13 +223,11 @@ class ProjectEditor extends React.Component {
                                 provided.draggableProps.style
                               )}
                             >
-                              <div style={{ height: "80%", width: "80%" }}>
                                 <WithHeader
                                   key={item.id}
                                   blockInfo={item}
                                   nowOut={nowOut}
                                 />
-                              </div>
                             </div>
                           )}
                         </Draggable>
