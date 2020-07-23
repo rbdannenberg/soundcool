@@ -29,3 +29,11 @@ body {
   height: 100%;
   min-height: 100vh;
 }
+
+#collapseButton {
+  margin: 0.1rem !important;
+}
+
+#closeButton {
+  margin: 0.1rem !important;
+}
