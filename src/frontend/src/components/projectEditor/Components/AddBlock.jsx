@@ -36,7 +36,13 @@ import { audioDefaults } from "./blockSpecs";
 const AddBlock = props => {
   return (
     <React.Fragment>
-      <ReactTooltip place="top" type="info" effect="float" />
+      <ReactTooltip
+        style={{ width: "20px" }}
+        place="right"
+        type="info"
+        effect="float"
+        id="tool"
+      />
       <div
         class="contenedor"
         id="player"
@@ -47,6 +53,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Player"))}
           data-tip="Player"
+          data-for="tool"
         >
           <img alt="Player" src={player}></img>
         </button>
@@ -61,6 +68,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SamplePlayer"))}
           data-tip="Sampleplayer"
+          data-for="tool"
         >
           <img alt="Sample Player" src={sampleplayer}></img>
         </button>
@@ -89,6 +97,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Mixer"))}
           data-tip="Mixer"
+          data-for="tool"
         >
           <img alt="Mixer" src={mixer}></img>
         </button>
@@ -115,6 +124,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Delay"))}
           data-tip="Delay"
+          data-for="tool"
         >
           <img alt="Delay" src={delay}></img>
         </button>
@@ -129,6 +139,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Transposer"))}
           data-tip="Transposer"
+          data-for="tool"
         >
           <img alt="Transposer" src={transposer}></img>
         </button>
@@ -157,6 +168,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Pan"))}
           data-tip="Pan"
+          data-for="tool"
         >
           <img alt="Pan" src={pan}></img>
         </button>
@@ -186,6 +198,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Oscilloscope"))}
           data-tip="Oscilloscope"
+          data-for="tool"
         >
           <img alt="Oscilloscope" src={oscilloscope}></img>
         </button>
@@ -201,6 +214,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Spectroscope"))}
           data-tip="Spectroscope"
+          data-for="tool"
         >
           <img alt="Spectroscope" src={spectroscope}></img>
         </button>
@@ -216,6 +230,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("SignalGen"))}
           data-tip="SignalGen"
+          data-for="tool"
         >
           <img alt="Signal Genrator" src={signalgen}></img>
         </button>
@@ -231,6 +246,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("GranSynth"))}
           data-tip="GranSynth"
+          data-for="tool"
         >
           <img alt="Granular Synthesis" src={granSynth}></img>
         </button>
@@ -273,6 +289,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
           data-tip="DirectInput"
+          data-for="tool"
         >
           <img alt="Direct Input" src={directinput}></img>
         </button>
@@ -288,6 +305,7 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Speaker"))}
           data-tip="Speaker"
+          data-for="tool"
         >
           <img alt="Speaker" src={speaker}></img>
         </button>
@@ -303,6 +321,8 @@ const AddBlock = props => {
           type="submit"
           onClick={() => props.dispatch(asyncAddBlock("Record"))}
           data-tip="Record"
+          data-for="tool"
+
         >
           <img alt="Record" src={record}></img>
         </button>

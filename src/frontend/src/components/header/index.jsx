@@ -256,7 +256,7 @@ class Header extends Component {
                         >
                           {this.props.projectControl.floatingView ? (
                             <div>
-                              <b> &#9746;</b> Column View
+                              <b> &#9744;</b> Column View
                             </div>
                           ) : (
                             <div>
