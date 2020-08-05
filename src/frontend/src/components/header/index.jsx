@@ -189,7 +189,6 @@ class Header extends Component {
         <Navbar dark expand="md" style={{ padding: "0", zIndex: 10 }}>
           <div
             className="container"
-            style={{ marginLeft: "0", paddingLeft: "5px" }}
           >
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
