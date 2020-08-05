@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import Main from "./router";
 import 'react-toastify/dist/ReactToastify.css';
 import "./App.css";
+import "react-table/react-table.css";  
 
 import { StoreX as Store } from "./storeX";
 import { ToastContainer } from "react-toastify";
