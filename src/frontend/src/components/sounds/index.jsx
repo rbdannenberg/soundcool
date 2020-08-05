@@ -200,7 +200,7 @@ class Sounds extends React.Component {
                 type="file"
                 id="soundFile"
                 name="sound"
-                accept=".wav"
+                accept="audio/*"
                 onChange={e => handleFileChosen(e.target.files[0])}
                 className="btn btn-info"
               />
