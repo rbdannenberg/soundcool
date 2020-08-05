@@ -1,5 +1,4 @@
 import React from "react";
-import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
 import { FaMinus, FaTimes, FaArrowsAlt } from "react-icons/fa";
@@ -33,7 +32,6 @@ import {
   focusElementById,
   setCssPropById
 } from "../../../actions/common";
-import { element } from "prop-types";
 
 const eva = typeName => {
   let t;

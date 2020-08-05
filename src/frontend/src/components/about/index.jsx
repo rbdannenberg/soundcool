@@ -1,5 +1,5 @@
 import React from "react";
-import { Breadcrumb, BreadcrumbItem, Card, CardBody, Media } from "reactstrap";
+import { Breadcrumb, BreadcrumbItem, Media } from "reactstrap";
 import { Link } from "react-router-dom";
 
 function About(props) {

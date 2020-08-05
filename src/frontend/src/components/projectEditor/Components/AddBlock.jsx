@@ -8,15 +8,15 @@ import delay from "../Components/pictures/delay.gif";
 import directinput from "../Components/pictures/directinput.gif";
 // import directinputV from "../Components/pictures/directinputV.gif";
 // import envelope from "../Components/pictures/envelope.gif";
-import filter from "../Components/pictures/filter.gif";
+// import filter from "../Components/pictures/filter.gif";
 // import keyboard from "../Components/pictures/keyboard.gif";
 import mixer from "../Components/pictures/mixer.gif";
 import oscilloscope from "../Components/pictures/oscilloscope.gif";
 import pan from "../Components/pictures/pan.gif";
-import pitch from "../Components/pictures/pitch.gif";
+// import pitch from "../Components/pictures/pitch.gif";
 import player from "../Components/pictures/player.gif";
 // import playerV from "../Components/pictures/playerV.gif";
-import record from "../Components/pictures/record.gif";
+// import record from "../Components/pictures/record.gif";
 // import routing from "../Components/pictures/routing.gif";
 import sampleplayer from "../Components/pictures/sampleplayer.gif";
 // import samplerV from "../Components/pictures/samplerV.gif";
@@ -31,7 +31,7 @@ import transposer from "../Components/pictures/transposer.gif";
 // import imagesampleV from "../Components/pictures/imagesampleV.gif";
 import granSynth from "../Components/pictures/granular.gif";
 import { asyncAddBlock } from "../thunks.js";
-import { audioDefaults } from "./blockSpecs";
+// import { audioDefaults } from "./blockSpecs";
 
 const AddBlock = props => {
   return (

@@ -50,6 +50,7 @@ const block = (state, action) => {
             ? undefined
             : n;
         }
+        return null;
       });
       newOutNode = state.outNode.map(n => {
         return action.blocks.filter(t => t.id === n[1]).length === 0
