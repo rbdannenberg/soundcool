@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { changeBlock } from "./actions";
+import PiecewiseLogInput from "./PiecewiseLogInput";
 
 const GranSynth = ({ blockInfo, changeBlock }) => {
   let {
@@ -15,7 +16,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
     pan,
     pan_jitter,
     delay,
-    delay_jitter
+    delay_jitter_w
   } = blockInfo;
   return (
     <React.Fragment>
@@ -27,30 +28,34 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
         {/* Rate */}
         <label
           htmlFor="rate"
-          data-tip="Grain Rate: expected number of grains to be played per second. range: [1, 1000]"
+          data-tip="Grain Rate: expected number of grains to be played per second. range: [0, 1000]"
           className="tooltip-on-hover"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "4px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Grain Rate: "}
         </label>
-        <input
+        <PiecewiseLogInput
           className="slider"
           type="range"
           style={{
             width: "7.1875rem",
             position: "absolute",
             top: "0.125rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
-          onChange={e => changeBlock(id, "rate", e.target.value)}
-          min={0}
-          max={1000}
+          onChange={e => changeBlock(id, "rate", e)}
+          minrange={0}
+          maxrange={1000}
+          linearZone={0.1}
+          lowValue={1}
+          highValue={1000}
           value={rate}
+          step={1}
           id="rate"
         />
         <label
@@ -59,7 +64,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "4px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {rate}
@@ -70,27 +75,30 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="ioi_jitter"
           data-tip="specifies jitter in grain scheduling. range: [0, 1]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "24px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Timing Jitter: "}
         </label>
-        <input
+        <PiecewiseLogInput
           className="slider"
           type="range"
           style={{
             width: "7.1875rem",
             position: "absolute",
             top: "1.4375rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
-          onChange={e => changeBlock(id, "ioi_jitter", e.target.value)}
-          min={0}
-          max={1}
-          step={0.01}
+          onChange={e => changeBlock(id, "ioi_jitter", e)}
+          minrange={0}
+          maxrange={1}
+          linearZone={0.001}
+          lowValue={0.001}
+          highValue={1}
+          step={0.0001}
           value={ioi_jitter}
           id="ioi_jitter"
         />
@@ -100,7 +108,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "24px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {ioi_jitter}
@@ -111,27 +119,30 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="dur"
           data-tip="duration of each grain in seconds. range: [0.01, 1]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "44px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Duration: "}
         </label>
-        <input
+        <PiecewiseLogInput
           className="slider"
           type="range"
           style={{
             width: "7.1875rem",
             position: "absolute",
             top: "2.5625rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
-          onChange={e => changeBlock(id, "dur", e.target.value)}
-          min={0.01}
-          max={1}
-          step={0.01}
+          onChange={e => changeBlock(id, "dur", e)}
+          minrange={0}
+          maxrange={1}
+          linearZone={0.001}
+          lowValue={0.001}
+          highValue={1}
+          step={0.0001}
           value={dur}
           id="dur"
         />
@@ -141,7 +152,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "44px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {dur}
@@ -152,10 +163,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="pitch_shift"
           data-tip="specifies by how much to transpose a grain in cents. range: [-2400, 2400]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "64px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Transpose: "}
@@ -167,7 +178,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "3.75rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
           onChange={e => changeBlock(id, "pitch_shift", e.target.value)}
           min={-2400}
@@ -181,7 +192,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "64px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {pitch_shift}
@@ -192,10 +203,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="pitch_jitter"
           data-tip="specifies a range of random pitch shift offset in cents. range: [0, 4800]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "84px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Transp. Jitter: "}
@@ -207,7 +218,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "5.0625rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
           onChange={e => changeBlock(id, "pitch_jitter", e.target.value)}
           min={0}
@@ -221,7 +232,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "84px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {pitch_jitter}
@@ -232,10 +243,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="reverse"
           data-tip="probability of reversing a grain during playback. range: [0, 1]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "104px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Reverse: "}
@@ -247,7 +258,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "6.375rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
           onChange={e => changeBlock(id, "reverse", e.target.value)}
           min={0}
@@ -262,7 +273,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "104px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {reverse}
@@ -273,10 +284,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="pan"
           data-tip="pan amount during grain playback. range: [-1, 1]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "124px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Pan: "}
@@ -288,7 +299,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "7.625rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
           onChange={e => changeBlock(id, "pan", e.target.value)}
           min={-1}
@@ -303,7 +314,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "124px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {pan}
@@ -314,10 +325,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="pan_jitter"
           data-tip="specifies a range of random offset added to pan amount for each grain. range: [0, 2]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "144px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Pan Jitter: "}
@@ -329,7 +340,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "8.75rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
           onChange={e => changeBlock(id, "pan_jitter", e.target.value)}
           min={0}
@@ -344,7 +355,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "144px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {pan_jitter}
@@ -355,26 +366,33 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="delay"
           data-tip="specfies the amount of delay in seconds from input to output. range: [0, 20]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "164px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Delay: "}
         </label>
-        <input
+        <PiecewiseLogInput
           className="slider"
           type="range"
           style={{
             width: "7.1875rem",
             position: "absolute",
             top: "10.1875rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
-          onChange={e => changeBlock(id, "delay", e.target.value)}
-          min={0}
-          max={20}
+          onChange={e => {
+            changeBlock(id, "delay", e);
+            changeBlock(id, "delayJitter",
+              parseFloat(e) * delay_jitter_w);
+          }}
+          minrange={0}
+          maxrange={20}
+          lowValue={0.1}
+          highValue={20}
+          linearZone={0}
           step={0.1}
           value={delay}
           id="delay"
@@ -385,7 +403,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "164px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
           {delay}
@@ -396,10 +414,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           htmlFor="delay_jitter"
           data-tip="specifies the spread in seconds around delay grains. range: [0, 20]"
           style={{
-            fontSize: "0.64rem",
+            fontSize: "0.54rem",
             position: "absolute",
             top: "184px",
-            left: "6px"
+            left: "3px"
           }}
         >
           {"Delay Jitter: "}
@@ -411,13 +429,18 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             width: "7.1875rem",
             position: "absolute",
             top: "11.375rem",
-            left: "4.5rem"
+            left: "3.6rem"
           }}
-          onChange={e => changeBlock(id, "delay_jitter", e.target.value)}
+          onChange={e => {
+            changeBlock(id, "delayJitter",
+              parseFloat(e.target.value) * delay);
+            changeBlock(id, "delay_jitter_w", e.target.value);
+            }
+          }
           min={0}
-          max={20}
+          max={1}
           step={0.1}
-          value={delay_jitter}
+          value={delay_jitter_w}
           id="delay_jitter"
         />
         <label
@@ -426,10 +449,10 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
             fontSize: "0.64rem",
             position: "absolute",
             top: "184px",
-            left: "11.6875rem"
+            left: "10.8rem"
           }}
         >
-          {delay_jitter}
+          {delay_jitter_w}
         </label>
       </div>
 

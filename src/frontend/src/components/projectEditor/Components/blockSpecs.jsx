@@ -131,7 +131,7 @@ const audioDefaults = {
     pan: 0,
     pan_jitter: 0,
     delay: 1,
-    delay_jitter: 2
+    delay_jitter_w: 0.5
   }
 };
 
