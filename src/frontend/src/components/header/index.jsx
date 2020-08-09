@@ -12,7 +12,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Collapse
+  Collapse,
 } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
@@ -23,7 +23,7 @@ import { updateProject, createProject } from "../projectEditor/actions";
 import {
   showToastr,
   showToastrError,
-  cleanPayload
+  cleanPayload,
 } from "../../actions/common";
 
 import { NavLink } from "react-router-dom";
@@ -43,7 +43,7 @@ class Header extends Component {
       projectName: this.props.projectControl.projectName,
       projectDescription: "",
       isModalOpen: false,
-      isRegisterModalOpen: false
+      isRegisterModalOpen: false,
       // openPorts: []
     };
 
@@ -83,7 +83,7 @@ class Header extends Component {
       if (this.props.projectControl.projectId !== "new") {
         this.updateProject({
           projectId: this.props.projectControl.projectId,
-          content: JSON.stringify(this.props.blocks)
+          content: JSON.stringify(this.props.blocks),
         });
         console.log("done");
         // console.log(JSON.stringify(this.props.blocks.bs[0]));
@@ -99,12 +99,12 @@ class Header extends Component {
       .then(() => {
         showToastr("success", "Project successfully updated");
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
 
-  createProject = event => {
+  createProject = (event) => {
     event.preventDefault();
     let isFormValid = true,
       error = "";
@@ -123,16 +123,16 @@ class Header extends Component {
       let payload = {
         projectName,
         projectDescription,
-        blocks
+        blocks,
       };
 
       createProject(payload)
-        .then(data => {
+        .then((data) => {
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
           window.location = "/project-editor/" + data.project_id;
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     } else {
@@ -149,17 +149,17 @@ class Header extends Component {
     let nowOut = this.props.blocks.nowOut;
     let blocks = {
       bs,
-      nowOut
+      nowOut,
     };
     console.log(projectName);
     this.downloadFile({
       projectName,
       projectDescription,
-      blocks
+      blocks,
     });
   };
 
-  downloadFile = async myData => {
+  downloadFile = async (myData) => {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\t");
     let readData = JSON.parse(json);
@@ -184,12 +184,17 @@ class Header extends Component {
 
   render() {
     const { dropdownOpen } = this.state;
+    const isProjectPage =
+      this.props.location.pathname.split("/")[1] === "project-editor";
+
     return (
       <React.Fragment>
-        <Navbar dark expand="md" style={{ padding: "0 90px 0 90px", zIndex: 10 }}>
-          <div
-            className="container-fluid"
-          >
+        <Navbar
+          dark
+          expand="md"
+          style={{ padding: "0 90px 0 90px", zIndex: 10 }}
+        >
+          <div className="container-fluid">
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
               <img
@@ -242,68 +247,74 @@ class Header extends Component {
                           <div className="dropdown-item">Open</div>
                         </NavLink>
                       )}
-                      <div className="nav-link">
-                        <div
-                          className="dropdown-item"
-                          onClick={() => {
-                            console.log("trying?");
-                            this.props.dispatch({
-                              type: "FLOATING_VIEW",
-                              value: undefined
-                            });
-                          }}
-                        >
-                          {this.props.projectControl.floatingView ? (
-                            <div>
-                              <b> &#9744;</b> Column View
-                            </div>
-                          ) : (
-                            <div>
-                              <b>&#9745;</b> Column View
-                            </div>
-                          )}
+                      {this.isUserLoggedIn() && isProjectPage && (
+                        <div className="nav-link">
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
+                              console.log("trying?");
+                              this.props.dispatch({
+                                type: "FLOATING_VIEW",
+                                value: undefined,
+                              });
+                            }}
+                          >
+                            {this.props.projectControl.floatingView ? (
+                              <div>
+                                <b> &#9744;</b> Column View
+                              </div>
+                            ) : (
+                              <div>
+                                <b>&#9745;</b> Column View
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="nav-link">
-                        <div
-                          className="dropdown-item"
-                          onClick={() => {
-                            console.log("trying to save");
-                            console.log(
-                              projectEditor.WrappedComponent.prototype
-                                .saveProject
-                            );
-                            this.saveProject();
-                            // projectEditor.WrappedComponent.prototype.saveProject(
-                            //   this.props.projectControl.projectId,
-                            //   this.props.blocks
-                            // );
-                          }}
-                        >
-                          Save
+                      )}
+                      {this.isUserLoggedIn() && isProjectPage && (
+                        <div className="nav-link">
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
+                              console.log("trying to save");
+                              console.log(
+                                projectEditor.WrappedComponent.prototype
+                                  .saveProject
+                              );
+                              this.saveProject();
+                              // projectEditor.WrappedComponent.prototype.saveProject(
+                              //   this.props.projectControl.projectId,
+                              //   this.props.blocks
+                              // );
+                            }}
+                          >
+                            Save
+                          </div>
                         </div>
-                      </div>
-                      <div className="nav-link">
-                        <div
-                          className="dropdown-item"
-                          onClick={() => {
-                            console.log("trying to export");
-                            // let {
-                            //   projectName,
-                            //   projectDescription
-                            // } = this.props.projectControl;
+                      )}
+                      {this.isUserLoggedIn() && isProjectPage && (
+                        <div className="nav-link">
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
+                              console.log("trying to export");
+                              // let {
+                              //   projectName,
+                              //   projectDescription
+                              // } = this.props.projectControl;
 
-                            this.exportProject();
-                            // projectEditor.WrappedComponent.prototype.exportProject(
-                            //   projectName,
-                            //   projectDescription,
-                            //   this.props.blocks
-                            // );
-                          }}
-                        >
-                          Export
+                              this.exportProject();
+                              // projectEditor.WrappedComponent.prototype.exportProject(
+                              //   projectName,
+                              //   projectDescription,
+                              //   this.props.blocks
+                              // );
+                            }}
+                          >
+                            Export
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </NavItem>
@@ -406,9 +417,9 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   projectControl: state.projectControl,
-  blocks: state.blocks
+  blocks: state.blocks,
 });
 
 export default withRouter(connect(mapStateToProps)(Header));
