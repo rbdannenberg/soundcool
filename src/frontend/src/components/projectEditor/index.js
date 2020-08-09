@@ -195,7 +195,7 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ paddingTop: "30px", paddingLeft: "60px" }}>
+              <div style={{ paddingTop: "30px", paddingLeft: "100px" }}>
                 {/* <h5 className="text-center">
                   {" "}
                   {"Columnn " + (listIndex + 1)}{" "}
@@ -748,7 +748,7 @@ class ProjectEditor extends React.Component {
       ? false
       : true;
     return (
-      <div className="container">
+      <div className="container-fluid">
         {/* <button
           className=" btn btn-success m-2"
           style={{ position: "absolute", top: "620px", left: "820px" }}
