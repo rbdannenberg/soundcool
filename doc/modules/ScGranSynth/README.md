@@ -14,7 +14,7 @@ Inputs are shown as *uname* (*`cname`*) *description*, where *uname* is the name
 * **Pan** (`pan`) - Panning: pan amount during grain playback. range: [-1, 1]. -1 is full left pan; 1 is full right pan. default: 0.
 * **Pan Jitter** (`panJitter`) - Panning Jitter: specifies a range of random offset added to pan amount for each grain. range: [0, 2]; default: 0.
 * **Delay** (`delay`) - Delay: specfies the amount of delay in seconds from input to output. range: [0.1, 20]; default: 1;
-* **Delay Jitter** (`delayJitterFraction`) - Delay jitter fraction: specifies the spread in seconds around `delay`. This control is compounded as follows: `delayJitter = delay * delayJitterFraction` to set the parameter `delayJitter` in granular synthesis audio module. range: [0, 1]; default: 0.5.
+* **Delay Jitter** (`delayJitterFraction`) - Delay jitter fraction: specifies the jitter spread as a fraction of `delay` parameter. This control is compounded as follows: `delayJitter = delay * delayJitterFraction` to set the parameter `delayJitter` in granular synthesis audio module. range: [0, 1]; default: 0.5.
 
 <a name="NYI">*</a>: This feature is not yet implemented.
 
