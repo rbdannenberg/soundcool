@@ -3,7 +3,7 @@
 This a specification for ScGranSynth module. ScGranSynth stands for Soundcool's Granular Synthesis.
 
 ## Inputs
-Inputs are shown as *uname* (*`cname`*) *description*, where *uname* is the name seen by the user, *`canme`* is the name used in software (code), and *description* is an explanation of the function of the input.
+Inputs are shown as *uname* (*`cname`*) *description*, where *uname* is the name seen by the user, *`canme`* is the name used in software (code), and *description* is an explanation of the function of the input. Scales mentioned below are linear unless specified otherwise.
 * (`in`) - Input Signal: input signal coming from an instantiated ScModule.
 * **Grain Rate** (`rate`) - expected number of grains to be played per second. range: [0, 1000]; default: 100; linear in [0, 1); log in [1, 1000].
 * **Timing Jitter** (`ioiJitter`) - Grain IOI Jitter: specifies jitter (explained below) in grain scheduling. range: [0, 1]; default: 0.5; linear in [0, 0.001); log in [0.001, 1].
