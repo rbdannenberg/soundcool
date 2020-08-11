@@ -5,16 +5,16 @@ This a specification for ScGranSynth module. ScGranSynth stands for Soundcool's 
 ## Inputs
 Inputs are shown as *uname* (*`cname`*) *description*, where *uname* is the name seen by the user, *`canme`* is the name used in software (code), and *description* is an explanation of the function of the input.
 * (`in`) - Input Signal: input signal coming from an instantiated ScModule.
-* **Grain Rate** (`rate`) - expected number of grains to be played per second. range: [1, 1000]; default: 100.
-* **Timing Jitter** (`ioiJitter`) - Grain IOI Jitter: specifies jitter (explained below) in grain scheduling. range: [0, 1]; default: 0.5.
-* **Duration** (`dur`) - Grain Duration: duration of each grain in seconds. range: [0.01, 1]; default: 0.05.
+* **Grain Rate** (`rate`) - expected number of grains to be played per second. range: [0, 1000]; default: 100; linear in [0, 1); log in [1, 1000].
+* **Timing Jitter** (`ioiJitter`) - Grain IOI Jitter: specifies jitter (explained below) in grain scheduling. range: [0, 1]; default: 0.5; linear in [0, 0.001); log in [0.001, 1].
+* **Duration** (`dur`) - Grain Duration: duration of each grain in seconds. range: [0, 1]; default: 0.05; linear in [0, 0.001); log in [0.001, 1].
 * **Transpose** (`pitchShift`) - Pitch Shift: specifies by how much to transpose a grain in cents. range: [-2400, 2400]; default: 0.
 * **Transp. Jitter** (`pitchJitter`) - Pitch Shift Jitter: specifies a range of random pitch shift offset in cents. range: [0, 4800]; default: 0.
 * **Reverse<sup>[*](#NYI)</sup>** (`reverse`) - Reverse Probability: probability of reversing a grain during playback. range: [0, 1]; default: 0.
 * **Pan** (`pan`) - Panning: pan amount during grain playback. range: [-1, 1]. -1 is full left pan; 1 is full right pan. default: 0.
 * **Pan Jitter** (`panJitter`) - Panning Jitter: specifies a range of random offset added to pan amount for each grain. range: [0, 2]; default: 0.
-* **Delay** (`delay`) - Delay: specfies the amount of delay in seconds from input to output. range: [0, 20]; default: 1.
-* **Delay Jitter** (`delayJitter`) - Delay jitter: specifies the spread in seconds around `delay` grains. range: [0, 20]; default: 2.
+* **Delay** (`delay`) - Delay: specfies the amount of delay in seconds from input to output. range: [0.1, 20]; default: 1;
+* **Delay Jitter** (`delayJitterFraction`) - Delay jitter fraction: specifies the spread in seconds around `delay`. This control is compounded as follows: `delayJitter = delay * delayJitterFraction` to set the parameter `delayJitter` in granular synthesis audio module. range: [0, 1]; default: 0.5.
 
 <a name="NYI">*</a>: This feature is not yet implemented.
 
