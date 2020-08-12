@@ -439,7 +439,7 @@ const GranSynth = ({ blockInfo, changeBlock }) => {
           }
           min={0}
           max={1}
-          step={0.1}
+          step={0.01}
           value={delay_jitter_w}
           id="delay_jitter"
         />
