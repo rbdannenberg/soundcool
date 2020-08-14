@@ -6,7 +6,7 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
   // catch
   // store.dispatch('delete')
 
-  let { id, direction, volume } = blockInfo;
+  let { id, pan, volume } = blockInfo;
   return (
     <React.Fragment>
       <div className="" style={{ position: "relative", height: "5rem", width: "13rem" }}>
@@ -39,11 +39,12 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
             left: "15px",
             top: "12px"
           }}
-          onChange={e => changeBlock(id, "direction", e.target.value)}
-          min={-50}
-          max={50}
-          value={direction}
-          id="direction"
+          onChange={e => changeBlock(id, "pan", e.target.value)}
+          min={-1}
+          max={1}
+          value={pan}
+          step={0.01}
+          id="mic-pan"
         />
         <span
           style={{
@@ -141,8 +142,8 @@ const DirectInput = ({ blockInfo,changeBlock }) => {
           }}
           onChange={e => changeBlock(id, "volume", e.target.value)}
           min={0}
-          max={10}
-          step={0.1}
+          max={100}
+          step={1}
           value={volume}
           id="volume"
         />

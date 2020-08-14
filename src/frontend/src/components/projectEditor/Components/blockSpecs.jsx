@@ -40,10 +40,10 @@ const audioDefaults = {
     meterR: 60
   },
   DirectInput: {
-    direction: 0,
+    pan: 0,
     muted: false,
     channel: 1,
-    volume: 0.6
+    volume: 100
   },
   Pitch: {
     pitch: 0,
