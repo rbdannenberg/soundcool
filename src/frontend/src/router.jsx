@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import Home from "./components/home";
 import Login from "./components/login";
 import Register from "./components/register";
@@ -10,11 +11,10 @@ import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
-import Cookies from 'universal-cookie';
- 
+import Cookies from "universal-cookie";
+
 const cookies = new Cookies();
 class Main extends Component {
-
   constructor(props) {
     super(props);
     this.state = {};
@@ -28,6 +28,14 @@ class Main extends Component {
       this.setState({ user: user });
     } catch (ex) {}
   }
+  leavingProjectEditor = () => {
+    if (this.props.location.pathname.split("/")[1] !== "project-editor") {
+      this.props.dispatch({
+        type: "CLEAR_STATE",
+        value: undefined
+      });
+    }
+  };
 
   render() {
     const { user } = this.state;
@@ -36,7 +44,11 @@ class Main extends Component {
         <Header user={user} name={cookies.get("name")} />
         <Switch>
           <Route path="/signIn" component={Login} />
-          <Route path="/project-editor/:id" component={ProjectEditor} />
+          <Route
+            path="/project-editor/:id"
+            component={ProjectEditor}
+            onLeave={this.leavingProjectEditor()}
+          />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />
           <Route
@@ -81,4 +93,9 @@ class Main extends Component {
   }
 }
 
-export default Main;
+const mapStateToProps = state => ({
+  projectControl: state.projectControl,
+  blocks: state.blocks
+});
+
+export default withRouter(connect(mapStateToProps)(Main));

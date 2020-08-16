@@ -1,5 +1,6 @@
 import React from "react";
 import socketIOClient from "socket.io-client";
+import { Prompt } from "react-router";
 
 import "./index.css";
 import { connect } from "react-redux";
@@ -730,6 +731,11 @@ class ProjectEditor extends React.Component {
     });
     return flag;
   }
+
+  checkIsProjectPage = () => {
+    return this.props.location.pathname.split("/")[1] === "project-editor";
+  };
+
   render() {
     // console.log(this.props);
     // console.log(this.state.projectId);
@@ -748,141 +754,154 @@ class ProjectEditor extends React.Component {
       ? false
       : true;
     return (
-      <div className="container-fluid">
-        {/* <button
-          className=" btn btn-success m-2"
-          style={{ position: "absolute", top: "620px", left: "820px" }}
-          onClick={this.saveProject}
-        >
-          {isUserLoggedIn()
-            ? this.state.projectId === "new"
-              ? "Create"
-              : "Save"
-            : "Register to save"}
-        </button> */}
-        {/* {isUserLoggedIn() && this.state.projectId !== "new" && (
-          <button
-            className=" btn btn-warning m-2"
-            style={{ position: "absolute", top: "620px", left: "900px" }}
-            onClick={this.exportProject}
+      <React.Fragment>
+        <Prompt
+          // when={!this.checkIsProjectPage}
+          message="Leaving the project editor... Please don't forget to save!"
+        />
+        <div className="container-fluid">
+          {/* <button
+            className=" btn btn-success m-2"
+            style={{ position: "absolute", top: "620px", left: "820px" }}
+            onClick={this.saveProject}
           >
-            Export Project
-          </button>
-        )} */}
-        {/* {!floatingView && (
-          <div style={{ position: "absolute", left: "165px", top: "53px" }}>
+            {isUserLoggedIn()
+              ? this.state.projectId === "new"
+                ? "Create"
+                : "Save"
+              : "Register to save"}
+          </button> */}
+          {/* {isUserLoggedIn() && this.state.projectId !== "new" && (
             <button
-              className="btn btn-danger btn-sm"
-              onClick={() => {
-                let newValue = this.state.items;
-                let index =
-                  parseInt(prompt("Enter column number", newValue.length)) - 1;
-                if (
-                  index < newValue.length &&
-                  newValue[index][0] === undefined
-                ) {
-                  newValue.splice(index, 1);
-                  this.setState({ items: newValue });
-                } else {
-                  alert("Column number is wrong or not empty");
+              className=" btn btn-warning m-2"
+              style={{ position: "absolute", top: "620px", left: "900px" }}
+              onClick={this.exportProject}
+            >
+              Export Project
+            </button>
+          )} */}
+          {/* {!floatingView && (
+            <div style={{ position: "absolute", left: "165px", top: "53px" }}>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => {
+                  let newValue = this.state.items;
+                  let index =
+                    parseInt(prompt("Enter column number", newValue.length)) - 1;
+                  if (
+                    index < newValue.length &&
+                    newValue[index][0] === undefined
+                  ) {
+                    newValue.splice(index, 1);
+                    this.setState({ items: newValue });
+                  } else {
+                    alert("Column number is wrong or not empty");
+                  }
+                }}
+              >
+                Remove
+                <br />
+                Column
+              </button>
+            </div>
+          )} */}
+          {/* {!floatingView && (
+            <div
+              class="contenedor"
+              id="oscilloscope"
+              style={{ position: "absolute", left: "1020px", top: "53px" }}
+            >
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() =>
+                  this.setState({ items: [...this.state.items, []] })
                 }
-              }}
-            >
-              Remove
-              <br />
-              Column
-            </button>
-          </div>
-        )} */}
-        {/* {!floatingView && (
-          <div
-            class="contenedor"
-            id="oscilloscope"
-            style={{ position: "absolute", left: "1020px", top: "53px" }}
+              >
+                Add
+                <br />
+                Column
+              </button>
+            </div>
+          )} */}
+          <AddBlock />
+          {/* <button
+            className=" btn btn-danger m-2"
+            style={{ position: "absolute", top: "620px", left: "1040px" }}
+            // onClick={this.toggleFloatingView}
           >
+            Floating View : {floatingView ? "On" : "Off"}
+          </button> */}
+          {openPortsButton && (
             <button
-              className="btn btn-primary btn-sm"
-              onClick={() =>
-                this.setState({ items: [...this.state.items, []] })
-              }
+              className="btn btn-secondary m-2 float-right"
+              onClick={() => this.openNewPort(this.props.blocks["bs"])}
             >
-              Add
-              <br />
-              Column
+              Open Required Ports
             </button>
+          )}
+          <div>
+            <div className="row">
+              {this.renderBlockList(items, this.props.blocks.nowOut)}
+            </div>
           </div>
-        )} */}
-        <AddBlock />
-        {/* <button
-          className=" btn btn-danger m-2"
-          style={{ position: "absolute", top: "620px", left: "1040px" }}
-          // onClick={this.toggleFloatingView}
-        >
-          Floating View : {floatingView ? "On" : "Off"}
-        </button> */}
-        {openPortsButton && (
-          <button
-            className="btn btn-secondary m-2 float-right"
-            onClick={() => this.openNewPort(this.props.blocks["bs"])}
+          <Modal
+            centered
+            show={this.state.isRegisterModalOpen}
+            onHide={this.toggleRegisterModal}
           >
-            Open Required Ports
-          </button>
-        )}
-        <div>
-          <div className="row">
-            {this.renderBlockList(items, this.props.blocks.nowOut)}
-          </div>
-        </div>
-        <Modal
-          centered
-          show={this.state.isRegisterModalOpen}
-          onHide={this.toggleRegisterModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Create new account</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <RegisterForm afterRegister={this.afterRegister} />
-          </Modal.Body>
-        </Modal>
-        <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
-          <form id="project_create" method="post">
             <Modal.Header closeButton>
-              <Modal.Title>Create new project</Modal.Title>
+              <Modal.Title>Create new account</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <FormInput
-                className="form-control"
-                type="text"
-                name="projectName"
-                required={true}
-                placeholder="Project Name"
-                value={projectName}
-                onChange={this.handleOnChange}
-                autoFocus
-              />
-              <br />
-              <FormInput
-                className="form-control"
-                type="text"
-                name="projectDescription"
-                required={true}
-                placeholder="Project Description"
-                value={projectDescription}
-                onChange={this.handleOnChange}
-              />
+              <RegisterForm afterRegister={this.afterRegister} />
             </Modal.Body>
-            <Modal.Footer>
-              <button className="btn btn-warn" onClick={this.toggleModal}>
-                Close
-              </button>
-              <button onClick={this.createProject} className="btn btn-primary">
-                Create
-              </button>
-            </Modal.Footer>
-          </form>
-        </Modal>
-      </div>
+          </Modal>
+          <Modal
+            centered
+            show={this.state.isModalOpen}
+            onHide={this.toggleModal}
+          >
+            <form id="project_create" method="post">
+              <Modal.Header closeButton>
+                <Modal.Title>Create new project</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <FormInput
+                  className="form-control"
+                  type="text"
+                  name="projectName"
+                  required={true}
+                  placeholder="Project Name"
+                  value={projectName}
+                  onChange={this.handleOnChange}
+                  autoFocus
+                />
+                <br />
+                <FormInput
+                  className="form-control"
+                  type="text"
+                  name="projectDescription"
+                  required={true}
+                  placeholder="Project Description"
+                  value={projectDescription}
+                  onChange={this.handleOnChange}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <button className="btn btn-warn" onClick={this.toggleModal}>
+                  Close
+                </button>
+                <button
+                  onClick={this.createProject}
+                  className="btn btn-primary"
+                >
+                  Create
+                </button>
+              </Modal.Footer>
+            </form>
+          </Modal>
+        </div>
+      </React.Fragment>
     );
   }
 }

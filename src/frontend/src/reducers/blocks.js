@@ -202,20 +202,16 @@ const blocks = (
             }
           });
         });
-        // let tmp = undefined;
-        // console.log(newState["cns"].length);
-        // newState["cns"].forEach((action, index) => {
-        //   console.log("adding connection..");
-        //   tmp = blocks(newState, { ...action, isload: true });
-        //   console.log("here 1");
-        //   newState = tmp;
-        //   console.log("here 2");
-        // });
-        // console.log(newState);
         return newState;
       } else {
         return emptyState;
       }
+
+    case "CLEAR_STATE":
+      state.bs.forEach(block => {
+        block.audioObj.destroy();
+      });
+      return emptyState;
 
     default:
       return state;
