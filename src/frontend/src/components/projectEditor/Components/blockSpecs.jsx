@@ -170,7 +170,8 @@ const uiDefaults = {
     inDisabled: true,
     color: toHex(200, 231, 253),
     volume: 0.6,
-    osc: undefined
+    osc: undefined,
+    renderRate: 100
   },
   Pitch: {
     color: toHex(220, 105, 216),

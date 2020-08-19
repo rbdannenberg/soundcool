@@ -1,12 +1,14 @@
 import ScModule from "./sc-module.js";
+import ScAnalyzer from "./sc-analyzer.js";
 
 function connectStream(stream) {
   this.inNode = this.context.createMediaStreamSource(stream);
   this.panner = this.context.createStereoPanner()
   this.pan = this.options.pan;
   this.outNode = this.context.createGain();
-  this.panner.connect(this.outNode);
   this.inNode.connect(this.panner);
+  this.panner.connect(this.outNode);
+  this.outNode.connect(this.analyzer.inNode);
 
   this.inputs.push(this.inNode);
   this.outputs.push(this.outNode);
@@ -27,6 +29,7 @@ class ScDirectIn extends ScModule {
       pan: 0
     };
     this.options = Object.assign(defOpts, options);
+    this.analyzer = new ScAnalyzer(this.context, { type : "level" });
     this.connectStream = connectStream.bind(this);
     this.connectError = connectError.bind(this);
     this.setupNodes();
@@ -37,6 +40,10 @@ class ScDirectIn extends ScModule {
       .getUserMedia({ audio: { channelCount: 2 } })
       .then(this.connectStream)
       .catch(this.connectError);
+  }
+
+  getAudioData() {
+    return this.analyzer.getData();
   }
 
   set volume(value) {
