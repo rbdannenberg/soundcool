@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { StoreX as Store } from "../../storeX";
 import {
   Navbar,
   NavbarBrand,
@@ -12,7 +13,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Collapse,
+  Collapse
 } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
@@ -23,7 +24,7 @@ import { updateProject, createProject } from "../projectEditor/actions";
 import {
   showToastr,
   showToastrError,
-  cleanPayload,
+  cleanPayload
 } from "../../actions/common";
 
 import { NavLink } from "react-router-dom";
@@ -43,7 +44,7 @@ class Header extends Component {
       projectName: this.props.projectControl.projectName,
       projectDescription: "",
       isModalOpen: false,
-      isRegisterModalOpen: false,
+      isRegisterModalOpen: false
       // openPorts: []
     };
 
@@ -78,18 +79,15 @@ class Header extends Component {
     this.setState(params);
   };
 
-  saveProject = () => {
+  saveProject = saveAs => {
     if (this.isUserLoggedIn())
-      if (this.props.projectControl.projectId !== "new") {
+      if (this.props.projectControl.projectId !== "new" && !saveAs) {
         this.updateProject({
           projectId: this.props.projectControl.projectId,
-          content: JSON.stringify(this.props.blocks),
+          content: JSON.stringify(this.props.blocks)
         });
-        console.log("done");
-        // console.log(JSON.stringify(this.props.blocks.bs[0]));
       } else this.toggleModal();
     else {
-      console.log("here 1");
       this.toggleRegisterModal();
     }
   };
@@ -99,12 +97,12 @@ class Header extends Component {
       .then(() => {
         showToastr("success", "Project successfully updated");
       })
-      .catch((error) => {
+      .catch(error => {
         showToastrError(error);
       });
   }
 
-  createProject = (event) => {
+  createProject = event => {
     event.preventDefault();
     let isFormValid = true,
       error = "";
@@ -123,16 +121,16 @@ class Header extends Component {
       let payload = {
         projectName,
         projectDescription,
-        blocks,
+        blocks
       };
 
       createProject(payload)
-        .then((data) => {
+        .then(data => {
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
           window.location = "/project-editor/" + data.project_id;
         })
-        .catch((error) => {
+        .catch(error => {
           showToastrError(error);
         });
     } else {
@@ -142,24 +140,21 @@ class Header extends Component {
 
   exportProject = () => {
     const { projectName, projectDescription } = this.props.projectControl;
-    // let bs = items.reduce((a, b) => {
-    //   return a.concat(b);
-    // });
+
     let bs = this.props.blocks.bs;
     let nowOut = this.props.blocks.nowOut;
     let blocks = {
       bs,
-      nowOut,
+      nowOut
     };
-    console.log(projectName);
     this.downloadFile({
       projectName,
       projectDescription,
-      blocks,
+      blocks
     });
   };
 
-  downloadFile = async (myData) => {
+  downloadFile = async myData => {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\t");
     let readData = JSON.parse(json);
@@ -178,8 +173,23 @@ class Header extends Component {
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
   toggleRegisterModal = () => {
-    console.log("here?");
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
+  };
+
+  afterRegister = res => {
+    const { token, error, name } = res;
+    if (error) {
+      showToastrError(res);
+    } else {
+      cookies.set("name", name, { path: "/" });
+      cookies.set("token", token, { path: "/" });
+      Store.populateFromProps({
+        userToken: { email: undefined, token: token }
+      });
+      showToastr("success", "Please enter project details");
+      this.toggleRegisterModal();
+      this.toggleModal();
+    }
   };
 
   render() {
@@ -255,7 +265,7 @@ class Header extends Component {
                               console.log("trying?");
                               this.props.dispatch({
                                 type: "FLOATING_VIEW",
-                                value: undefined,
+                                value: undefined
                               });
                             }}
                           >
@@ -271,17 +281,12 @@ class Header extends Component {
                           </div>
                         </div>
                       )}
-                      {this.isUserLoggedIn() && isProjectPage && (
+                      {isProjectPage && (
                         <div className="nav-link">
                           <div
                             className="dropdown-item"
                             onClick={() => {
-                              console.log("trying to save");
-                              console.log(
-                                projectEditor.WrappedComponent.prototype
-                                  .saveProject
-                              );
-                              this.saveProject();
+                              this.saveProject(false);
                               // projectEditor.WrappedComponent.prototype.saveProject(
                               //   this.props.projectControl.projectId,
                               //   this.props.blocks
@@ -297,24 +302,47 @@ class Header extends Component {
                           <div
                             className="dropdown-item"
                             onClick={() => {
-                              console.log("trying to export");
+                              this.saveProject(true);
+                            }}
+                          >
+                            Save As
+                          </div>
+                        </div>
+                      )}
+                      {this.isUserLoggedIn() && isProjectPage && (
+                        <div className="nav-link">
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
                               // let {
                               //   projectName,
                               //   projectDescription
                               // } = this.props.projectControl;
 
                               this.exportProject();
-                              // projectEditor.WrappedComponent.prototype.exportProject(
-                              //   projectName,
-                              //   projectDescription,
-                              //   this.props.blocks
-                              // );
                             }}
                           >
                             Export
                           </div>
                         </div>
                       )}
+                      {/* {this.isUserLoggedIn() && isProjectPage && (
+                        <div className="nav-link">
+                          <div
+                            className="dropdown-item"
+                            onClick={() => {
+                              // let {
+                              //   projectName,
+                              //   projectDescription
+                              // } = this.props.projectControl;
+
+                              this.exportProject();
+                            }}
+                          >
+                            Export
+                          </div>
+                        </div>
+                      )} */}
                     </div>
                   </div>
                 </NavItem>
@@ -417,9 +445,9 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   projectControl: state.projectControl,
-  blocks: state.blocks,
+  blocks: state.blocks
 });
 
 export default withRouter(connect(mapStateToProps)(Header));
