@@ -197,6 +197,32 @@ class Header extends Component {
     const isProjectPage =
       this.props.location.pathname.split("/")[1] === "project-editor";
 
+    let fileReader;
+    const handleFileRead = e => {
+      const content = JSON.parse(fileReader.result);
+      let payload = {
+        projectName: content.projectName,
+        projectDescription: content.projectDescription,
+        blocks: content.blocks
+      };
+      createProject(payload)
+        .then(data => {
+          showToastr("success", "Project imported successfully");
+          console.log(data);
+          // this.setState({ projects: [...this.state.projects, data] });
+          this.upload.value = "";
+          window.location = data.project_id;
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    };
+    const handleFileChosen = file => {
+      fileReader = new FileReader();
+      fileReader.onloadend = handleFileRead;
+      fileReader.readAsText(file);
+    };
+
     return (
       <React.Fragment>
         <Navbar
@@ -326,23 +352,25 @@ class Header extends Component {
                           </div>
                         </div>
                       )}
-                      {/* {this.isUserLoggedIn() && isProjectPage && (
+                      {this.isUserLoggedIn() && isProjectPage && (
                         <div className="nav-link">
+                          <input
+                            style={{ display: "none" }}
+                            ref={ref => (this.upload = ref)}
+                            type="file"
+                            id="projectFile"
+                            accept=".json"
+                            onChange={e => handleFileChosen(e.target.files[0])}
+                            className="dropdown-item"
+                          />
                           <div
                             className="dropdown-item"
-                            onClick={() => {
-                              // let {
-                              //   projectName,
-                              //   projectDescription
-                              // } = this.props.projectControl;
-
-                              this.exportProject();
-                            }}
+                            onClick={e => this.upload.click()}
                           >
-                            Export
+                            Import
                           </div>
                         </div>
-                      )} */}
+                      )}
                     </div>
                   </div>
                 </NavItem>
