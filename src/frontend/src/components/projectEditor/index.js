@@ -256,7 +256,6 @@ class ProjectEditor extends React.Component {
       for (let i = 0; i < length; i++) {
         newValue[i] = [];
       }
-      window.foo = newValue;
       nextProps.blocks.bs.forEach(o => {
         this.state.items.every((arr, index) => {
           const found = arr.find(element => element["id"] === o["id"]);

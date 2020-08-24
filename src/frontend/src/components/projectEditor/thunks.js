@@ -49,12 +49,17 @@ function initAudioObj(typeName, audioConfig) {
         break;
       case "Speaker":
         t = new ScSpeakers(scContext, audioConfig);
-        console.log(audioConfig);
         resolve(t);
         break;
       case "DirectInput":
-        t = new ScDirectIn(scContext);
-        resolve(t);
+        let promise = new ScDirectIn(scContext, audioConfig);
+        promise
+          .then(t => {
+            resolve(t);
+          })
+          .catch(t => {
+            resolve(t);
+          });
         break;
       case "Pitch":
         t = new ScPitch(scContext);

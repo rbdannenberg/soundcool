@@ -31,7 +31,7 @@ import transposer from "../Components/pictures/transposer.gif";
 // import imagesampleV from "../Components/pictures/imagesampleV.gif";
 import granSynth from "../Components/pictures/granular.gif";
 import { asyncAddBlock } from "../thunks.js";
-// import { audioDefaults } from "./blockSpecs";
+import { audioDefaults } from "./blockSpecs";
 
 const AddBlock = props => {
   return (
@@ -287,7 +287,7 @@ const AddBlock = props => {
         <button
           name="boton"
           type="submit"
-          onClick={() => props.dispatch(asyncAddBlock("DirectInput"))}
+          onClick={() => props.dispatch(asyncAddBlock("DirectInput", audioDefaults["DirectInput"]))}
           data-tip="DirectInput"
           data-for="tool"
         >

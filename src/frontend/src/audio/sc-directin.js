@@ -2,6 +2,7 @@ import ScModule from "./sc-module.js";
 import ScAnalyzer from "./sc-analyzer.js";
 
 function connectStream(stream) {
+  this.micPermission = true;
   this.inNode = this.context.createMediaStreamSource(stream);
   this.panner = this.context.createStereoPanner()
   this.pan = this.options.pan;
@@ -15,10 +16,13 @@ function connectStream(stream) {
   if (this.options.muted) {
     this.outNode.gain.value = 0;
   }
+  this.setupPromise.resolve(this);
 }
 
 function connectError(error) {
+  this.micPermission = false;
   console.error("ScDirectIn: " + error.message);
+  this.setupPromise.reject(this);
 }
 
 class ScDirectIn extends ScModule {
@@ -26,20 +30,29 @@ class ScDirectIn extends ScModule {
     super(context);
     let defOpts = {
       muted: false,
-      pan: 0
+      pan: 0,
+      volume: 100
     };
     this.options = Object.assign(defOpts, options);
     this.analyzer = new ScAnalyzer(this.context, { type : "level" });
     this.connectStream = connectStream.bind(this);
     this.connectError = connectError.bind(this);
-    this.setupNodes();
+    return this.setupNodes();
   }
 
   setupNodes() {
+    let res, rej;
+    this.setupPromise = new Promise(function(resolve, reject) {
+      res = resolve;
+      rej = reject;
+    });
+    this.setupPromise.resolve = res;
+    this.setupPromise.reject = rej;
     navigator.mediaDevices
       .getUserMedia({ audio: { channelCount: 2 } })
       .then(this.connectStream)
       .catch(this.connectError);
+    return this.setupPromise;
   }
 
   getAudioData() {
