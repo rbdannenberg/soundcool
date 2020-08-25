@@ -72,7 +72,6 @@ class ScModule {
     this.applyWithSmoothing(this.outNode.gain, value);
   }
 
-  destroy() {}
 }
 
 export default ScModule;
