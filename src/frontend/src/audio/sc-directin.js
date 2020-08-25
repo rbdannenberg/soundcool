@@ -80,6 +80,14 @@ class ScDirectIn extends ScModule {
     this.options.pan = value;
     this.panner.pan.value = value;
   }
+
+  destroy() {
+    if (this.micPermission) {
+      this.inNode.disconnect(this.panner);
+      this.panner.disconnect(this.outNode);
+      this.outNode.disconnect(this.analyzer.inNode);
+    }
+  }
 }
 
 export default ScDirectIn;

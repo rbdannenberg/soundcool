@@ -138,7 +138,6 @@ const blocks = (
       }
 
     case "DISCONNECTING_BLOCK":
-      console.log("disconnecting!");
       // disconnecting only happens from destination
       let [nameIn, portIn, idIn, audioObjIn] = action.value;
       let inBlockInfo = state.bs.filter(t => t.id === idIn)[0];
