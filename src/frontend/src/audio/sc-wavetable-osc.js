@@ -14,6 +14,11 @@ class WaveTableOscillator {
     this.osc.connect(this.outNode);
   }
 
+  destroy() {
+    this.osc.disconnect(this.outNode);
+    this.osc.stop();
+  }
+
   computeWaveTable(type, phase) {
     phase = (parseFloat(phase) * Math.PI) / 180;
     let periodicWaveSize = 4096;
