@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
+import LoginForm from "../login/form";
 import FormInput from "../form/FormInput";
 import projectEditor from "../projectEditor/index";
 
@@ -44,7 +45,8 @@ class Header extends Component {
       projectName: this.props.projectControl.projectName,
       projectDescription: "",
       isModalOpen: false,
-      isRegisterModalOpen: false
+      isRegisterModalOpen: false,
+      isLoginModalOpen: false
       // openPorts: []
     };
 
@@ -88,7 +90,7 @@ class Header extends Component {
         });
       } else this.toggleModal();
     else {
-      this.toggleRegisterModal();
+      this.toggleLoginModal();
     }
   };
 
@@ -176,6 +178,10 @@ class Header extends Component {
     this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
   };
 
+  toggleLoginModal = () => {
+    this.setState({ isLoginModalOpen: !this.state.isLoginModalOpen });
+  };
+
   afterRegister = res => {
     const { token, error, name } = res;
     if (error) {
@@ -188,6 +194,22 @@ class Header extends Component {
       });
       showToastr("success", "Please enter project details");
       this.toggleRegisterModal();
+      this.toggleModal();
+    }
+  };
+
+  afterSignin = res => {
+    const { token, error, name } = res;
+    if (error) {
+      showToastrError(res);
+    } else {
+      showToastr("success", "Logged in successfully.");
+      cookies.set("name", name, { path: "/" });
+      cookies.set("token", token, { path: "/" });
+      Store.populateFromProps({
+        userToken: { email: undefined, token: token }
+      });
+      this.toggleLoginModal();
       this.toggleModal();
     }
   };
@@ -429,6 +451,27 @@ class Header extends Component {
           </Modal.Header>
           <Modal.Body>
             <RegisterForm afterRegister={this.afterRegister} />
+          </Modal.Body>
+        </Modal>
+        <Modal
+          centered
+          show={this.state.isLoginModalOpen}
+          onHide={this.toggleLoginModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Login to account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <LoginForm afterSignin={this.afterSignin} />
+            <div
+              style={{ color: "#007bff" }}
+              onClick={() => {
+                this.toggleLoginModal();
+                this.toggleRegisterModal();
+              }}
+            >
+              New User? Register
+            </div>
           </Modal.Body>
         </Modal>
         <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
