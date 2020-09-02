@@ -220,12 +220,12 @@ class Player extends React.Component {
                 left: "0.3125rem",
                 cursor: "pointer",
                 border: "1px solid",
-                width: "1.25rem",
+                width: "2rem",
                 fontSize: "0.64rem"
               }}
               onClick={e => this.props.changeBlock(id, "speed", 0.01)}
             >
-              &#215;0
+              &#215;0.01
             </div>
             <div
               className=""
