@@ -1,5 +1,5 @@
 import React from "react";
-import { changeBlock, connectOrDisconnectBlock, setOpacity } from "./actions";
+import { changeBlock, connectOrDisconnectBlock} from "./actions";
 import { connect } from "react-redux";
 import {
   getCssPropById,
@@ -340,6 +340,14 @@ class Mixer extends React.Component {
     renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
   };
 
+  setOpacity(inNode, port, opacity) {
+    if (inNode[port] && inNode[port].length > 0) {
+      let inId = inNode[port][1];
+      var elem = document.getElementById(inId);
+      elem.style.opacity = opacity;
+    }
+  };
+
   render = () => {
     // #region props
     let {
@@ -359,7 +367,6 @@ class Mixer extends React.Component {
     } = this.props.blockInfo;
     let changeBlock = this.props.changeBlock;
     let connectOrDisconnectBlock = this.props.connectOrDisconnectBlock;
-    let setOpacity = this.props.setOpacity;
     let backgroundColor = [];
     for (let i = 0; i < 8; i++) {
       if (inNode[i] && inNode[i].length > 0) {
@@ -396,10 +403,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 0, 0.5);
+                  this.setOpacity(inNode, 0, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 0, 1);
+                  this.setOpacity(inNode, 0, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -488,10 +495,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 1, 0.5);
+                  this.setOpacity(inNode, 1, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 1, 1);
+                  this.setOpacity(inNode, 1, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -580,10 +587,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 2, 0.5);
+                  this.setOpacity(inNode, 2, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 2, 1);
+                  this.setOpacity(inNode, 2, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -672,10 +679,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 3, 0.5);
+                  this.setOpacity(inNode, 3, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 3, 1);
+                  this.setOpacity(inNode, 3, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -764,10 +771,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 4, 0.5);
+                  this.setOpacity(inNode, 4, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 4, 1);
+                  this.setOpacity(inNode, 4, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -856,10 +863,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 5, 0.5);
+                  this.setOpacity(inNode, 5, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 5, 1);
+                  this.setOpacity(inNode, 5, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -954,10 +961,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 6, 0.5);
+                  this.setOpacity(inNode, 6, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 6, 1);
+                  this.setOpacity(inNode, 6, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -1053,10 +1060,10 @@ class Mixer extends React.Component {
                   );
                 }}
                 onMouseEnter={() => {
-                  setOpacity(inNode, 7, 0.5);
+                  this.setOpacity(inNode, 7, 0.5);
                 }}
                 onMouseLeave={() => {
-                  setOpacity(inNode, 7, 1);
+                  this.setOpacity(inNode, 7, 1);
                 }}
                 onContextMenu={e => {
                   e.preventDefault();
@@ -1218,5 +1225,4 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   changeBlock,
   connectOrDisconnectBlock,
-  setOpacity
 })(Mixer);

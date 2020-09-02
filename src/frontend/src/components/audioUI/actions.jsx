@@ -38,11 +38,3 @@ export const connectOrDisconnectBlock = (
     // });
   }
 };
-
-export const setOpacity = (inNode, port, opacity) => {
-  if (inNode[port] && inNode[port].length > 0) {
-    let inId = inNode[port][1];
-    var elem = document.getElementById(inId);
-    elem.style.opacity = opacity;
-  }
-};

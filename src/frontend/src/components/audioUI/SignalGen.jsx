@@ -43,10 +43,10 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
           value={parseInt(frequency)}
           style={{
             position: "absolute",
-            width: "48px",
+            width: "54px",
             height: "12px",
             left: "78px",
-            top: "2px",
+            top: "6px",
             fontSize: "0.64rem"
           }}
           onChange={e => {
@@ -61,7 +61,7 @@ const SignalGen = ({ blockInfo, changeBlock }) => {
             width: "10rem",
             position: "absolute",
             left: "5px",
-            top: "16px"
+            top: "18px"
           }}
           type="range"
           id="frequency"
