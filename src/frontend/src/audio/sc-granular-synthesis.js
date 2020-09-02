@@ -322,6 +322,10 @@ class ScGranSynth extends ScModule {
     this.options.delayJitter = parseFloat(desiredJitter);
   }
 
+  destroy() {
+    // NYI
+  }
+
 }
 
 export default ScGranSynth;
