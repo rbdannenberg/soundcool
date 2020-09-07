@@ -258,6 +258,7 @@ class ProjectEditor extends React.Component {
       }
       nextProps.blocks.bs.forEach(o => {
         this.state.items.every((arr, index) => {
+          arr = arr.filter(e => e !== undefined);
           const found = arr.find(element => element["id"] === o["id"]);
           if (found === undefined) {
             if (index === length - 1) {
@@ -280,7 +281,6 @@ class ProjectEditor extends React.Component {
   }
 
   componentDidMount() {
-    console.log("mounted?");
     this.loadState();
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);

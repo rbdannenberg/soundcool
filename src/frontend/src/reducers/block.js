@@ -43,7 +43,6 @@ const block = (state, action) => {
       let newOutNode;
       // if the connected block no longer exist, we change the
       // entry back to undefined
-      console.log(state.inNode);
       newInNode = state.inNode.map(n => {
         if (n) {
           return action.blocks.filter(t => t.id === n[1]).length === 0
@@ -53,9 +52,12 @@ const block = (state, action) => {
         return null;
       });
       newOutNode = state.outNode.map(n => {
-        return action.blocks.filter(t => t.id === n[1]).length === 0
-          ? undefined
-          : n;
+        if (n) {
+          return action.blocks.filter(t => t.id === n[1]).length === 0
+            ? undefined
+            : n;
+        }
+        return null;
       });
       return { ...state, inNode: newInNode, outNode: newOutNode };
     case "CONNECTING_BLOCK":
