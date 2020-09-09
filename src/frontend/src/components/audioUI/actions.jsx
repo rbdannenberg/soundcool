@@ -14,8 +14,8 @@ export const connectOrDisconnectBlock = (
   inNode,
   optional
 ) => dispatch => {
-  let [port] = value;
-  // if there is, disconnect
+  let [name, port, id, audioObj] = value;
+  // if there is such connection, disconnect
   if (inNode[port] && inNode[port].length > 0) {
     dispatch({
       type: "DISCONNECTING_BLOCK",
@@ -30,11 +30,5 @@ export const connectOrDisconnectBlock = (
       value,
       ...optional
     });
-    // dispatch({
-    //   type: "CONNECTING_BLOCK",
-    //   node,
-    //   value,
-    //   ...optional
-    // });
   }
 };

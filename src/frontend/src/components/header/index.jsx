@@ -19,7 +19,6 @@ import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
 import LoginForm from "../login/form";
 import FormInput from "../form/FormInput";
-import projectEditor from "../projectEditor/index";
 
 import { updateProject, createProject } from "../projectEditor/actions";
 import {
@@ -441,6 +440,8 @@ class Header extends Component {
             </Collapse>
           </div>
         </Navbar>
+
+        {/* create new account model */}
         <Modal
           centered
           show={this.state.isRegisterModalOpen}
@@ -453,6 +454,8 @@ class Header extends Component {
             <RegisterForm afterRegister={this.afterRegister} />
           </Modal.Body>
         </Modal>
+
+        {/* log into account */}
         <Modal
           centered
           show={this.state.isLoginModalOpen}
@@ -474,6 +477,8 @@ class Header extends Component {
             </div>
           </Modal.Body>
         </Modal>
+
+        {/* create new project */}
         <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
           <form id="project_create" method="post">
             <Modal.Header closeButton>

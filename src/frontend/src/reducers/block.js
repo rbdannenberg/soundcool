@@ -102,7 +102,6 @@ const block = (state, action) => {
         newOutNode[portOut] = [];
         return { ...state, outNode: newOutNode };
       } else if (state.id === idIn) {
-        console.log("here 1");
         let newInNode = state.inNode;
         newInNode[portIn] = [];
         return { ...state, inNode: newInNode };

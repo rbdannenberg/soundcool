@@ -6,24 +6,11 @@ import "./index.css";
 import { connect } from "react-redux";
 import { default as RDraggable } from "react-draggable";
 import WithHeader from "./Components/WithHeader";
-import RegisterForm from "../register/form";
 import AddBlock from "./Components/AddBlock";
 import { StoreX as Store } from "../../storeX";
 import { instanceOf } from "prop-types";
-import {
-  showToastr,
-  showToastrError,
-  baseAddress,
-  cleanPayload
-} from "../../actions/common";
-import {
-  updateProject,
-  createProject,
-  fetchUserProject,
-  openPort
-} from "./actions";
-import Modal from "react-bootstrap/Modal";
-import FormInput from "../form/FormInput";
+import { showToastr, showToastrError, baseAddress } from "../../actions/common";
+import { fetchUserProject, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
@@ -81,8 +68,6 @@ class ProjectEditor extends React.Component {
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
-      isModalOpen: false,
-      isRegisterModalOpen: false,
       openPorts: []
     };
     this.canvasRef = React.createRef();
@@ -146,7 +131,10 @@ class ProjectEditor extends React.Component {
   };
 
   renderBlockList = (blocks, nowOut) => {
-    // console.log(blocks);
+    blocks = blocks.map(column => {
+      const col = column.filter(item => item !== undefined);
+      return col;
+    });
     if (this.props.projectControl.floatingView) {
       let finalBlock = [];
       blocks.forEach(o => {
@@ -197,10 +185,6 @@ class ProjectEditor extends React.Component {
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
               <div style={{ paddingTop: "30px", paddingLeft: "100px" }}>
-                {/* <h5 className="text-center">
-                  {" "}
-                  {"Columnn " + (listIndex + 1)}{" "}
-                </h5> */}
                 <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
@@ -559,12 +543,6 @@ class ProjectEditor extends React.Component {
     });
   }
 
-  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
-  // toggleFloatingView = () =>
-  //   this.setState({ floatingView: !this.state.floatingView });
-  toggleRegisterModal = () =>
-    this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
-
   loadState() {
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
@@ -601,22 +579,6 @@ class ProjectEditor extends React.Component {
     }
   }
 
-  afterRegister = res => {
-    const { token, error, name } = res;
-    if (error) {
-      showToastrError(res);
-    } else {
-      cookies.set("name", name, { path: "/" });
-      cookies.set("token", token, { path: "/" });
-      Store.populateFromProps({
-        userToken: { email: undefined, token: token }
-      });
-      showToastr("success", "Please enter project details");
-      this.toggleRegisterModal();
-      this.toggleModal();
-    }
-  };
-
   handleOnChange = (name, value) => {
     const params = { [name]: value };
     this.setState(params);
@@ -625,98 +587,6 @@ class ProjectEditor extends React.Component {
     return cookies.get("token") || "";
   }
 
-  saveProject(id, content) {
-    console.log(this.props);
-    if (this.isUserLoggedIn())
-      if (id !== "new") {
-        this.updateProject({
-          projectId: id,
-          content: JSON.stringify(content)
-        });
-        // console.log("done");
-        // console.log(JSON.stringify(this.props.blocks.bs[0]));
-      } else this.toggleModal();
-    else this.toggleRegisterModal();
-  }
-
-  updateProject(payload) {
-    updateProject(payload)
-      .then(() => {
-        showToastr("success", "Project successfully updated");
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-  exportProject(projectName, projectDescription, blocks) {
-    let bs = blocks.bs;
-    let nowOut = blocks.nowOut;
-    let content = {
-      bs,
-      nowOut
-    };
-    this.downloadFile({
-      projectName,
-      projectDescription,
-      content
-    });
-  }
-
-  async downloadFile(myData) {
-    const fileName = myData.projectName;
-    const json = JSON.stringify(myData, null, "\t");
-    let readData = JSON.parse(json);
-    readData.blocks = cleanPayload(readData.blocks);
-    const updatedJson = JSON.stringify(readData, null, "\t");
-    const blob = new Blob([updatedJson], { type: "application/json" });
-    const href = await URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = href;
-    link.download = fileName + ".json";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  createProject = event => {
-    event.preventDefault();
-    let isFormValid = true,
-      error = "";
-
-    const { projectName, projectDescription } = this.state;
-    const blocks = this.props.blocks;
-
-    // console.log("blocks is: ");
-    // console.log(blocks);
-
-    if (blocks.length === 0) {
-      error = "Project is Empty";
-      isFormValid = false;
-    } else if (projectName === "") {
-      error = "Project name is required";
-      isFormValid = false;
-    }
-
-    if (isFormValid) {
-      let payload = {
-        projectName,
-        projectDescription,
-        blocks
-      };
-
-      createProject(payload)
-        .then(data => {
-          this.setState({ projectName: "", projectDescription: "" });
-          showToastr("success", "Project created successfully");
-          window.location = "/project-editor/" + data.project_id;
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-    } else {
-      showToastrError({ error });
-    }
-  };
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
     blocks.forEach(block => {
@@ -736,11 +606,7 @@ class ProjectEditor extends React.Component {
   };
 
   render() {
-    // console.log(this.props);
-    // console.log(this.state.projectId);
-    // console.log(this.props.projectControl.projectId);
     if (this.state.projectId !== this.props.projectControl.projectId) {
-      console.log("?");
       this.props.dispatch({
         type: "WORKING_PROJ",
         id: this.state.projectId,
@@ -748,88 +614,16 @@ class ProjectEditor extends React.Component {
         description: this.state.projectDescription
       });
     }
-    const { projectName, projectDescription, items } = this.state;
+    let { projectName, projectDescription, items } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
     return (
       <React.Fragment>
-        <Prompt
-          // when={!this.checkIsProjectPage}
-          message="Leaving the project editor... Please don't forget to save!"
-        />
+        <Prompt message="Leaving the project editor... Please don't forget to save!" />
         <div className="container-fluid">
-          {/* <button
-            className=" btn btn-success m-2"
-            style={{ position: "absolute", top: "620px", left: "820px" }}
-            onClick={this.saveProject}
-          >
-            {isUserLoggedIn()
-              ? this.state.projectId === "new"
-                ? "Create"
-                : "Save"
-              : "Register to save"}
-          </button> */}
-          {/* {isUserLoggedIn() && this.state.projectId !== "new" && (
-            <button
-              className=" btn btn-warning m-2"
-              style={{ position: "absolute", top: "620px", left: "900px" }}
-              onClick={this.exportProject}
-            >
-              Export Project
-            </button>
-          )} */}
-          {/* {!floatingView && (
-            <div style={{ position: "absolute", left: "165px", top: "53px" }}>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => {
-                  let newValue = this.state.items;
-                  let index =
-                    parseInt(prompt("Enter column number", newValue.length)) - 1;
-                  if (
-                    index < newValue.length &&
-                    newValue[index][0] === undefined
-                  ) {
-                    newValue.splice(index, 1);
-                    this.setState({ items: newValue });
-                  } else {
-                    alert("Column number is wrong or not empty");
-                  }
-                }}
-              >
-                Remove
-                <br />
-                Column
-              </button>
-            </div>
-          )} */}
-          {/* {!floatingView && (
-            <div
-              class="contenedor"
-              id="oscilloscope"
-              style={{ position: "absolute", left: "1020px", top: "53px" }}
-            >
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() =>
-                  this.setState({ items: [...this.state.items, []] })
-                }
-              >
-                Add
-                <br />
-                Column
-              </button>
-            </div>
-          )} */}
           <AddBlock />
-          {/* <button
-            className=" btn btn-danger m-2"
-            style={{ position: "absolute", top: "620px", left: "1040px" }}
-            // onClick={this.toggleFloatingView}
-          >
-            Floating View : {floatingView ? "On" : "Off"}
-          </button> */}
+
           {openPortsButton && (
             <button
               className="btn btn-secondary m-2 float-right"
@@ -843,62 +637,6 @@ class ProjectEditor extends React.Component {
               {this.renderBlockList(items, this.props.blocks.nowOut)}
             </div>
           </div>
-          <Modal
-            centered
-            show={this.state.isRegisterModalOpen}
-            onHide={this.toggleRegisterModal}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Create new account</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <RegisterForm afterRegister={this.afterRegister} />
-            </Modal.Body>
-          </Modal>
-          <Modal
-            centered
-            show={this.state.isModalOpen}
-            onHide={this.toggleModal}
-          >
-            <form id="project_create" method="post">
-              <Modal.Header closeButton>
-                <Modal.Title>Create new project</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <FormInput
-                  className="form-control"
-                  type="text"
-                  name="projectName"
-                  required={true}
-                  placeholder="Project Name"
-                  value={projectName}
-                  onChange={this.handleOnChange}
-                  autoFocus
-                />
-                <br />
-                <FormInput
-                  className="form-control"
-                  type="text"
-                  name="projectDescription"
-                  required={true}
-                  placeholder="Project Description"
-                  value={projectDescription}
-                  onChange={this.handleOnChange}
-                />
-              </Modal.Body>
-              <Modal.Footer>
-                <button className="btn btn-warn" onClick={this.toggleModal}>
-                  Close
-                </button>
-                <button
-                  onClick={this.createProject}
-                  className="btn btn-primary"
-                >
-                  Create
-                </button>
-              </Modal.Footer>
-            </form>
-          </Modal>
         </div>
       </React.Fragment>
     );
