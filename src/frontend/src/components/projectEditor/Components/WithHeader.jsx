@@ -307,7 +307,7 @@ const WithHeader = ({
         // transform: "scale(0.8) translate(-32px, -30px)"
       }}
     >
-      <div>
+      <div id={name}>
         <div className="">
           {draggableButton && (
             <strong className="cursor pointer-cursor ml-1">
