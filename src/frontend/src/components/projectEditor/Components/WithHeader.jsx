@@ -265,7 +265,7 @@ const WithHeader = ({
           if (outNode) {
             let outId;
             outNode.forEach(node => {
-              if (node.length > 0) {
+              if (!!node && node.length > 0) {
                 outId = node[1];
                 document.getElementById(outId).style.opacity = 0.5;
               }
@@ -276,7 +276,7 @@ const WithHeader = ({
           if (outNode) {
             let outId;
             outNode.forEach(node => {
-              if (node.length > 0) {
+              if (!!node && node.length > 0) {
                 outId = node[1];
                 document.getElementById(outId).style.opacity = 1;
               }
@@ -289,8 +289,6 @@ const WithHeader = ({
     );
   }
 
-  // console.log("hi");
-  // console.log(Block.WrappedComponent);
   return (
     <div
       id={id}
@@ -301,10 +299,6 @@ const WithHeader = ({
         borderColor: "grey",
         borderStyle: "solid",
         borderWidth: "2px",
-        //transformOrigin: "top left",
-        //transform: "scale(0.8)"
-        // clip: "rect(0px,60px,200px,0px)"
-        // transform: "scale(0.8) translate(-32px, -30px)"
       }}
     >
       <div id={name}>
@@ -319,9 +313,7 @@ const WithHeader = ({
             {name}
           </span>
           <input
-            // className=""
             class="form-control badge-secondary badge-pill m-1"
-            // placeholder={typeName}
             style={{
               fontSize: "0.64rem",
               color: "black",
