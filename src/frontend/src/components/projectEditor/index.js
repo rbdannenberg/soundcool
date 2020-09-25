@@ -68,7 +68,8 @@ class ProjectEditor extends React.Component {
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
-      openPorts: []
+      openPorts: [],
+      isProjectChanged: undefined,
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -252,12 +253,19 @@ class ProjectEditor extends React.Component {
           } else {
             const i = arr.findIndex(element => element["id"] === o["id"]);
             newValue[index][i] = o;
-            // newValue[index].push(o);
             return false;
           }
         });
       });
+      var checkUpdate = this.state.isProjectChanged;
+      if (checkUpdate === undefined) {
+        checkUpdate = false;
+      } else {
+        checkUpdate = true;
+      }
+      console.log(checkUpdate);
       this.setState({
+        isProjectChanged: checkUpdate,
         items: newValue,
         prevItems: nextProps.blocks.bs
       });
@@ -620,7 +628,7 @@ class ProjectEditor extends React.Component {
       : true;
     return (
       <React.Fragment>
-        <Prompt message="Leaving the project editor... Please don't forget to save!" />
+        <Prompt when={this.state.projectId !== "new" && this.state.isProjectChanged} message="Leaving the project editor... Please don't forget to save!" />
         <div className="container-fluid">
           <AddBlock />
 
