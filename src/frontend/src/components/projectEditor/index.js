@@ -74,6 +74,7 @@ class ProjectEditor extends React.Component {
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
     this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
   getList = id => {
@@ -123,7 +124,6 @@ class ProjectEditor extends React.Component {
         : 0
       : 0;
     return {
-      width: "316px",
       position: "absolute",
       top: top,
       left: left,
@@ -143,8 +143,7 @@ class ProjectEditor extends React.Component {
       });
       return (
         <div
-          className="box"
-          style={{ left: "30px", top: "2px", height: "91vh", width: "320vh" }}
+          style={{ left: "100px", top: "2px", height: this.state.windowH - 60, width: this.state.windowW - 120, position: "relative" }}
         >
           <div className="boxContainer">
             {finalBlock.map(b => (
@@ -156,7 +155,6 @@ class ProjectEditor extends React.Component {
                     this.setState({ selectedBlock: b.id });
                   }
                 }}
-                style={{ transform: "scale(0.7)" }}
               >
                 <div
                   className="no-cursor"
@@ -277,6 +275,8 @@ class ProjectEditor extends React.Component {
 
   componentDidMount() {
     this.loadState();
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on("openPort", data => {
@@ -294,6 +294,14 @@ class ProjectEditor extends React.Component {
         this.handleOscInput(comp, data);
       });
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+
+  updateWindowDimensions() {
+    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight });
   }
 
   findComponents(oscPort, targetType) {

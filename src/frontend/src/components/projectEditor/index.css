@@ -7,22 +7,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.box {
-  height: 85vh;
-  width: 100%;
-  overflow: auto;
-  border: 1px solid green;
-  border-radius: 5px;
-  position: relative;
-  resize: both;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  padding: 0;
-}
-
 .boxContainer {
   height: 100%;
   width: 100%;
-  padding: 5px 10px 5px 10px;
 }
 
 [data-react-beautiful-dnd-droppable] {
