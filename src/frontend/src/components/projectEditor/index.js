@@ -263,7 +263,10 @@ class ProjectEditor extends React.Component {
       } else {
         checkUpdate = true;
       }
-      console.log(checkUpdate);
+      if (this.state.projectId === "new") {
+        localStorage.setItem('localProject', JSON.stringify(nextProps.blocks))
+      }
+
       this.setState({
         isProjectChanged: checkUpdate,
         items: newValue,
@@ -558,7 +561,6 @@ class ProjectEditor extends React.Component {
           let { name, description, content } = res;
 
           this.props.dispatch(loadProject(content));
-
           this.setState({
             projectName: name,
             projectDescription: description
@@ -575,11 +577,7 @@ class ProjectEditor extends React.Component {
           showToastrError(err);
         });
     } else {
-      this.props.dispatch({
-        type: "LOAD_STATE",
-        content: undefined
-      });
-
+      this.props.dispatch(loadProject(localStorage.getItem('localProject')));
       this.setState({
         projectName: "",
         projectDescription: ""
