@@ -648,7 +648,6 @@ class ProjectEditor extends React.Component {
       : true;
     return (
       <React.Fragment>
-        <Prompt when={this.state.projectId !== "new" && this.state.isProjectChanged} message="Leaving the project editor... Please don't forget to save!" />
         <div className="container-fluid">
           <AddBlock />
 
