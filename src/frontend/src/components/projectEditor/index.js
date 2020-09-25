@@ -143,7 +143,7 @@ class ProjectEditor extends React.Component {
       });
       return (
         <div
-          style={{ left: "100px", top: "2px", height: this.state.windowH - 60, width: this.state.windowW - 120, position: "relative" }}
+          style={{ left: "5px", top: "40px", height: this.state.windowH - 95, width: this.state.windowW - 20, position: "relative" }}
         >
           <div className="boxContainer">
             {finalBlock.map(b => (
@@ -182,7 +182,7 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ paddingTop: "30px", paddingLeft: listIndex == 0 ? "100px" : "20px" }}>
+              <div style={{ paddingTop: "40px", paddingLeft: "20px" }}>
                 <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
@@ -300,7 +300,7 @@ class ProjectEditor extends React.Component {
   }
 
   updateWindowDimensions() {
-    let maxColumn = Math.floor((window.innerWidth - 100) / 230);
+    let maxColumn = Math.floor((window.innerWidth - 100) / 220);
     let items = this.state.items;
     if (items.length != maxColumn) {
       let sizeChange = maxColumn - items.length;
