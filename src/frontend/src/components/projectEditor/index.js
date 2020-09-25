@@ -182,7 +182,7 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ paddingTop: "30px", paddingLeft: "100px" }}>
+              <div style={{ paddingTop: "30px", paddingLeft: listIndex == 0 ? "100px" : "20px" }}>
                 <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
@@ -300,7 +300,22 @@ class ProjectEditor extends React.Component {
   }
 
   updateWindowDimensions() {
-    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight });
+    let maxColumn = Math.floor((window.innerWidth - 100) / 230);
+    let items = this.state.items;
+    if (items.length != maxColumn) {
+      let sizeChange = maxColumn - items.length;
+      if (sizeChange > 0) {
+        while (sizeChange--) {
+          items.push([]);
+        }
+      } else if (sizeChange < 0) {
+        while (sizeChange++ < 0) {
+          items[items.length - 2] = items[items.length - 2].concat(items[items.length - 1]);
+          items.pop();
+        }
+      }
+    }
+    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight, items: items });
   }
 
   findComponents(oscPort, targetType) {
