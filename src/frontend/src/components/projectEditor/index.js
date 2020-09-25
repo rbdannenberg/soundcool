@@ -148,8 +148,8 @@ class ProjectEditor extends React.Component {
           <div className="boxContainer">
             {finalBlock.map(b => (
               <RDraggable
-                handle="strong"
                 bounds="parent"
+                cancel="input"
                 onDrag={() => {
                   if (this.state.selectedBlock !== b.id) {
                     this.setState({ selectedBlock: b.id });
@@ -165,7 +165,6 @@ class ProjectEditor extends React.Component {
                 >
                   <div>
                     <WithHeader
-                      draggableButton={true}
                       key={b.id}
                       blockInfo={b}
                       nowOut={nowOut}

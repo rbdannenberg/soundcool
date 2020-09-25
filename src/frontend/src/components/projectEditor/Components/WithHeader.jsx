@@ -107,7 +107,6 @@ const eva = typeName => {
 
 const WithHeader = ({
   blockInfo,
-  draggableButton,
   nowOut,
   handleDelete,
   dispatch
@@ -303,11 +302,6 @@ const WithHeader = ({
     >
       <div id={name}>
         <div className="">
-          {draggableButton && (
-            <strong className="cursor pointer-cursor ml-1">
-              <FaArrowsAlt />
-            </strong>
-          )}
           {inButton}
           <span className="m-1" style={{ fontSize: "0.64rem" }} id="blockName">
             {name}
