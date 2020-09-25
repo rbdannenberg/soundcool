@@ -322,9 +322,9 @@ class ProjectEditor extends React.Component {
     let components = [];
     this.props.blocks["bs"].forEach((comp, index) => {
       if (
-        comp.osc &&
-        comp.oscPort === oscPort &&
-        comp.typeName === targetType
+        !!comp.oscPort &&
+        comp.oscPort == oscPort &&
+        comp.typeName == targetType
       ) {
         components.push({ id: comp.id, index: index });
       }
