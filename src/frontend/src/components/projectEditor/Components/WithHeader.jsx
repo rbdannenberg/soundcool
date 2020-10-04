@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Collapse } from "reactstrap";
-import { FaMinus, FaTimes, FaArrowsAlt } from "react-icons/fa";
+import { FaMinus, FaTimes } from "react-icons/fa";
 import {
   // #region all types
   Delay,
@@ -151,7 +151,6 @@ const WithHeader = ({
       border: "0px"
     };
     if (inNode[0] && inNode[0].length > 0) {
-      console.log(inNode[0][0]);
       let backgroundColor = getCssPropById(inNode[0][1], "background-color");
       style = {
         ...style,

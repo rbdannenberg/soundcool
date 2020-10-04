@@ -1,6 +1,8 @@
 import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
-export const noop = () => {};
+export const noop = () => { };
 
 export const showToastr = (type, ...rest) => {
   toast[type](...rest);
@@ -51,7 +53,7 @@ export const getCssPropById = (id, prop) => {
 export const highlightElementById = (id, time = 3000) => {
   var elem = document.getElementById(id);
   elem.style.boxShadow = "10px 10px 10px darkred";
-  setTimeout(function() {
+  setTimeout(function () {
     elem.style.boxShadow = "";
   }, time);
 };
@@ -61,7 +63,7 @@ export const setCssPropById = ({ id, prop, time = 3000, temp = false }) => {
   var orig = elem.style[prop];
   elem.style[prop] = "8px 8px 8px darkred";
   if (temp) {
-    setTimeout(function() {
+    setTimeout(function () {
       elem.style[prop] = orig;
     }, time);
   }
@@ -79,3 +81,46 @@ export const cleanPayload = pd => {
   pd["cns"] = {};
   return pd;
 };
+
+export const removeByAttr = (arr, attr, value) => {
+  var i = arr.length;
+  while (i--) {
+    if (arr[i]
+      && arr[i].hasOwnProperty(attr)
+      && (arr[i][attr] === value)) {
+      arr.splice(i, 1);
+    }
+  }
+  return arr;
+}
+
+export const updateRecentProjects = (projectId, projectName) => {
+  var recentP = localStorage.getItem('recentProjects') ? JSON.parse(localStorage.getItem('recentProjects')) : [];
+  var recentPSize = localStorage.getItem('recentProjectsSize') ? localStorage.getItem('recentProjectsSize') : 3;
+  removeByAttr(recentP, 'id', projectId);
+  recentP.unshift({ id: projectId, lastActive: Math.floor(Date.now() / 1000), projectName: projectName });
+  if (recentP.length > recentPSize) {
+    recentP.pop();
+  }
+  localStorage.setItem('recentProjects', JSON.stringify(recentP));
+}
+
+export const timedifference = (start, end) => {
+  var seconds = Math.ceil(end - start);
+  if (seconds > 59) {
+    return Math.ceil(seconds / 60) + " min";
+  } else {
+    return seconds + " sec";
+  }
+}
+
+export const clearData = () => {
+  cookies.remove("name", { path: "/" });
+  cookies.remove("token", { path: "/" });
+  cookies.remove("token", { path: "/project-editor" });
+  localStorage.clear();
+}
+
+export const isUserLoggedIn = () => {
+  return cookies.get("token") || "";
+}

@@ -5,13 +5,14 @@ import Home from "./components/home";
 import Login from "./components/login";
 import Register from "./components/register";
 import Header from "./components/header";
-import Projects from "./components/projects";
+import ProjectHome from "./components/projects";
 import Sounds from "./components/sounds";
 import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
 import Cookies from "universal-cookie";
+import Projects from "./components/projects/editor";
 
 const cookies = new Cookies();
 class Main extends Component {
@@ -21,7 +22,6 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    console.log(cookies);
     try {
       const jwt = cookies.get("token");
       const user = jwtDecode(jwt);
@@ -54,6 +54,11 @@ class Main extends Component {
           <Route
             exact
             path="/projects"
+            component={() => <ProjectHome user={user} />}
+          />
+          <Route
+            exact
+            path="/projectsList"
             component={() => <Projects user={user} />}
           />
           <Route
@@ -94,7 +99,6 @@ class Main extends Component {
 }
 
 const mapStateToProps = state => ({
-  projectControl: state.projectControl,
   blocks: state.blocks
 });
 

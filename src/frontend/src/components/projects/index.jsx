@@ -1,515 +1,173 @@
-import React, { Component } from "react";
-import { createProject } from "../projectEditor/actions";
-import { showToastr, showToastrError } from "../../actions/common";
-import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import ReactTooltip from "react-tooltip";
-import { Link } from "react-router-dom";
-import Switch from "react-switch";
-import {
-  removeProject,
-  fetchUserProjects,
-  addSharedUser,
-  removeSharedUser,
-  setProjectPublic,
-  cloneProject
-} from "./actions";
-import Modal from "react-bootstrap/Modal";
-import FormInput from "../form/FormInput.jsx";
+import React from "react";
+import Card from "react-bootstrap/Card";
+import CardDeck from "react-bootstrap/CardDeck";
+import ListGroup from "react-bootstrap/ListGroup";
+import ListGroupItem from "react-bootstrap/ListGroupItem";
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { withRouter } from "react-router-dom";
+import { Badge, Button, Col, Input, Row } from "reactstrap";
+import { isUserLoggedIn, showToastrError, timedifference, updateRecentProjects } from "../../actions/common";
+import { fetchUserProjects } from "./actions";
 
-class Projects extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userId: "",
-      userEmail: "",
-      projects: [],
-      search: "",
-      isModalOpen: false,
-      projectState: null,
-      isAddUserModalOpen: false,
-      checked: false
-    };
-    this.toggleProjectVisibility = this.toggleProjectVisibility.bind(this);
-  }
 
-  componentDidMount = async () => {
-    // case on the user, if there is no user logged in, then no
-    // project get displayed
-    if (this.props.user) {
-      fetchUserProjects()
-        .then(data => {
-          // console.log(data);
-          this.setState({ projects: data });
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-    } else {
-      return;
-    }
-  };
+class ProjectHome extends React.Component {
 
-  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
-  toggleUserModal = () =>
-    this.setState({ isAddUserModalOpen: !this.state.isAddUserModalOpen });
-
-  removeSharedUser() {
-    let { projectState } = this.state;
-    let { project_id, sharedUsers } = projectState;
-    removeSharedUser({ projectId: project_id, sharedUsers })
-      .then(res => {
-        // console.log(res);
-        showToastr("success", res.message);
-        let index = -1;
-        this.state.projects.some(project => {
-          index++;
-          if (project.project_id === project_id) {
-            // eslint-disable-next-line
-            this.state.projects[index]["sharedUsers"] = sharedUsers;
-            return true;
-          }
-          return false;
-        });
-        this.setState({
-          projects: this.state.projects
-        });
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-
-  toggleProjectVisibility(checked) {
-    let { projectState } = this.state;
-    let { project_id } = projectState;
-    setProjectPublic({ projectId: project_id, isPublic: checked })
-      .then(res => {
-        // console.log(res);
-        showToastr("success", res.message);
-        let index = -1;
-        this.state.projects.some(project => {
-          index++;
-          if (project.project_id === project_id) {
-            // eslint-disable-next-line
-            this.state.projects[index]["isPublic"] = checked;
-            return true;
-          }
-          return false;
-        });
-        this.setState({
-          projects: this.state.projects,
-          projectState: {
-            ...this.state.projectState,
-            isPublic: checked
-          }
-        });
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-  cloneProject(projectId) {
-    cloneProject({ projectId })
-      .then(data => {
-        if (data.error) {
-          showToastr("success", "Project can't be cloned");
-        } else {
-          showToastr("success", "Project cloned successfully");
-          this.setState({ projects: [...this.state.projects, data] });
-          // console.log([...this.state.projects, data]);
+    constructor(props) {
+        super(props);
+        this.state = {
+            projectsShown: localStorage.getItem('projectsShown') ? localStorage.getItem('projectsShown') : 3,
+            recentPSize: localStorage.getItem('recentProjectsSize') ? localStorage.getItem('recentProjectsSize') : 3,
+            editorView: localStorage.getItem('editorView') ? localStorage.getItem('editorView') : "Column",
+            localProject: !!JSON.parse(localStorage.getItem('localProject')),
         }
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-  addSharedUser() {
-    let { userId, userEmail, projectState } = this.state;
-    let { project_id, sharedUsers } = projectState;
-    let duplicate = false;
-    if (userId !== "") {
-      if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
-          return user.user_id === userId;
-        });
+        this.openProjectEditor = this.openProjectEditor.bind(this);
     }
-    if (userEmail !== "") {
-      if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
-          return user.email === userEmail;
-        });
-    }
-    if (!duplicate) {
-      addSharedUser({ userId, userEmail, projectId: project_id })
-        .then(res => {
-          showToastr("success", res.message);
-          if (res.data) {
-            let index = -1;
-            this.state.projects.some(project => {
-              index++;
-              if (project.project_id === project_id) {
-                // eslint-disable-next-line
-                this.state.projects[index]["sharedUsers"] = res.data;
-                return true;
-              }
-              return false;
-            });
-            this.setState({
-              projects: this.state.projects,
-              projectState: {
-                ...this.state.projectState,
-                sharedUsers: res.data
-              }
-            });
-          }
-          this.toggleUserModal();
-          this.toggleModal();
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-      this.setState({ userId: "", userEmail: "" });
-    } else {
-      showToastr("success", "Already Shared");
-    }
-  }
-  removeProject(projectId, index) {
-    var r = window.confirm("Do you want to delete project " + projectId);
-    if (r === true) {
-      removeProject({ projectId })
-        .then(res => {
-          showToastr("success", res.message);
-          let projects = this.state.projects;
-          projects.splice(index, 1);
-          this.setState({
-            projects
-          });
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-    }
-  }
-  filterProjects = project => {
-    let qry = this.state.search;
-    if (qry === "") return true;
-    else if (
-      project.user
-        .toString()
-        .toLowerCase()
-        .includes(qry.toLowerCase())
-    )
-      return true;
-    else if (project.name.toLowerCase().includes(qry.toLowerCase()))
-      return true;
-    else if (project.description.toLowerCase().includes(qry.toLowerCase()))
-      return true;
-    else if (
-      project.sharedUsers &&
-      project.sharedUsers.toLowerCase().includes(qry.toLowerCase())
-    )
-      return true;
-    else return false;
-  };
-  handleSharing = project => {
-    this.setState({ projectState: project }, () => {
-      this.toggleModal();
-    });
-  };
-  renderProjects = projects =>
-    projects.map((project, index) => {
-      let {
-        project_id,
-        name,
-        description,
-        sharedUsers,
-        isOwner,
-        isPublic
-      } = project;
-      let sUsers = [],
-        multiple = false;
-      let countt = 0;
-      if (sharedUsers)
-        JSON.parse(sharedUsers)["users"].every(user => {
-          if (multiple) sUsers.push(", ");
-          sUsers.push(user.user_id);
-          multiple = true;
-          countt++;
-          if (countt > 2) {
-            sUsers.push(" , ... ");
-            return false;
-          }
-          return true;
-        });
-      return (
-        <tr>
-          <th scope="row">{index + 1}</th>
-          <td>{name}</td>
-          <td>{description}</td>
-          <td>{isOwner ? isOwner : "You"}</td>
-          <td>{isPublic ? "Everyone" : sUsers}</td>
-          <td>
-            <button
-              data-tip="Edit Project"
-              className="btn btn-primary"
-              onClick={() => {
-                window.location = "project-editor/" + project_id;
-              }}
-            >
-              <i className="fas fa-edit" aria-hidden="true"></i>
-            </button>
-            &nbsp;
-            <button
-              data-tip="Share Project"
-              className="btn btn-info"
-              onClick={() => this.handleSharing(project)}
-            >
-              <i className="fas fa-share-alt" aria-hidden="true"></i>
-            </button>
-            &nbsp;
-            {!isOwner && (
-              <button
-                data-tip="Delete Project"
-                className="btn btn-danger"
-                onClick={() => this.removeProject(project_id, index)}
-              >
-                <i className="fas fa-trash" aria-hidden="true"></i>
-              </button>
-            )}
-            {isOwner !== 0 && isOwner && (
-              <button
-                data-tip="Clone Project"
-                className="btn btn-primary"
-                onClick={() => this.cloneProject(project_id)}
-              >
-                <i className="fas fa-clone" aria-hidden="true"></i>
-              </button>
-            )}
-          </td>
 
-          <ReactTooltip place="top" type="dark" effect="float" />
-        </tr>
-      );
-    });
-  handleOnChange = (name, value) => {
-    const params = { [name]: value };
-    this.setState(params);
-  };
+    openProjectEditor(projectId, projectName = "Local Project") {
+        if (!(!!projectId)) {
+            projectId = "new";
+        }
+        updateRecentProjects(projectId, projectName);
+        this.props.history.push('/project-editor/' + projectId);
+    }
 
-  render() {
-    console.log("rendering projects");
-    console.log(this.props);
-    let fileReader;
-    const handleFileRead = e => {
-      const content = JSON.parse(fileReader.result);
-      let payload = {
-        projectName: content.projectName,
-        projectDescription: content.projectDescription,
-        blocks: content.blocks
-      };
-      createProject(payload)
-        .then(data => {
-          showToastr("success", "Project imported successfully");
-          this.setState({ projects: [...this.state.projects, data] });
-          this.upload.value = "";
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
+    componentDidMount() {
+        this.loadProject();
     };
-    const handleFileChosen = file => {
-      fileReader = new FileReader();
-      fileReader.onloadend = handleFileRead;
-      fileReader.readAsText(file);
-    };
-    const { projects } = this.state;
-    return (
-      <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/home">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>ProjectMenu</BreadcrumbItem>
-          </Breadcrumb>
-          <div className="col-12">
-            <h3>Projects</h3>
-            <input
-              style={{ display: "none" }}
-              ref={ref => (this.upload = ref)}
-              type="file"
-              id="projectFile"
-              accept=".json"
-              onChange={e => handleFileChosen(e.target.files[0])}
-              className="btn btn-info float-right"
-            />
-            <div className="float-right">
-              <input
-                className="search"
-                style={{ marginRight: "10px" }}
-                type="text"
-                placeholder="Search.."
-                onChange={e => {
-                  this.setState({ search: e.target.value });
-                }}
-              ></input>
-              <button
-                className="btn btn-info"
-                onClick={e => this.upload.click()}
-              >
-                Import project
-              </button>
+
+    loadProject = async () => {
+        // case on the user, if there is no user logged in, then no
+        // project get displayed
+        var projectsShown = this.state.projectsShown;
+        if (isUserLoggedIn() && this.props.user) {
+            fetchUserProjects(projectsShown)
+                .then(data => {
+                    this.setState({ projects: data });
+                })
+                .catch(error => {
+                    showToastrError(error);
+                });
+        } else {
+            return;
+        }
+    }
+
+    render() {
+        const responsive = {
+            superLargeDesktop: {
+                // the naming can be any, depends on you.
+                breakpoint: { max: 4000, min: 3000 },
+                items: 5
+            },
+            desktop: {
+                breakpoint: { max: 3000, min: 1024 },
+                items: 3
+            },
+            tablet: {
+                breakpoint: { max: 1024, min: 464 },
+                items: 2
+            },
+            mobile: {
+                breakpoint: { max: 464, min: 0 },
+                items: 1
+            }
+        };
+        var recentP = localStorage.getItem('recentProjects') ? JSON.parse(localStorage.getItem('recentProjects')) : [];
+        var { projects } = this.state;
+        return (
+            <div className="container">
+                <Row className="py-1">
+                    <Col><Button color="primary" block onClick={() => { localStorage.setItem('localProject', null); this.openProjectEditor() }} > Start New Project </Button></Col>
+                    <Col></Col>
+                    <Col>{this.state.localProject && <Button color="warning" block onClick={() => this.openProjectEditor()}> Resume Local Project </Button>}</Col>
+                </Row>
+                <CardDeck className="mt-2">
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                            <Card.Title>Recent Projects</Card.Title>
+                        </Card.Body>
+                        <ListGroup>
+                            {recentP.map((o) => {
+                                return <ListGroupItem className=" d-flex justify-content-between align-items-center">
+                                    <Button color="link" onClick={() => this.openProjectEditor(o.projectId, o.name)}>{o.projectName}</Button>{" "}
+                                    <Badge color="primary" pill>
+                                        {timedifference(o.lastActive, Date.now() / 1000)}
+                                    </Badge>
+                                </ListGroupItem>;
+                            })}
+                        </ListGroup>
+                    </Card>
+
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                            <Card.Title>Cloud Projects</Card.Title>
+                        </Card.Body>
+                        {!isUserLoggedIn() && (<Card.Body>Please Login to access</Card.Body>)}
+
+                        {isUserLoggedIn() && (<><ListGroup>
+                            {!!projects && projects.map((o) => {
+                                return <ListGroupItem className=" d-flex justify-content-between align-items-center">
+                                    <Button color="link" onClick={() => this.openProjectEditor(o.project_id, o.name)}>{o.name}</Button>{" "}
+                                    <Badge color="warning" pill>
+                                        <span className="fa fa-file-export " />
+                                    </Badge>
+                                </ListGroupItem>;
+                            })}
+                        </ListGroup>
+                            <Card.Body>
+                                <Card.Link href="/projectsList">Complete Dashboard</Card.Link>
+                            </Card.Body></>)}
+                    </Card>
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                            <Card.Title>Configuration</Card.Title>
+                        </Card.Body>
+                        <ListGroup className="list-group-flush">
+                            <ListGroupItem className=" d-flex justify-content-between align-items-center">
+                                Default View{" "}
+                                <Input onChange={(e) => { localStorage.setItem('editorView', e.target.value); this.setState({ editorView: e.target.value }); }} style={{ width: "120px" }} value={this.state.editorView} type="select" name="select" id="exampleSelect">
+                                    <option>Column</option>
+                                    <option>Floating</option>
+                                </Input>
+                            </ListGroupItem>
+                            <ListGroupItem className=" d-flex justify-content-between align-items-center">
+                                Max Recent Project{" "}
+                                <Input onChange={(e) => { localStorage.setItem('recentProjectsSize', e.target.value); this.setState({ recentProjectsSize: e.target.value }); }} style={{ width: "120px" }} type="select" name="select" value={this.state.recentPSize} id="exampleSelect">
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                </Input>
+                            </ListGroupItem>
+                            <ListGroupItem className=" d-flex justify-content-between align-items-center">
+                                Max Cloud Project{" "}
+                                <Input onChange={(e) => { localStorage.setItem('projectsShown', e.target.value); this.setState({ projectsShown: e.target.value }, () => this.loadProject()); }} style={{ width: "120px" }} type="select" name="select" value={this.state.projectsShown} id="exampleSelect">
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                </Input>
+                            </ListGroupItem>
+                        </ListGroup>
+                    </Card>
+                </CardDeck>
+                <Card className="mt-2">
+                    <Card.Body>
+                        <Card.Title>Guide</Card.Title>
+                    </Card.Body>
+                    <Carousel itemClass="py-3 px-3" responsive={responsive} showDots={true}>
+                        <iframe title="guide1" src="https://www.youtube.com/embed/zoZaVK7ysRM?rel=0" frameborder="0"></iframe>
+                        <iframe title="guide2" src="https://www.youtube.com/embed/eobcIXsifdA?rel=0" frameborder="0"></iframe>
+                        <iframe title="guide3" src="https://www.youtube.com/embed/ueNVlhKOujw?rel=0" frameborder="0"></iframe>
+                    </Carousel>
+                </Card>
             </div>
-          </div>
-        </div>
-
-        <div className="table-responsive">
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Created By</th>
-                <th scope="col">Shared With</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.renderProjects(projects.filter(this.filterProjects))}
-            </tbody>
-            {/* <tbody>{this.renderProjects(projects)}</tbody> */}
-          </table>
-        </div>
-        <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>Manage sharing</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>
-              Set visible to everyone :
-              <Switch
-                className="float-right"
-                onChange={this.toggleProjectVisibility}
-                checked={
-                  this.state.projectState
-                    ? this.state.projectState.isPublic
-                      ? true
-                      : false
-                    : false
-                }
-              />
-            </p>
-            <p>
-              User List
-              <button
-                onClick={() => {
-                  this.toggleModal();
-                  this.toggleUserModal();
-                }}
-                className="float-right btn btn-primary"
-              >
-                <i className="fa fa-plus"></i>
-              </button>
-            </p>
-            {this.state.projectState &&
-              !this.state.projectState.isPublic &&
-              this.state.projectState.sharedUsers && (
-                <div>
-                  {JSON.parse(this.state.projectState.sharedUsers)["users"].map(
-                    (user, index) => {
-                      return (
-                        <p>
-                          User Id : {user.user_id}
-                          <button
-                            onClick={() => {
-                              let arr = JSON.parse(
-                                this.state.projectState.sharedUsers
-                              )["users"];
-                              arr.splice(index, 1);
-                              this.setState(
-                                {
-                                  projectState: {
-                                    ...this.state.projectState,
-                                    sharedUsers: JSON.stringify({
-                                      users: arr
-                                    })
-                                  }
-                                },
-                                () => {
-                                  this.removeSharedUser();
-                                }
-                              );
-                            }}
-                            className="float-right btn btn-danger"
-                          >
-                            <i className="fa fa-trash"></i>
-                          </button>
-                        </p>
-                      );
-                    }
-                  )}
-                </div>
-              )}
-          </Modal.Body>
-        </Modal>
-        <Modal
-          centered
-          show={this.state.isAddUserModalOpen}
-          onHide={this.toggleUserModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Add new user</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.state.userEmail === "" && (
-              <FormInput
-                className="form-control"
-                type="text"
-                name="userId"
-                required={true}
-                placeholder="User Id"
-                onChange={this.handleOnChange}
-                autoFocus
-              />
-            )}
-            {this.state.userId === "" && this.state.userEmail === "" && (
-              <center>
-                <h5>OR</h5>
-              </center>
-            )}
-            {this.state.userId === "" && (
-              <FormInput
-                className="form-control"
-                type="text"
-                name="userEmail"
-                required={true}
-                placeholder="User Email"
-                onChange={this.handleOnChange}
-              />
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <button
-              className="btn btn-warn"
-              onClick={() => {
-                this.toggleUserModal();
-                this.toggleModal();
-              }}
-            >
-              Back
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => this.addSharedUser()}
-            >
-              Add
-            </button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    );
-  }
+        );
+    }
 }
 
-export default Projects;
+
+export default withRouter(ProjectHome);

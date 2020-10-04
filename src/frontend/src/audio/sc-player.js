@@ -134,7 +134,6 @@ class ScPlayer extends ScModule {
   }
 
   destroy() {
-    console.log(this.volume);
     this.inNode.disconnect(this.outNode);
     this.outNode.disconnect(this.analyzer.inNode);
   }
