@@ -8,10 +8,8 @@ import {
   youtubeAudio
 } from "../sounds/actions";
 import ReactTable from "react-table";
-import { showToastrError } from "../../actions/common";
-import Cookies from 'universal-cookie';
- 
-const cookies = new Cookies();
+import { isUserLoggedIn, showToastrError } from "../../actions/common";
+
 class AddSound extends Component {
   constructor(props) {
     super(props);
@@ -19,13 +17,10 @@ class AddSound extends Component {
       search: "",
       isModalOpen: false
     };
-    this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
   }
-  isUserLoggedIn() {
-    return cookies.get("token") || "";
-  }
+
   addSound = () => {
-    if (this.isUserLoggedIn()) {
+    if (isUserLoggedIn()) {
       fetchAudio()
         .then(data => {
           this.setState({ sounds: data.audios });
@@ -129,23 +124,23 @@ class AddSound extends Component {
     const { sounds } = this.state;
     return (
       <React.Fragment>
-        <p style={{fontSize : "0.64rem", marginBottom : "0"}}>
+        <p style={{ fontSize: "0.64rem", marginBottom: "0" }}>
           {this.props.minimal
             ? ""
             : this.props.file
-            ? this.props.file.name
-            : "Please select a sound"}{" "}
+              ? this.props.file.name
+              : "Please select a sound"}{" "}
           <button
             className="btn btn-info"
             style={
               this.props.minimal
                 ? {
-                    fontSize: "0.64rem",
-                    width: "40px",
-                    lineHeight: "1",
-                    margin: "0px",
-                    padding: "0.2rem"
-                  }
+                  fontSize: "0.64rem",
+                  width: "40px",
+                  lineHeight: "1",
+                  margin: "0px",
+                  padding: "0.2rem"
+                }
                 : { fontSize: "0.64rem", lineHeight: "1.0" }
             }
             onClick={this.addSound}

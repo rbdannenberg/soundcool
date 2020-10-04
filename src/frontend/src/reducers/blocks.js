@@ -164,7 +164,6 @@ const blocks = (
           delete element.audioObj;
           let audioConfig = audioDefaults[element.typeName];
           for (let key in audioConfig) {
-            console.log(key);
             audioConfig[key] = element[key];
           }
           /*let prom = block(undefined, {

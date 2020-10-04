@@ -81,7 +81,7 @@ class ScSamplePlayer extends ScModule {
     let arr = this.loadedSampleIndex;
     if (arr.length > 0) {
       let playerIndex = arr[Math.floor(Math.random() * arr.length)];
-      console.log(playerIndex);
+      // console.log(playerIndex);
       this.play(playerIndex);
     }
   }

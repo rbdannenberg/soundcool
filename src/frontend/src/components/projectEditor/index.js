@@ -1,6 +1,5 @@
 import React from "react";
 import socketIOClient from "socket.io-client";
-import { Prompt } from "react-router";
 
 import "./index.css";
 import { connect } from "react-redux";
@@ -9,12 +8,18 @@ import WithHeader from "./Components/WithHeader";
 import AddBlock from "./Components/AddBlock";
 import { StoreX as Store } from "../../storeX";
 import { instanceOf } from "prop-types";
-import { showToastr, showToastrError, baseAddress } from "../../actions/common";
-import { fetchUserProject, openPort } from "./actions";
+import { showToastr, showToastrError, baseAddress, isUserLoggedIn, cleanPayload } from "../../actions/common";
+import { createProject, fetchUserProject, openPort, updateProject } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
 import Cookies from "universal-cookie";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavItem } from "reactstrap";
+import { NavLink } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import RegisterForm from "../register/form";
+import LoginForm from "../login/form";
+import FormInput from "../form/FormInput";
 
 const cookies = new Cookies();
 
@@ -62,7 +67,6 @@ class ProjectEditor extends React.Component {
     super(props);
     this.state = {
       endpoint: baseAddress(),
-      floatingView: this.props.projectControl.floatingView,
       projectId: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -70,11 +74,20 @@ class ProjectEditor extends React.Component {
       projectDescription: "",
       openPorts: [],
       isProjectChanged: undefined,
+      view: localStorage.getItem('editorView' + this.props.match.params.id) ? localStorage.getItem('editorView' + this.props.match.params.id) : localStorage.getItem('editorView') ? localStorage.getItem('editorView') : "Column",
+      projectsDropdownOpen: false,
+      viewDropdownOpen: false,
+      sharingDropdownOpen: false,
+      isModalOpen: false,
+      isRegisterModalOpen: false,
+      isLoginModalOpen: false,
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.isUserLoggedIn = this.isUserLoggedIn.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
+    this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
+    this.toggleSharingDropdown = this.toggleSharingDropdown.bind(this);
   }
 
   getList = id => {
@@ -136,7 +149,7 @@ class ProjectEditor extends React.Component {
       const col = column.filter(item => item !== undefined);
       return col;
     });
-    if (this.props.projectControl.floatingView) {
+    if (this.state.view === "Floating") {
       let finalBlock = [];
       blocks.forEach(o => {
         finalBlock = finalBlock.concat(o);
@@ -302,7 +315,7 @@ class ProjectEditor extends React.Component {
   updateWindowDimensions() {
     let maxColumn = Math.floor((window.innerWidth - 100) / 220);
     let items = this.state.items;
-    if (items.length != maxColumn) {
+    if (items.length !== maxColumn) {
       let sizeChange = maxColumn - items.length;
       if (sizeChange > 0) {
         while (sizeChange--) {
@@ -611,9 +624,6 @@ class ProjectEditor extends React.Component {
     const params = { [name]: value };
     this.setState(params);
   };
-  isUserLoggedIn() {
-    return cookies.get("token") || "";
-  }
 
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
@@ -629,25 +639,286 @@ class ProjectEditor extends React.Component {
     return flag;
   }
 
-  checkIsProjectPage = () => {
-    return this.props.location.pathname.split("/")[1] === "project-editor";
+  toggleViewDropdown() {
+    this.setState({ viewDropdownOpen: !this.state.viewDropdownOpen });
+  }
+
+  toggleProjectsDropdown() {
+    this.setState({ projectsDropdownOpen: !this.state.projectsDropdownOpen });
+  }
+
+  toggleSharingDropdown() {
+    this.setState({ sharingDropdownOpen: !this.state.sharingDropdownOpen });
+  }
+
+  handleOnChange = (name, value) => {
+    const params = { [name]: value };
+    this.setState(params);
+  };
+
+  saveProject = saveAs => {
+    if (isUserLoggedIn())
+      if (this.state.projectId !== "new" && !saveAs) {
+        this.updateProject({
+          projectId: this.state.projectId,
+          content: JSON.stringify(this.props.blocks)
+        });
+      } else this.toggleModal();
+    else {
+      this.toggleLoginModal();
+    }
+  };
+
+  updateProject(payload) {
+    updateProject(payload)
+      .then(() => {
+        showToastr("success", "Project successfully updated");
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
+
+  createProject = event => {
+    event.preventDefault();
+    let isFormValid = true,
+      error = "";
+    const { projectName, projectDescription } = this.state;
+    const blocks = this.props.blocks;
+
+    if (blocks.length === 0) {
+      error = "Project is Empty";
+      isFormValid = false;
+    } else if (projectName === "") {
+      error = "Project name is required";
+      isFormValid = false;
+    }
+
+    if (isFormValid) {
+      let payload = {
+        projectName,
+        projectDescription,
+        blocks
+      };
+
+      createProject(payload)
+        .then(data => {
+          this.setState({ projectName: "", projectDescription: "" });
+          showToastr("success", "Project created successfully");
+          window.location = "/project-editor/" + data.project_id;
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    } else {
+      showToastrError({ error });
+    }
+  };
+
+  exportProject = () => {
+    const { projectName, projectDescription } = this.state;
+
+    let bs = this.props.blocks.bs;
+    let nowOut = this.props.blocks.nowOut;
+    let blocks = {
+      bs,
+      nowOut
+    };
+    this.downloadFile({
+      projectName,
+      projectDescription,
+      blocks
+    });
+    showToastr("success", "Project has been exported");
+  };
+
+  downloadFile = async myData => {
+    const fileName = myData.projectName;
+    const json = JSON.stringify(myData, null, "\t");
+    let readData = JSON.parse(json);
+    readData.blocks = cleanPayload(readData.blocks);
+    const updatedJson = JSON.stringify(readData, null, "\t");
+    const blob = new Blob([updatedJson], { type: "application/json" });
+    const href = await URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+
+  toggleRegisterModal = () => {
+    this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
+  };
+
+  toggleLoginModal = () => {
+    this.setState({ isLoginModalOpen: !this.state.isLoginModalOpen });
+  };
+
+  afterRegister = res => {
+    const { token, error, name } = res;
+    if (error) {
+      showToastrError(res);
+    } else {
+      cookies.set("name", name, { path: "/" });
+      cookies.set("token", token, { path: "/" });
+      Store.populateFromProps({
+        userToken: { email: undefined, token: token }
+      });
+      showToastr("success", "Please enter project details");
+      this.toggleRegisterModal();
+      this.toggleModal();
+    }
+  };
+
+  afterSignin = res => {
+    const { token, error, name } = res;
+    if (error) {
+      showToastrError(res);
+    } else {
+      showToastr("success", "Logged in successfully.");
+      cookies.set("name", name, { path: "/" });
+      cookies.set("token", token, { path: "/" });
+      Store.populateFromProps({
+        userToken: { email: undefined, token: token }
+      });
+      this.toggleLoginModal();
+      this.toggleModal();
+    }
   };
 
   render() {
-    if (this.state.projectId !== this.props.projectControl.projectId) {
-      this.props.dispatch({
-        type: "WORKING_PROJ",
-        id: this.state.projectId,
-        name: this.state.projectName,
-        description: this.state.projectDescription
-      });
-    }
-    let { projectName, projectDescription, items } = this.state;
+    let fileReader;
+    let { items } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
+    const handleFileRead = e => {
+      const content = JSON.parse(fileReader.result);
+      let payload = {
+        projectName: content.projectName,
+        projectDescription: content.projectDescription,
+        blocks: content.blocks
+      };
+      createProject(payload)
+        .then(data => {
+          showToastr("success", "Project imported successfully");
+          this.upload.value = "";
+          window.location = data.project_id;
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    };
+    const handleFileChosen = file => {
+      fileReader = new FileReader();
+      fileReader.onloadend = handleFileRead;
+      fileReader.readAsText(file);
+    };
     return (
       <React.Fragment>
+        <Navbar
+          light
+          expand="md"
+          style={{ padding: "0 90px 0 90px" }}
+        >
+          <div className="container-fluid">
+            <Nav navbar>
+              {isUserLoggedIn() && <Dropdown
+                nav
+                isOpen={this.state.viewDropdownOpen}
+                toggle={this.toggleViewDropdown}
+              >
+                <DropdownToggle nav caret>
+                  Project
+                  </DropdownToggle>
+                <DropdownMenu tog>
+                  <NavLink className="dropdown-item border-0" to="/project-editor/new">
+                    New
+                      </NavLink>
+                  <NavLink className="dropdown-item border-0" to="/projectsList">
+                    Open
+                  </NavLink>
+                  <DropdownItem onClick={() => { this.saveProject(false); }}>
+                    Save
+                  </DropdownItem>
+                  <DropdownItem onClick={() => { this.saveProject(true); }}>
+                    Save As
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              }
+
+              <Dropdown
+                nav
+                isOpen={this.state.projectsDropdownOpen}
+                toggle={this.toggleProjectsDropdown}
+              >
+                <DropdownToggle nav caret>
+                  View
+                  </DropdownToggle>
+                <DropdownMenu tog>
+                  <DropdownItem disabled={this.state.view === "Floating"} onClick={() => this.setState({ view: "Floating" }, () => {
+                    localStorage.setItem('editorView' + this.props.match.params.id, "Floating")
+                  })}>
+                    <span className={this.state.view === "Floating" ? "fa fa-check " : ""}></span> Floating</DropdownItem>
+                  <DropdownItem disabled={this.state.view === "Column"} onClick={() => this.setState({ view: "Column" }, () => {
+                    localStorage.setItem('editorView' + this.props.match.params.id, "Column")
+                  })}>
+                    <span className={this.state.view === "Column" ? "fa fa-check " : ""}></span> Column
+                      </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+
+              {isUserLoggedIn() && <Dropdown
+                nav
+                isOpen={this.state.sharingDropdownOpen}
+                toggle={this.toggleSharingDropdown}
+              >
+                <DropdownToggle nav caret>
+                  Sharing
+                  </DropdownToggle>
+                <DropdownMenu tog>
+                  <div className="nav-link p-0">
+                    <input
+                      style={{ display: "none" }}
+                      ref={ref => (this.upload = ref)}
+                      type="file"
+                      id="projectFile"
+                      accept=".json"
+                      onChange={e => handleFileChosen(e.target.files[0])}
+                      className="dropdown-item"
+                    />
+                    <div
+                      className="dropdown-item"
+                      onClick={e => this.upload.click()}
+                    >Import
+                          </div>
+                  </div>
+                  <DropdownItem onClick={() => { this.exportProject(); }}>
+                    Export
+                      </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              }
+            </Nav>
+            <Nav className="ml-auto" navbar>
+              <NavItem>
+                <NavLink className="nav-link" to="/contact">
+                  <span className="fa fa-expand " />
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className="nav-link" to="/contact">
+                  <span className="fa fa-compress " />
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </div>
+        </Navbar>
         <div className="container-fluid">
           <AddBlock />
 
@@ -665,13 +936,87 @@ class ProjectEditor extends React.Component {
             </div>
           </div>
         </div>
+        {/* create new account model */}
+        <Modal
+          centered
+          show={this.state.isRegisterModalOpen}
+          onHide={this.toggleRegisterModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Create new account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegisterForm afterRegister={this.afterRegister} />
+          </Modal.Body>
+        </Modal>
+
+        {/* log into account */}
+        <Modal
+          centered
+          show={this.state.isLoginModalOpen}
+          onHide={this.toggleLoginModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Login to account</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <LoginForm afterSignin={this.afterSignin} />
+            <div
+              style={{ color: "#007bff" }}
+              onClick={() => {
+                this.toggleLoginModal();
+                this.toggleRegisterModal();
+              }}
+            >
+              New User? Register
+            </div>
+          </Modal.Body>
+        </Modal>
+
+        {/* create new project */}
+        <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
+          <form id="project_create" method="post">
+            <Modal.Header closeButton>
+              <Modal.Title>Create new project</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <FormInput
+                className="form-control"
+                type="text"
+                name="projectName"
+                required={true}
+                placeholder="Project Name"
+                value={this.state.projectName}
+                onChange={this.handleOnChange}
+                autoFocus
+              />
+              <br />
+              <FormInput
+                className="form-control"
+                type="text"
+                name="projectDescription"
+                required={true}
+                placeholder="Project Description"
+                value={this.state.projectDescription}
+                onChange={this.handleOnChange}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <button className="btn btn-warn" onClick={this.toggleModal}>
+                Close
+              </button>
+              <button onClick={this.createProject} className="btn btn-primary">
+                Create
+              </button>
+            </Modal.Footer>
+          </form>
+        </Modal>
       </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  projectControl: state.projectControl,
   blocks: state.blocks
 });
 

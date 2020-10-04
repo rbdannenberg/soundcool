@@ -36,6 +36,9 @@ address {
 .navbar-dark {
     background-color: #512da8;
 }
+.navbar-light {
+    background-color: darkslategray;
+}
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
@@ -73,4 +76,9 @@ input[type="range"][orient="vertical"] {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
+}
+
+a.active.border-0 {
+    color: fff;
+    border: 0px!important;
 }

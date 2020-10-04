@@ -67,7 +67,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="player"
-          style={{ position: "absolute", left: midPoint-6*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-6*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -82,7 +82,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="sampleplayer"
-          style={{ position: "absolute", left: midPoint-5*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-5*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -111,7 +111,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="mixer"
-          style={{ position: "absolute", left: midPoint-4*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-4*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -138,7 +138,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="delay"
-          style={{ position: "absolute", left: midPoint-3*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-3*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -153,7 +153,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="transposer"
-          style={{ position: "absolute", left: midPoint-2*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-2*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -182,7 +182,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="pan"
-          style={{ position: "absolute", left: midPoint-1*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint-1*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -212,7 +212,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="oscilloscope"
-          style={{ position: "absolute", left: midPoint+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -228,7 +228,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="spectroscope"
-          style={{ position: "absolute", left: midPoint+1*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+1*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -244,7 +244,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="signalgen"
-          style={{ position: "absolute", left: midPoint+2*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+2*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -260,7 +260,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="granular"
-          style={{ position: "absolute", left: midPoint+3*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+3*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -303,7 +303,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="directinput"
-          style={{ position: "absolute", left: midPoint+4*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+4*45+"px", top: "95px" }}
         >
           <button
             name="boton"
@@ -319,7 +319,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="speaker"
-          style={{ position: "absolute", left: midPoint+5*45+"px", top: "55px" }}
+          style={{ position: "absolute", left: midPoint+5*45+"px", top: "95px" }}
         >
           <button
             name="boton"
