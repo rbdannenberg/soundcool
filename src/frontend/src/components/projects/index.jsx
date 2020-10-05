@@ -4,7 +4,6 @@ import CardDeck from "react-bootstrap/CardDeck";
 import ListGroup from "react-bootstrap/ListGroup";
 import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
 import { withRouter } from "react-router-dom";
 import { Badge, Button, Col, Input, Row } from "reactstrap";
 import { isUserLoggedIn, showToastrError, timedifference, updateRecentProjects } from "../../actions/common";
@@ -90,7 +89,7 @@ class ProjectHome extends React.Component {
                         <ListGroup>
                             {recentP.map((o) => {
                                 return <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                                    <Button color="link" onClick={() => this.openProjectEditor(o.projectId, o.name)}>{o.projectName}</Button>{" "}
+                                    <Button color="link" onClick={() => this.openProjectEditor(o.id, o.projectName)}>{o.projectName}</Button>{" "}
                                     <Badge color="primary" pill>
                                         {timedifference(o.lastActive, Date.now() / 1000)}
                                     </Badge>
@@ -109,9 +108,6 @@ class ProjectHome extends React.Component {
                             {!!projects && projects.map((o) => {
                                 return <ListGroupItem className=" d-flex justify-content-between align-items-center">
                                     <Button color="link" onClick={() => this.openProjectEditor(o.project_id, o.name)}>{o.name}</Button>{" "}
-                                    <Badge color="warning" pill>
-                                        <span className="fa fa-file-export " />
-                                    </Badge>
                                 </ListGroupItem>;
                             })}
                         </ListGroup>
@@ -133,7 +129,7 @@ class ProjectHome extends React.Component {
                             </ListGroupItem>
                             <ListGroupItem className=" d-flex justify-content-between align-items-center">
                                 Max Recent Project{" "}
-                                <Input onChange={(e) => { localStorage.setItem('recentProjectsSize', e.target.value); this.setState({ recentProjectsSize: e.target.value }); }} style={{ width: "120px" }} type="select" name="select" value={this.state.recentPSize} id="exampleSelect">
+                                <Input onChange={(e) => { localStorage.setItem('recentProjectsSize', e.target.value); this.setState({ recentPSize: e.target.value }); }} style={{ width: "120px" }} type="select" name="select" value={this.state.recentPSize} id="exampleSelect">
                                     <option>3</option>
                                     <option>4</option>
                                     <option>5</option>
