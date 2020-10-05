@@ -99,7 +99,7 @@ export const updateRecentProjects = (projectId, projectName) => {
   var recentPSize = localStorage.getItem('recentProjectsSize') ? localStorage.getItem('recentProjectsSize') : 3;
   removeByAttr(recentP, 'id', projectId);
   recentP.unshift({ id: projectId, lastActive: Math.floor(Date.now() / 1000), projectName: projectName });
-  if (recentP.length > recentPSize) {
+  while(recentP.length > recentPSize){
     recentP.pop();
   }
   localStorage.setItem('recentProjects', JSON.stringify(recentP));
