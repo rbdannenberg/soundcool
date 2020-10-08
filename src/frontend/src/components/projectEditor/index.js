@@ -88,6 +88,7 @@ class ProjectEditor extends React.Component {
     this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
     this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
     this.toggleSharingDropdown = this.toggleSharingDropdown.bind(this);
+    this.timer = null;
   }
 
   getList = id => {
@@ -796,6 +797,10 @@ class ProjectEditor extends React.Component {
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
+    if(openPortsButton){
+      clearTimeout(this.timer);
+      this.timer = setTimeout(()=>{this.openNewPort(this.props.blocks["bs"])}, 2000);
+    }
     const handleFileRead = e => {
       const content = JSON.parse(fileReader.result);
       let payload = {
@@ -921,15 +926,6 @@ class ProjectEditor extends React.Component {
         </Navbar>
         <div className="container-fluid">
           <AddBlock />
-
-          {openPortsButton && (
-            <button
-              className="btn btn-secondary m-2 float-right"
-              onClick={() => this.openNewPort(this.props.blocks["bs"])}
-            >
-              Open Required Ports
-            </button>
-          )}
           <div>
             <div className="row">
               {this.renderBlockList(items, this.props.blocks.nowOut)}

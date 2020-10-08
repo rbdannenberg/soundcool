@@ -10,10 +10,17 @@ router.post("/openPort", (req, res) => {
   let portNumber = req.body.portNumber;
   portNumber = Number.isInteger(portNumber) ? portNumber : parseInt(portNumber);
   if (portNumber < 1024) {
-    res.json({ message: "Please use port number greater than 1023" });
+    res.json({
+      message: "Please use port number greater than 1023"
+    });
+  } else {
+    if (initPort(portNumber)) res.json({
+      message: "Port opened successfully"
+    });
+    else res.json({
+      err: "Port is already open"
+    });
   }
-  if (initPort(portNumber)) res.json({ message: "Port opened successfully" });
-  else res.json({ err: "Port is already open" });
 });
 
 module.exports = router;
@@ -22,7 +29,7 @@ function initPort(portNumber) {
   let portInUse = oscHelper.getPortList();
   if (portInUse.indexOf(portNumber) === -1) {
     oscHelper.addPort(portNumber);
-    var udp_server = dgram.createSocket("udp4", function(msg, rinfo) {
+    var udp_server = dgram.createSocket("udp4", function (msg, rinfo) {
       sendMessage(msg, oscHelper.getName(), portNumber);
     });
     udp_server.bind(portNumber);
