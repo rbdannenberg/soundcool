@@ -172,7 +172,7 @@ function loadProject(content) {
               node: "nowOut",
               value: [
                 conn.nowOut.name,
-                conn.nowOut.outNode[0][2],
+                conn.nowOut.outNode[0][3],
                 conn.nowOut.id,
                 idMapper[conn.nowOut.id].audioObj
               ]

@@ -87,7 +87,7 @@ const block = (state, action) => {
           }
           // then update the ui information
           let newOutNode = [...state.outNode];
-          newOutNode[portOut] = [nameIn, idIn, portIn];
+          newOutNode[portOut] = [nameIn, idIn, portIn, parseInt(portOut, 10)];
           return { ...state, outNode: newOutNode };
         } else {
           return state;
