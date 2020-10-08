@@ -6,6 +6,12 @@ class ScModule {
   }
 
   connectTo(destination, sourceOutIndex = 0, destInIndex = 0) {
+    if (!!!sourceOutIndex) {
+      sourceOutIndex = 0;
+    }
+    if (!!!destInIndex) {
+      destInIndex = 0;
+    }
     let sourceAudioNode = this.outputs[sourceOutIndex];
     let destAudioNode = destination.inputs[destInIndex];
     sourceAudioNode.connect(destAudioNode);
@@ -14,7 +20,7 @@ class ScModule {
   connectAsync(destination) {
     this.connPromise
       .then(
-        function() {
+        function () {
           if (destination instanceof ScModule) {
             this.outNode.connect(destination.inNode);
             this.outputs.push(destination);
@@ -27,12 +33,12 @@ class ScModule {
         }.bind(this)
       )
       .catch(
-        function() {
+        function () {
           console.error(
             "Failed to connect: " +
-              this.constructor.name +
-              " --> " +
-              destination.constructor.name
+            this.constructor.name +
+            " --> " +
+            destination.constructor.name
           );
           destination.connPromise.reject();
         }.bind(this)
@@ -56,7 +62,7 @@ class ScModule {
     // console.log(outStr);
   }
 
-  applyWithSmoothing(audioParam, value, timeConstant=50e-3) {
+  applyWithSmoothing(audioParam, value, timeConstant = 50e-3) {
     let currentTime = this.context.currentTime;
     audioParam.setTargetAtTime(value, currentTime,
       timeConstant);

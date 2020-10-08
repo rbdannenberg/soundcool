@@ -182,7 +182,7 @@ function loadProject(content) {
               node: "nowIn",
               value: [
                 conn.nowIn[0],
-                conn.nowIn[3],
+                conn.nowIn[2],
                 conn.nowIn[1],
                 idMapper[conn.nowIn[1]].audioObj
               ]
