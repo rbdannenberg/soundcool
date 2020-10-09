@@ -39,6 +39,7 @@
     "react-redux": "^7.2.0",
     "react-rotary-knob": "^1.1.5",
     "react-router-dom": "^5.0.1",
+    "react-router-navigation-prompt": "^1.8.13",
     "react-switch": "^5.0.1",
     "react-table": "^6.10.3",
     "react-toastify": "^5.3.2",

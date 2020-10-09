@@ -48,7 +48,6 @@ const blocks = (
   let { bs, nextBlockId, nextTypeId, nowIn, nowOut, cns } = state;
   switch (action.type) {
     case "ADD_BLOCK": {
-      // console.log("cns is:" + cns);
       // add the count information into action, so block knows the count when newing
       // there can only be one speaker module
       if (action.typeName === "Speaker") {

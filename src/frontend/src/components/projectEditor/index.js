@@ -1,6 +1,7 @@
 import React from "react";
 import socketIOClient from "socket.io-client";
-
+import { Prompt } from "react-router";
+import NavigationPrompt from "react-router-navigation-prompt";
 import "./index.css";
 import { connect } from "react-redux";
 import { default as RDraggable } from "react-draggable";
@@ -8,13 +9,32 @@ import WithHeader from "./Components/WithHeader";
 import AddBlock from "./Components/AddBlock";
 import { StoreX as Store } from "../../storeX";
 import { instanceOf } from "prop-types";
-import { showToastr, showToastrError, baseAddress, isUserLoggedIn, cleanPayload } from "../../actions/common";
-import { createProject, fetchUserProject, openPort, updateProject } from "./actions";
+import {
+  showToastr,
+  showToastrError,
+  baseAddress,
+  isUserLoggedIn,
+  cleanPayload
+} from "../../actions/common";
+import {
+  createProject,
+  fetchUserProject,
+  openPort,
+  updateProject
+} from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 //import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
 import Cookies from "universal-cookie";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavItem } from "reactstrap";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Nav,
+  Navbar,
+  NavItem
+} from "reactstrap";
 import { NavLink } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
@@ -74,13 +94,17 @@ class ProjectEditor extends React.Component {
       projectDescription: "",
       openPorts: [],
       isProjectChanged: undefined,
-      view: localStorage.getItem('editorView' + this.props.match.params.id) ? localStorage.getItem('editorView' + this.props.match.params.id) : localStorage.getItem('editorView') ? localStorage.getItem('editorView') : "Column",
+      view: localStorage.getItem("editorView" + this.props.match.params.id)
+        ? localStorage.getItem("editorView" + this.props.match.params.id)
+        : localStorage.getItem("editorView")
+        ? localStorage.getItem("editorView")
+        : "Column",
       projectsDropdownOpen: false,
       viewDropdownOpen: false,
       sharingDropdownOpen: false,
       isModalOpen: false,
       isRegisterModalOpen: false,
-      isLoginModalOpen: false,
+      isLoginModalOpen: false
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -157,7 +181,13 @@ class ProjectEditor extends React.Component {
       });
       return (
         <div
-          style={{ left: "5px", top: "40px", height: this.state.windowH - 95, width: this.state.windowW - 20, position: "relative" }}
+          style={{
+            left: "5px",
+            top: "40px",
+            height: this.state.windowH - 95,
+            width: this.state.windowW - 20,
+            position: "relative"
+          }}
         >
           <div className="boxContainer">
             {finalBlock.map(b => (
@@ -178,11 +208,7 @@ class ProjectEditor extends React.Component {
                   style={this.blockStyle(b.id)}
                 >
                   <div>
-                    <WithHeader
-                      key={b.id}
-                      blockInfo={b}
-                      nowOut={nowOut}
-                    />
+                    <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
                   </div>
                 </div>
               </RDraggable>
@@ -275,7 +301,7 @@ class ProjectEditor extends React.Component {
         checkUpdate = true;
       }
       if (this.state.projectId === "new") {
-        localStorage.setItem('localProject', JSON.stringify(nextProps.blocks))
+        localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
       }
 
       this.setState({
@@ -289,7 +315,7 @@ class ProjectEditor extends React.Component {
   componentDidMount() {
     this.loadState();
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener("resize", this.updateWindowDimensions);
     const { endpoint } = this.state;
     const socket = socketIOClient(endpoint);
     socket.on("openPort", data => {
@@ -310,7 +336,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
+    window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
   updateWindowDimensions() {
@@ -324,12 +350,18 @@ class ProjectEditor extends React.Component {
         }
       } else if (sizeChange < 0) {
         while (sizeChange++ < 0) {
-          items[items.length - 2] = items[items.length - 2].concat(items[items.length - 1]);
+          items[items.length - 2] = items[items.length - 2].concat(
+            items[items.length - 1]
+          );
           items.pop();
         }
       }
     }
-    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight, items: items });
+    this.setState({
+      windowW: window.innerWidth,
+      windowH: window.innerHeight,
+      items: items
+    });
   }
 
   findComponents(oscPort, targetType) {
@@ -613,7 +645,7 @@ class ProjectEditor extends React.Component {
           showToastrError(err);
         });
     } else {
-      this.props.dispatch(loadProject(localStorage.getItem('localProject')));
+      this.props.dispatch(loadProject(localStorage.getItem("localProject")));
       this.setState({
         projectName: "",
         projectDescription: ""
@@ -797,9 +829,11 @@ class ProjectEditor extends React.Component {
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
-    if(openPortsButton){
+    if (openPortsButton) {
       clearTimeout(this.timer);
-      this.timer = setTimeout(()=>{this.openNewPort(this.props.blocks["bs"])}, 2000);
+      this.timer = setTimeout(() => {
+        this.openNewPort(this.props.blocks["bs"]);
+      }, 2000);
     }
     const handleFileRead = e => {
       const content = JSON.parse(fileReader.result);
@@ -825,37 +859,80 @@ class ProjectEditor extends React.Component {
     };
     return (
       <React.Fragment>
-        <Navbar
-          light
-          expand="md"
-          style={{ padding: "0 90px 0 90px" }}
+        <NavigationPrompt
+          renderIfNotActive={true}
+          // Confirm navigation if going to a path that does not start with current path:
+          when={(crntLocation, nextLocation) =>
+            !nextLocation ||
+            !nextLocation.pathname.startsWith(crntLocation.pathname)
+          }
         >
+          {({ isActive, onCancel, onConfirm }) => {
+            if (isActive) {
+              return (
+                <Modal centered show={true}>
+                  <div>
+                    <Modal.Body>
+                      WARNING: you are leaving the project editor. If you leave
+                      now, you can resume the current progress in Projects ->
+                      Resume Local Project, or you can stay on page and save.
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <button className="btn btn-success" onClick={onCancel}>
+                        Stay On Page
+                      </button>
+                      <button className="btn btn-warning" onClick={onConfirm}>
+                        Leave
+                      </button>
+                    </Modal.Footer>
+                  </div>
+                </Modal>
+              );
+            }
+          }}
+        </NavigationPrompt>
+        <Navbar light expand="md" style={{ padding: "0 90px 0 90px" }}>
           <div className="container-fluid">
             <Nav navbar>
-              {isUserLoggedIn() && <Dropdown
-                nav
-                isOpen={this.state.viewDropdownOpen}
-                toggle={this.toggleViewDropdown}
-              >
-                <DropdownToggle nav caret>
-                  Project
+              {isUserLoggedIn() && (
+                <Dropdown
+                  nav
+                  isOpen={this.state.viewDropdownOpen}
+                  toggle={this.toggleViewDropdown}
+                >
+                  <DropdownToggle nav caret>
+                    Project
                   </DropdownToggle>
-                <DropdownMenu tog>
-                  <NavLink className="dropdown-item border-0" to="/project-editor/new">
-                    New
-                      </NavLink>
-                  <NavLink className="dropdown-item border-0" to="/projectsList">
-                    Open
-                  </NavLink>
-                  <DropdownItem onClick={() => { this.saveProject(false); }}>
-                    Save
-                  </DropdownItem>
-                  <DropdownItem onClick={() => { this.saveProject(true); }}>
-                    Save As
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              }
+                  <DropdownMenu tog>
+                    <NavLink
+                      className="dropdown-item border-0"
+                      to="/project-editor/new"
+                    >
+                      New
+                    </NavLink>
+                    <NavLink
+                      className="dropdown-item border-0"
+                      to="/projectsList"
+                    >
+                      Open
+                    </NavLink>
+                    <DropdownItem
+                      onClick={() => {
+                        this.saveProject(false);
+                      }}
+                    >
+                      Save
+                    </DropdownItem>
+                    <DropdownItem
+                      onClick={() => {
+                        this.saveProject(true);
+                      }}
+                    >
+                      Save As
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
 
               <Dropdown
                 nav
@@ -864,51 +941,84 @@ class ProjectEditor extends React.Component {
               >
                 <DropdownToggle nav caret>
                   View
-                  </DropdownToggle>
+                </DropdownToggle>
                 <DropdownMenu tog>
-                  <DropdownItem disabled={this.state.view === "Floating"} onClick={() => this.setState({ view: "Floating" }, () => {
-                    localStorage.setItem('editorView' + this.props.match.params.id, "Floating")
-                  })}>
-                    <span className={this.state.view === "Floating" ? "fa fa-check " : ""}></span> Floating</DropdownItem>
-                  <DropdownItem disabled={this.state.view === "Column"} onClick={() => this.setState({ view: "Column" }, () => {
-                    localStorage.setItem('editorView' + this.props.match.params.id, "Column")
-                  })}>
-                    <span className={this.state.view === "Column" ? "fa fa-check " : ""}></span> Column
-                      </DropdownItem>
+                  <DropdownItem
+                    disabled={this.state.view === "Floating"}
+                    onClick={() =>
+                      this.setState({ view: "Floating" }, () => {
+                        localStorage.setItem(
+                          "editorView" + this.props.match.params.id,
+                          "Floating"
+                        );
+                      })
+                    }
+                  >
+                    <span
+                      className={
+                        this.state.view === "Floating" ? "fa fa-check " : ""
+                      }
+                    ></span>{" "}
+                    Floating
+                  </DropdownItem>
+                  <DropdownItem
+                    disabled={this.state.view === "Column"}
+                    onClick={() =>
+                      this.setState({ view: "Column" }, () => {
+                        localStorage.setItem(
+                          "editorView" + this.props.match.params.id,
+                          "Column"
+                        );
+                      })
+                    }
+                  >
+                    <span
+                      className={
+                        this.state.view === "Column" ? "fa fa-check " : ""
+                      }
+                    ></span>{" "}
+                    Column
+                  </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
 
-              {isUserLoggedIn() && <Dropdown
-                nav
-                isOpen={this.state.sharingDropdownOpen}
-                toggle={this.toggleSharingDropdown}
-              >
-                <DropdownToggle nav caret>
-                  Sharing
+              {isUserLoggedIn() && (
+                <Dropdown
+                  nav
+                  isOpen={this.state.sharingDropdownOpen}
+                  toggle={this.toggleSharingDropdown}
+                >
+                  <DropdownToggle nav caret>
+                    Sharing
                   </DropdownToggle>
-                <DropdownMenu tog>
-                  <div className="nav-link p-0">
-                    <input
-                      style={{ display: "none" }}
-                      ref={ref => (this.upload = ref)}
-                      type="file"
-                      id="projectFile"
-                      accept=".json"
-                      onChange={e => handleFileChosen(e.target.files[0])}
-                      className="dropdown-item"
-                    />
-                    <div
-                      className="dropdown-item"
-                      onClick={e => this.upload.click()}
-                    >Import
-                          </div>
-                  </div>
-                  <DropdownItem onClick={() => { this.exportProject(); }}>
-                    Export
-                      </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              }
+                  <DropdownMenu tog>
+                    <div className="nav-link p-0">
+                      <input
+                        style={{ display: "none" }}
+                        ref={ref => (this.upload = ref)}
+                        type="file"
+                        id="projectFile"
+                        accept=".json"
+                        onChange={e => handleFileChosen(e.target.files[0])}
+                        className="dropdown-item"
+                      />
+                      <div
+                        className="dropdown-item"
+                        onClick={e => this.upload.click()}
+                      >
+                        Import
+                      </div>
+                    </div>
+                    <DropdownItem
+                      onClick={() => {
+                        this.exportProject();
+                      }}
+                    >
+                      Export
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
             </Nav>
             <Nav className="ml-auto" navbar>
               <NavItem>
@@ -945,7 +1055,6 @@ class ProjectEditor extends React.Component {
             <RegisterForm afterRegister={this.afterRegister} />
           </Modal.Body>
         </Modal>
-
         {/* log into account */}
         <Modal
           centered
@@ -968,7 +1077,6 @@ class ProjectEditor extends React.Component {
             </div>
           </Modal.Body>
         </Modal>
-
         {/* create new project */}
         <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
           <form id="project_create" method="post">
