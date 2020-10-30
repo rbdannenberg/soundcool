@@ -301,7 +301,9 @@ class ProjectEditor extends React.Component {
         checkUpdate = true;
       }
       if (this.state.projectId === "new") {
+        console.log(nextProps.blocks);
         localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
+        console.log("here 3");
       }
 
       this.setState({
@@ -689,7 +691,25 @@ class ProjectEditor extends React.Component {
     this.setState(params);
   };
 
+  copyname = () => {
+    if (this.state.projectName.includes("copy")) {
+      let projectNameList = this.state.projectName.split(" ");
+      const idx = parseInt(
+        projectNameList[projectNameList.indexOf("copy") + 1]
+      );
+      projectNameList[projectNameList.indexOf("copy") + 1] = (
+        idx + 1
+      ).toString();
+      this.state.projectName = projectNameList.join(" ");
+    } else {
+      this.state.projectName = this.state.projectName + " copy 1";
+    }
+  };
+
   saveProject = saveAs => {
+    if (saveAs) {
+      this.copyname();
+    }
     if (isUserLoggedIn())
       if (this.state.projectId !== "new" && !saveAs) {
         this.updateProject({
