@@ -34,7 +34,6 @@ import { asyncAddBlock } from "../thunks.js";
 import { audioDefaults } from "./blockSpecs";
 
 class AddBlock extends React.Component {
-
   constructor(props) {
     super(props);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -42,19 +41,20 @@ class AddBlock extends React.Component {
 
   componentDidMount() {
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener("resize", this.updateWindowDimensions);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
+    window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
   updateWindowDimensions() {
-    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight});
+    this.setState({ windowW: window.innerWidth, windowH: window.innerHeight });
   }
 
   render() {
-    let midPoint = window.innerWidth/2;
+    let midPoint = window.innerHeight / 2 - 20;
+    let gap = 35;
     return (
       <React.Fragment>
         <ReactTooltip
@@ -67,7 +67,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="player"
-          style={{ position: "absolute", left: midPoint-6*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 6 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -82,7 +86,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="sampleplayer"
-          style={{ position: "absolute", left: midPoint-5*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 5 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -111,7 +119,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="mixer"
-          style={{ position: "absolute", left: midPoint-4*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 4 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -138,7 +150,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="delay"
-          style={{ position: "absolute", left: midPoint-3*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 3 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -153,7 +169,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="transposer"
-          style={{ position: "absolute", left: midPoint-2*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 2 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -182,7 +202,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="pan"
-          style={{ position: "absolute", left: midPoint-1*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint - 1 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -212,7 +236,7 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="oscilloscope"
-          style={{ position: "absolute", left: midPoint+"px", top: "95px" }}
+          style={{ position: "absolute", left: "5px", top: midPoint + "px" }}
         >
           <button
             name="boton"
@@ -228,7 +252,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="spectroscope"
-          style={{ position: "absolute", left: midPoint+1*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint + 1 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -244,7 +272,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="signalgen"
-          style={{ position: "absolute", left: midPoint+2*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint + 2 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -260,7 +292,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="granular"
-          style={{ position: "absolute", left: midPoint+3*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint + 3 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -303,12 +339,20 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="directinput"
-          style={{ position: "absolute", left: midPoint+4*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint + 4 * gap + "px"
+          }}
         >
           <button
             name="boton"
             type="submit"
-            onClick={() => this.props.dispatch(asyncAddBlock("DirectInput", audioDefaults["DirectInput"]))}
+            onClick={() =>
+              this.props.dispatch(
+                asyncAddBlock("DirectInput", audioDefaults["DirectInput"])
+              )
+            }
             data-tip="DirectInput"
             data-for="tool"
           >
@@ -319,7 +363,11 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="speaker"
-          style={{ position: "absolute", left: midPoint+5*45+"px", top: "95px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            top: midPoint + 5 * gap + "px"
+          }}
         >
           <button
             name="boton"
@@ -348,9 +396,9 @@ class AddBlock extends React.Component {
           <img alt="Record" src={record}></img>
         </button>
       </div> */}
-      </React.Fragment >
-    )
-  };
-};
+      </React.Fragment>
+    );
+  }
+}
 
 export default connect()(AddBlock);

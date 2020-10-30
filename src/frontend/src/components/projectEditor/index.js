@@ -182,8 +182,7 @@ class ProjectEditor extends React.Component {
       return (
         <div
           style={{
-            left: "5px",
-            top: "40px",
+            top: "5px",
             height: this.state.windowH - 95,
             width: this.state.windowW - 20,
             position: "relative"
@@ -222,7 +221,12 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {blocks.map((b, listIndex) => (
-              <div style={{ paddingTop: "40px", paddingLeft: "20px" }}>
+              <div
+                style={{
+                  paddingTop: "5px",
+                  paddingLeft: "10px"
+                }}
+              >
                 <Droppable droppableId={"droppable_" + listIndex}>
                   {(provided, snapshot) => (
                     <div
@@ -1057,7 +1061,7 @@ class ProjectEditor extends React.Component {
         <div className="container-fluid">
           <AddBlock />
           <div>
-            <div className="row">
+            <div className="row" style={{ paddingLeft: "50px" }}>
               {this.renderBlockList(items, this.props.blocks.nowOut)}
             </div>
           </div>
