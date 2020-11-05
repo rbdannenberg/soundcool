@@ -290,9 +290,9 @@ class Home extends Component {
                           verticalAlign: "inherit"
                         }}
                       >
-                        Make your audiovisuals creatively mixing videos, images
-                        or video loops, controlling everything live with the
-                        mobile / tablet
+                        Make audiovisuals creatively by mixing videos, images
+                        or video loops, controlling everything live via
+                        mobile / tablet.
                       </font>
                     </font>
                   </p>
@@ -326,7 +326,7 @@ class Home extends Component {
                       >
                         Increase the motivation of your students using Soundcool
                         and mobile / tablets for the collaborative creation of
-                        music, audiovisual, soundtracks made live for movies,
+                        music, audiovisuals, live soundtracks for silent movies,
                         theater or LOVA operas, etc.{" "}
                       </font>
                       <font
@@ -334,8 +334,8 @@ class Home extends Component {
                           verticalAlign: "inherit"
                         }}
                       >
-                        Classes of music, plastic, language, theater, dance,
-                        etc., all levels: primary, secondary, music schools,
+                        Support classes of music, art, language, theater, dance,
+                        etc., at all levels: primary, secondary, music schools,
                         conservatories or university.
                       </font>
                     </font>
@@ -369,7 +369,7 @@ class Home extends Component {
                         }}
                       >
                         Inclusive pedagogies with Soundcool have demonstrated
-                        their suitability to improve the abilities of students
+                        their suitability to instruction for students
                         with autism, Down syndrome, partial or total blindness,
                         etc.
                       </font>

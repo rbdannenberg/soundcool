@@ -1,5 +1,13 @@
 import React from "react";
-import { Breadcrumb, BreadcrumbItem, Media } from "reactstrap";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  CardBody,
+  CardHeader,
+  Media
+} from "reactstrap";
+
 import { Link } from "react-router-dom";
 
 function About(props) {
@@ -49,14 +57,19 @@ function About(props) {
           <p>
             Soundcool is a system for collaborative creation through mobile,
             tablet, hololens and kinect.
-          </p>
-          <p>
             The system has been created by the Polytechnic University of
-            Valencia with the collaboration of different universities and
+            Valencia with an international collaboration of universities and
             institutions.
           </p>
+          <p>
+            Soundcool Web Audio is a port of Soundcool from its original
+            implementation in MaxMSP to Web technologies to enable greater
+            portability and eventually a free cloud-based system where
+            Soundcool users can learn, create, and share.
+          </p>
         </div>
-        {/* <div className="col-12">
+{/*
+        <div className="col-12">
           <Card>
             <CardBody className="bg-faded">
               <blockquote className="blockquote">
@@ -68,14 +81,15 @@ function About(props) {
               </blockquote>
             </CardBody>
           </Card>
-        </div> */}
+        </div>
+*/}
       </div>
       <div
         className="row row-content"
         style={{ padding: "0px", minHeight: "0px" }}
       >
         <div className="col-12">
-          <h2>Contributors</h2>
+          <h2>Soundcool Web Audio Team</h2>
         </div>
         <div className="col-12">
           <Media list className="row" style={{ padding: "0px" }}>

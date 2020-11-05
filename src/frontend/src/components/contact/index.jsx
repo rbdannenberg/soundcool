@@ -41,48 +41,24 @@ class Contact extends Component {
         </div>
         <div className="row row-content">
           <div className="col-12">
-            <h3>Location Information</h3>
-          </div>
-          <div className="col-12 col-sm-4 offset-sm-1">
             <h5>Our Address</h5>
             <address>
-              5000 Forbes Avenue
-              <br />
-              Pittsburgh, PA
-              <br />
-              USA
-              <br />
-              <i className="fa fa-phone fa-lg" />: +852 1234 5678
-              <br />
-              <i className="fa fa-fax fa-lg" />: +852 8765 4321
-              <br />
+              Roger B. Dannenberg <br />
+              School of Computer Science <br />
+              Carnegie Mellon University <br />
+              5000 Forbes Avenue <br />
+              Pittsburgh, PA <br />
+              USA <br />
               <i className="fa fa-envelope fa-lg" />:{" "}
-              <a href="mailto:xyz@gmail.com">xyz@gmail.com</a>
+              <a href="mailto:rbd+soundcool@cs.cmu.edu">rbd+soundcool@cs.cmu.edu</a>
             </address>
-          </div>
-          <div className="col-12 col-sm-6 offset-sm-1">
-            <h5>Map of our Location</h5>
           </div>
           <div className="col-12 col-sm-11 offset-sm-1">
             <div className="btn-group" role="group">
               <a
                 role="button"
-                className="btn btn-primary"
-                href="tel:+85212345678"
-              >
-                <i className="fa fa-phone" /> Call
-              </a>
-              <a
-                href="skype:YourSkypeName?call"
-                role="button"
-                className="btn btn-info"
-              >
-                <i className="fa fa-skype" /> Skype
-              </a>
-              <a
-                role="button"
                 className="btn btn-success"
-                href="mailto:confusion@food.net"
+                href="mailto:rbd+soundcool@cs.cmu.edu"
               >
                 <i className="fa fa-envelope-o" /> Email
               </a>
