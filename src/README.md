@@ -6,6 +6,8 @@ along with react frontend and mysql database.
 ## Prerequisites
 
 - Prerequisites
+  - Python (required by Node; install Python if it is not already installed on your computer)
+  - sqlite3 library (required if you use sqlite3 instead of MySQL; maybe required anyway)
   - Node 10.16.0+
     - Linux (these commands tested on Ubuntu 18.04 LTS):
       - `sudo apt update`
@@ -98,6 +100,12 @@ If you are running the whole project, there are four steps.
     CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
     GRANT ALL PRIVILEGES ON soundcool.* TO 'soundcool'@'localhost';
     ```
+    If this does not work, try the following:
+    ```sql
+    CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+    GRANT ALL PRIVILEGES ON soundcool.* TO 'user'@'localhost' WITH GRANT OPTION;
+    ```
+    
     NOTE: This user/password is used by the *backend* to access the
     database. `soundcool` is an account for the backend system, not
     for any *user*. This account and password can be different. They
@@ -133,7 +141,7 @@ If you are running the whole project, there are four steps.
     create-soundcool-db.sql, which includes two users: "User 1" as
     user1@welcome.com with password welcome, and "User 2" as
     user2@welcome.com with password welcome.
-
+    
 
 - **Step 4**: Setting up enviormental variables
   - Create a `.env` file in `backend` directory
