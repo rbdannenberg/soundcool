@@ -1,27 +1,27 @@
 import block from "./block";
 import { audioDefaults } from "../components/projectEditor/Components/blockSpecs.jsx";
 const allTypes = {
-  Delay: 1,
-  Transposer: 1,
-  Pan: 1,
-  Player: 1,
-  SignalGen: 1,
-  Speaker: 1,
-  DirectInput: 1,
-  Pitch: 1,
-  VSTHost: 1,
-  Routing: 1,
-  Mixer: 1,
-  Record: 1,
-  Spectroscope: 1,
-  Oscilloscope: 1,
-  Envelope: 1,
-  Filter: 1,
-  Keyboard: 1,
-  SamplePlayer: 1,
-  Sequencer: 1,
-  Reverb: 1,
-  GranSynth: 1
+  Delay: [0],
+  Transposer: [0],
+  Pan: [0],
+  Player: [0],
+  SignalGen: [0],
+  Speaker: [0],
+  DirectInput: [0],
+  Pitch: [0],
+  VSTHost: [0],
+  Routing: [0],
+  Mixer: [0],
+  Record: [0],
+  Spectroscope: [0],
+  Oscilloscope: [0],
+  Envelope: [0],
+  Filter: [0],
+  Keyboard: [0],
+  SamplePlayer: [0],
+  Sequencer: [0],
+  Reverb: [0],
+  GranSynth: [0]
 };
 const emptyState = {
   bs: [],
@@ -59,9 +59,15 @@ const blocks = (
       }
       let newId = nextBlockId;
       let typeIds = { ...nextTypeId };
-      let newTypeId = typeIds[action.typeName]++;
+      let typeId = typeIds[action.typeName];
+      let newTypeId = [...Array(Math.max(...typeId)).keys()].filter(
+        x => !typeId.includes(x)
+      )[0];
+      newTypeId = newTypeId ? newTypeId : typeId.length;
+      typeIds[action.typeName].push(newTypeId);
+
       let newAction = { ...action, newId, newTypeId };
-      return {
+      let newState = {
         nowIn,
         nowOut,
         bs: [...bs, block(undefined, newAction)],
@@ -69,6 +75,7 @@ const blocks = (
         nextTypeId: typeIds,
         cns
       };
+      return newState;
     }
     case "CHANGE_BLOCK":
       return {
@@ -90,9 +97,14 @@ const blocks = (
         // whether the block still exist
         block(t, { ...action, blocks: filteredBs })
       );
+      let deletedTypeId = parseInt(deletedBlock.name.substring(1, 5));
+      console.log(deletedTypeId);
+      nextTypeId[deletedBlock.typeName] = nextTypeId[
+        deletedBlock.typeName
+      ].filter(x => x !== deletedTypeId);
       return {
         nextBlockId,
-        nextTypeId,
+        nextTypeId: nextTypeId,
         nowIn,
         nowOut,
         cns,
