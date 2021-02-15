@@ -164,8 +164,6 @@ function loadProject(content) {
           let state = getState();
           let idMapper = {};
           state.blocks["bs"].forEach(element => {
-            console.log("element");
-            console.log(element);
             idMapper[element.id] = element;
           });
           connections.forEach((conn, index) => {

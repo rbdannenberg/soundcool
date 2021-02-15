@@ -53,7 +53,7 @@ class AddBlock extends React.Component {
   }
 
   render() {
-    let midPoint = window.innerHeight / 2 - 20;
+    let midPoint = window.innerHeight / 2 - 40;
     let gap = 35;
     return (
       <React.Fragment>

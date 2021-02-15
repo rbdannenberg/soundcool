@@ -109,7 +109,8 @@ const WithHeader = ({
   blockInfo,
   nowOut,
   handleDelete,
-  dispatch
+  dispatch,
+  disablePatching
 }) => {
   let {
     typeName,
@@ -162,18 +163,20 @@ const WithHeader = ({
         id="inButton"
         className="btn btn-light btn-sm m-1 text-center"
         onClick={() => {
-          if (inNode[0] && inNode[0].length > 0) {
-            dispatch({
-              type: "DISCONNECTING_BLOCK",
-              node: "nowIn",
-              value: [name, "0", id, audioObj]
-            });
-          } else {
-            dispatch({
-              type: "CONNECTING_BLOCK",
-              node: "nowIn",
-              value: [name, "0", id, audioObj]
-            });
+          if (!disablePatching) {
+            if (inNode[0] && inNode[0].length > 0) {
+              dispatch({
+                type: "DISCONNECTING_BLOCK",
+                node: "nowIn",
+                value: [name, "0", id, audioObj]
+              });
+            } else {
+              dispatch({
+                type: "CONNECTING_BLOCK",
+                node: "nowIn",
+                value: [name, "0", id, audioObj]
+              });
+            }
           }
         }}
         onMouseEnter={() => {
@@ -252,12 +255,14 @@ const WithHeader = ({
           }
         }}
         onClick={e => {
-          e.preventDefault();
-          dispatch({
-            type: "CONNECTING_BLOCK",
-            node: "nowOut",
-            value: [name, "0", id, audioObj]
-          });
+          if (!disablePatching) {
+            e.preventDefault();
+            dispatch({
+              type: "CONNECTING_BLOCK",
+              node: "nowOut",
+              value: [name, "0", id, audioObj]
+            });
+          }
         }}
         onMouseEnter={() => {
           if (outNode) {
@@ -296,7 +301,7 @@ const WithHeader = ({
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",
-        borderWidth: "2px",
+        borderWidth: "2px"
       }}
     >
       <div id={name}>
@@ -348,7 +353,7 @@ const WithHeader = ({
                 })
               }
             >
-              <FaMinus/>
+              <FaMinus />
             </button>
 
             <button
@@ -369,7 +374,7 @@ const WithHeader = ({
                 });
               }}
             >
-              <FaTimes/>
+              <FaTimes />
             </button>
             {outButton}
           </span>

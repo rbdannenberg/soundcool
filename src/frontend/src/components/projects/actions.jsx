@@ -8,7 +8,7 @@ export const setProjectPublicURL = () => `${BASE_URL}/projects/setPublic`;
 export const removeSharedUserURL = () => `${BASE_URL}/projects/removeShare`;
 export const addSharedUserURL = () => `${BASE_URL}/projects/addShare`;
 
-export const fetchUserProjects = (limit) => {
+export const fetchUserProjects = limit => {
   var url = fetchUserProjectURL();
   url += limit ? "?limit=" + limit : "";
   return getRequest(url);

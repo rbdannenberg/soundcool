@@ -14,12 +14,14 @@ router.post("/openPort", (req, res) => {
       message: "Please use port number greater than 1023"
     });
   } else {
-    if (initPort(portNumber)) res.json({
-      message: "Port opened successfully"
-    });
-    else res.json({
-      err: "Port is already open"
-    });
+    if (initPort(portNumber))
+      res.json({
+        message: "Port opened successfully"
+      });
+    else
+      res.json({
+        err: "Port is already open"
+      });
   }
 });
 
@@ -29,8 +31,10 @@ function initPort(portNumber) {
   let portInUse = oscHelper.getPortList();
   if (portInUse.indexOf(portNumber) === -1) {
     oscHelper.addPort(portNumber);
-    var udp_server = dgram.createSocket("udp4", function (msg, rinfo) {
-      sendMessage(msg, oscHelper.getName(), portNumber);
+    var udp_server = dgram.createSocket("udp4", function(msg, rinfo) {
+      const sender_ip = rinfo.address;
+      console.log(rinfo);
+      sendMessage(msg, oscHelper.getName(), portNumber, sender_ip);
     });
     udp_server.bind(portNumber);
     console.log("port opened: " + portNumber);
@@ -38,10 +42,13 @@ function initPort(portNumber) {
   } else return false;
 }
 
-function sendMessage(msg, socket, portNumber) {
+function sendMessage(msg, socket, portNumber, sender_ip) {
   var osc_message;
   try {
     osc_message = osc.fromBuffer(msg);
+    console.log("osc message:");
+    console.log(osc_message);
+    // e.g. /1/toggle1 True
     const osc_message_splitted = osc_message.address.split("/");
     const baseAddress = osc_message_splitted[1];
     const buttonType = osc_message_splitted[2];
@@ -55,7 +62,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "playbackSpeed",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("playbackSpeed " + value);
@@ -66,7 +74,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "seek",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("seek " + value);
@@ -77,7 +86,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "volume",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("volume " + value);
@@ -88,7 +98,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "loop",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Loop " + value);
@@ -99,7 +110,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "playPause",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Play/Pause " + value);
@@ -110,7 +122,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "stop",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Stop " + value);
@@ -121,7 +134,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Player",
               type: "reverse",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Reverse " + value);
@@ -145,7 +159,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Mixer",
               type: "playerVolume",
               value: [parseInt(buttonType.substring(5)), value],
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("playbackSpeed " + value);
@@ -156,7 +171,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "Mixer",
               type: "mainVolume",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("seek " + value);
@@ -172,7 +188,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "playbackSpeed",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("playbackSpeed " + value);
@@ -183,7 +200,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "volume",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("volume " + value);
@@ -194,7 +212,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "random",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Loop " + value);
@@ -205,7 +224,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "loop",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Loop " + value);
@@ -225,7 +245,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "playPause",
               value: [parseInt(buttonType.substring(4)), value],
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Play/Pause " + value);
@@ -245,7 +266,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "stop",
               value: [parseInt(buttonType.substring(4)), value],
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Stop " + value);
@@ -256,7 +278,8 @@ function sendMessage(msg, socket, portNumber) {
               component: "SamplePlayer",
               type: "reverse",
               value,
-              portNumber
+              portNumber,
+              sender_ip
             });
           }
           // console.log("Reverse " + value);

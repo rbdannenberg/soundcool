@@ -13,6 +13,7 @@ const readline = require("readline").createInterface({
 
 const sounds = require("./routes/sounds.js");
 const projects = require("./routes/projects.js");
+const performances = require("./routes/performances.js");
 const presets = require("./routes/presets.js");
 const oscRoute = require("./routes/osc.js");
 var auth = require("./routes/auth.js");
@@ -40,6 +41,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(helmet());
 app.use("/api/v1/sounds", sounds);
 app.use("/api/v1/projects", projects);
+app.use("/api/v1/performances", performances);
 app.use("/api/v1/presets", presets);
 app.use("/api/v1/user", auth);
 app.use("/api/v1/osc", oscRoute);
@@ -59,7 +61,7 @@ server.on("error", err => {
     );
     readline.question(`Enter port number or return to quit: `, portNumber => {
       readline.close();
-      if (portNumber == "return" || portNumber == "RETURN" ) {
+      if (portNumber == "return" || portNumber == "RETURN") {
         console.log(`Exiting server`);
       } else {
         startServer(server, portNumber);

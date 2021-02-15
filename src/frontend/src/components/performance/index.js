@@ -4,8 +4,7 @@ import NavigationPrompt from "react-router-navigation-prompt";
 import "./index.css";
 import { connect } from "react-redux";
 import { default as RDraggable } from "react-draggable";
-import WithHeader from "./Components/WithHeader";
-import AddBlock from "./Components/AddBlock";
+import WithHeader from "../projectEditor/Components/WithHeader";
 import { StoreX as Store } from "../../storeX";
 import { instanceOf } from "prop-types";
 import {
@@ -15,15 +14,9 @@ import {
   isUserLoggedIn,
   cleanPayload
 } from "../../actions/common";
-import {
-  createProject,
-  fetchUserProject,
-  openPort,
-  updateProject
-} from "./actions";
+import { fetchPerformance, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
-//import {specValues, audioDefaults} from "/Components/AddBlock.jsx";
 import Cookies from "universal-cookie";
 import {
   Dropdown,
@@ -78,7 +71,7 @@ const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "lightblue" : "transparent"
 });
 
-class ProjectEditor extends React.Component {
+class Performance extends React.Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
@@ -86,12 +79,13 @@ class ProjectEditor extends React.Component {
     super(props);
     this.state = {
       endpoint: baseAddress(),
-      projectId: this.props.match.params.id,
+      performanceId: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
       openPorts: [],
+      oscIP: [],
       isProjectChanged: undefined,
       view: localStorage.getItem("editorView" + this.props.match.params.id)
         ? localStorage.getItem("editorView" + this.props.match.params.id)
@@ -100,7 +94,6 @@ class ProjectEditor extends React.Component {
         : "Column",
       projectsDropdownOpen: false,
       viewDropdownOpen: false,
-      sharingDropdownOpen: false,
       isModalOpen: false,
       isRegisterModalOpen: false,
       isLoginModalOpen: false
@@ -110,7 +103,6 @@ class ProjectEditor extends React.Component {
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
     this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
-    this.toggleSharingDropdown = this.toggleSharingDropdown.bind(this);
     this.timer = null;
   }
 
@@ -206,7 +198,12 @@ class ProjectEditor extends React.Component {
                   style={this.blockStyle(b.id)}
                 >
                   <div>
-                    <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+                    <WithHeader
+                      key={b.id}
+                      blockInfo={b}
+                      nowOut={nowOut}
+                      disablePatching={true}
+                    />
                   </div>
                 </div>
               </RDraggable>
@@ -253,6 +250,7 @@ class ProjectEditor extends React.Component {
                                 key={item.id}
                                 blockInfo={item}
                                 nowOut={nowOut}
+                                disablePatching={true}
                               />
                             </div>
                           )}
@@ -272,7 +270,7 @@ class ProjectEditor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.match.params.id !== this.props.match.params.id)
-      this.setState({ projectId: nextProps.match.params.id }, () => {
+      this.setState({ performanceId: nextProps.match.params.id }, () => {
         this.loadState();
       });
     if (this.state.prevItems !== nextProps.blocks.bs) {
@@ -302,9 +300,6 @@ class ProjectEditor extends React.Component {
         checkUpdate = false;
       } else {
         checkUpdate = true;
-      }
-      if (this.state.projectId === "new") {
-        localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
       }
 
       this.setState({
@@ -336,6 +331,7 @@ class ProjectEditor extends React.Component {
         targetType,
         senderIp
       );
+      // console.log(targetComponent);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
@@ -373,11 +369,19 @@ class ProjectEditor extends React.Component {
 
   findComponents(oscPort, targetType, senderIp) {
     let components = [];
+    let oscIP = this.state.oscIP;
     this.props.blocks["bs"].forEach((comp, index) => {
+      let compIP =
+        oscIP.filter(x => x.id === comp.id).length === 1
+          ? oscIP.filter(x => x.id === comp.id)[0]["ip"]
+          : undefined;
+      console.log(comp.typeName);
+      console.log(compIP);
       if (
         !!comp.oscPort &&
         comp.oscPort == oscPort &&
-        comp.typeName == targetType
+        comp.typeName == targetType &&
+        compIP == senderIp
       ) {
         components.push({ id: comp.id, index: index });
       }
@@ -630,15 +634,15 @@ class ProjectEditor extends React.Component {
   }
 
   loadState() {
-    if (this.state.projectId !== "new") {
-      fetchUserProject(this.state.projectId)
+    if (this.state.performanceId !== "new") {
+      fetchPerformance(this.state.performanceId)
         .then(res => {
-          let { name, description, content } = res;
-
+          let { name, oscip, content } = res;
           this.props.dispatch(loadProject(content));
+          oscip = JSON.parse(oscip);
           this.setState({
             projectName: name,
-            projectDescription: description
+            oscIP: oscip
           });
         })
         .catch(err => {
@@ -680,169 +684,18 @@ class ProjectEditor extends React.Component {
     this.setState({ projectsDropdownOpen: !this.state.projectsDropdownOpen });
   }
 
-  toggleSharingDropdown() {
-    this.setState({ sharingDropdownOpen: !this.state.sharingDropdownOpen });
-  }
-
   handleOnChange = (name, value) => {
     const params = { [name]: value };
     this.setState(params);
   };
 
-  copyname = () => {
-    if (this.state.projectName.includes("copy")) {
-      let projectNameList = this.state.projectName.split(" ");
-      const idx = parseInt(
-        projectNameList[projectNameList.indexOf("copy") + 1]
-      );
-      projectNameList[projectNameList.indexOf("copy") + 1] = (
-        idx + 1
-      ).toString();
-      this.state.projectName = projectNameList.join(" ");
-    } else {
-      this.state.projectName = this.state.projectName + " copy 1";
-    }
-  };
-
-  saveProject = saveAs => {
-    if (saveAs) {
-      this.copyname();
-    }
-    if (isUserLoggedIn())
-      if (this.state.projectId !== "new" && !saveAs) {
-        this.updateProject({
-          projectId: this.state.projectId,
-          content: JSON.stringify(this.props.blocks)
-        });
-      } else this.toggleModal();
-    else {
-      this.toggleLoginModal();
-    }
-  };
-
-  updateProject(payload) {
-    updateProject(payload)
-      .then(() => {
-        showToastr("success", "Project successfully updated");
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-
-  createProject = event => {
-    event.preventDefault();
-    let isFormValid = true,
-      error = "";
-    const { projectName, projectDescription } = this.state;
-    const blocks = this.props.blocks;
-
-    if (blocks.length === 0) {
-      error = "Project is Empty";
-      isFormValid = false;
-    } else if (projectName === "") {
-      error = "Project name is required";
-      isFormValid = false;
-    }
-
-    if (isFormValid) {
-      let payload = {
-        projectName,
-        projectDescription,
-        blocks
-      };
-
-      createProject(payload)
-        .then(data => {
-          this.setState({ projectName: "", projectDescription: "" });
-          showToastr("success", "Project created successfully");
-          window.location = "/project-editor/" + data.project_id;
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-    } else {
-      showToastrError({ error });
-    }
-  };
-
-  exportProject = () => {
-    const { projectName, projectDescription } = this.state;
-
-    let bs = this.props.blocks.bs;
-    let nowOut = this.props.blocks.nowOut;
-    let blocks = {
-      bs,
-      nowOut
-    };
-    this.downloadFile({
-      projectName,
-      projectDescription,
-      blocks
-    });
-    showToastr("success", "Project has been exported");
-  };
-
-  downloadFile = async myData => {
-    const fileName = myData.projectName;
-    const json = JSON.stringify(myData, null, "\t");
-    let readData = JSON.parse(json);
-    readData.blocks = cleanPayload(readData.blocks);
-    const updatedJson = JSON.stringify(readData, null, "\t");
-    const blob = new Blob([updatedJson], { type: "application/json" });
-    const href = await URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = href;
-    link.download = fileName + ".json";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
-
-  toggleRegisterModal = () => {
-    this.setState({ isRegisterModalOpen: !this.state.isRegisterModalOpen });
-  };
 
   toggleLoginModal = () => {
     this.setState({ isLoginModalOpen: !this.state.isLoginModalOpen });
   };
 
-  afterRegister = res => {
-    const { token, error, name } = res;
-    if (error) {
-      showToastrError(res);
-    } else {
-      cookies.set("name", name, { path: "/" });
-      cookies.set("token", token, { path: "/" });
-      Store.populateFromProps({
-        userToken: { email: undefined, token: token }
-      });
-      showToastr("success", "Please enter project details");
-      this.toggleRegisterModal();
-      this.toggleModal();
-    }
-  };
-
-  afterSignin = res => {
-    const { token, error, name } = res;
-    if (error) {
-      showToastrError(res);
-    } else {
-      showToastr("success", "Logged in successfully.");
-      cookies.set("name", name, { path: "/" });
-      cookies.set("token", token, { path: "/" });
-      Store.populateFromProps({
-        userToken: { email: undefined, token: token }
-      });
-      this.toggleLoginModal();
-      this.toggleModal();
-    }
-  };
-
   render() {
-    let fileReader;
     let { items } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
@@ -853,287 +706,117 @@ class ProjectEditor extends React.Component {
         this.openNewPort(this.props.blocks["bs"]);
       }, 2000);
     }
-    const handleFileRead = e => {
-      const content = JSON.parse(fileReader.result);
-      let payload = {
-        projectName: content.projectName,
-        projectDescription: content.projectDescription,
-        blocks: content.blocks
-      };
-      createProject(payload)
-        .then(data => {
-          showToastr("success", "Project imported successfully");
-          this.upload.value = "";
-          window.location = data.project_id;
-        })
-        .catch(error => {
-          showToastrError(error);
-        });
-    };
-    const handleFileChosen = file => {
-      fileReader = new FileReader();
-      fileReader.onloadend = handleFileRead;
-      fileReader.readAsText(file);
-    };
     return (
       <React.Fragment>
-        <NavigationPrompt
-          renderIfNotActive={true}
-          // Confirm navigation if going to a path that does not start with current path:
-          when={(crntLocation, nextLocation) =>
-            !nextLocation ||
-            !nextLocation.pathname.startsWith(crntLocation.pathname)
-          }
-        >
-          {({ isActive, onCancel, onConfirm }) => {
-            if (isActive) {
-              return (
-                <Modal centered show={true}>
-                  <div>
-                    <Modal.Body>
-                      WARNING: you are leaving the project editor. If you leave
-                      now, you can resume the current progress in Projects ->
-                      Resume Local Project, or you can stay on page and save.
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <button className="btn btn-success" onClick={onCancel}>
-                        Stay On Page
-                      </button>
-                      <button className="btn btn-warning" onClick={onConfirm}>
-                        Leave
-                      </button>
-                    </Modal.Footer>
-                  </div>
-                </Modal>
-              );
+        <div style={{ backgroundColor: "Yellow" }}>
+          <NavigationPrompt
+            renderIfNotActive={true}
+            // Confirm navigation if going to a path that does not start with current path:
+            when={(crntLocation, nextLocation) =>
+              !nextLocation ||
+              !nextLocation.pathname.startsWith(crntLocation.pathname)
             }
-          }}
-        </NavigationPrompt>
-        <Navbar light expand="md" style={{ padding: "0 90px 0 90px" }}>
-          <div className="container-fluid">
-            <Nav navbar>
-              {isUserLoggedIn() && (
-                <Dropdown
-                  nav
-                  isOpen={this.state.viewDropdownOpen}
-                  toggle={this.toggleViewDropdown}
-                >
-                  <DropdownToggle nav caret>
-                    Project
-                  </DropdownToggle>
-                  <DropdownMenu tog>
-                    <NavLink
-                      className="dropdown-item border-0"
-                      to="/project-editor/new"
-                    >
-                      New
-                    </NavLink>
-                    <NavLink
-                      className="dropdown-item border-0"
-                      to="/projectsList"
-                    >
-                      Open
-                    </NavLink>
-                    <DropdownItem
-                      onClick={() => {
-                        this.saveProject(false);
-                      }}
-                    >
-                      Save
-                    </DropdownItem>
-                    <DropdownItem
-                      onClick={() => {
-                        this.saveProject(true);
-                      }}
-                    >
-                      Save As
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              )}
-              <Dropdown
-                nav
-                isOpen={this.state.projectsDropdownOpen}
-                toggle={this.toggleProjectsDropdown}
-              >
-                <DropdownToggle nav caret>
-                  View
-                </DropdownToggle>
-                <DropdownMenu tog>
-                  <DropdownItem
-                    disabled={this.state.view === "Floating"}
-                    onClick={() =>
-                      this.setState({ view: "Floating" }, () => {
-                        localStorage.setItem(
-                          "editorView" + this.props.match.params.id,
-                          "Floating"
-                        );
-                      })
-                    }
-                  >
-                    <span
-                      className={
-                        this.state.view === "Floating" ? "fa fa-check " : ""
-                      }
-                    ></span>{" "}
-                    Floating
-                  </DropdownItem>
-                  <DropdownItem
-                    disabled={this.state.view === "Column"}
-                    onClick={() =>
-                      this.setState({ view: "Column" }, () => {
-                        localStorage.setItem(
-                          "editorView" + this.props.match.params.id,
-                          "Column"
-                        );
-                      })
-                    }
-                  >
-                    <span
-                      className={
-                        this.state.view === "Column" ? "fa fa-check " : ""
-                      }
-                    ></span>{" "}
-                    Column
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-              {isUserLoggedIn() && (
-                <Dropdown
-                  nav
-                  isOpen={this.state.sharingDropdownOpen}
-                  toggle={this.toggleSharingDropdown}
-                >
-                  <DropdownToggle nav caret>
-                    Sharing
-                  </DropdownToggle>
-                  <DropdownMenu tog>
-                    <div className="nav-link p-0">
-                      <input
-                        style={{ display: "none" }}
-                        ref={ref => (this.upload = ref)}
-                        type="file"
-                        id="projectFile"
-                        accept=".json"
-                        onChange={e => handleFileChosen(e.target.files[0])}
-                        className="dropdown-item"
-                      />
-                      <div
-                        className="dropdown-item"
-                        onClick={e => this.upload.click()}
-                      >
-                        Import
-                      </div>
+          >
+            {({ isActive, onCancel, onConfirm }) => {
+              if (isActive) {
+                return (
+                  <Modal centered show={true}>
+                    <div>
+                      <Modal.Body>
+                        WARNING: you are leaving the performance.
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <button className="btn btn-success" onClick={onCancel}>
+                          Stay On Page
+                        </button>
+                        <button className="btn btn-warning" onClick={onConfirm}>
+                          Leave
+                        </button>
+                      </Modal.Footer>
                     </div>
+                  </Modal>
+                );
+              }
+            }}
+          </NavigationPrompt>
+          <Navbar light expand="md" style={{ padding: "0 90px 0 90px" }}>
+            <div className="container-fluid">
+              <Nav navbar>
+                <Dropdown
+                  nav
+                  isOpen={this.state.projectsDropdownOpen}
+                  toggle={this.toggleProjectsDropdown}
+                >
+                  <DropdownToggle nav caret>
+                    View
+                  </DropdownToggle>
+                  <DropdownMenu tog>
                     <DropdownItem
-                      onClick={() => {
-                        this.exportProject();
-                      }}
+                      disabled={this.state.view === "Floating"}
+                      onClick={() =>
+                        this.setState({ view: "Floating" }, () => {
+                          localStorage.setItem(
+                            "editorView" + this.props.match.params.id,
+                            "Floating"
+                          );
+                        })
+                      }
                     >
-                      Export
+                      <span
+                        className={
+                          this.state.view === "Floating" ? "fa fa-check " : ""
+                        }
+                      ></span>{" "}
+                      Floating
+                    </DropdownItem>
+                    <DropdownItem
+                      disabled={this.state.view === "Column"}
+                      onClick={() =>
+                        this.setState({ view: "Column" }, () => {
+                          localStorage.setItem(
+                            "editorView" + this.props.match.params.id,
+                            "Column"
+                          );
+                        })
+                      }
+                    >
+                      <span
+                        className={
+                          this.state.view === "Column" ? "fa fa-check " : ""
+                        }
+                      ></span>{" "}
+                      Column
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-              )}
-              <h6 style={{ paddingTop: "10px", paddingLeft: "10px" }}>
-                <span class="badge badge-secondary">OSC IP: 18.224.253.25</span>
-              </h6>
-            </Nav>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink className="nav-link" to="/contact">
-                  <span className="fa fa-expand " />
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className="nav-link" to="/contact">
-                  <span className="fa fa-compress " />
-                </NavLink>
-              </NavItem>
-            </Nav>
-          </div>
-        </Navbar>
-        <div className="container-fluid">
-          <AddBlock />
-          <div>
-            <div className="row" style={{ paddingLeft: "50px" }}>
-              {this.renderBlockList(items, this.props.blocks.nowOut)}
+                <h6 style={{ paddingTop: "10px", paddingLeft: "10px" }}>
+                  <span class="badge badge-secondary">
+                    OSC IP: 18.224.253.25
+                  </span>
+                </h6>
+              </Nav>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <NavLink className="nav-link" to="/contact">
+                    <span className="fa fa-expand " />
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink className="nav-link" to="/contact">
+                    <span className="fa fa-compress " />
+                  </NavLink>
+                </NavItem>
+              </Nav>
+            </div>
+          </Navbar>
+          <div className="container-fluid">
+            <div>
+              <div className="row" style={{ paddingLeft: "50px" }}>
+                {this.renderBlockList(items, this.props.blocks.nowOut)}
+              </div>
             </div>
           </div>
         </div>
-        {/* create new account model */}
-        <Modal
-          centered
-          show={this.state.isRegisterModalOpen}
-          onHide={this.toggleRegisterModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Create new account</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <RegisterForm afterRegister={this.afterRegister} />
-          </Modal.Body>
-        </Modal>
-        {/* log into account */}
-        <Modal
-          centered
-          show={this.state.isLoginModalOpen}
-          onHide={this.toggleLoginModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Login to account</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <LoginForm afterSignin={this.afterSignin} />
-            <div
-              style={{ color: "#007bff" }}
-              onClick={() => {
-                this.toggleLoginModal();
-                this.toggleRegisterModal();
-              }}
-            >
-              New User? Register
-            </div>
-          </Modal.Body>
-        </Modal>
-        {/* create new project */}
-        <Modal centered show={this.state.isModalOpen} onHide={this.toggleModal}>
-          <form id="project_create" method="post">
-            <Modal.Header closeButton>
-              <Modal.Title>Create new project</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <FormInput
-                className="form-control"
-                type="text"
-                name="projectName"
-                required={true}
-                placeholder="Project Name"
-                value={this.state.projectName}
-                onChange={this.handleOnChange}
-                autoFocus
-              />
-              <br />
-              <FormInput
-                className="form-control"
-                type="text"
-                name="projectDescription"
-                required={true}
-                placeholder="Project Description"
-                value={this.state.projectDescription}
-                onChange={this.handleOnChange}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <button className="btn btn-warn" onClick={this.toggleModal}>
-                Close
-              </button>
-              <button onClick={this.createProject} className="btn btn-primary">
-                Create
-              </button>
-            </Modal.Footer>
-          </form>
-        </Modal>
       </React.Fragment>
     );
   }
@@ -1143,4 +826,4 @@ const mapStateToProps = state => ({
   blocks: state.blocks
 });
 
-export default connect(mapStateToProps)(ProjectEditor);
+export default connect(mapStateToProps)(Performance);

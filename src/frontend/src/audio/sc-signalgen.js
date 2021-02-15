@@ -9,7 +9,7 @@ class ScSignalGen extends ScModule {
       frequency: 440,
       modulation: "No Mod",
       modParam: 1.0,
-      volume: 100,
+      volume: 100
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();

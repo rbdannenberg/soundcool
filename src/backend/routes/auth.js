@@ -8,7 +8,7 @@ const saltRounds = 10;
 
 const utils = require("../utils");
 
-const database = process.env.MYSQL_HOST ? "mysql" : "sqlite";
+const database = process.env.MYSQL_HOS ? "mysql" : "sqlite";
 
 router.post("/sign_in", (req, res) => {
   let { email, password } = req.body.user;
@@ -55,7 +55,7 @@ function handleLoginUser(err, results, password) {
     } else {
       const user = results[0];
       // the password is encrypted, so we need to compare it.
-      console.log(password, user.password)
+      console.log(password, user.password);
       if (bcrypt.compareSync(password, user.password)) {
         // JSON web token
 

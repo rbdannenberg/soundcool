@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { createProject } from "../projectEditor/actions";
+import { createPerformance } from "../performance/actions";
 import { showToastr, showToastrError } from "../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import ReactTooltip from "react-tooltip";
@@ -27,7 +28,9 @@ class Projects extends Component {
       isModalOpen: false,
       projectState: null,
       isAddUserModalOpen: false,
-      checked: false
+      isPerformanceModalOpen: false,
+      checked: false,
+      oscModuleList: []
     };
     this.toggleProjectVisibility = this.toggleProjectVisibility.bind(this);
   }
@@ -52,6 +55,10 @@ class Projects extends Component {
   toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
   toggleUserModal = () =>
     this.setState({ isAddUserModalOpen: !this.state.isAddUserModalOpen });
+  togglePerformanceModal = () =>
+    this.setState({
+      isPerformanceModalOpen: !this.state.isPerformanceModalOpen
+    });
 
   removeSharedUser() {
     let { projectState } = this.state;
@@ -123,6 +130,46 @@ class Projects extends Component {
         showToastrError(error);
       });
   }
+  handlePerformanceCreate() {
+    let { projectState, performanceName, oscModuleList } = this.state;
+    let { content } = projectState;
+    content = JSON.parse(content);
+    oscModuleList = JSON.stringify(oscModuleList);
+    let payload = {
+      performanceName: performanceName,
+      oscModuleList: oscModuleList,
+      blocks: { bs: content.bs }
+    };
+    createPerformance(payload)
+      .then(data => {
+        showToastr("success", "Performance created successfully");
+        // this.setState({ projects: [...this.state.projects, data] });
+        window.location = "/performance/" + data.performance_id;
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  }
+
+  getOscModules = content => {
+    let modules = content["bs"];
+    let oscModules = [];
+    modules.forEach(module => {
+      console.log(module["osc"]);
+      if (module["osc"] !== undefined) {
+        oscModules = [
+          ...oscModules,
+          {
+            givenName: module["givenName"],
+            ip: "",
+            id: module["id"],
+            name: module["name"]
+          }
+        ];
+      }
+    });
+    return oscModules;
+  };
   addSharedUser() {
     let { userId, userEmail, projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
@@ -216,6 +263,17 @@ class Projects extends Component {
       this.toggleModal();
     });
   };
+  handlePerformance = project => {
+    this.setState(
+      {
+        projectState: project,
+        oscModuleList: this.getOscModules(JSON.parse(project.content))
+      },
+      () => {
+        this.togglePerformanceModal();
+      }
+    );
+  };
   renderProjects = projects =>
     projects.map((project, index) => {
       let {
@@ -267,6 +325,14 @@ class Projects extends Component {
               <i className="fas fa-share-alt" aria-hidden="true"></i>
             </button>
             &nbsp;
+            <button
+              data-tip="Perform Project"
+              className="btn btn-warning"
+              onClick={() => this.handlePerformance(project)}
+            >
+              <i className="fas fa-music" aria-hidden="true"></i>
+            </button>
+            &nbsp;
             {!isOwner && (
               <button
                 data-tip="Delete Project"
@@ -297,8 +363,6 @@ class Projects extends Component {
   };
 
   render() {
-    console.log("rendering projects");
-    console.log(this.props);
     let fileReader;
     const handleFileRead = e => {
       const content = JSON.parse(fileReader.result);
@@ -504,6 +568,59 @@ class Projects extends Component {
               onClick={() => this.addSharedUser()}
             >
               Add
+            </button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          centered
+          show={this.state.isPerformanceModalOpen}
+          onHide={this.togglePerformanceModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Create New Performance</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FormInput
+              className="form-control"
+              type="text"
+              name="performanceName"
+              required={true}
+              placeholder="Performance Name"
+              onChange={this.handleOnChange}
+              autoFocus
+            />
+            <br></br>
+            <p>
+              Register device IP
+              {this.state.oscModuleList.map((x, i) => {
+                return (
+                  <div>
+                    <FormInput
+                      className="form-control"
+                      type="text"
+                      name="ip"
+                      required={false}
+                      placeholder={
+                        "IP of module " + x.givenName + " - " + x.name
+                      }
+                      onChange={(name, value) => {
+                        let newOsc = this.state.oscModuleList;
+                        newOsc[i]["ip"] = value;
+                        this.setState({ oscModuleList: newOsc });
+                      }}
+                      autoFocus
+                    />
+                  </div>
+                );
+              })}
+            </p>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.handlePerformanceCreate()}
+            >
+              Create
             </button>
           </Modal.Footer>
         </Modal>

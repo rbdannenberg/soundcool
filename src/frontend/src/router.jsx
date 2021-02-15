@@ -11,8 +11,11 @@ import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
+import Performance from "./components/performance";
 import Cookies from "universal-cookie";
 import Projects from "./components/projects/editor";
+import { removePerformance } from "./components/performance/actions";
+import { showToastr, showToastrError } from "./actions/common";
 
 const cookies = new Cookies();
 class Main extends Component {
@@ -37,6 +40,20 @@ class Main extends Component {
     }
   };
 
+  leavingPerformance = () => {
+    let path = this.props.location.pathname.split("/");
+    let performanceId = path[2];
+    if (path[1] !== "performance") {
+      removePerformance({ performanceId })
+        .then(res => {
+          showToastr("success", res.message);
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    }
+  };
+
   render() {
     const { user } = this.state;
     return (
@@ -47,7 +64,12 @@ class Main extends Component {
           <Route
             path="/project-editor/:id"
             component={ProjectEditor}
-            onLeave={this.leavingProjectEditor()}
+            // onLeave={this.leavingProjectEditor()}
+          />
+          <Route
+            path="/performance/:id"
+            component={Performance}
+            onLeave={this.leavingPerformance()}
           />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />

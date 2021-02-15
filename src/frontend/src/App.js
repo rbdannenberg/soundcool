@@ -2,21 +2,20 @@ import React from "react";
 import { Provider } from "react-redux";
 
 import Main from "./router";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import "react-table/react-table.css";  
+import "react-table/react-table.css";
 
 import { StoreX as Store } from "./storeX";
 import { ToastContainer } from "react-toastify";
 import { validateUser } from "./actions/validation";
 import { showToastrError } from "./actions/common";
 import store from "./store";
-import Cookies from 'universal-cookie';
- 
+import Cookies from "universal-cookie";
+
 const cookies = new Cookies();
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     const token = cookies.get("token") || "";
@@ -38,11 +37,11 @@ class App extends React.Component {
     }
     validateUser(token)
       .then(res => {
-        cookies.set("token", token, { path: '/' });
+        cookies.set("token", token, { path: "/" });
       })
       .catch(err => {
-        cookies.remove("token", { path: '/' });
-        cookies.remove("token", { path: '/project-editor' });
+        cookies.remove("token", { path: "/" });
+        cookies.remove("token", { path: "/project-editor" });
         showToastrError({ error: "Session expired" });
       });
   };
@@ -50,19 +49,19 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-          <div>
-            <Main />
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={true}
-              pauseOnVisibilityChange={true}
-              draggable={false}
-              pauseOnHover={true}
-            />
-          </div>
+        <div>
+          <Main />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={true}
+            pauseOnVisibilityChange={true}
+            draggable={false}
+            pauseOnHover={true}
+          />
+        </div>
       </Provider>
     );
   }
