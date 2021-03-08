@@ -328,14 +328,10 @@ class ProjectEditor extends React.Component {
       });
     });
     socket.on("oscData", data => {
-      let senderIp = data.sender_ip;
+      console.log("received oscData");
       let portNumber = data.portNumber;
       let targetType = data.component;
-      let targetComponent = this.findComponents(
-        portNumber,
-        targetType,
-        senderIp
-      );
+      let targetComponent = this.findComponents(portNumber, targetType);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
@@ -371,7 +367,7 @@ class ProjectEditor extends React.Component {
     });
   }
 
-  findComponents(oscPort, targetType, senderIp) {
+  findComponents(oscPort, targetType) {
     let components = [];
     this.props.blocks["bs"].forEach((comp, index) => {
       if (

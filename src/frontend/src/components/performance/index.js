@@ -323,14 +323,9 @@ class Performance extends React.Component {
       });
     });
     socket.on("oscData", data => {
-      let senderIp = data.sender_ip;
       let portNumber = data.portNumber;
       let targetType = data.component;
-      let targetComponent = this.findComponents(
-        portNumber,
-        targetType,
-        senderIp
-      );
+      let targetComponent = this.findComponents(portNumber, targetType);
       // console.log(targetComponent);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
@@ -367,7 +362,7 @@ class Performance extends React.Component {
     });
   }
 
-  findComponents(oscPort, targetType, senderIp) {
+  findComponents(oscPort, targetType) {
     let components = [];
     let oscIP = this.state.oscIP;
     this.props.blocks["bs"].forEach((comp, index) => {
@@ -380,8 +375,7 @@ class Performance extends React.Component {
       if (
         !!comp.oscPort &&
         comp.oscPort == oscPort &&
-        comp.typeName == targetType &&
-        compIP == senderIp
+        comp.typeName == targetType
       ) {
         components.push({ id: comp.id, index: index });
       }

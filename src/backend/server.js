@@ -27,7 +27,7 @@ const oscHelper = require("./oscHelper.js");
 
 io.on("connection", socket => {
   socket.emit("openPort", oscHelper.getPortList());
-  // console.log("New client connected");
+  // console.log("New client connected ");
   oscHelper.setName(socket);
   socket.on("disconnect", () => {
     // console.log("Client disconnected");
