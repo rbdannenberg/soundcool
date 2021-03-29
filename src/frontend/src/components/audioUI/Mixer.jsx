@@ -1,5 +1,5 @@
 import React from "react";
-import { changeBlock, connectOrDisconnectBlock} from "./actions";
+import { changeBlock, connectOrDisconnectBlock } from "./actions";
 import { connect } from "react-redux";
 import {
   getCssPropById,
@@ -346,7 +346,7 @@ class Mixer extends React.Component {
       var elem = document.getElementById(inId);
       elem.style.opacity = opacity;
     }
-  };
+  }
 
   render = () => {
     // #region props
@@ -381,7 +381,15 @@ class Mixer extends React.Component {
         <div style={{ position: "relative", height: "224px" }}>
           <div style={{ position: "absolute", left: "0rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{1}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {1}
+              </span>
               <button
                 id={"inButton" + 1}
                 className="btn btn-light btn-sm"
@@ -474,14 +482,23 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", left: "2.625rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{2}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {2}
+              </span>
               <button
                 id={"inButton" + 2}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -566,14 +583,23 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", left: "5.25rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{3}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {3}
+              </span>
               <button
                 id={"inButton" + 3}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -658,14 +684,23 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", left: "7.875rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{4}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {4}
+              </span>
               <button
                 id={"inButton" + 3}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -750,14 +785,23 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", top: "116px", left: "0rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{5}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {5}
+              </span>
               <button
                 id={"inButton" + 4}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -842,14 +886,23 @@ class Mixer extends React.Component {
           </div>
           <div style={{ position: "absolute", top: "116px", left: "2.625rem" }}>
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{6}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {6}
+              </span>
               <button
                 id={"inButton" + 5}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -940,14 +993,23 @@ class Mixer extends React.Component {
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{7}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {7}
+              </span>
               <button
                 id={"inButton" + 6}
                 className="btn btn-light btn-sm"
                 style={{
                   width: "1.2rem",
                   height: "1.2rem",
-                  fontSize: "0.64rem",                                                                                                                                                       padding: "0px",
+                  fontSize: "0.64rem",
+                  padding: "0px",
                   position: "absolute",
                   left: "20px",
                   border: "0px",
@@ -1038,7 +1100,15 @@ class Mixer extends React.Component {
             }}
           >
             <React.Fragment>
-              <span style={{ position: "absolute", left: "8px", fontSize: "0.64rem" }}>{8}</span>
+              <span
+                style={{
+                  position: "absolute",
+                  left: "8px",
+                  fontSize: "0.64rem"
+                }}
+              >
+                {8}
+              </span>
               <button
                 id={"inButton" + 7}
                 className="btn btn-light btn-sm"
@@ -1186,31 +1256,54 @@ class Mixer extends React.Component {
           className="text-center"
           style={{ backgroundColor: "grey", height: "24px" }}
         >
-          <span className="col text-center">
-            <label htmlFor="osc" style={{ fontSize: "0.64rem",
-              marginBottom: "0"}}>
-              OSC
-            </label>
-            <input
-              type="checkbox"
-              className="m-1"
-              id="osc"
-              onClick={() => changeBlock(id, "osc", undefined)}
-            />
-          </span>
-          <span className="col text-center">
-            <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
-              marginBottom: "0"}}>
-              OSC port:
-            </label>
-            <input
-              type="text"
-              className="my-1"
-              style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
-              id="oscPort"
-              onChange={e => changeBlock(id, "oscPort", e.target.value)}
-            />
-          </span>
+          {!this.props.blockInfo.oscPort ? (
+            <div>
+              <label
+                htmlFor="osc"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
+                OSC
+              </label>
+              <input
+                type="checkbox"
+                className="m-1"
+                id="osc"
+                onClick={() => this.props.changeBlock(id, "osc", undefined)}
+              />
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  OSC port:
+                </label>
+                <input
+                  type="text"
+                  className=""
+                  style={{
+                    height: "1.2rem",
+                    width: "2.4rem",
+                    fontSize: "0.64rem"
+                  }}
+                  id="oscPort"
+                  onChange={e =>
+                    this.props.changeBlock(id, "oscPort", e.target.value)
+                  }
+                />
+              </span>
+            </div>
+          ) : (
+            <div>
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  {"osc port: " + this.props.blockInfo.oscPort}
+                </label>
+              </span>
+            </div>
+          )}
         </div>
       </React.Fragment>
     );
@@ -1224,5 +1317,5 @@ const mapStateToProps = state => {
 };
 export default connect(mapStateToProps, {
   changeBlock,
-  connectOrDisconnectBlock,
+  connectOrDisconnectBlock
 })(Mixer);

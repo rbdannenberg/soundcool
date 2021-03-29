@@ -110,7 +110,8 @@ const WithHeader = ({
   nowOut,
   handleDelete,
   dispatch,
-  disablePatching
+  disablePatching,
+  assignedOSC
 }) => {
   let {
     typeName,

@@ -311,7 +311,7 @@ class Player extends React.Component {
               style={{
                 position: "absolute",
                 left: "2.375rem",
-                top: "0.25rem",
+                top: "0.25rem"
               }}
               onClick={() =>
                 this.props.changeBlock(id, "loop", !audioObj.options.loop)
@@ -338,7 +338,7 @@ class Player extends React.Component {
               {!audioObj.isPlaying && (
                 <FaPlay
                   style={{
-                    fontSize: "0.64rem",
+                    fontSize: "0.64rem"
                   }}
                 />
               )}
@@ -437,33 +437,54 @@ class Player extends React.Component {
         <div className="text-center" style={{ backgroundColor: "grey" }}>
           <AddSound onSoundSelect={onSoundSelect} file={file} />
 
-          <span className="col text-center">
-            <label htmlFor="osc" style={{ fontSize: "0.64rem",
-              marginBottom: "0"}}>
-              OSC
-            </label>
-            <input
-              type="checkbox"
-              className="m-1"
-              id="osc"
-              onClick={() => this.props.changeBlock(id, "osc", undefined)}
-            />
-          </span>
-          <span className="col text-center">
-            <label htmlFor="oscPort" style={{ fontSize: "0.64rem", 
-              marginBottom: "0"}}>
-              OSC port:
-            </label>
-            <input
-              type="text"
-              className=""
-              style={{ height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
-              id="oscPort"
-              onChange={e =>
-                this.props.changeBlock(id, "oscPort", e.target.value)
-              }
-            />
-          </span>
+          {!this.props.blockInfo.oscPort ? (
+            <div>
+              <label
+                htmlFor="osc"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
+                OSC
+              </label>
+              <input
+                type="checkbox"
+                className="m-1"
+                id="osc"
+                onClick={() => this.props.changeBlock(id, "osc", undefined)}
+              />
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  OSC port:
+                </label>
+                <input
+                  type="text"
+                  className=""
+                  style={{
+                    height: "1.2rem",
+                    width: "2.4rem",
+                    fontSize: "0.64rem"
+                  }}
+                  id="oscPort"
+                  onChange={e =>
+                    this.props.changeBlock(id, "oscPort", e.target.value)
+                  }
+                />
+              </span>
+            </div>
+          ) : (
+            <div>
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  {"osc port: " + this.props.blockInfo.oscPort}
+                </label>
+              </span>
+            </div>
+          )}
         </div>
       </React.Fragment>
     );
@@ -475,7 +496,4 @@ const mapStateToProps = state => {
     state
   };
 };
-export default connect(
-  mapStateToProps,
-  { changeBlock }
-)(Player);
+export default connect(mapStateToProps, { changeBlock })(Player);

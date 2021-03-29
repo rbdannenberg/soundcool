@@ -206,7 +206,12 @@ class ProjectEditor extends React.Component {
                   style={this.blockStyle(b.id)}
                 >
                   <div>
-                    <WithHeader key={b.id} blockInfo={b} nowOut={nowOut} />
+                    <WithHeader
+                      key={b.id}
+                      blockInfo={b}
+                      nowOut={nowOut}
+                      disableOsc={true}
+                    />
                   </div>
                 </div>
               </RDraggable>
@@ -253,6 +258,7 @@ class ProjectEditor extends React.Component {
                                 key={item.id}
                                 blockInfo={item}
                                 nowOut={nowOut}
+                                disableOSC={true}
                               />
                             </div>
                           )}

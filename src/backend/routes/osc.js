@@ -24,6 +24,22 @@ router.post("/openPort", (req, res) => {
       });
   }
 });
+router.post("/getPorts", (req, res) => {
+  let N = req.body.N;
+  // all possible ports between 49152 and 65535
+  let allPorts = [...Array(16383).keys()];
+  let portInUse = oscHelper.getPortList();
+  let availPorts = allPorts.filter(x => !portInUse.includes(x + 49152));
+  let ports = [];
+  for (let index = 0; index < N; index++) {
+    port = availPorts[Math.floor(Math.random() * availPorts.length)];
+    availPorts = availPorts.filter(x => x !== port);
+    ports[index] = port + 49152;
+  }
+  res.json({
+    portsList: ports
+  });
+});
 
 module.exports = router;
 

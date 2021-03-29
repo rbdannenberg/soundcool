@@ -69,7 +69,7 @@ class Main extends Component {
           <Route
             path="/performance/:id"
             component={Performance}
-            onLeave={this.leavingPerformance()}
+            // onLeave={this.leavingPerformance()}
           />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />

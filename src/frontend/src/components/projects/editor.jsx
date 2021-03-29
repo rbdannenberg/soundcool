@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import { createProject } from "../projectEditor/actions";
-import { createPerformance } from "../performance/actions";
+import {
+  createPerformance,
+  fetchPerformance,
+  getPorts
+} from "../performance/actions";
 import { showToastr, showToastrError } from "../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import ReactTooltip from "react-tooltip";
@@ -29,6 +33,7 @@ class Projects extends Component {
       projectState: null,
       isAddUserModalOpen: false,
       isPerformanceModalOpen: false,
+      isJoinPerformanceModalOpen: false,
       checked: false,
       oscModuleList: []
     };
@@ -58,6 +63,10 @@ class Projects extends Component {
   togglePerformanceModal = () =>
     this.setState({
       isPerformanceModalOpen: !this.state.isPerformanceModalOpen
+    });
+  toggleJoinPerformanceModal = () =>
+    this.setState({
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
     });
 
   removeSharedUser() {
@@ -130,24 +139,59 @@ class Projects extends Component {
         showToastrError(error);
       });
   }
+  handlePerformanceJoin() {
+    let { performanceName } = this.state;
+
+    fetchPerformance(performanceName)
+      .then(res => {
+        showToastr("success", "Joined performance successfully");
+        window.location = "/performance/" + res.name;
+      })
+      .catch(err => {
+        showToastr("error", "The performance doesn't exist!");
+      });
+  }
   handlePerformanceCreate() {
     let { projectState, performanceName, oscModuleList } = this.state;
-    let { content } = projectState;
-    content = JSON.parse(content);
-    oscModuleList = JSON.stringify(oscModuleList);
-    let payload = {
-      performanceName: performanceName,
-      oscModuleList: oscModuleList,
-      blocks: { bs: content.bs }
-    };
-    createPerformance(payload)
-      .then(data => {
-        showToastr("success", "Performance created successfully");
-        // this.setState({ projects: [...this.state.projects, data] });
-        window.location = "/performance/" + data.performance_id;
+    // test if name already exists
+    fetchPerformance(performanceName)
+      .then(res => {
+        console.log("already exists");
+        showToastr("error", "Performance name already exists!");
       })
-      .catch(error => {
-        showToastrError(error);
+      .catch(err => {
+        // if not, ask server to assign random ports and create new performance
+        let newOscModuleList = oscModuleList;
+        getPorts({ N: oscModuleList.length })
+          .then(data => {
+            if (data.err) {
+              showToastrError(data);
+            } else {
+              let portsList = data.portsList;
+              newOscModuleList.map((module, i) => {
+                module["oscPort"] = portsList[i];
+              });
+              let { content } = projectState;
+              content = JSON.parse(content);
+              newOscModuleList = JSON.stringify(newOscModuleList);
+              let payload = {
+                performanceName: performanceName,
+                oscModuleList: newOscModuleList,
+                blocks: { bs: content.bs }
+              };
+              createPerformance(payload)
+                .then(data => {
+                  showToastr("success", "Performance created successfully");
+                  window.location = "/performance/" + data.name;
+                })
+                .catch(error => {
+                  showToastrError(error);
+                });
+            }
+          })
+          .catch(error => {
+            showToastrError(error);
+          });
       });
   }
 
@@ -161,7 +205,7 @@ class Projects extends Component {
           ...oscModules,
           {
             givenName: module["givenName"],
-            ip: "",
+            oscPort: "",
             id: module["id"],
             name: module["name"]
           }
@@ -423,6 +467,12 @@ class Projects extends Component {
               >
                 Import project
               </button>
+              <button
+                className="btn btn-warning"
+                onClick={this.toggleJoinPerformanceModal}
+              >
+                Join Performance
+              </button>
             </div>
           </div>
         </div>
@@ -577,9 +627,10 @@ class Projects extends Component {
           onHide={this.togglePerformanceModal}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Create New Performance</Modal.Title>
+            <Modal.Title>Perform this project</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <p>Create a new performance:</p>
             <FormInput
               className="form-control"
               type="text"
@@ -590,7 +641,7 @@ class Projects extends Component {
               autoFocus
             />
             <br></br>
-            <p>
+            {/* <p>
               Register device IP
               {this.state.oscModuleList.map((x, i) => {
                 return (
@@ -613,14 +664,45 @@ class Projects extends Component {
                   </div>
                 );
               })}
-            </p>
+            </p> */}
           </Modal.Body>
           <Modal.Footer>
             <button
               className="btn btn-primary"
-              onClick={() => this.handlePerformanceCreate()}
+              onClick={() => {
+                this.handlePerformanceCreate();
+              }}
             >
-              Create
+              Go
+            </button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          centered
+          show={this.state.isJoinPerformanceModalOpen}
+          onHide={this.toggleJoinPerformanceModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Join an existing performance</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FormInput
+              className="form-control"
+              type="text"
+              name="performanceName"
+              required={true}
+              placeholder="Performance Name"
+              onChange={this.handleOnChange}
+              autoFocus
+            />
+            <br></br>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.handlePerformanceJoin()}
+            >
+              Go
             </button>
           </Modal.Footer>
         </Modal>

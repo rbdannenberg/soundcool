@@ -40,7 +40,7 @@ if (process.env.MYSQL_HOS) {
         "CREATE TABLE IF NOT EXISTS projects(project_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text NOT NULL, created_date DATETIME DEFAULT CURRENT_TIMESTAMP ,description text NOT NULL, content text, sharedUsers text, isPublic BOOLEAN default 0 )"
       )
       .run(
-        "CREATE TABLE IF NOT EXISTS performances(performance_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text NOT NULL, created_date DATETIME DEFAULT CURRENT_TIMESTAMP , oscip text NOT NULL, content text, sharedUsers text, isPublic BOOLEAN default 0 )"
+        "CREATE TABLE IF NOT EXISTS performances(performance_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text NOT NULL, created_date DATETIME DEFAULT CURRENT_TIMESTAMP , oscports text NOT NULL, content text, sharedUsers text, isPublic BOOLEAN default 0 )"
       )
       .run(
         "CREATE TABLE IF NOT EXISTS sounds(sound_id integer PRIMARY KEY AUTOINCREMENT, user integer, name text, fileLocation text, created_date DATETIME DEFAULT CURRENT_TIMESTAMP ,type text)"

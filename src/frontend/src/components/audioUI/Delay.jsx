@@ -135,31 +135,52 @@ const Delay = ({ blockInfo, changeBlock }) => {
         className="text-center"
         style={{ backgroundColor: "grey", height: "24px" }}
       >
-        <span className="col text-center">
-          <label htmlFor="osc" style={{ fontSize: "0.64rem", 
-            marginBottom: "0"}}>
-            OSC
-          </label>
-          <input
-            type="checkbox"
-            className="m-1"
-            id="osc"
-            onClick={() => changeBlock(id, "osc", undefined)}
-          />
-        </span>
-        <span className="col text-center">
-          <label htmlFor="oscPort" style={{ fontSize: "0.64rem",
-            marginBottom: "0"}}>
-            OSC port:
-          </label>
-          <input
-            type="text"
-            className="my-1"
-            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
-            id="oscPort"
-            onChange={e => changeBlock(id, "oscPort", e.target.value)}
-          />
-        </span>
+        {!blockInfo.oscPort ? (
+          <div>
+            <label
+              htmlFor="osc"
+              style={{ fontSize: "0.64rem", marginBottom: "0" }}
+            >
+              OSC
+            </label>
+            <input
+              type="checkbox"
+              className="m-1"
+              id="osc"
+              onClick={() => changeBlock(id, "osc", undefined)}
+            />
+            <span className="col text-center">
+              <label
+                htmlFor="oscPort"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
+                OSC port:
+              </label>
+              <input
+                type="text"
+                className=""
+                style={{
+                  height: "1.2rem",
+                  width: "2.4rem",
+                  fontSize: "0.64rem"
+                }}
+                id="oscPort"
+                onChange={e => changeBlock(id, "oscPort", e.target.value)}
+              />
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className="col text-center">
+              <label
+                htmlFor="oscPort"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
+                {"osc port: " + blockInfo.oscPort}
+              </label>
+            </span>
+          </div>
+        )}
       </div>
     </React.Fragment>
   );
@@ -170,7 +191,4 @@ const mapStateToProps = state => {
     state
   };
 };
-export default connect(
-  mapStateToProps,
-  { changeBlock }
-)(Delay);
+export default connect(mapStateToProps, { changeBlock })(Delay);

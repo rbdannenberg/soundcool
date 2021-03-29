@@ -45,12 +45,13 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               top: "16px"
             }}
             onChange={e => {
-              changeBlock(id,
-                "sliderCents",
-                e.target.value);
-              changeBlock(id, "pitchShift",
-                parseInt(e.target.value) + parseInt(buttonCents));
-              }}
+              changeBlock(id, "sliderCents", e.target.value);
+              changeBlock(
+                id,
+                "pitchShift",
+                parseInt(e.target.value) + parseInt(buttonCents)
+              );
+            }}
             min={-400}
             max={400}
             value={c === 0 ? 0 : sliderCents}
@@ -85,8 +86,6 @@ const Transposer = ({ blockInfo, changeBlock }) => {
           </div>
         </div>
 
-
-
         <label
           htmlFor="grainDur"
           style={{
@@ -110,10 +109,8 @@ const Transposer = ({ blockInfo, changeBlock }) => {
               top: "55px"
             }}
             onChange={e => {
-              changeBlock(id,
-                "grainDur",
-                parseInt(e.target.value));
-              }}
+              changeBlock(id, "grainDur", parseInt(e.target.value));
+            }}
             min={10}
             max={1000}
             id="grainDur"
@@ -142,8 +139,6 @@ const Transposer = ({ blockInfo, changeBlock }) => {
           </div>
         </div>
 
-
-
         <div
           className="text-center"
           style={{ position: "absolute", top: "72px" }}
@@ -157,8 +152,12 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             }}
             onClick={e => {
               let x = buttonCents - 100;
-              changeBlock(id,"buttonCents",x)
-              changeBlock(id, "pitchShift", parseInt(x) + parseInt(sliderCents));
+              changeBlock(id, "buttonCents", x);
+              changeBlock(
+                id,
+                "pitchShift",
+                parseInt(x) + parseInt(sliderCents)
+              );
             }}
           >
             &#9837;
@@ -173,9 +172,9 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             onClick={() => {
               //let x = 0 - sliderCents;
               // console.log(x);
-              changeBlock(id,"buttonCents", 0);
-              changeBlock(id,"sliderCents", 0);
-              changeBlock(id,"pitchShift", 0);
+              changeBlock(id, "buttonCents", 0);
+              changeBlock(id, "sliderCents", 0);
+              changeBlock(id, "pitchShift", 0);
             }}
           >
             &#9838;
@@ -189,8 +188,12 @@ const Transposer = ({ blockInfo, changeBlock }) => {
             }}
             onClick={e => {
               let x = buttonCents + 100;
-              changeBlock(id,"buttonCents", x);
-              changeBlock(id, "pitchShift", parseInt(x) + parseInt(sliderCents));
+              changeBlock(id, "buttonCents", x);
+              changeBlock(
+                id,
+                "pitchShift",
+                parseInt(x) + parseInt(sliderCents)
+              );
             }}
           >
             &#9839;
@@ -203,16 +206,52 @@ const Transposer = ({ blockInfo, changeBlock }) => {
         style={{ height: "24px", backgroundColor: "grey" }}
       >
         <div className="col-md-12">
-          <label htmlFor="osc" style={{ fontSize: "0.64rem" }}>
-            OSC port:
-          </label>
-          <input
-            type="text"
-            className="m-1"
-            style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
-            id="osc"
-            onChange={e => changeBlock(id,"osc",e.target.value)}
-          />
+          {!blockInfo.oscPort ? (
+            <div>
+              <label
+                htmlFor="osc"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
+                OSC
+              </label>
+              <input
+                type="checkbox"
+                className="m-1"
+                id="osc"
+                onClick={() => changeBlock(id, "osc", undefined)}
+              />
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  OSC port:
+                </label>
+                <input
+                  type="text"
+                  className=""
+                  style={{
+                    height: "1.2rem",
+                    width: "2.4rem",
+                    fontSize: "0.64rem"
+                  }}
+                  id="oscPort"
+                  onChange={e => changeBlock(id, "oscPort", e.target.value)}
+                />
+              </span>
+            </div>
+          ) : (
+            <div>
+              <span className="col text-center">
+                <label
+                  htmlFor="oscPort"
+                  style={{ fontSize: "0.64rem", marginBottom: "0" }}
+                >
+                  {"osc port: " + blockInfo.oscPort}
+                </label>
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </React.Fragment>
@@ -223,8 +262,5 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
-export default connect(
-  mapStateToProps,
-  { changeBlock }
-)(Transposer);
+};
+export default connect(mapStateToProps, { changeBlock })(Transposer);

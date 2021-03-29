@@ -14,7 +14,7 @@ import {
   isUserLoggedIn,
   cleanPayload
 } from "../../actions/common";
-import { fetchPerformance, openPort } from "./actions";
+import { fetchPerformance, removePerformance, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
 import Cookies from "universal-cookie";
@@ -79,13 +79,13 @@ class Performance extends React.Component {
     super(props);
     this.state = {
       endpoint: baseAddress(),
-      performanceId: this.props.match.params.id,
+      performanceName: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
       openPorts: [],
-      oscIP: [],
+      oscPorts: [],
       isProjectChanged: undefined,
       view: localStorage.getItem("editorView" + this.props.match.params.id)
         ? localStorage.getItem("editorView" + this.props.match.params.id)
@@ -96,7 +96,8 @@ class Performance extends React.Component {
       viewDropdownOpen: false,
       isModalOpen: false,
       isRegisterModalOpen: false,
-      isLoginModalOpen: false
+      isLoginModalOpen: false,
+      isEndModalOpen: false
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -268,12 +269,15 @@ class Performance extends React.Component {
     }
   };
 
+  // how many times will this function be called?
   componentWillReceiveProps(nextProps) {
+    // receive the id(performancename) from the parsed url
     if (nextProps.match.params.id !== this.props.match.params.id)
-      this.setState({ performanceId: nextProps.match.params.id }, () => {
+      this.setState({ performanceName: nextProps.match.params.id }, () => {
         this.loadState();
       });
     if (this.state.prevItems !== nextProps.blocks.bs) {
+      this.assignPorts(nextProps.blocks.bs);
       let length = this.state.items.length;
       let newValue = [];
       for (let i = 0; i < length; i++) {
@@ -312,6 +316,7 @@ class Performance extends React.Component {
 
   componentDidMount() {
     this.loadState();
+
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     const { endpoint } = this.state;
@@ -364,14 +369,7 @@ class Performance extends React.Component {
 
   findComponents(oscPort, targetType) {
     let components = [];
-    let oscIP = this.state.oscIP;
     this.props.blocks["bs"].forEach((comp, index) => {
-      let compIP =
-        oscIP.filter(x => x.id === comp.id).length === 1
-          ? oscIP.filter(x => x.id === comp.id)[0]["ip"]
-          : undefined;
-      console.log(comp.typeName);
-      console.log(compIP);
       if (
         !!comp.oscPort &&
         comp.oscPort == oscPort &&
@@ -608,6 +606,7 @@ class Performance extends React.Component {
       if (
         block.osc &&
         block.oscPort &&
+        // port is not already opened
         this.state.openPorts.indexOf(block.oscPort) === -1
       ) {
         this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
@@ -627,28 +626,33 @@ class Performance extends React.Component {
     });
   }
 
-  loadState() {
-    if (this.state.performanceId !== "new") {
-      fetchPerformance(this.state.performanceId)
-        .then(res => {
-          let { name, oscip, content } = res;
-          this.props.dispatch(loadProject(content));
-          oscip = JSON.parse(oscip);
-          this.setState({
-            projectName: name,
-            oscIP: oscip
-          });
-        })
-        .catch(err => {
-          showToastrError(err);
-        });
-    } else {
-      this.props.dispatch(loadProject(localStorage.getItem("localProject")));
-      this.setState({
-        projectName: "",
-        projectDescription: ""
+  // assign ports to blocks from the ports values loaded
+  assignPorts(blocks) {
+    console.log("assigning blocks");
+    blocks.forEach(block => {
+      this.state.oscPorts.forEach(module => {
+        if (module.id === block.id) {
+          block.osc = true;
+          block.oscPort = module.oscPort;
+        }
       });
-    }
+    });
+  }
+
+  loadState() {
+    fetchPerformance(this.state.performanceName)
+      .then(res => {
+        let { name, oscports, content } = res;
+        this.props.dispatch(loadProject(content));
+        oscports = JSON.parse(oscports);
+        this.setState({
+          projectName: name,
+          oscPorts: oscports
+        });
+      })
+      .catch(err => {
+        showToastrError(err);
+      });
   }
 
   handleOnChange = (name, value) => {
@@ -683,10 +687,19 @@ class Performance extends React.Component {
     this.setState(params);
   };
 
-  toggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+  endPerformance = () => {
+    removePerformance({ performanceName: this.state.performanceName })
+      .then(res => {
+        showToastr("success", res.message);
+        window.location = "/projectsList";
+      })
+      .catch(error => {
+        showToastrError(error);
+      });
+  };
 
-  toggleLoginModal = () => {
-    this.setState({ isLoginModalOpen: !this.state.isLoginModalOpen });
+  toggleEndModal = () => {
+    this.setState({ isEndModalOpen: !this.state.isEndModalOpen });
   };
 
   render() {
@@ -783,11 +796,26 @@ class Performance extends React.Component {
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
-                <h6 style={{ paddingTop: "10px", paddingLeft: "10px" }}>
+                <h6
+                  style={{
+                    paddingTop: "10px",
+                    paddingLeft: "10px",
+                    paddingRight: "10px"
+                  }}
+                >
                   <span class="badge badge-secondary">
                     OSC IP: 18.224.253.25
                   </span>
                 </h6>
+                <div style={{ height: "30px", paddingTop: "5px" }}>
+                  <button
+                    className="btn btn-danger btn-xs"
+                    style={{ fontSize: "0.8rem" }}
+                    onClick={this.toggleEndModal}
+                  >
+                    End Performance
+                  </button>
+                </div>
               </Nav>
               <Nav className="ml-auto" navbar>
                 <NavItem>
@@ -803,6 +831,39 @@ class Performance extends React.Component {
               </Nav>
             </div>
           </Navbar>
+          <Modal
+            centered
+            show={this.state.isEndModalOpen}
+            onHide={this.toggleEndModal}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>End Performance?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div>
+                Warning: This performance session is going to be ended and
+                others won't be able to join!
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  this.endPerformance();
+                }}
+              >
+                End Performance
+              </button>
+              <button
+                className="btn btn-success"
+                onClick={() => {
+                  this.toggleEndModal();
+                }}
+              >
+                Go Back
+              </button>
+            </Modal.Footer>
+          </Modal>
           <div className="container-fluid">
             <div>
               <div className="row" style={{ paddingLeft: "50px" }}>
