@@ -329,9 +329,8 @@ class Performance extends React.Component {
     });
     socket.on("oscData", data => {
       let portNumber = data.portNumber;
-      let targetType = data.component;
-      let targetComponent = this.findComponents(portNumber, targetType);
-      // console.log(targetComponent);
+      let targetComponent = this.findComponents(portNumber);
+      console.log(targetComponent);
       targetComponent.forEach(comp => {
         this.handleOscInput(comp, data);
       });
@@ -367,23 +366,21 @@ class Performance extends React.Component {
     });
   }
 
-  findComponents(oscPort, targetType) {
+  findComponents(oscPort) {
     let components = [];
     this.props.blocks["bs"].forEach((comp, index) => {
-      if (
-        !!comp.oscPort &&
-        comp.oscPort == oscPort &&
-        comp.typeName == targetType
-      ) {
-        components.push({ id: comp.id, index: index });
+      if (!!comp.oscPort && comp.oscPort == oscPort) {
+        components.push({ id: comp.id, index: index, typeName: comp.typeName });
       }
     });
     return components;
   }
 
   handleOscInput(comp, data) {
-    switch (data.component) {
+    console.log(comp);
+    switch (comp.typeName) {
       case "Delay":
+        this.handleOscDelay(comp.id, comp.index, data);
         break;
       case "Transposer":
         break;
@@ -496,6 +493,29 @@ class Performance extends React.Component {
         field,
         value,
         ...num
+      });
+    }
+  }
+
+  handleOscDelay(id, index, data) {
+    let field,
+      value,
+      ignore = false;
+    switch (data.type) {
+      case "playbackSpeed":
+        field = "delayTime";
+        value = data.value * 10000;
+        break;
+      case "seek":
+        field = "delayFeedback";
+        value = data.value;
+    }
+    if (!ignore) {
+      this.props.dispatch({
+        type: "CHANGE_BLOCK",
+        id: id,
+        field,
+        value
       });
     }
   }
@@ -690,8 +710,12 @@ class Performance extends React.Component {
   endPerformance = () => {
     removePerformance({ performanceName: this.state.performanceName })
       .then(res => {
-        showToastr("success", res.message);
-        window.location = "/projectsList";
+        if (res.message) {
+          showToastr("success", res.message);
+          window.location = "/projectsList";
+        } else {
+          showToastr("error", "only performance creator can delete");
+        }
       })
       .catch(error => {
         showToastrError(error);
@@ -715,7 +739,7 @@ class Performance extends React.Component {
     }
     return (
       <React.Fragment>
-        <div style={{ backgroundColor: "Yellow" }}>
+        <div style={{ backgroundColor: "#FFF6A9" }}>
           <NavigationPrompt
             renderIfNotActive={true}
             // Confirm navigation if going to a path that does not start with current path:

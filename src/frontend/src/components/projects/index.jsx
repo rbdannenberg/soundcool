@@ -6,13 +6,17 @@ import ListGroupItem from "react-bootstrap/ListGroupItem";
 import Carousel from "react-multi-carousel";
 import { withRouter } from "react-router-dom";
 import { Badge, Button, Col, Input, Row } from "reactstrap";
+import { fetchPerformance } from "../performance/actions";
 import {
   isUserLoggedIn,
+  showToastr,
   showToastrError,
   timedifference,
   updateRecentProjects
 } from "../../actions/common";
 import { fetchUserProjects } from "./actions";
+import Modal from "react-bootstrap/Modal";
+import FormInput from "../form/FormInput.jsx";
 
 class ProjectHome extends React.Component {
   constructor(props) {
@@ -27,7 +31,8 @@ class ProjectHome extends React.Component {
       editorView: localStorage.getItem("editorView")
         ? localStorage.getItem("editorView")
         : "Column",
-      localProject: !!JSON.parse(localStorage.getItem("localProject"))
+      localProject: !!JSON.parse(localStorage.getItem("localProject")),
+      isJoinPerformanceModalOpen: false
     };
     this.openProjectEditor = this.openProjectEditor.bind(this);
   }
@@ -42,6 +47,23 @@ class ProjectHome extends React.Component {
 
   componentDidMount() {
     this.loadProject();
+  }
+  toggleJoinPerformanceModal = () =>
+    this.setState({
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
+    });
+
+  handlePerformanceJoin() {
+    let { performanceName } = this.state;
+
+    fetchPerformance(performanceName)
+      .then(res => {
+        showToastr("success", "Joined performance successfully");
+        window.location = "/performance/" + res.name;
+      })
+      .catch(err => {
+        showToastr("error", "The performance doesn't exist!");
+      });
   }
 
   loadProject = async () => {
@@ -59,6 +81,10 @@ class ProjectHome extends React.Component {
     } else {
       return;
     }
+  };
+  handleOnChange = (name, value) => {
+    const params = { [name]: value };
+    this.setState(params);
   };
 
   render() {
@@ -101,11 +127,22 @@ class ProjectHome extends React.Component {
               Start New Project{" "}
             </Button>
           </Col>
-          <Col></Col>
+          <Col>
+            {
+              <Button
+                color="warning"
+                block
+                onClick={() => this.toggleJoinPerformanceModal()}
+              >
+                {" "}
+                Join Existing Performance{" "}
+              </Button>
+            }
+          </Col>
           <Col>
             {this.state.localProject && (
               <Button
-                color="warning"
+                color="success"
                 block
                 onClick={() => this.openProjectEditor()}
               >
@@ -265,6 +302,35 @@ class ProjectHome extends React.Component {
             ></iframe>
           </Carousel>
         </Card>
+        <Modal
+          centered
+          show={this.state.isJoinPerformanceModalOpen}
+          onHide={this.toggleJoinPerformanceModal}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Join an existing performance</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FormInput
+              className="form-control"
+              type="text"
+              name="performanceName"
+              required={true}
+              placeholder="Performance Name"
+              onChange={this.handleOnChange}
+              autoFocus
+            />
+            <br></br>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.handlePerformanceJoin()}
+            >
+              Go
+            </button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

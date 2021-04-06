@@ -187,7 +187,7 @@ class Player extends React.Component {
               left: "8px"
             }}
           >
-            Speed: {speed}
+            Speed: {Math.round(speed * 100) / 100}
           </div>
           <input
             className="slider mx-1 my-2 text-center"

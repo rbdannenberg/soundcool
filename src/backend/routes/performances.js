@@ -45,42 +45,36 @@ router.get("/get", (req, res) => {
     });
   }
 });
-
 router.get("/performance", (req, res) => {
   // const performanceId = req.query.performanceId;
   const performanceName = req.query.performanceName;
   const token = req.headers["x-auth-token"];
-  utils.verifyToken(token, user => {
-    if (user) {
-      const QUERY = `select *,(CASE WHEN user=${user.id} THEN 0 ELSE user END)as isOwner from performances where (user=${user.id} or sharedUsers like '%"user_id":${user.id}%' or isPublic =true) and name='${performanceName}'`;
-      if (database == "mysql") {
-        connection.query(QUERY, (err, results) => {
-          if (err) {
-            console.log(err);
-            return res.json({ err: err });
-          } else {
-            return res.json(results[0]);
-          }
-        });
-      } else if (database == "sqlite") {
-        connection.all(QUERY, [], (err, results) => {
-          if (err) {
-            console.log(err);
-            return res.json({ err: err });
-          } else {
-            if (results.length > 1) {
-              console.log("duplicate performance name!");
-              return res.json({ err: "duplicate performance name!" });
-            } else {
-              return res.json(results[0]);
-            }
-          }
-        });
+
+  const QUERY = `select * from performances  where name='${performanceName}'`;
+  if (database == "mysql") {
+    connection.query(QUERY, (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.json({ err: err });
+      } else {
+        return res.json(results[0]);
       }
-    } else {
-      return res.status(401).json({ message: "Token Not Valid" });
-    }
-  });
+    });
+  } else if (database == "sqlite") {
+    connection.all(QUERY, [], (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.json({ err: err });
+      } else {
+        if (results.length > 1) {
+          console.log("duplicate performance name!");
+          return res.json({ err: "duplicate performance name!" });
+        } else {
+          return res.json(results[0]);
+        }
+      }
+    });
+  }
 });
 
 router.post("/new", (req, res) => {
@@ -140,7 +134,6 @@ router.patch("/remove", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const performanceName = req.body.performanceName;
-  console.log(performanceName);
   const DELETE_PERFORMANCE = `DELETE FROM performances WHERE user = '${user_id}' and name = '${performanceName}'`;
   // do the query case on the user
   const QUERY = DELETE_PERFORMANCE;
@@ -168,10 +161,14 @@ router.patch("/remove", (req, res) => {
           if (err) {
             return res.json({ err: err });
           } else {
+            console.log("results");
+            console.log(results.length);
             if (results.length < 1) {
+              console.log("removed");
               return res.json({ message: "Performance Removed successfully" });
             } else {
-              return res.json({ error: "performance not deleted" });
+              console.log("not removed");
+              return res.json({ err: "performance not deleted" });
             }
           }
         });
