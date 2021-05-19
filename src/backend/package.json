@@ -28,7 +28,7 @@
     "osc-min": "^1.1.2",
     "socket.io": "^2.4.1",
     "sqlite3": "^4.1.1",
-    "ytdl-core": "latest"
+    "ytdl-core": "^4.8.0"
   },
   "devDependencies": {
     "pkg": "^4.4.8",
