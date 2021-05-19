@@ -7,7 +7,7 @@ var cTimeStamp = new Date().getTime();
 var fs = require("fs");
 
 const jwtToken = process.env.JWT_SECRET ? process.env.JWT_SECRET : "soundcool";
-const database = process.env.MYSQL_HOS ? "mysql" : "sqlite";
+const database = process.env.MYSQL_HOST ? "mysql" : "sqlite";
 
 function updateTimeStamp() {
   cTimeStamp = new Date().getTime();

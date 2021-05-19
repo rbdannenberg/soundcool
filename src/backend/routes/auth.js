@@ -8,7 +8,7 @@ const saltRounds = 10;
 
 const utils = require("../utils");
 
-const database = process.env.MYSQL_HOS ? "mysql" : "sqlite";
+const database = process.env.MYSQL_HOST ? "mysql" : "sqlite";
 
 router.post("/sign_in", (req, res) => {
   let { email, password } = req.body.user;
