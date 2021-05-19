@@ -150,6 +150,11 @@ function loadProject(content) {
           content: undefined
         });
       } else {
+        // Clear store so no component will conflict
+        dispatch({
+          type: "LOAD_STATE",
+          content: undefined
+        });
         let promiseStore = [];
         let connections = [];
         //this.retrieveConnections(jsonContent);
