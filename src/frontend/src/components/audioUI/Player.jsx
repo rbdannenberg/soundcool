@@ -43,7 +43,7 @@ class Player extends React.Component {
       window.rect = rect;
       let pos = e.clientX - rect.left;
       window.e = e;
-      let seek = pos / 190;
+      let seek = pos / (rect.right - rect.left);
       audioObj.seek(seek);
       // }
     };
@@ -67,16 +67,16 @@ class Player extends React.Component {
       // render bar, but when fill in a length of 190, it doesn't really
       // fill in to the rightmost end.
       if (audioObj.isPlaying) {
-        renderCtx.clearRect(0, 0, 190, 140);
+        renderCtx.clearRect(0, 0, canvas.width, canvas.height);
         //Commented by Amit
         // this.props.changeBlock(this.id, "playedTime", 0);
         let data =
           (audioObj.options.speed *
             (audioObj.context.currentTime - audioObj.startTime)) %
           audioObj.duration;
-        let step = 190 / audioObj.duration;
+        let step = canvas.width / audioObj.duration;
         if (audioObj.options.reverse) {
-          renderCtx.fillRect(0, 0, 190 - data * step, 140);
+          renderCtx.fillRect(0, 0, canvas.width - data * step, 140);
           this.props.changeBlock(
             this.id,
             "playedTime",
@@ -89,7 +89,7 @@ class Player extends React.Component {
         }
       } else if (audioObj.isPaused) {
       } else {
-        renderCtx.clearRect(0, 0, 190, 140);
+        renderCtx.clearRect(0, 0, canvas.width, 140);
         if (playedTime !== 0) this.props.changeBlock(this.id, "playedTime", 0);
       }
     }
@@ -268,7 +268,7 @@ class Player extends React.Component {
               height: "12px"
             }}
           >
-            <canvas style={{ position: "relative" }} ref={this.canvasSeekRef} />
+            <canvas style={{ position: "relative", width: "100%", height: "100%"}} ref={this.canvasSeekRef} />
           </div>
 
           <div

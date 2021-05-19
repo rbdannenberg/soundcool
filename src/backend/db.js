@@ -1,4 +1,5 @@
-if (process.env.MYSQL_HOS) {
+console.log(process.env.MYSQL_HOST);
+if (process.env.MYSQL_HOST) {
   const mysql = require("mysql");
   const connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,
