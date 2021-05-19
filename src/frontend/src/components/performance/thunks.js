@@ -90,7 +90,20 @@ function initAudioObj(typeName, audioConfig) {
         break;
       case "SamplePlayer":
         t = new ScSamplePlayer(scContext);
-        resolve(t);
+        let promiseBook = [];
+        if (audioConfig.URL) {
+          audioConfig.URL.forEach((url, index) => {
+            if (url && url != "") {
+              promiseBook.push(t.load(index, audioConfig.URL[index]));
+            }
+          })
+          Promise.all(promiseBook).then(() => {
+            resolve(t);
+          });
+
+        } else {
+          resolve(t);
+        }
         break;
       default:
         t = undefined;

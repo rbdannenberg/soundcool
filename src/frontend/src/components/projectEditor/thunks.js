@@ -14,7 +14,10 @@ import ScTransposer from "../../audio/sc-transposer";
 import ScMixer from "../../audio/sc-mixer";
 import ScReverb from "../../audio/sc-reverb";
 import ScGranSynth from "../../audio/sc-granular-synthesis";
-import { specValues, audioDefaults } from "./Components/blockSpecs";
+import {
+  specValues,
+  audioDefaults
+} from "./Components/blockSpecs";
 
 function initAudioObj(typeName, audioConfig) {
   let t;
@@ -73,9 +76,9 @@ function initAudioObj(typeName, audioConfig) {
         t = new ScGranSynth(scContext);
         resolve(t);
         break;
-      // case "Routing":
-      //   t = new ScRouting(scContext);
-      //   break;
+        // case "Routing":
+        //   t = new ScRouting(scContext);
+        //   break;
       case "Mixer":
         t = new ScMixer(scContext);
         resolve(t);
@@ -90,7 +93,20 @@ function initAudioObj(typeName, audioConfig) {
         break;
       case "SamplePlayer":
         t = new ScSamplePlayer(scContext);
-        resolve(t);
+        let promiseBook = [];
+        if (audioConfig.URL) {
+          audioConfig.URL.forEach((url, index) => {
+            if (url && url != "") {
+              promiseBook.push(t.load(index, audioConfig.URL[index]));
+            }
+          })
+          Promise.all(promiseBook).then(() => {
+            resolve(t);
+          });
+
+        } else {
+          resolve(t);
+        }
         break;
       default:
         t = undefined;
@@ -102,7 +118,7 @@ function initAudioObj(typeName, audioConfig) {
 }
 
 function asyncAddBlock(moduleType, audioConfig = {}, moduleConfig = {}) {
-  return function(dispatch) {
+  return function (dispatch) {
     return initAudioObj(moduleType, audioConfig)
       .then(audioObj => dispatch(addBlock(audioObj, moduleType, moduleConfig)))
       .catch(error => dispatch(addBlock(undefined, moduleType)));
@@ -129,7 +145,7 @@ const addBlock = (audioObj, typeName, moduleConfig) => {
 
 function loadProject(content) {
   let jsonContent = JSON.parse(content);
-  return function(dispatch, getState) {
+  return function (dispatch, getState) {
     let loadProjectProm = new Promise((resolve, reject) => {
       if (content === undefined || jsonContent === null) {
         dispatch({
@@ -160,12 +176,10 @@ function loadProject(content) {
           );
           promiseStore.push(prom);
         });
-        Promise.all(promiseStore).then(function() {
+        Promise.all(promiseStore).then(function () {
           let state = getState();
           let idMapper = {};
           state.blocks["bs"].forEach(element => {
-            console.log("element");
-            console.log(element);
             idMapper[element.id] = element;
           });
           connections.forEach((conn, index) => {
@@ -197,4 +211,7 @@ function loadProject(content) {
   };
 }
 
-export { asyncAddBlock, loadProject };
+export {
+  asyncAddBlock,
+  loadProject
+};

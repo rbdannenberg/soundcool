@@ -112,7 +112,8 @@ const audioDefaults = {
       undefined,
       undefined
     ],
-    masterVolume: 100
+    masterVolume: 100,
+    URL:undefined
   },
   Keyboard: {
   },
@@ -270,7 +271,8 @@ const uiDefaults = {
     inDisabled: true,
     osc: false,
     oscPort: undefined,
-    inDisableds: [true, true, true, true, true, true, true, true, true, true]
+    inDisableds: [true, true, true, true, true, true, true, true, true, true],
+    URL:[]
   },
   Keyboard: {
     color: toHex(89, 162, 179),
