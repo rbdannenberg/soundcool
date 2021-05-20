@@ -92,7 +92,7 @@ class ProjectEditor extends React.Component {
       projectName: "",
       projectDescription: "",
       openPorts: [],
-      isProjectChanged: undefined,
+      isProjectChanged: false,
       view: localStorage.getItem("editorView" + this.props.match.params.id)
         ? localStorage.getItem("editorView" + this.props.match.params.id)
         : localStorage.getItem("editorView")
@@ -303,20 +303,34 @@ class ProjectEditor extends React.Component {
           }
         });
       });
-      var checkUpdate = this.state.isProjectChanged;
-      if (checkUpdate === undefined) {
-        checkUpdate = false;
-      } else {
-        checkUpdate = true;
-      }
       if (this.state.projectId === "new") {
         localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
       }
 
+      let opts = {};
+      if(this.state.loadCount && this.state.loadCount == nextProps.blocks.bs.length){
+          
+          var connectionCount = 0;
+          nextProps.blocks.bs.forEach(bs=>{
+            connectionCount += bs["inNode"].length + bs["outNode"].length;
+          })
+        if(this.state.connectionCount > 0){
+          if(connectionCount === this.state.connectionCount){
+            opts = {isLoadingConn: false, loadCount: undefined, connectionCount:0, isProjectChanged: false};
+          }else{
+            opts = {isLoadingComp: false};
+          }
+        }else{
+          opts = {isLoadingConn: false, loadCount: undefined, connectionCount:0, isProjectChanged: false};
+        }
+      }
+      console.log(opts);
+      console.log(nextProps.blocks.bs);
       this.setState({
-        isProjectChanged: checkUpdate,
+        isProjectChanged: nextProps.blocks.bs.length > 0,
         items: newValue,
-        prevItems: nextProps.blocks.bs
+        prevItems: nextProps.blocks.bs,
+        ...opts
       });
     }
   }
@@ -636,9 +650,18 @@ class ProjectEditor extends React.Component {
       fetchUserProject(this.state.projectId)
         .then(res => {
           let { name, description, content } = res;
-
           this.props.dispatch(loadProject(content));
+          let parsedBS = JSON.parse(content)["bs"];
+          let loadCount = parsedBS.length;
+          var connectionCount = 0;
+          parsedBS.forEach(bs=>{
+            connectionCount += bs["inNode"].length + bs["outNode"].length;
+          })
           this.setState({
+            loadCount,
+            connectionCount,
+            isLoadingComp: true,
+            isLoadingCon: connectionCount > 0,
             projectName: name,
             projectDescription: description
           });
@@ -844,6 +867,7 @@ class ProjectEditor extends React.Component {
   };
 
   render() {
+    console.log(this.state.isProjectChanged);
     let fileReader;
     let { items } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
@@ -878,6 +902,7 @@ class ProjectEditor extends React.Component {
       fileReader.readAsText(file);
     };
     return (
+      this.state.isLoadingComp && <div class="loading">Loading&#8230;</div> ||
       <React.Fragment>
         <NavigationPrompt
           renderIfNotActive={true}
@@ -1136,6 +1161,7 @@ class ProjectEditor extends React.Component {
             </Modal.Footer>
           </form>
         </Modal>
+        {this.state.isLoadingConn && <div class="loading">Loading&#8230;</div>}
       </React.Fragment>
     );
   }
