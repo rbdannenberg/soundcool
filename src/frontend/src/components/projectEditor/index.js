@@ -735,6 +735,9 @@ class ProjectEditor extends React.Component {
     }
     if (isUserLoggedIn())
       if (this.state.projectId !== "new" && !saveAs) {
+        this.setState({
+          isProjectChanged: false
+        })
         this.updateProject({
           projectId: this.state.projectId,
           content: JSON.stringify(this.props.blocks)
@@ -908,8 +911,8 @@ class ProjectEditor extends React.Component {
           renderIfNotActive={true}
           // Confirm navigation if going to a path that does not start with current path:
           when={(crntLocation, nextLocation) =>
-            !nextLocation ||
-            !nextLocation.pathname.startsWith(crntLocation.pathname)
+            this.state.isProjectChanged && ( !nextLocation ||
+            !nextLocation.pathname.startsWith(crntLocation.pathname))
           }
         >
           {({ isActive, onCancel, onConfirm }) => {
@@ -918,9 +921,9 @@ class ProjectEditor extends React.Component {
                 <Modal centered show={true}>
                   <div>
                     <Modal.Body>
-                      WARNING: you are leaving the project editor. If you leave
-                      now, you can resume the current progress in Projects ->
-                      Resume Local Project, or you can stay on page and save.
+                      WARNING: you are leaving the project editor. You have
+                      unsaved changes in current project. Please save them or
+                      they will be lost.
                     </Modal.Body>
                     <Modal.Footer>
                       <button className="btn btn-success" onClick={onCancel}>
