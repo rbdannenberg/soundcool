@@ -50,7 +50,7 @@ along with react frontend and mysql database.
         - `FLUSH PRIVILEGES;`
         - `QUIT;`
 
-    - OS X: see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/mysql-osx-excerpt/5.7/en/osx-installation-pkg.html)
+    - OS X: see [Installing MySQL on macOS Using Native Packages](https://dev.mysql.com/doc/refman/8.0/en/macos-installation-pkg.html)
   - FFmpeg
     - Linux :- [Install ffmpeg](https://itsfoss.com/ffmpeg/)
     - Windows :- [Install ffmpeg](https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg)
