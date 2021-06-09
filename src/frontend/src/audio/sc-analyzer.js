@@ -26,10 +26,17 @@ class ScAnalyzer {
         break;
       case "frequency":
         this.analyzer.fftSize = this.options.fftSize;
-        this.array = new Float32Array(this.analyzer.frequencyBinCount);
+        this.arrays = []
+        for (var i=0; i<this.options.fftCount; i++){
+          var x = new Float32Array(this.analyzer.frequencyBinCount);
+          this.arrays.push(x);
+        }
+        this.i=0;
         this.getData = function() {
-          this.analyzer.getFloatFrequencyData(this.array);
-          return this.array;
+          this.analyzer.getFloatFrequencyData(this.arrays[this.i]);
+          this.i+=1;
+          this.i %= this.options.fftCount;
+          return this.arrays;
         };
         break;
       case "level":

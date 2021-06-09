@@ -6,8 +6,10 @@ class ScSpectroscope extends ScModule {
     super(context);
     this.options = {
       type: "frequency",
-      renderRate: 100,
-      fftSize: 2048
+      renderRate: 10,
+      fftSize: 512,
+      fftCount: 30,
+      history: false
     };
     this.setupNodes();
   }
@@ -17,6 +19,10 @@ class ScSpectroscope extends ScModule {
     this.inNode = this.analyzerNode.inNode;
 
     this.inputs.push(this.inNode);
+  }
+
+  set history(value) {
+    this.options.history = value;
   }
 
   getAudioData() {
