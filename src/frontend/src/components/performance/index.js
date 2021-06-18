@@ -79,6 +79,7 @@ class Performance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isDragging : false,
       performanceName: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -101,6 +102,7 @@ class Performance extends React.Component {
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
     this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
@@ -113,10 +115,12 @@ class Performance extends React.Component {
   };
   onDragEnd = result => {
     const { source, destination } = result;
+    let finalResult;
     // dropped outside the list
     if (!destination) {
       return;
     }
+    
     // console.log(source, destination);
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
@@ -125,7 +129,7 @@ class Performance extends React.Component {
         destination.index
       );
 
-      let finalResult = this.state.items;
+      finalResult = this.state.items;
       finalResult[parseInt(source.droppableId.split("_")[1])] = items;
 
       this.setState({ items: finalResult });
@@ -136,13 +140,23 @@ class Performance extends React.Component {
         source,
         destination
       );
-      let finalResult = this.state.items;
+      finalResult = this.state.items;
       finalResult[parseInt(result[0]["id"].split("_")[1])] = result[0]["value"];
       finalResult[parseInt(result[1]["id"].split("_")[1])] = result[1]["value"];
-      this.setState({
-        items: finalResult
-      });
+      
     }
+    this.setState({
+      items: finalResult
+    },()=>{
+      if(!result.isStreamed){
+        commonSocket.emit("dragEnd",{room: getCurrentPerformanceId(), value: result, updatedItem: JSON.stringify(this.props.blocks)});
+      }
+    });
+
+  };
+
+  onDragStart = () => {
+    commonSocket.emit("isDragging",getCurrentPerformanceId());
   };
 
   blockStyle = id => {
@@ -216,7 +230,7 @@ class Performance extends React.Component {
     } else {
       return (
         <React.Fragment>
-          <DragDropContext onDragEnd={this.onDragEnd}>
+          <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
             {blocks.map((b, listIndex) => (
               <div
                 style={{
@@ -329,6 +343,11 @@ class Performance extends React.Component {
         openPorts: data
       });
     });
+    commonSocket.on("isDragging", () => {
+      this.setState({
+        isDragging : true
+      })
+    });
     commonSocket.on("oscData", data => {
       let portNumber = data.portNumber;
       let targetComponent = this.findComponents(portNumber);
@@ -340,6 +359,14 @@ class Performance extends React.Component {
     commonSocket.on("changeBlock", data =>{
       data["isStreamed"] = true;
       this.props.dispatch(data);
+    })
+    commonSocket.on("dragEnd", result =>{
+      this.setState({
+        isDragging: false
+      })
+      result["isStreamed"] = true;
+      this.onDragEnd(result);
+      
     })
   }
 
@@ -744,7 +771,9 @@ class Performance extends React.Component {
       }, 2000);
     }
     return (
+  
       <React.Fragment>
+        {this.state.isDragging && <div class="loading">Loading&#8230;</div>}
         <div style={{ backgroundColor: "#FFF6A9" }}>
           <NavigationPrompt
             renderIfNotActive={true}

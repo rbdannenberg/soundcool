@@ -40,6 +40,13 @@ io.on("connection", socket => {
     socket.broadcast.to(data["room"]).emit("changeBlock",data["action"]);
     // console.log(data);
   });
+  socket.on("isDragging", room => {
+    socket.broadcast.to(room).emit("isDragging");
+  });
+  socket.on("dragEnd", data => {
+    socket.broadcast.to(data["room"]).emit("dragEnd",data["value"]);
+    // console.log(data);
+  });
 });
 
 app.use(express.json());
