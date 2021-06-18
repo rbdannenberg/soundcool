@@ -1,5 +1,4 @@
 import React from "react";
-import socketIOClient from "socket.io-client";
 import NavigationPrompt from "react-router-navigation-prompt";
 import "./index.css";
 import { connect } from "react-redux";
@@ -10,9 +9,11 @@ import { instanceOf } from "prop-types";
 import {
   showToastr,
   showToastrError,
-  baseAddress,
   isUserLoggedIn,
-  cleanPayload
+  cleanPayload,
+  commonSocket,
+  getCurrentProjectId,
+  getCurrentPerformanceId
 } from "../../actions/common";
 import { fetchPerformance, removePerformance, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -78,7 +79,6 @@ class Performance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: baseAddress(),
       performanceName: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -319,15 +319,17 @@ class Performance extends React.Component {
 
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
-    socket.on("openPort", data => {
+    let performanceId = getCurrentPerformanceId();
+    if(performanceId){
+      commonSocket.emit("joinRoom",performanceId);
+    }
+    commonSocket.on("openPort", data => {
       // console.log(data);
       this.setState({
         openPorts: data
       });
     });
-    socket.on("oscData", data => {
+    commonSocket.on("oscData", data => {
       let portNumber = data.portNumber;
       let targetComponent = this.findComponents(portNumber);
       console.log(targetComponent);
@@ -335,6 +337,10 @@ class Performance extends React.Component {
         this.handleOscInput(comp, data);
       });
     });
+    commonSocket.on("changeBlock", data =>{
+      data["isStreamed"] = true;
+      this.props.dispatch(data);
+    })
   }
 
   componentWillUnmount() {

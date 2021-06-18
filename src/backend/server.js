@@ -32,6 +32,14 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     // console.log("Client disconnected");
   });
+  socket.on("joinRoom", data => {
+    // console.log(data);
+    socket.join(data);
+  });
+  socket.on("changeBlock", data => {
+    socket.broadcast.to(data["room"]).emit("changeBlock",data["action"]);
+    // console.log(data);
+  });
 });
 
 app.use(express.json());
@@ -72,7 +80,7 @@ server.on("error", err => {
   }
 });
 
-server.on("listening", function() {
+server.on("listening", function () {
   console.log(
     `Starting server, you can visit the server locally at http://localhost:${
       server.address().port
@@ -81,9 +89,9 @@ server.on("listening", function() {
 });
 
 function startServer(server, portNumber) {
-  portNumber = Number.isInteger(portNumber)
-    ? portNumber
-    : parseInt(portNumber, 10);
+  portNumber = Number.isInteger(portNumber) ?
+    portNumber :
+    parseInt(portNumber, 10);
 
   if (portNumber && portNumber >= 1023 && portNumber < 65536) {
     server.listen(portNumber, () => {});

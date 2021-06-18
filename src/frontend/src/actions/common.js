@@ -1,5 +1,9 @@
-import { toast } from "react-toastify";
+import {
+  toast
+} from "react-toastify";
 import Cookies from "universal-cookie";
+import socketIOClient from "socket.io-client";
+
 const cookies = new Cookies();
 
 export const noop = () => {};
@@ -31,15 +35,17 @@ export const showToastrError = errObj => {
   showToastr(
     "error",
     errObj.error || errObj.err || "Something went wrong.",
-    null,
-    {
+    null, {
       timeOut: 0,
       extendedTimeOut: 0
     }
   );
 };
 
-export const getHeaders = ({ email, token }) => ({
+export const getHeaders = ({
+  email,
+  token
+}) => ({
   // 'X-Auth-Email': email,
   "X-Auth-Token": token
 });
@@ -53,17 +59,22 @@ export const getCssPropById = (id, prop) => {
 export const highlightElementById = (id, time = 3000) => {
   var elem = document.getElementById(id);
   elem.style.boxShadow = "10px 10px 10px darkred";
-  setTimeout(function() {
+  setTimeout(function () {
     elem.style.boxShadow = "";
   }, time);
 };
 
-export const setCssPropById = ({ id, prop, time = 3000, temp = false }) => {
+export const setCssPropById = ({
+  id,
+  prop,
+  time = 3000,
+  temp = false
+}) => {
   var elem = document.getElementById(id);
   var orig = elem.style[prop];
   elem.style[prop] = "8px 8px 8px darkred";
   if (temp) {
-    setTimeout(function() {
+    setTimeout(function () {
       elem.style[prop] = orig;
     }, time);
   }
@@ -93,12 +104,12 @@ export const removeByAttr = (arr, attr, value) => {
 };
 
 export const updateRecentProjects = (projectId, projectName) => {
-  var recentP = localStorage.getItem("recentProjects")
-    ? JSON.parse(localStorage.getItem("recentProjects"))
-    : [];
-  var recentPSize = localStorage.getItem("recentProjectsSize")
-    ? localStorage.getItem("recentProjectsSize")
-    : 3;
+  var recentP = localStorage.getItem("recentProjects") ?
+    JSON.parse(localStorage.getItem("recentProjects")) :
+    [];
+  var recentPSize = localStorage.getItem("recentProjectsSize") ?
+    localStorage.getItem("recentProjectsSize") :
+    3;
   removeByAttr(recentP, "id", projectId);
   recentP.unshift({
     id: projectId,
@@ -121,12 +132,37 @@ export const timedifference = (start, end) => {
 };
 
 export const clearData = () => {
-  cookies.remove("name", { path: "/" });
-  cookies.remove("token", { path: "/" });
-  cookies.remove("token", { path: "/project-editor" });
+  cookies.remove("name", {
+    path: "/"
+  });
+  cookies.remove("token", {
+    path: "/"
+  });
+  cookies.remove("token", {
+    path: "/project-editor"
+  });
   localStorage.clear();
+};
+
+export const getCurrentProjectId = () => {
+  let location = window.location.href.split("/");
+  if (location[3] == 'project-editor' && location[4] != null && location[4] != 'new') {
+    return location[4];
+  }
+  return null;
+};
+
+export const getCurrentPerformanceId = () => {
+  let location = window.location.href.split("/");
+  if (location[3] == 'performance' && location[4] != null) {
+    return location[4];
+  }
+  return null;
 };
 
 export const isUserLoggedIn = () => {
   return cookies.get("token") || "";
 };
+
+
+export const commonSocket = socketIOClient(baseAddress());

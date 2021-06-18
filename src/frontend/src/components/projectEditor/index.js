@@ -1,5 +1,4 @@
 import React from "react";
-import socketIOClient from "socket.io-client";
 import NavigationPrompt from "react-router-navigation-prompt";
 import "./index.css";
 import { connect } from "react-redux";
@@ -11,9 +10,10 @@ import { instanceOf } from "prop-types";
 import {
   showToastr,
   showToastrError,
-  baseAddress,
   isUserLoggedIn,
-  cleanPayload
+  cleanPayload,
+  getCurrentProjectId,
+  commonSocket
 } from "../../actions/common";
 import {
   createProject,
@@ -85,7 +85,6 @@ class ProjectEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: baseAddress(),
       projectId: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -324,8 +323,8 @@ class ProjectEditor extends React.Component {
           opts = {isLoadingComp: false, isLoadingConn: false, loadCount: undefined, connectionCount:0, isProjectChanged: false};
         }
       }
-      console.log(opts);
-      console.log(nextProps.blocks.bs);
+      // console.log(opts);
+      // console.log(nextProps.blocks.bs);
       this.setState({
         isProjectChanged: nextProps.blocks.bs.length > 0,
         items: newValue,
@@ -339,15 +338,17 @@ class ProjectEditor extends React.Component {
     this.loadState();
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
-    const { endpoint } = this.state;
-    const socket = socketIOClient(endpoint);
-    socket.on("openPort", data => {
+    let projectId = getCurrentProjectId();
+    if(projectId){
+      commonSocket.emit("joinRoom",projectId);
+    }
+    commonSocket.on("openPort", data => {
       // console.log(data);
       this.setState({
         openPorts: data
       });
     });
-    socket.on("oscData", data => {
+    commonSocket.on("oscData", data => {
       console.log("received oscData");
       let portNumber = data.portNumber;
       let targetType = data.component;
@@ -356,6 +357,10 @@ class ProjectEditor extends React.Component {
         this.handleOscInput(comp, data);
       });
     });
+    commonSocket.on("changeBlock", data =>{
+      data["isStreamed"] = true;
+      this.props.dispatch(data);
+    })
   }
 
   componentWillUnmount() {
@@ -870,7 +875,7 @@ class ProjectEditor extends React.Component {
   };
 
   render() {
-    console.log(this.state.isProjectChanged);
+    // console.log(this.state.isProjectChanged);
     let fileReader;
     let { items } = this.state;
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
