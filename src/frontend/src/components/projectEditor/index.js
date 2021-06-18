@@ -321,7 +321,7 @@ class ProjectEditor extends React.Component {
             opts = {isLoadingComp: false};
           }
         }else{
-          opts = {isLoadingConn: false, loadCount: undefined, connectionCount:0, isProjectChanged: false};
+          opts = {isLoadingComp: false, isLoadingConn: false, loadCount: undefined, connectionCount:0, isProjectChanged: false};
         }
       }
       console.log(opts);
