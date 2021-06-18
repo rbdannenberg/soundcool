@@ -63,7 +63,7 @@ class Player extends React.Component {
       let canvasCtx = canvas.getContext("2d");
       let renderCtx = canvasCtx;
       renderCtx.fillStyle = "blue";
-      console.log(audioObj.options.loop);
+      // console.log(audioObj.options.loop);
       // fill width = 300 is a hack, since 190 is supposed to be the length of
       // render bar, but when fill in a length of 190, it doesn't really
       // fill in to the rightmost end.

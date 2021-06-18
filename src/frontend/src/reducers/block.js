@@ -26,7 +26,7 @@ const block = (state, action) => {
 
         let projectId = getCurrentProjectId();
         let performanceId = getCurrentPerformanceId();
-        console.log(action);
+        // console.log(action);
         if (projectId) {
           if (!action.isStreamed) {
             commonSocket.emit("changeBlock", {
