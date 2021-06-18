@@ -12,6 +12,7 @@ import jwtDecode from "jwt-decode";
 import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
 import Performance from "./components/performance";
+import PerformanceMobile from "./components/performance/indexmobile";
 import Cookies from "universal-cookie";
 import Projects from "./components/projects/editor";
 import { removePerformance } from "./components/performance/actions";
@@ -35,7 +36,7 @@ class Main extends Component {
     if (this.props.location.pathname.split("/")[1] !== "project-editor") {
       this.props.dispatch({
         type: "CLEAR_STATE",
-        value: undefined
+        value: undefined,
       });
     }
   };
@@ -45,10 +46,10 @@ class Main extends Component {
     let performanceId = path[2];
     if (path[1] !== "performance") {
       removePerformance({ performanceId })
-        .then(res => {
+        .then((res) => {
           showToastr("success", res.message);
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     }
@@ -65,6 +66,11 @@ class Main extends Component {
             path="/project-editor/:id"
             component={ProjectEditor}
             // onLeave={this.leavingProjectEditor()}
+          />
+          <Route
+            path="/mobile/performance/:id"
+            component={PerformanceMobile}
+            // onLeave={this.leavingPerformance()}
           />
           <Route
             path="/performance/:id"
@@ -98,17 +104,17 @@ class Main extends Component {
                   {
                     id: 1,
                     name: "Roger Dannenberg",
-                    description: "description"
+                    description: "description",
                   },
                   {
                     id: 2,
                     name: "Jorge Sastre Martinez",
-                    description: "description"
+                    description: "description",
                   },
                   { id: 3, name: "Amit Meena", description: "description" },
                   { id: 4, name: "Ankit Joshi", description: "description" },
                   { id: 5, name: "Manuel Alcañiz", description: "description" },
-                  { id: 6, name: "Huan Zhang", description: "description" }
+                  { id: 6, name: "Huan Zhang", description: "description" },
                 ]}
               />
             )}
@@ -120,8 +126,8 @@ class Main extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  blocks: state.blocks
+const mapStateToProps = (state) => ({
+  blocks: state.blocks,
 });
 
 export default withRouter(connect(mapStateToProps)(Main));
