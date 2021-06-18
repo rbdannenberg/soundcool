@@ -3,7 +3,7 @@ import { createProject } from "../projectEditor/actions";
 import {
   createPerformance,
   fetchPerformance,
-  getPorts
+  getPorts,
 } from "../performance/actions";
 import { showToastr, showToastrError } from "../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
@@ -16,7 +16,7 @@ import {
   addSharedUser,
   removeSharedUser,
   setProjectPublic,
-  cloneProject
+  cloneProject,
 } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput.jsx";
@@ -35,7 +35,7 @@ class Projects extends Component {
       isPerformanceModalOpen: false,
       isJoinPerformanceModalOpen: false,
       checked: false,
-      oscModuleList: []
+      oscModuleList: [],
     };
     this.toggleProjectVisibility = this.toggleProjectVisibility.bind(this);
   }
@@ -45,11 +45,11 @@ class Projects extends Component {
     // project get displayed
     if (this.props.user) {
       fetchUserProjects()
-        .then(data => {
+        .then((data) => {
           // console.log(data);
           this.setState({ projects: data });
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     } else {
@@ -62,22 +62,22 @@ class Projects extends Component {
     this.setState({ isAddUserModalOpen: !this.state.isAddUserModalOpen });
   togglePerformanceModal = () =>
     this.setState({
-      isPerformanceModalOpen: !this.state.isPerformanceModalOpen
+      isPerformanceModalOpen: !this.state.isPerformanceModalOpen,
     });
   toggleJoinPerformanceModal = () =>
     this.setState({
-      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen,
     });
 
   removeSharedUser() {
     let { projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
     removeSharedUser({ projectId: project_id, sharedUsers })
-      .then(res => {
+      .then((res) => {
         // console.log(res);
         showToastr("success", res.message);
         let index = -1;
-        this.state.projects.some(project => {
+        this.state.projects.some((project) => {
           index++;
           if (project.project_id === project_id) {
             // eslint-disable-next-line
@@ -87,10 +87,10 @@ class Projects extends Component {
           return false;
         });
         this.setState({
-          projects: this.state.projects
+          projects: this.state.projects,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
@@ -99,11 +99,11 @@ class Projects extends Component {
     let { projectState } = this.state;
     let { project_id } = projectState;
     setProjectPublic({ projectId: project_id, isPublic: checked })
-      .then(res => {
+      .then((res) => {
         // console.log(res);
         showToastr("success", res.message);
         let index = -1;
-        this.state.projects.some(project => {
+        this.state.projects.some((project) => {
           index++;
           if (project.project_id === project_id) {
             // eslint-disable-next-line
@@ -116,17 +116,17 @@ class Projects extends Component {
           projects: this.state.projects,
           projectState: {
             ...this.state.projectState,
-            isPublic: checked
-          }
+            isPublic: checked,
+          },
         });
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
   cloneProject(projectId) {
     cloneProject({ projectId })
-      .then(data => {
+      .then((data) => {
         if (data.error) {
           showToastr("success", "Project can't be cloned");
         } else {
@@ -135,7 +135,7 @@ class Projects extends Component {
           // console.log([...this.state.projects, data]);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
@@ -143,27 +143,31 @@ class Projects extends Component {
     let { performanceName } = this.state;
 
     fetchPerformance(performanceName)
-      .then(res => {
+      .then((res) => {
         showToastr("success", "Joined performance successfully");
         window.location = "/performance/" + res.name;
       })
-      .catch(err => {
+      .catch((err) => {
         showToastr("error", "The performance doesn't exist!");
       });
   }
   handlePerformanceCreate() {
     let { projectState, performanceName, oscModuleList } = this.state;
     // test if name already exists
+    if (!performanceName.match("^([^0-9]*)$")) {
+      showToastr("error", "Performance name cannot contain integer");
+      return;
+    }
     fetchPerformance(performanceName)
-      .then(res => {
+      .then((res) => {
         console.log("already exists");
         showToastr("error", "Performance name already exists!");
       })
-      .catch(err => {
+      .catch((err) => {
         // if not, ask server to assign random ports and create new performance
         let newOscModuleList = oscModuleList;
         getPorts({ N: oscModuleList.length })
-          .then(data => {
+          .then((data) => {
             if (data.err) {
               showToastrError(data);
             } else {
@@ -177,28 +181,28 @@ class Projects extends Component {
               let payload = {
                 performanceName: performanceName,
                 oscModuleList: newOscModuleList,
-                blocks: { bs: content.bs }
+                blocks: { bs: content.bs },
               };
               createPerformance(payload)
-                .then(data => {
+                .then((data) => {
                   showToastr("success", "Performance created successfully");
                   window.location = "/performance/" + data.name;
                 })
-                .catch(error => {
+                .catch((error) => {
                   showToastrError(error);
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             showToastrError(error);
           });
       });
   }
 
-  getOscModules = content => {
+  getOscModules = (content) => {
     let modules = content["bs"];
     let oscModules = [];
-    modules.forEach(module => {
+    modules.forEach((module) => {
       console.log(module["osc"]);
       if (module["osc"] !== undefined) {
         oscModules = [
@@ -207,8 +211,8 @@ class Projects extends Component {
             givenName: module["givenName"],
             oscPort: "",
             id: module["id"],
-            name: module["name"]
-          }
+            name: module["name"],
+          },
         ];
       }
     });
@@ -220,23 +224,23 @@ class Projects extends Component {
     let duplicate = false;
     if (userId !== "") {
       if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
+        duplicate = JSON.parse(sharedUsers)["users"].some((user) => {
           return user.user_id === userId;
         });
     }
     if (userEmail !== "") {
       if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
+        duplicate = JSON.parse(sharedUsers)["users"].some((user) => {
           return user.email === userEmail;
         });
     }
     if (!duplicate) {
       addSharedUser({ userId, userEmail, projectId: project_id })
-        .then(res => {
+        .then((res) => {
           showToastr("success", res.message);
           if (res.data) {
             let index = -1;
-            this.state.projects.some(project => {
+            this.state.projects.some((project) => {
               index++;
               if (project.project_id === project_id) {
                 // eslint-disable-next-line
@@ -249,14 +253,14 @@ class Projects extends Component {
               projects: this.state.projects,
               projectState: {
                 ...this.state.projectState,
-                sharedUsers: res.data
-              }
+                sharedUsers: res.data,
+              },
             });
           }
           this.toggleUserModal();
           this.toggleModal();
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
       this.setState({ userId: "", userEmail: "" });
@@ -268,28 +272,23 @@ class Projects extends Component {
     var r = window.confirm("Do you want to delete project " + projectId);
     if (r === true) {
       removeProject({ projectId })
-        .then(res => {
+        .then((res) => {
           showToastr("success", res.message);
           let projects = this.state.projects;
           projects.splice(index, 1);
           this.setState({
-            projects
+            projects,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     }
   }
-  filterProjects = project => {
+  filterProjects = (project) => {
     let qry = this.state.search;
     if (qry === "") return true;
-    else if (
-      project.user
-        .toString()
-        .toLowerCase()
-        .includes(qry.toLowerCase())
-    )
+    else if (project.user.toString().toLowerCase().includes(qry.toLowerCase()))
       return true;
     else if (project.name.toLowerCase().includes(qry.toLowerCase()))
       return true;
@@ -302,37 +301,31 @@ class Projects extends Component {
       return true;
     else return false;
   };
-  handleSharing = project => {
+  handleSharing = (project) => {
     this.setState({ projectState: project }, () => {
       this.toggleModal();
     });
   };
-  handlePerformance = project => {
+  handlePerformance = (project) => {
     this.setState(
       {
         projectState: project,
-        oscModuleList: this.getOscModules(JSON.parse(project.content))
+        oscModuleList: this.getOscModules(JSON.parse(project.content)),
       },
       () => {
         this.togglePerformanceModal();
       }
     );
   };
-  renderProjects = projects =>
+  renderProjects = (projects) =>
     projects.map((project, index) => {
-      let {
-        project_id,
-        name,
-        description,
-        sharedUsers,
-        isOwner,
-        isPublic
-      } = project;
+      let { project_id, name, description, sharedUsers, isOwner, isPublic } =
+        project;
       let sUsers = [],
         multiple = false;
       let countt = 0;
       if (sharedUsers)
-        JSON.parse(sharedUsers)["users"].every(user => {
+        JSON.parse(sharedUsers)["users"].every((user) => {
           if (multiple) sUsers.push(", ");
           sUsers.push(user.user_id);
           multiple = true;
@@ -408,24 +401,24 @@ class Projects extends Component {
 
   render() {
     let fileReader;
-    const handleFileRead = e => {
+    const handleFileRead = (e) => {
       const content = JSON.parse(fileReader.result);
       let payload = {
         projectName: content.projectName,
         projectDescription: content.projectDescription,
-        blocks: content.blocks
+        blocks: content.blocks,
       };
       createProject(payload)
-        .then(data => {
+        .then((data) => {
           showToastr("success", "Project imported successfully");
           this.setState({ projects: [...this.state.projects, data] });
           this.upload.value = "";
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     };
-    const handleFileChosen = file => {
+    const handleFileChosen = (file) => {
       fileReader = new FileReader();
       fileReader.onloadend = handleFileRead;
       fileReader.readAsText(file);
@@ -444,11 +437,11 @@ class Projects extends Component {
             <h3>Projects</h3>
             <input
               style={{ display: "none" }}
-              ref={ref => (this.upload = ref)}
+              ref={(ref) => (this.upload = ref)}
               type="file"
               id="projectFile"
               accept=".json"
-              onChange={e => handleFileChosen(e.target.files[0])}
+              onChange={(e) => handleFileChosen(e.target.files[0])}
               className="btn btn-info float-right"
             />
             <div className="float-right">
@@ -457,13 +450,13 @@ class Projects extends Component {
                 style={{ marginRight: "10px" }}
                 type="text"
                 placeholder="Search.."
-                onChange={e => {
+                onChange={(e) => {
                   this.setState({ search: e.target.value });
                 }}
               ></input>
               <button
                 className="btn btn-info"
-                onClick={e => this.upload.click()}
+                onClick={(e) => this.upload.click()}
               >
                 Import project
               </button>
@@ -546,9 +539,9 @@ class Projects extends Component {
                                   projectState: {
                                     ...this.state.projectState,
                                     sharedUsers: JSON.stringify({
-                                      users: arr
-                                    })
-                                  }
+                                      users: arr,
+                                    }),
+                                  },
                                 },
                                 () => {
                                   this.removeSharedUser();
