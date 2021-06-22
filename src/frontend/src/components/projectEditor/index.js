@@ -100,6 +100,7 @@ class ProjectEditor extends React.Component {
       projectsDropdownOpen: false,
       viewDropdownOpen: false,
       sharingDropdownOpen: false,
+      recentProjectsDropdownOpen: false,
       isModalOpen: false,
       isRegisterModalOpen: false,
       isLoginModalOpen: false
@@ -110,6 +111,7 @@ class ProjectEditor extends React.Component {
     this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
     this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
     this.toggleSharingDropdown = this.toggleSharingDropdown.bind(this);
+    this.toggleRecentProjectsDropdown = this.toggleRecentProjectsDropdown.bind(this);
     this.timer = null;
   }
 
@@ -714,6 +716,12 @@ class ProjectEditor extends React.Component {
     this.setState({ sharingDropdownOpen: !this.state.sharingDropdownOpen });
   }
 
+  toggleRecentProjectsDropdown() {
+    this.setState({
+      recentProjectsDropdownOpen: !this.state.recentProjectsDropdownOpen,
+    });
+  }
+
   handleOnChange = (name, value) => {
     const params = { [name]: value };
     this.setState(params);
@@ -875,6 +883,9 @@ class ProjectEditor extends React.Component {
   };
 
   render() {
+
+    var recentP = localStorage.getItem("recentProjects")? JSON.parse(localStorage.getItem("recentProjects")): [];
+
     // console.log(this.state.isProjectChanged);
     let fileReader;
     let { items } = this.state;
@@ -1070,9 +1081,44 @@ class ProjectEditor extends React.Component {
                   </DropdownMenu>
                 </Dropdown>
               )}
+              {/* RECENT PROJECTS */}
+              {isUserLoggedIn() && (
+                <Dropdown
+                  nav
+                  isOpen={this.state.recentProjectsDropdownOpen}
+                  toggle={this.toggleRecentProjectsDropdown}
+                >
+                  <DropdownToggle nav caret>
+                    Recent Projects
+                  </DropdownToggle>
+                  <DropdownMenu tog>
+                    {recentP.map((project) => (
+                      <NavLink
+                        className="dropdown-item border-0"
+                        to={"/project-editor/" + project.id}
+                      >
+                        {project.projectName}
+                      </NavLink>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              )}
               <h6 style={{ paddingTop: "10px", paddingLeft: "10px" }}>
                 <span class="badge badge-secondary">OSC IP: 18.224.253.25</span>
               </h6>
+              {isUserLoggedIn() && (
+                <NavItem
+                  style={{
+                    color: "white",
+                    lineHeight: "2.5",
+                    marginLeft: "15px",
+                  }}
+                  id="ActualProject"
+                >
+                  <span className="fa fa-project-diagram "></span>&nbsp; Actual
+                  project: {this.state.projectName}
+                </NavItem>
+              )}
             </Nav>
             <Nav className="ml-auto" navbar>
               <NavItem>

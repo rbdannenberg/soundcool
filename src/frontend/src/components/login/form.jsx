@@ -25,6 +25,8 @@ class LoginForm extends React.Component {
       }
     };
 
+    localStorage.setItem('userEmail',email);
+
     loginUser(payload)
       .then(res => {
         if (this.props.afterSignin) this.props.afterSignin(res);

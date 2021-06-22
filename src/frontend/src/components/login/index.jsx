@@ -20,6 +20,8 @@ class Login extends React.Component {
       showToastr("success", "Logged in successfully.");
       cookies.set('name', name, { path: '/' });
       cookies.set("token", token, { path: '/' });
+
+      localStorage.setItem('userName',name);
       redirectToHome();
     }
   };
