@@ -17,6 +17,7 @@ import Cookies from "universal-cookie";
 import Projects from "./components/projects/editor";
 import { removePerformance } from "./components/performance/actions";
 import { showToastr, showToastrError } from "./actions/common";
+import UserProfile from "./components/userProfile/user";
 
 const cookies = new Cookies();
 class Main extends Component {
@@ -79,6 +80,7 @@ class Main extends Component {
           />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />
+          <Route exact path="/user-profile" component={UserProfile} />
           <Route
             exact
             path="/projects"

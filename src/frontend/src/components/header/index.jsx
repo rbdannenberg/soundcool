@@ -119,8 +119,12 @@ class Header extends Component {
                       <span className="fa fa-user-circle "></span>&nbsp;
                       {this.props.name}
                     </DropdownToggle>
-                    <DropdownMenu tog>
-                      <DropdownItem disabled>Edit Profile</DropdownItem>
+                    <DropdownMenu>
+                      <DropdownItem>
+                        <NavLink className="text-black" to="/user-profile">
+                        <span className="fa fa-address-card " /> Edit Profile
+                      </NavLink>
+                      </DropdownItem>
                       <DropdownItem onClick={this.handleLogout}>
                         Logout
                       </DropdownItem>
