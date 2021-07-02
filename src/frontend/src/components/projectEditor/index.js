@@ -826,10 +826,10 @@ class ProjectEditor extends React.Component {
 
   downloadFile = async myData => {
     const fileName = myData.projectName;
-    const json = JSON.stringify(myData, null, "\t");
+    const json = JSON.stringify(myData, null, '\u0020');
     let readData = JSON.parse(json);
     readData.blocks = cleanPayload(readData.blocks);
-    const updatedJson = JSON.stringify(readData, null, "\t");
+    const updatedJson = JSON.stringify(readData, null, '\u0020');
     const blob = new Blob([updatedJson], { type: "application/json" });
     const href = await URL.createObjectURL(blob);
     const link = document.createElement("a");

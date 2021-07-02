@@ -54,7 +54,7 @@ class AddBlock extends React.Component {
 
   render() {
     let midPoint = window.innerHeight / 2 - 40;
-    let gap = 35;
+    let gap = 37;
     return (
       <React.Fragment>
         <ReactTooltip
@@ -70,7 +70,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 6 * gap + "px"
+            //top: midPoint - 6 * gap + "px"
+            top: "100px"
           }}
         >
           <button
@@ -89,7 +90,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 5 * gap + "px"
+            //top: midPoint - 5 * gap + "px"
+            top: 1 * gap + 100 + "px"
           }}
         >
           <button
@@ -122,7 +124,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 4 * gap + "px"
+            //top: midPoint - 4 * gap + "px"
+            top: 2 * gap + 100 + "px"
           }}
         >
           <button
@@ -153,7 +156,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 3 * gap + "px"
+            //top: midPoint - 3 * gap + "px"
+            top: 3 * gap + 100 + "px"
           }}
         >
           <button
@@ -172,7 +176,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 2 * gap + "px"
+            //top: midPoint - 2 * gap + "px"
+            top: 4 * gap + 100 + "px"
           }}
         >
           <button
@@ -205,7 +210,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint - 1 * gap + "px"
+            //top: midPoint - 1 * gap + "px"
+            top: 5 * gap + 100 + "px"
           }}
         >
           <button
@@ -236,7 +242,12 @@ class AddBlock extends React.Component {
         <div
           class="contenedor"
           id="oscilloscope"
-          style={{ position: "absolute", left: "5px", top: midPoint + "px" }}
+          style={{
+            position: "absolute",
+            left: "5px",
+            //top: midPoint + "px" 
+            top: 6 * gap + 100 + "px"
+          }}
         >
           <button
             name="boton"
@@ -255,7 +266,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint + 1 * gap + "px"
+            //top: midPoint + 1 * gap + "px"
+            top: 7 * gap + 100 + "px"
           }}
         >
           <button
@@ -275,7 +287,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint + 2 * gap + "px"
+            //top: midPoint + 2 * gap + "px"
+            top: 8 * gap + 100 + "px"
           }}
         >
           <button
@@ -295,7 +308,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint + 3 * gap + "px"
+            //top: midPoint + 3 * gap + "px"
+            top: 9 * gap + 100 + "px"
           }}
         >
           <button
@@ -342,7 +356,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint + 4 * gap + "px"
+            //top: midPoint + 4 * gap + "px"
+            top: 10 * gap + 100 + "px"
           }}
         >
           <button
@@ -366,7 +381,8 @@ class AddBlock extends React.Component {
           style={{
             position: "absolute",
             left: "5px",
-            top: midPoint + 5 * gap + "px"
+            //top: midPoint + 5 * gap + "px"
+            top: 11 * gap + 100 + "px"
           }}
         >
           <button
