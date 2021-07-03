@@ -92,6 +92,7 @@ const blocks = (
       if (deletedBlock.audioObj) {
         deletedBlock.audioObj.destroy();
       }
+      console.log(deletedBlock)
       let newBs = filteredBs.map(t =>
         // pass in the block, so we can check for each connection that
         // whether the block still exist

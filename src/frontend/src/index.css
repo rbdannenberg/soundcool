@@ -3,6 +3,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
 .breadcrumb {
   margin: 5px;
   padding: 5px 5px 5px 5px;
@@ -109,4 +110,6 @@ h2 {
   font-size: 1.2rem;
 }
 
-.pointer-cursor {cursor: pointer;}
+.pointer-cursor {
+  cursor: pointer;
+}
