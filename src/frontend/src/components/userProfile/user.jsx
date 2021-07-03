@@ -8,18 +8,21 @@ import {
   CardHeader,
   Media,
 } from "reactstrap";
-
+import { BASE_URL } from "../../constants.js";
 import Cookies from "universal-cookie";
+import { showToastr, showToastrError } from "../../actions/common";
 
 const cookies = new Cookies();
 
 class UserProfile extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
       username: "",
       email: "",
       pass: "",
+      isValid: null,
     };
   }
 
@@ -30,28 +33,48 @@ class UserProfile extends React.Component {
 
   handleSubmit = () => {
     const { username, email, pass } = this.state;
-
-    const QUERY =
-      "UPDATE users SET name='" +
-      this.state.username +
-      "',password='" +
-      this.state.pass +
-      "',email='" +
-      this.state.email +
-      "' WHERE name='" +
-      localStorage.getItem("userName") +
-      "'";
-
     if (username != "" && email != "" && pass != "") {
-      document.getElementById("mensaje").innerHTML = "Query updated: " + QUERY;
+      fetch(`${BASE_URL}/user/edit_user`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': cookies.get('token')
+        },
+        body: JSON.stringify({
+          user: {
+            name: username,
+            password: pass,
+            email,
+            user_id: localStorage.getItem('user_id')
+          }
+        })
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((response) => {
+        cookies.set('name', response.user.name)
+        localStorage.setItem("userName", response.user.name)
+        localStorage.setItem("userEmail", response.user.email)
+        showToastr("success", "User updated successfully.");
+        setTimeout(() => {
+          location.reload()
+        }, 1500)
+      })
+      .catch((err) => {
+        showToastrError(err);
+      })
     } else {
-      document.getElementById("mensaje").innerHTML =
-        "Empty fields for update user";
+      // If empty fields
+      this.setState({
+        ...this.state,
+        isValid: false,
+      })
     }
   };
 
   render() {
-    const { username, email, pass } = this.state;
+    const { username, email, pass, isValid } = this.state;
 
     return (
       <div className="container mt-3">
@@ -122,11 +145,7 @@ class UserProfile extends React.Component {
                 </div>
 
                 <div className="row mt-5">
-                  <div className="col-lg-12 text-center">
-                    <div className="alert alert-warning">
-                      <h4 id="mensaje">Query updated: </h4>
-                    </div>
-                  </div>
+                  {isValid === false && 'Form not valid'}
                 </div>
               </div>
             </div>

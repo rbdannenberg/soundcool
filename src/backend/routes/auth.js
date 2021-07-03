@@ -62,7 +62,8 @@ function handleLoginUser(err, results, password) {
         const token = utils.generateToken(user);
         return {
           name: user["name"],
-          token
+          token,
+          user_id: user.user_id,
         };
       } else {
         return {
@@ -132,6 +133,42 @@ router.get("/validateToken", function(req, res) {
   utils.verifyToken(token, cb => {
     if (cb) {
       res.json({ token });
+    } else {
+      return res.status(401).json({ message: "Token Not Valid" });
+    }
+  });
+});
+
+router.patch("/edit_user", function(req, res) {
+  const token = req.headers["x-auth-token"];
+  const { user } = req.body;
+  if (!token) {
+    return res.status(401).json({ message: "Must pass token" });
+  }
+  utils.verifyToken(token, cb => {
+    if (cb) {
+      const hash_password = bcrypt.hashSync(user.password, saltRounds);
+      const UPDATE_USER =
+        "UPDATE users SET name = ?, password = ?, email = ? WHERE user_id = ?";
+      connection.query(
+        UPDATE_USER,
+        [user.name, hash_password, user.email, user.user_id],
+        (err, results) => {
+          if (err) {
+            return res.json({ err });
+          }
+          const GET_USER =
+            "SELECT name, email, user_id FROM users WHERE user_id = ?";
+          connection.query(GET_USER, [user.user_id], (err, results) => {
+            if (err) {
+              return res.json({ err });
+            }
+            return res.json({
+              user: results[0]
+            });
+          });
+        }
+      );
     } else {
       return res.status(401).json({ message: "Token Not Valid" });
     }
