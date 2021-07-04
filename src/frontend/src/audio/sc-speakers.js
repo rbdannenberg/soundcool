@@ -6,7 +6,7 @@ class ScSpeakers extends ScModule {
     super(context);
 
     let defOpts = {
-      suspended: false
+      suspended: false,
     };
     this.options = Object.assign(defOpts, options);
     this.setupNodes();
@@ -16,7 +16,7 @@ class ScSpeakers extends ScModule {
     this.inNode = this.outNode = this.context.createGain();
     this.dest = this.context.destination;
     this.splitter = new ChannelSplitterNode(this.context, {
-      numberOfOutputs: 2
+      numberOfOutputs: 2,
     });
     this.analyzerL = new ScAnalyzer(this.context, { type: "level" });
     this.analyzerR = new ScAnalyzer(this.context, { type: "level" });
@@ -45,12 +45,12 @@ class ScSpeakers extends ScModule {
 
   set suspended(value) {
     this.options.suspended = value;
-    if (this.context.state === 'running' && this.options.suspended) {
+    if (this.context.state === "running" && this.options.suspended) {
       this.volume = 0;
       setTimeout(() => {
         this.context.suspend();
       }, 250);
-    } else if (this.context.state === 'suspended' && !this.options.suspended){
+    } else if (this.context.state === "suspended" && !this.options.suspended) {
       this.context.resume();
       this.volume = 100;
     }

@@ -113,3 +113,16 @@ h2 {
 .pointer-cursor {
   cursor: pointer;
 }
+
+.contenedor {
+  margin-bottom: 2px;
+}
+
+.block-container {
+  position: absolute;
+  top: 5px;
+}
+
+.container-fluid {
+  position: relative;
+}

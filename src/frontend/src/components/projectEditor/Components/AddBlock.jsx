@@ -65,14 +65,17 @@ class AddBlock extends React.Component {
           id="tool"
         />
         <div
-          class="contenedor"
+          className="block-container"
+        >
+        <div
+          className="contenedor"
           id="player"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 6 * gap + "px"
-            top: "100px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 6 * gap + "px"
+          //   top: "100px"
+          // }}
         >
           <button
             name="boton"
@@ -85,14 +88,14 @@ class AddBlock extends React.Component {
           </button>
         </div>
         <div
-          class="contenedor"
+          className="contenedor"
           id="sampleplayer"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 5 * gap + "px"
-            top: 1 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 5 * gap + "px"
+          //   top: 1 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -105,7 +108,7 @@ class AddBlock extends React.Component {
           </button>
         </div>
         {/* <div
-        class="keyboard"
+        className="keyboard"
         id="keyboard"
         style={{ position: "absolute", left: "0px", top: "230px" }}
       >
@@ -119,14 +122,14 @@ class AddBlock extends React.Component {
       </div> */}
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="mixer"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 4 * gap + "px"
-            top: 2 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 4 * gap + "px"
+          //   top: 2 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -139,7 +142,7 @@ class AddBlock extends React.Component {
           </button>
         </div>
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="routing"
         style={{ position: "absolute", left: "0px", top: "300px" }}
       >
@@ -151,14 +154,14 @@ class AddBlock extends React.Component {
         </button>
       </div> */}
         <div
-          class="contenedor"
+          className="contenedor"
           id="delay"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 3 * gap + "px"
-            top: 3 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 3 * gap + "px"
+          //   top: 3 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -171,14 +174,14 @@ class AddBlock extends React.Component {
           </button>
         </div>
         <div
-          class="contenedor"
+          className="contenedor"
           id="transposer"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 2 * gap + "px"
-            top: 4 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 2 * gap + "px"
+          //   top: 4 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -191,7 +194,7 @@ class AddBlock extends React.Component {
           </button>
         </div>
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="pitch"
         style={{ position: "absolute", left: "0px", top: "297px" }}
       >
@@ -205,14 +208,14 @@ class AddBlock extends React.Component {
         </button>
       </div> */}
         <div
-          class="contenedor"
+          className="contenedor"
           id="pan"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint - 1 * gap + "px"
-            top: 5 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint - 1 * gap + "px"
+          //   top: 5 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -226,7 +229,7 @@ class AddBlock extends React.Component {
         </div>
 
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="filter"
         style={{ position: "absolute", left: "0px", top: "227px" }}
       >
@@ -240,14 +243,14 @@ class AddBlock extends React.Component {
         </button>
       </div> */}
         <div
-          class="contenedor"
+          className="contenedor"
           id="oscilloscope"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + "px" 
-            top: 6 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + "px" 
+          //   top: 6 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -261,14 +264,14 @@ class AddBlock extends React.Component {
         </div>
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="spectroscope"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + 1 * gap + "px"
-            top: 7 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + 1 * gap + "px"
+          //   top: 7 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -282,14 +285,14 @@ class AddBlock extends React.Component {
         </div>
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="signalgen"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + 2 * gap + "px"
-            top: 8 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + 2 * gap + "px"
+          //   top: 8 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -303,14 +306,14 @@ class AddBlock extends React.Component {
         </div>
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="granular"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + 3 * gap + "px"
-            top: 9 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + 3 * gap + "px"
+          //   top: 9 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -324,7 +327,7 @@ class AddBlock extends React.Component {
         </div>
 
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="envelope"
         style={{ position: "absolute", left: "50px", top: "300px" }}
       >
@@ -337,7 +340,7 @@ class AddBlock extends React.Component {
       </div> */}
 
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="sequencer"
         style={{ position: "absolute", left: "50px", top: "335px" }}
       >
@@ -351,14 +354,14 @@ class AddBlock extends React.Component {
       </div> */}
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="directinput"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + 4 * gap + "px"
-            top: 10 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + 4 * gap + "px"
+          //   top: 10 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -376,14 +379,14 @@ class AddBlock extends React.Component {
         </div>
 
         <div
-          class="contenedor"
+          className="contenedor"
           id="speaker"
-          style={{
-            position: "absolute",
-            left: "5px",
-            //top: midPoint + 5 * gap + "px"
-            top: 11 * gap + 100 + "px"
-          }}
+          // style={{
+          //   position: "absolute",
+          //   left: "5px",
+          //   //top: midPoint + 5 * gap + "px"
+          //   top: 11 * gap + 100 + "px"
+          // }}
         >
           <button
             name="boton"
@@ -397,7 +400,7 @@ class AddBlock extends React.Component {
         </div>
 
         {/* <div
-        class="contenedor"
+        className="contenedor"
         id="record"
         style={{ position: "absolute", left: "50px", top: "192px" }}
       >
@@ -412,6 +415,7 @@ class AddBlock extends React.Component {
           <img alt="Record" src={record}></img>
         </button>
       </div> */}
+      </div>
       </React.Fragment>
     );
   }

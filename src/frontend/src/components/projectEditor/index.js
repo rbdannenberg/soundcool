@@ -1167,7 +1167,7 @@ class ProjectEditor extends React.Component {
             <div>
               <div
                 className="row"
-                style={{ paddingLeft: "50px", overflow: "hidden" }}
+                style={{ paddingLeft: "65px", overflow: "hidden" }}
               >
                 {this.renderBlockList(items, this.props.blocks.nowOut)}
               </div>

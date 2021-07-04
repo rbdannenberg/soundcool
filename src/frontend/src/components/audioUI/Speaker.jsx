@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { changeBlock } from "./actions";
 import { FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import { Switch, Route, withRouter } from "react-router-dom";
 
 const circleStyle = {
   width: "1.6rem",
@@ -81,11 +82,19 @@ class Speaker extends React.Component {
     let { renderRate } = this.props.blockInfo;
     this.rendererL = setInterval(this.renderAudioL.bind(this), renderRate);
     this.rendererR = setInterval(this.renderAudioR.bind(this), renderRate);
+    const unlisten = this.props.history.listen(() => {
+      if (this.props.location.pathname.includes('project-editor')) {
+        this.props.changeBlock(this.props.blockInfo.id, "suspended", true)
+        unlisten()
+      }
+    });
   };
 
   render() {
     let { id, suspended } = this.props.blockInfo;
+
     let playButton;
+
     if (suspended) {
       playButton = <FaVolumeMute />;
     } else {
@@ -168,7 +177,9 @@ class Speaker extends React.Component {
               backgroundColor: "transparent",
               border: "1px dotted"
             }}
-            onClick={() => this.props.changeBlock(id, "suspended", undefined)}
+            onClick={() => {
+              this.props.changeBlock(id, "suspended", undefined)
+            }}
           >
             {playButton}
           </button>
@@ -194,4 +205,4 @@ const mapStateToProps = state => {
     state
   };
 };
-export default connect(mapStateToProps, { changeBlock })(Speaker);
+export default withRouter(connect(mapStateToProps, { changeBlock })(Speaker));
