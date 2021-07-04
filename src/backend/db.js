@@ -6,7 +6,7 @@ if (process.env.MYSQL_HOST) {
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASS,
     database: process.env.MYSQL_DB,
-    socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
+    //socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
   });
 
   connection.connect(err => {
