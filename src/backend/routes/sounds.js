@@ -5,7 +5,9 @@ const connection = require("../db");
 const multer = require("multer");
 var cTimeStamp = new Date().getTime();
 var fs = require("fs");
+const path = require("path");
 const ytdl = require("ytdl-core");
+const { exec } = require("child_process");
 
 const jwtToken = process.env.JWT_SECRET ? process.env.JWT_SECRET : "soundcool";
 const database = process.env.MYSQL_HOST ? "mysql" : "sqlite";
@@ -16,6 +18,7 @@ function updateTimeStamp() {
 const storage = multer.diskStorage({
   destination: "./uploads/sounds/",
   filename(req, file, cb) {
+    console.log(req.body);
     cb(null, `${cTimeStamp}-${file.originalname}`);
   }
 });
@@ -46,6 +49,7 @@ router.get("/get", (req, res) => {
             } else {
               shared = sharing[0]["sharing"];
             }
+            console.log(audios);
             return res.json({ audios: audios, sharing: shared });
           }
         });
@@ -77,23 +81,20 @@ router.get("/get", (req, res) => {
   }
 });
 
-router.post("/upload", upload.single("file"), (req, res) => {
-  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
-  const user_id = user.id;
-  const fileLocation =
-    "/uploads/sounds/" + cTimeStamp + "-" + req.file.originalname;
+function handleDatabaseFile({ user_id, name, fileLocation, res }) {
   updateTimeStamp();
-  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${req.file.originalname}','upload','${fileLocation}')`;
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${name}','upload','${fileLocation}')`;
   if (database == "mysql") {
     connection.query(QUERY, (err, results) => {
       if (err) {
         return res.json({ err: err });
       } else {
         const soundId = results.insertId;
+        console.log("Sound id is", soundId);
         return res.json({
           sound_id: soundId,
           user: user_id,
-          name: req.file.originalname
+          name: name
         });
       }
     });
@@ -106,11 +107,53 @@ router.post("/upload", upload.single("file"), (req, res) => {
         return res.json({
           sound_id: soundId,
           user: user_id,
-          name: req.file.originalname
+          name: name
         });
       }
     });
   }
+}
+
+router.post("/upload", upload.single("file"), (req, res) => {
+  var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
+  const user_id = user.id;
+  const fileLocation =
+    "/uploads/sounds/" + cTimeStamp + "-" + req.file.originalname;
+  if (fileLocation.includes("mp3")) {
+    handleDatabaseFile({
+      user_id,
+      name: req.file.originalname,
+      fileLocation: fileLocation,
+      res
+    });
+    return;
+  }
+  const [name, extension] = req.file.originalname.split(".");
+  const originalNameConverted = req.file.originalname.split(".")[0] + ".mp3";
+  const fileLocationConverted = fileLocation.replace(extension, "mp3");
+  exec(
+    `ffmpeg -i '${path.join(
+      process.cwd(),
+      fileLocation
+    )}' -vn -ar 44100 -ac 2 -b:a 192k '${path.join(
+      process.cwd(),
+      fileLocationConverted
+    )}'`,
+    (err, result) => {
+      if (err) {
+        return res.json({
+          error: err
+        });
+      }
+      fs.unlinkSync(path.join(process.cwd(), fileLocation));
+      handleDatabaseFile({
+        user_id,
+        name: originalNameConverted,
+        fileLocation: fileLocationConverted,
+        res
+      });
+    }
+  );
 });
 
 router.post("/remove", upload.single("file"), (req, res) => {
@@ -429,7 +472,6 @@ router.get("/serveAudio/:audioId/:token", function(req, res) {
   if (database == "mysql") {
     connection.query(QUERY, (err, results) => {
       if (err) {
-        console.log(err);
         return res.json({ err: err });
       } else {
         var music = "." + results[0]["fileLocation"];

@@ -139,6 +139,7 @@ class Sounds extends React.Component {
               src={src ? src : this.state[sound_id]}
               autoPlay={false}
               controls
+              type="audio/mp3"
             />
           </td>
           <td>

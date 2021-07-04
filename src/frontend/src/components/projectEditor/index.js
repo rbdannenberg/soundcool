@@ -34,7 +34,7 @@ import {
   Navbar,
   NavItem,
 } from "reactstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import RegisterForm from "../register/form";
 import LoginForm from "../login/form";
@@ -359,6 +359,7 @@ class ProjectEditor extends React.Component {
   }
 
   componentDidMount() {
+    window.onbeforeunload = null;
     this.loadState();
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
@@ -956,6 +957,7 @@ class ProjectEditor extends React.Component {
               (!nextLocation ||
                 !nextLocation.pathname.startsWith(crntLocation.pathname))
             }
+            disableNative={true}
           >
             {({ isActive, onCancel, onConfirm }) => {
               if (isActive) {
@@ -994,12 +996,25 @@ class ProjectEditor extends React.Component {
                       Project
                     </DropdownToggle>
                     <DropdownMenu tog>
-                      <NavLink
+                      <a
+                        onClick={() => {
+                          if (
+                            this.props.location.pathname ===
+                            "/project-editor/new"
+                          ) {
+                            // borramos
+                            localStorage.removeItem("localProject");
+                            setTimeout(() => {
+                              window.location.reload();
+                            }, 300);
+                          } else {
+                            this.props.history.push("/project-editor/new");
+                          }
+                        }}
                         className="dropdown-item border-0"
-                        to="/project-editor/new"
                       >
                         New
-                      </NavLink>
+                      </a>
                       <NavLink
                         className="dropdown-item border-0"
                         to="/projectsList"
@@ -1013,13 +1028,16 @@ class ProjectEditor extends React.Component {
                       >
                         Save
                       </DropdownItem>
-                      <DropdownItem
-                        onClick={() => {
-                          this.saveProject(true);
-                        }}
-                      >
-                        Save As
-                      </DropdownItem>
+                      {this.props.location.pathname !==
+                        "/project-editor/new" && (
+                        <DropdownItem
+                          onClick={() => {
+                            this.saveProject(true);
+                          }}
+                        >
+                          Save As
+                        </DropdownItem>
+                      )}
                     </DropdownMenu>
                   </Dropdown>
                 )}
@@ -1216,7 +1234,9 @@ class ProjectEditor extends React.Component {
           >
             <form id="project_create" method="post">
               <Modal.Header closeButton>
-                <Modal.Title>Create new project</Modal.Title>
+                <Modal.Title>
+                  {this.props.location.pathname === "/project-editor/new" ? 'Create new project' : 'Save as'}
+                </Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <FormInput
@@ -1266,4 +1286,4 @@ const mapStateToProps = (state) => ({
   blocks: state.blocks,
 });
 
-export default connect(mapStateToProps)(ProjectEditor);
+export default withRouter(connect(mapStateToProps)(ProjectEditor));

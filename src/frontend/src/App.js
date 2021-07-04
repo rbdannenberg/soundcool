@@ -21,7 +21,7 @@ class App extends React.Component {
     const token = cookies.get("token") || "";
     if (token)
       Store.populateFromProps({
-        userToken: { email: undefined, token: token }
+        userToken: { email: undefined, token: token },
       });
   }
 
@@ -36,10 +36,10 @@ class App extends React.Component {
       return;
     }
     validateUser(token)
-      .then(res => {
+      .then((res) => {
         cookies.set("token", token, { path: "/" });
       })
-      .catch(err => {
+      .catch((err) => {
         cookies.remove("token", { path: "/" });
         cookies.remove("token", { path: "/project-editor" });
         showToastrError({ error: "Session expired" });

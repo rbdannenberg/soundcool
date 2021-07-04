@@ -14,10 +14,7 @@ import ScTransposer from "../../audio/sc-transposer";
 import ScMixer from "../../audio/sc-mixer";
 import ScReverb from "../../audio/sc-reverb";
 import ScGranSynth from "../../audio/sc-granular-synthesis";
-import {
-  specValues,
-  audioDefaults
-} from "./Components/blockSpecs";
+import { specValues, audioDefaults } from "./Components/blockSpecs";
 
 function initAudioObj(typeName, audioConfig) {
   let t;
@@ -57,10 +54,10 @@ function initAudioObj(typeName, audioConfig) {
       case "DirectInput":
         let promise = new ScDirectIn(scContext, audioConfig);
         promise
-          .then(t => {
+          .then((t) => {
             resolve(t);
           })
-          .catch(t => {
+          .catch((t) => {
             resolve(t);
           });
         break;
@@ -76,9 +73,9 @@ function initAudioObj(typeName, audioConfig) {
         t = new ScGranSynth(scContext);
         resolve(t);
         break;
-        // case "Routing":
-        //   t = new ScRouting(scContext);
-        //   break;
+      // case "Routing":
+      //   t = new ScRouting(scContext);
+      //   break;
       case "Mixer":
         t = new ScMixer(scContext);
         resolve(t);
@@ -99,11 +96,10 @@ function initAudioObj(typeName, audioConfig) {
             if (url && url != "") {
               promiseBook.push(t.load(index, audioConfig.URL[index]));
             }
-          })
+          });
           Promise.all(promiseBook).then(() => {
             resolve(t);
           });
-
         } else {
           resolve(t);
         }
@@ -120,12 +116,15 @@ function initAudioObj(typeName, audioConfig) {
 function asyncAddBlock(moduleType, audioConfig = {}, moduleConfig = {}) {
   return function (dispatch) {
     return initAudioObj(moduleType, audioConfig)
-      .then(audioObj => dispatch(addBlock(audioObj, moduleType, moduleConfig)))
-      .catch(error => dispatch(addBlock(undefined, moduleType)));
+      .then((audioObj) =>
+        dispatch(addBlock(audioObj, moduleType, moduleConfig))
+      )
+      .catch((error) => dispatch(addBlock(undefined, moduleType)));
   };
 }
 
 const addBlock = (audioObj, typeName, moduleConfig) => {
+  console.log(typeName, moduleConfig);
   let config = Object.assign({}, specValues[typeName], moduleConfig);
   delete config.inNode;
   delete config.outNode;
@@ -138,8 +137,8 @@ const addBlock = (audioObj, typeName, moduleConfig) => {
       inNode: [],
       outNode: [],
       collapse: true,
-      ...config
-    }
+      ...config,
+    },
   };
 };
 
@@ -150,13 +149,13 @@ function loadProject(content) {
       if (content === undefined || jsonContent === null) {
         dispatch({
           type: "LOAD_STATE",
-          content: undefined
+          content: undefined,
         });
       } else {
         // Clear store so no component will conflict
         dispatch({
           type: "LOAD_STATE",
-          content: undefined
+          content: undefined,
         });
         let promiseStore = [];
         let connections = [];
@@ -165,7 +164,7 @@ function loadProject(content) {
           if (element.outNode.length > 0) {
             let connection = {
               nowOut: element,
-              nowIn: element.outNode[0]
+              nowIn: element.outNode[0],
             };
             connections.push(connection);
           }
@@ -184,7 +183,7 @@ function loadProject(content) {
         Promise.all(promiseStore).then(function () {
           let state = getState();
           let idMapper = {};
-          state.blocks["bs"].forEach(element => {
+          state.blocks["bs"].forEach((element) => {
             idMapper[element.id] = element;
           });
           connections.forEach((conn, index) => {
@@ -195,8 +194,8 @@ function loadProject(content) {
                 conn.nowOut.name,
                 conn.nowOut.outNode[0][3],
                 conn.nowOut.id,
-                idMapper[conn.nowOut.id].audioObj
-              ]
+                idMapper[conn.nowOut.id].audioObj,
+              ],
             });
             dispatch({
               type: "CONNECTING_BLOCK",
@@ -205,8 +204,8 @@ function loadProject(content) {
                 conn.nowIn[0],
                 conn.nowIn[2],
                 conn.nowIn[1],
-                idMapper[conn.nowIn[1]].audioObj
-              ]
+                idMapper[conn.nowIn[1]].audioObj,
+              ],
             });
           });
         });
@@ -216,7 +215,4 @@ function loadProject(content) {
   };
 }
 
-export {
-  asyncAddBlock,
-  loadProject
-};
+export { asyncAddBlock, loadProject };

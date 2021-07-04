@@ -6,7 +6,6 @@ import {
 
 const block = (state, action) => {
   let nameOut, idOut, portOut, nameIn, idIn, portIn;
-
   switch (action.type) {
     case "ADD_BLOCK":
       return {

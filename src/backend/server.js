@@ -37,14 +37,14 @@ io.on("connection", socket => {
     socket.join(data);
   });
   socket.on("changeBlock", data => {
-    socket.broadcast.to(data["room"]).emit("changeBlock",data["action"]);
+    socket.broadcast.to(data["room"]).emit("changeBlock", data["action"]);
     // console.log(data);
   });
   socket.on("isDragging", room => {
     socket.broadcast.to(room).emit("isDragging");
   });
   socket.on("dragEnd", data => {
-    socket.broadcast.to(data["room"]).emit("dragEnd",data["value"]);
+    socket.broadcast.to(data["room"]).emit("dragEnd", data["value"]);
     // console.log(data);
   });
 });
@@ -53,6 +53,7 @@ app.use(express.json());
 app.use(cors());
 // static middleware, serve the static files and  render the index.html
 app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(helmet());
 app.use("/api/v1/sounds", sounds);
 app.use("/api/v1/projects", projects);
@@ -87,7 +88,7 @@ server.on("error", err => {
   }
 });
 
-server.on("listening", function () {
+server.on("listening", function() {
   console.log(
     `Starting server, you can visit the server locally at http://localhost:${
       server.address().port
@@ -96,9 +97,9 @@ server.on("listening", function () {
 });
 
 function startServer(server, portNumber) {
-  portNumber = Number.isInteger(portNumber) ?
-    portNumber :
-    parseInt(portNumber, 10);
+  portNumber = Number.isInteger(portNumber)
+    ? portNumber
+    : parseInt(portNumber, 10);
 
   if (portNumber && portNumber >= 1023 && portNumber < 65536) {
     server.listen(portNumber, () => {});
