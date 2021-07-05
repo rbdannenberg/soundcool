@@ -17,7 +17,7 @@ import {
 } from "../../actions/common";
 import { fetchPerformance, removePerformance, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { loadProject } from "./thunks.js";
+import { loadProject } from "../projectEditor/thunks.js";
 import Cookies from "universal-cookie";
 import {
   Dropdown,
@@ -79,7 +79,7 @@ class Performance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDragging : false,
+      isDragging: false,
       performanceName: this.props.match.params.id,
       items: [[], [], []],
       prevItems: this.props.blocks.bs,
@@ -120,7 +120,7 @@ class Performance extends React.Component {
     if (!destination) {
       return;
     }
-    
+
     // console.log(source, destination);
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
@@ -143,20 +143,25 @@ class Performance extends React.Component {
       finalResult = this.state.items;
       finalResult[parseInt(result[0]["id"].split("_")[1])] = result[0]["value"];
       finalResult[parseInt(result[1]["id"].split("_")[1])] = result[1]["value"];
-      
     }
-    this.setState({
-      items: finalResult
-    },()=>{
-      if(!result.isStreamed){
-        commonSocket.emit("dragEnd",{room: getCurrentPerformanceId(), value: result, updatedItem: JSON.stringify(this.props.blocks)});
+    this.setState(
+      {
+        items: finalResult
+      },
+      () => {
+        if (!result.isStreamed) {
+          commonSocket.emit("dragEnd", {
+            room: getCurrentPerformanceId(),
+            value: result,
+            updatedItem: JSON.stringify(this.props.blocks)
+          });
+        }
       }
-    });
-
+    );
   };
 
   onDragStart = () => {
-    commonSocket.emit("isDragging",getCurrentPerformanceId());
+    commonSocket.emit("isDragging", getCurrentPerformanceId());
   };
 
   blockStyle = id => {
@@ -230,7 +235,10 @@ class Performance extends React.Component {
     } else {
       return (
         <React.Fragment>
-          <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
+          <DragDropContext
+            onDragEnd={this.onDragEnd}
+            onDragStart={this.onDragStart}
+          >
             {blocks.map((b, listIndex) => (
               <div
                 style={{
@@ -334,8 +342,8 @@ class Performance extends React.Component {
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     let performanceId = getCurrentPerformanceId();
-    if(performanceId){
-      commonSocket.emit("joinRoom",performanceId);
+    if (performanceId) {
+      commonSocket.emit("joinRoom", performanceId);
     }
     commonSocket.on("openPort", data => {
       // console.log(data);
@@ -345,8 +353,8 @@ class Performance extends React.Component {
     });
     commonSocket.on("isDragging", () => {
       this.setState({
-        isDragging : true
-      })
+        isDragging: true
+      });
     });
     commonSocket.on("oscData", data => {
       let portNumber = data.portNumber;
@@ -356,18 +364,17 @@ class Performance extends React.Component {
         this.handleOscInput(comp, data);
       });
     });
-    commonSocket.on("changeBlock", data =>{
+    commonSocket.on("changeBlock", data => {
       data["isStreamed"] = true;
       this.props.dispatch(data);
-    })
-    commonSocket.on("dragEnd", result =>{
+    });
+    commonSocket.on("dragEnd", result => {
       this.setState({
         isDragging: false
-      })
+      });
       result["isStreamed"] = true;
       this.onDragEnd(result);
-      
-    })
+    });
   }
 
   componentWillUnmount() {
@@ -771,7 +778,6 @@ class Performance extends React.Component {
       }, 2000);
     }
     return (
-  
       <React.Fragment>
         {this.state.isDragging && <div class="loading">Loading&#8230;</div>}
         <div style={{ backgroundColor: "#FFF6A9" }}>

@@ -1,16 +1,18 @@
+process.env.MYSQL_HOST = "";
 console.log(process.env.MYSQL_HOST);
 if (process.env.MYSQL_HOST) {
+  console.log("mysqlhost");
   const mysql = require("mysql");
   const connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASS,
-    database: process.env.MYSQL_DB,
+    database: process.env.MYSQL_DB
     //socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
   });
 
   connection.connect(err => {
-    console.log('connected')
+    console.log("connected");
     if (err) {
       console.log("connection error");
       console.log(err);

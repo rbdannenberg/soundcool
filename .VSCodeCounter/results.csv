@@ -1,0 +1,170 @@
+filename, language, JSON, Shell Script, Markdown, YAML, SQL, JavaScript, HTML, JavaScript React, CSS, XML, comment, blank, total
+.gitlab-ci.yml, YAML, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 4, 3, 22
+.prettierrc, JSON, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4
+README.md, Markdown, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 22, 3, 27
+doc/API/README.md, Markdown, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 15, 44
+doc/API/login.md, Markdown, 0, 0, 42, 0, 0, 0, 0, 0, 0, 0, 0, 17, 59
+doc/API/media/addMediaLink.md, Markdown, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, 16, 46
+doc/API/media/get.md, Markdown, 0, 0, 48, 0, 0, 0, 0, 0, 0, 0, 0, 16, 64
+doc/API/media/getAudio.md, Markdown, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 14, 36
+doc/API/media/remove.md, Markdown, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 16, 45
+doc/API/media/stream.md, Markdown, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 14, 32
+doc/API/media/toggleMediaSharing.md, Markdown, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 20, 64
+doc/API/media/upload.md, Markdown, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 16, 45
+doc/API/presets/get.md, Markdown, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 14, 48
+doc/API/presets/load.md, Markdown, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 14, 37
+doc/API/presets/upload.md, Markdown, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 16, 45
+doc/API/projects/clone.md, Markdown, 0, 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 15, 51
+doc/API/projects/get.md, Markdown, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 14, 60
+doc/API/projects/new.md, Markdown, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 15, 52
+doc/API/projects/remove.md, Markdown, 0, 0, 29, 0, 0, 0, 0, 0, 0, 0, 0, 16, 45
+doc/API/projects/sharing/add.md, Markdown, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 21, 71
+doc/API/projects/sharing/public.md, Markdown, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 24, 70
+doc/API/projects/sharing/remove.md, Markdown, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 18, 56
+doc/API/projects/update.md, Markdown, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 0, 16, 46
+doc/API/register.md, Markdown, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 17, 69
+doc/Back-end/README.md, Markdown, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 19, 56
+doc/Front-end/README.md, Markdown, 0, 0, 179, 0, 0, 0, 0, 0, 0, 0, 0, 95, 274
+doc/GUI/module_walkthrough.md, Markdown, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0, 23, 63
+doc/OSC/README.md, Markdown, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 17, 61
+doc/Project_Save_Restore.md, Markdown, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 8, 39
+doc/README.md, Markdown, 0, 0, 105, 0, 0, 0, 0, 0, 0, 0, 0, 43, 148
+doc/design.md, Markdown, 0, 0, 127, 0, 0, 0, 0, 0, 0, 0, 0, 78, 205
+doc/modules/ScGranSynth/README.md, Markdown, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 11, 50
+doc/modules/ScReverb/README.md, Markdown, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 8, 36
+doc/modules/ScSamplePlayer/README.md, Markdown, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 7, 45
+doc/modules/pitch/README.md, Markdown, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 11, 50
+launch.sh, Shell Script, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 25
+setup.sh, Shell Script, 0, 90, 0, 0, 0, 0, 0, 0, 0, 0, 2, 15, 107
+src/README.md, Markdown, 0, 0, 163, 0, 0, 0, 0, 0, 0, 0, 0, 36, 199
+src/backend/db.js, JavaScript, 0, 0, 0, 0, 0, 46, 0, 0, 0, 0, 0, 5, 51
+src/backend/oscHelper.js, JavaScript, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 1, 4, 21
+src/backend/package-lock.json, JSON, 5862, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5863
+src/backend/package.json, JSON, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 59
+src/backend/routes/auth.js, JavaScript, 0, 0, 0, 0, 0, 141, 0, 0, 0, 0, 0, 1, 142
+src/backend/routes/osc.js, JavaScript, 0, 0, 0, 0, 0, 272, 0, 0, 0, 0, 21, 9, 302
+src/backend/routes/performances.js, JavaScript, 0, 0, 0, 0, 0, 163, 0, 0, 0, 0, 7, 11, 181
+src/backend/routes/presets.js, JavaScript, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 9, 137
+src/backend/routes/projects.js, JavaScript, 0, 0, 0, 0, 0, 479, 0, 0, 0, 0, 4, 20, 503
+src/backend/routes/sounds.js, JavaScript, 0, 0, 0, 0, 0, 511, 0, 0, 0, 0, 1, 34, 546
+src/backend/server.js, JavaScript, 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 3, 13, 96
+src/backend/utils.js, JavaScript, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 3, 26
+src/database/create-soundcool-db.sql, SQL, 0, 0, 0, 0, 101, 0, 0, 0, 0, 0, 36, 24, 161
+src/frontend/package-lock.json, JSON, 18045, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 18046
+src/frontend/package.json, JSON, 82, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 83
+src/frontend/public/assets/fontawesome/css/all.min.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 4419, 0, 4, 1, 4424
+src/frontend/public/assets/fontawesome/webfonts/fa-brands-400.svg, XML, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3445, 4, 1, 3450
+src/frontend/public/assets/fontawesome/webfonts/fa-regular-400.svg, XML, 0, 0, 0, 0, 0, 0, 0, 0, 0, 799, 4, 1, 804
+src/frontend/public/assets/fontawesome/webfonts/fa-solid-900.svg, XML, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4645, 4, 1, 4650
+src/frontend/public/assets/images/soundcool-icono-lineas-5.svg, XML, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 1, 1, 18
+src/frontend/public/index.html, HTML, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0, 1, 2, 20
+src/frontend/src/App.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 187, 0, 3, 32, 222
+src/frontend/src/App.js, JavaScript, 0, 0, 0, 0, 0, 61, 0, 0, 0, 0, 1, 9, 71
+src/frontend/src/actions/common.js, JavaScript, 0, 0, 0, 0, 0, 116, 0, 0, 0, 0, 1, 16, 133
+src/frontend/src/actions/validation.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 2, 9
+src/frontend/src/api.js, JavaScript, 0, 0, 0, 0, 0, 126, 0, 0, 0, 0, 1, 14, 141
+src/frontend/src/audio/README.md, Markdown, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 0, 24, 78
+src/frontend/src/audio/actions.js, JavaScript, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 7
+src/frontend/src/audio/sc-analyzer.js, JavaScript, 0, 0, 0, 0, 0, 53, 0, 0, 0, 0, 1, 3, 57
+src/frontend/src/audio/sc-context.js, JavaScript, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 5
+src/frontend/src/audio/sc-crossfade-piecewise.js, JavaScript, 0, 0, 0, 0, 0, 68, 0, 0, 0, 0, 12, 8, 88
+src/frontend/src/audio/sc-crossfade.js, JavaScript, 0, 0, 0, 0, 0, 61, 0, 0, 0, 0, 0, 7, 68
+src/frontend/src/audio/sc-delay.js, JavaScript, 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 10, 48
+src/frontend/src/audio/sc-directin.js, JavaScript, 0, 0, 0, 0, 0, 82, 0, 0, 0, 0, 0, 12, 94
+src/frontend/src/audio/sc-envelope.js, JavaScript, 0, 0, 0, 0, 0, 59, 0, 0, 0, 0, 0, 9, 68
+src/frontend/src/audio/sc-granular-synthesis.js, JavaScript, 0, 0, 0, 0, 0, 267, 0, 0, 0, 0, 20, 45, 332
+src/frontend/src/audio/sc-mixer.js, JavaScript, 0, 0, 0, 0, 0, 257, 0, 0, 0, 0, 0, 42, 299
+src/frontend/src/audio/sc-module.js, JavaScript, 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 11, 9, 85
+src/frontend/src/audio/sc-oscillator.js, JavaScript, 0, 0, 0, 0, 0, 208, 0, 0, 0, 0, 7, 21, 236
+src/frontend/src/audio/sc-oscilloscope.js, JavaScript, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 6, 28
+src/frontend/src/audio/sc-pan.js, JavaScript, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 6, 27
+src/frontend/src/audio/sc-phasor.js, JavaScript, 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 1, 2, 29
+src/frontend/src/audio/sc-pitch-phasor.js, JavaScript, 0, 0, 0, 0, 0, 139, 0, 0, 0, 0, 3, 15, 157
+src/frontend/src/audio/sc-pitch.js, JavaScript, 0, 0, 0, 0, 0, 149, 0, 0, 0, 0, 4, 20, 173
+src/frontend/src/audio/sc-player.js, JavaScript, 0, 0, 0, 0, 0, 150, 0, 0, 0, 0, 1, 17, 168
+src/frontend/src/audio/sc-reverb.js, JavaScript, 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 7, 12, 100
+src/frontend/src/audio/sc-sample-player.js, JavaScript, 0, 0, 0, 0, 0, 137, 0, 0, 0, 0, 1, 19, 157
+src/frontend/src/audio/sc-signalgen.js, JavaScript, 0, 0, 0, 0, 0, 118, 0, 0, 0, 0, 1, 18, 137
+src/frontend/src/audio/sc-speakers.js, JavaScript, 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 0, 9, 61
+src/frontend/src/audio/sc-spectroscope.js, JavaScript, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 6, 28
+src/frontend/src/audio/sc-transposer.js, JavaScript, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 5, 28
+src/frontend/src/audio/sc-wavetable-osc.js, JavaScript, 0, 0, 0, 0, 0, 66, 0, 0, 0, 0, 0, 4, 70
+src/frontend/src/components/about/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 85, 0, 0, 14, 6, 105
+src/frontend/src/components/addSound/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 165, 0, 0, 9, 11, 185
+src/frontend/src/components/audioUI/Delay.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 189, 0, 0, 0, 6, 195
+src/frontend/src/components/audioUI/DirectInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 219, 0, 0, 5, 17, 241
+src/frontend/src/components/audioUI/Envelope.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 165, 0, 0, 12, 9, 186
+src/frontend/src/components/audioUI/Filter.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 37, 0, 0, 1, 3, 41
+src/frontend/src/components/audioUI/GranSynth.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 490, 0, 0, 0, 13, 503
+src/frontend/src/components/audioUI/Keyboard.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 494, 0, 0, 1, 17, 512
+src/frontend/src/components/audioUI/LogInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 6, 39
+src/frontend/src/components/audioUI/Mixer.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 1267, 0, 0, 10, 45, 1322
+src/frontend/src/components/audioUI/Oscilloscope.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 82, 0, 0, 2, 7, 91
+src/frontend/src/components/audioUI/Pan.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 108, 0, 0, 0, 3, 111
+src/frontend/src/components/audioUI/PiecewiseLogInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 62, 0, 0, 0, 8, 70
+src/frontend/src/components/audioUI/Pitch.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 150, 0, 0, 0, 6, 156
+src/frontend/src/components/audioUI/Player.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 461, 0, 0, 16, 23, 500
+src/frontend/src/components/audioUI/Record.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 229, 0, 0, 0, 11, 240
+src/frontend/src/components/audioUI/Reverb.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 167, 0, 0, 0, 6, 173
+src/frontend/src/components/audioUI/Routing.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 318, 0, 0, 0, 10, 328
+src/frontend/src/components/audioUI/SamplePlayer.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 390, 0, 0, 17, 19, 426
+src/frontend/src/components/audioUI/Sequencer.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 460, 0, 0, 4, 13, 477
+src/frontend/src/components/audioUI/SignalGen.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 322, 0, 0, 1, 7, 330
+src/frontend/src/components/audioUI/Speaker.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 164, 0, 0, 17, 17, 198
+src/frontend/src/components/audioUI/Spectroscope.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 85, 0, 0, 4, 6, 95
+src/frontend/src/components/audioUI/Transposer.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 258, 0, 0, 2, 7, 267
+src/frontend/src/components/audioUI/VSTHost.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 87, 0, 0, 0, 5, 92
+src/frontend/src/components/audioUI/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 1, 2, 35
+src/frontend/src/components/audioUI/all.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 42, 0, 0, 2, 3, 47
+src/frontend/src/components/audioUI/custom.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 26, 0, 0, 4, 30
+src/frontend/src/components/contact/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 58, 0, 0, 9, 9, 76
+src/frontend/src/components/form/FormCheckbox.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 5, 45
+src/frontend/src/components/form/FormEmailInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 40, 0, 0, 0, 6, 46
+src/frontend/src/components/form/FormField.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 46, 0, 0, 1, 9, 56
+src/frontend/src/components/form/FormFileSelector.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 0, 6, 39
+src/frontend/src/components/form/FormGroup.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 3, 13
+src/frontend/src/components/form/FormInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 37, 0, 0, 0, 3, 40
+src/frontend/src/components/form/FormNumericInput.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 4, 13
+src/frontend/src/components/form/FormRadio.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 51, 0, 0, 0, 5, 56
+src/frontend/src/components/form/FormSelect.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0, 3, 34
+src/frontend/src/components/form/index.js, JavaScript, 0, 0, 0, 0, 0, 18, 0, 0, 0, 0, 0, 2, 20
+src/frontend/src/components/header/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 15, 143
+src/frontend/src/components/home/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 378, 0, 0, 0, 11, 389
+src/frontend/src/components/login/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 2, 12
+src/frontend/src/components/login/form.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 65, 0, 0, 0, 5, 70
+src/frontend/src/components/login/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 8, 46
+src/frontend/src/components/performance/Components/blockSpecs.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 314, 0, 0, 2, 5, 321
+src/frontend/src/components/performance/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 2, 6, 37
+src/frontend/src/components/performance/index.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 22, 0, 0, 5, 27
+src/frontend/src/components/performance/index.js, JavaScript, 0, 0, 0, 0, 0, 851, 0, 0, 0, 0, 12, 46, 909
+src/frontend/src/components/performance/thunks.js, JavaScript, 0, 0, 0, 0, 0, 185, 0, 0, 0, 0, 8, 6, 199
+src/frontend/src/components/projectEditor/Components/AddBlock.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 291, 0, 0, 97, 17, 405
+src/frontend/src/components/projectEditor/Components/WithHeader.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 383, 0, 0, 6, 9, 398
+src/frontend/src/components/projectEditor/Components/blockSpecs.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 314, 0, 0, 2, 5, 321
+src/frontend/src/components/projectEditor/README-GUI.md, Markdown, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 55, 24, 132
+src/frontend/src/components/projectEditor/README.md, Markdown, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0, 23, 63
+src/frontend/src/components/projectEditor/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 5, 32
+src/frontend/src/components/projectEditor/index.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 22, 0, 0, 5, 27
+src/frontend/src/components/projectEditor/index.js, JavaScript, 0, 0, 0, 0, 0, 1082, 0, 0, 0, 0, 9, 58, 1149
+src/frontend/src/components/projectEditor/thunks.js, JavaScript, 0, 0, 0, 0, 0, 187, 0, 0, 0, 0, 8, 6, 201
+src/frontend/src/components/projects/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 36, 0, 0, 0, 3, 39
+src/frontend/src/components/projects/editor.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 670, 0, 0, 33, 12, 715
+src/frontend/src/components/projects/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 326, 0, 0, 3, 11, 340
+src/frontend/src/components/register/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 2, 12
+src/frontend/src/components/register/form.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 79, 0, 0, 0, 3, 82
+src/frontend/src/components/register/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 38, 0, 0, 0, 6, 44
+src/frontend/src/components/sounds/actions.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 0, 8, 65
+src/frontend/src/components/sounds/index.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 192, 0, 0, 58, 9, 259
+src/frontend/src/constants.js, JavaScript, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 3, 2, 7
+src/frontend/src/index.css, CSS, 0, 0, 0, 0, 0, 0, 0, 0, 98, 0, 1, 13, 112
+src/frontend/src/index.js, JavaScript, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 3, 16
+src/frontend/src/reducers/block.js, JavaScript, 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 14, 4, 117
+src/frontend/src/reducers/blocks.js, JavaScript, 0, 0, 0, 0, 0, 185, 0, 0, 0, 0, 29, 11, 225
+src/frontend/src/reducers/index.js, JavaScript, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 2, 7
+src/frontend/src/registerServiceWorker.js, JavaScript, 0, 0, 0, 0, 0, 79, 0, 0, 0, 0, 28, 11, 118
+src/frontend/src/router.jsx, JavaScript React, 0, 0, 0, 0, 0, 0, 0, 119, 0, 0, 2, 7, 128
+src/frontend/src/store.js, JavaScript, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 6, 20
+src/frontend/src/storeX.js, JavaScript, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 4, 18
+src/frontend/webpack.config.js, JavaScript, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 73, 1, 83
+verify_requirments_linux.sh, Shell Script, 0, 31, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 38
+Total, -, 24033, 139, 1760, 15, 101, 7078, 17, 10427, 4774, 8905, 787, 2006, 60042

@@ -49,10 +49,8 @@ const audioDefaults = {
     pitch: 0,
     grainSize: 0.1
   },
-  VSTHost: {
-  },
-  Routing: {
-  },
+  VSTHost: {},
+  Routing: {},
   Mixer: {
     masterGain: 0.6,
     node0Gain: 0.6,
@@ -64,12 +62,9 @@ const audioDefaults = {
     node6Gain: 0.6,
     node7Gain: 0.6
   },
-  Record: {
-  },
-  Spectroscope: {
-  },
-  Oscilloscope: {
-  },
+  Record: {},
+  Spectroscope: {},
+  Oscilloscope: {},
   Envelope: {
     loop: false,
     style: "line",
@@ -79,10 +74,8 @@ const audioDefaults = {
     sustainAmp: 0,
     arr: []
   },
-  Filter: {
-  },
-  Sequencer: {
-  },
+  Filter: {},
+  Sequencer: {},
   SamplePlayer: {
     random: false,
     loop: false,
@@ -113,10 +106,20 @@ const audioDefaults = {
       undefined
     ],
     masterVolume: 100,
-    URL:undefined
+    URLs: [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ]
   },
-  Keyboard: {
-  },
+  Keyboard: {},
   Reverb: {
     preset: "Hall",
     mix: 0.5,
@@ -272,7 +275,18 @@ const uiDefaults = {
     osc: false,
     oscPort: undefined,
     inDisableds: [true, true, true, true, true, true, true, true, true, true],
-    URL:[]
+    URLs: [
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ]
   },
   Keyboard: {
     color: toHex(89, 162, 179),
@@ -319,4 +333,4 @@ for (let [module, moduleUIDefaults] of Object.entries(uiDefaults)) {
 const specValues = mergedConfig;
 
 //export default specValues;
-export {specValues, audioDefaults};
+export { specValues, audioDefaults };

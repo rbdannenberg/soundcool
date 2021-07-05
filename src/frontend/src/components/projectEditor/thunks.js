@@ -54,10 +54,10 @@ function initAudioObj(typeName, audioConfig) {
       case "DirectInput":
         let promise = new ScDirectIn(scContext, audioConfig);
         promise
-          .then((t) => {
+          .then(t => {
             resolve(t);
           })
-          .catch((t) => {
+          .catch(t => {
             resolve(t);
           });
         break;
@@ -91,10 +91,10 @@ function initAudioObj(typeName, audioConfig) {
       case "SamplePlayer":
         t = new ScSamplePlayer(scContext);
         let promiseBook = [];
-        if (audioConfig.URL) {
-          audioConfig.URL.forEach((url, index) => {
+        if (audioConfig.URLs) {
+          audioConfig.URLs.forEach((url, index) => {
             if (url && url != "") {
-              promiseBook.push(t.load(index, audioConfig.URL[index]));
+              promiseBook.push(t.load(index, audioConfig.URLs[index]));
             }
           });
           Promise.all(promiseBook).then(() => {
@@ -114,12 +114,10 @@ function initAudioObj(typeName, audioConfig) {
 }
 
 function asyncAddBlock(moduleType, audioConfig = {}, moduleConfig = {}) {
-  return function (dispatch) {
+  return function(dispatch) {
     return initAudioObj(moduleType, audioConfig)
-      .then((audioObj) =>
-        dispatch(addBlock(audioObj, moduleType, moduleConfig))
-      )
-      .catch((error) => dispatch(addBlock(undefined, moduleType)));
+      .then(audioObj => dispatch(addBlock(audioObj, moduleType, moduleConfig)))
+      .catch(error => dispatch(addBlock(undefined, moduleType)));
   };
 }
 
@@ -137,34 +135,35 @@ const addBlock = (audioObj, typeName, moduleConfig) => {
       inNode: [],
       outNode: [],
       collapse: true,
-      ...config,
-    },
+      ...config
+    }
   };
 };
 
 function loadProject(content) {
   let jsonContent = JSON.parse(content);
-  return function (dispatch, getState) {
+  return function(dispatch, getState) {
     let loadProjectProm = new Promise((resolve, reject) => {
       if (content === undefined || jsonContent === null) {
         dispatch({
           type: "LOAD_STATE",
-          content: undefined,
+          content: undefined
         });
       } else {
         // Clear store so no component will conflict
         dispatch({
           type: "LOAD_STATE",
-          content: undefined,
+          content: undefined
         });
         let promiseStore = [];
         let connections = [];
         //this.retrieveConnections(jsonContent);
         jsonContent["bs"].forEach((element, index) => {
+          // console.log(element.typeName);
           if (element.outNode.length > 0) {
             let connection = {
               nowOut: element,
-              nowIn: element.outNode[0],
+              nowIn: element.outNode[0]
             };
             connections.push(connection);
           }
@@ -173,17 +172,16 @@ function loadProject(content) {
           for (let key in audioConfig) {
             // console.log(key);
             audioConfig[key] = element[key];
-            // console.log(audioConfig[key]);
           }
           let prom = dispatch(
             asyncAddBlock(element.typeName, audioConfig, element)
           );
           promiseStore.push(prom);
         });
-        Promise.all(promiseStore).then(function () {
+        Promise.all(promiseStore).then(function() {
           let state = getState();
           let idMapper = {};
-          state.blocks["bs"].forEach((element) => {
+          state.blocks["bs"].forEach(element => {
             idMapper[element.id] = element;
           });
           connections.forEach((conn, index) => {
@@ -194,8 +192,8 @@ function loadProject(content) {
                 conn.nowOut.name,
                 conn.nowOut.outNode[0][3],
                 conn.nowOut.id,
-                idMapper[conn.nowOut.id].audioObj,
-              ],
+                idMapper[conn.nowOut.id].audioObj
+              ]
             });
             dispatch({
               type: "CONNECTING_BLOCK",
@@ -204,8 +202,8 @@ function loadProject(content) {
                 conn.nowIn[0],
                 conn.nowIn[2],
                 conn.nowIn[1],
-                idMapper[conn.nowIn[1]].audioObj,
-              ],
+                idMapper[conn.nowIn[1]].audioObj
+              ]
             });
           });
         });
