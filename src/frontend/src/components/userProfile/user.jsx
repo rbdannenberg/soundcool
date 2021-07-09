@@ -58,7 +58,7 @@ class UserProfile extends React.Component {
         localStorage.setItem("userEmail", response.user.email)
         showToastr("success", "User updated successfully.");
         setTimeout(() => {
-          location.reload()
+          window.location.reload()
         }, 1500)
       })
       .catch((err) => {
