@@ -101,7 +101,9 @@ function handleDatabaseFile({ user_id, name, fileLocation, res }) {
       }
     );
   } else if (database == "sqlite") {
-    connection.run(QUERY, [], function(err) {
+    connection.run(QUERY, [user_id, name, "upload", fileLocation], function(
+      err
+    ) {
       if (err) {
         return res.json({ err: err });
       } else {
