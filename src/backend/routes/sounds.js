@@ -18,7 +18,6 @@ function updateTimeStamp() {
 const storage = multer.diskStorage({
   destination: "./uploads/sounds/",
   filename(req, file, cb) {
-    console.log(req.body);
     cb(null, `${cTimeStamp}-${file.originalname}`);
   }
 });
@@ -90,7 +89,6 @@ function handleDatabaseFile({ user_id, name, fileLocation, res }) {
         return res.json({ err: err });
       } else {
         const soundId = results.insertId;
-        console.log("Sound id is", soundId);
         return res.json({
           sound_id: soundId,
           user: user_id,

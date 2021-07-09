@@ -63,7 +63,7 @@ function handleLoginUser(err, results, password) {
         return {
           name: user["name"],
           token,
-          user_id: user.user_id,
+          user_id: user.user_id
         };
       } else {
         return {
@@ -150,25 +150,48 @@ router.patch("/edit_user", function(req, res) {
       const hash_password = bcrypt.hashSync(user.password, saltRounds);
       const UPDATE_USER =
         "UPDATE users SET name = ?, password = ?, email = ? WHERE user_id = ?";
-      connection.query(
-        UPDATE_USER,
-        [user.name, hash_password, user.email, user.user_id],
-        (err, results) => {
-          if (err) {
-            return res.json({ err });
-          }
-          const GET_USER =
-            "SELECT name, email, user_id FROM users WHERE user_id = ?";
-          connection.query(GET_USER, [user.user_id], (err, results) => {
+      if (database === "mysql") {
+        connection.query(
+          UPDATE_USER,
+          [user.name, hash_password, user.email, user.user_id],
+          (err, results) => {
             if (err) {
               return res.json({ err });
             }
-            return res.json({
-              user: results[0]
+            const GET_USER =
+              "SELECT name, email, user_id FROM users WHERE user_id = ?";
+            connection.query(GET_USER, [user.user_id], (err, results) => {
+              if (err) {
+                return res.json({ err });
+              }
+              return res.json({
+                user: results[0]
+              });
             });
-          });
-        }
-      );
+          }
+        );
+      }
+      if (database === "sqlite") {
+        connection.run(
+          UPDATE_USER,
+          [user.name, hash_password, user.email, user.user_id],
+          (err, results) => {
+            if (err) {
+              return res.json({ err });
+            }
+            const GET_USER =
+              "SELECT name, email, user_id FROM users WHERE user_id = ?";
+            connection.all(GET_USER, [user.user_id], (err, results) => {
+              if (err) {
+                return res.json({ err });
+              }
+              return res.json({
+                user: results[0]
+              });
+            });
+          }
+        );
+      }
     } else {
       return res.status(401).json({ message: "Token Not Valid" });
     }
