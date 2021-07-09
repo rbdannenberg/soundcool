@@ -116,7 +116,7 @@ class Main extends Component {
                   },
                   { id: 3, name: "Amit Meena", description: "description" },
                   { id: 4, name: "Ankit Joshi", description: "description" },
-                  { id: 5, name: "Manuel Alcañiz", description: "description" },
+                  { id: 5, name: "Diego Villar", description: "description" },
                   { id: 6, name: "Huan Zhang", description: "description" },
                 ]}
               />

@@ -28,7 +28,7 @@ const IndividualPlayer = ({
   // let inDisabled = true;
   const loadUrl = url => {
     audioObj.load(num, url).then(res => {
-      changeBlock(id, "URL", url, { num });
+      changeBlock(id, "URLs", url, { num });
       // console.log("load called");
       if (inDisabled) changeBlock(id, "inDisableds", false, { num });
       // console.log(res);
@@ -37,7 +37,6 @@ const IndividualPlayer = ({
     window.aoplayer = audioObj.players[num];
   };
 
-  
   // const onSoundSelect = audio_id => {
   //   if (audioObj.players[num].isPlaying) {
   //     audioObj.stop(num);
@@ -54,8 +53,10 @@ const IndividualPlayer = ({
     if (audioObj.players[num].isPlaying) {
       audioObj.stop(num);
     }
+    console.log("here 1");
     let { type, sound_id } = sound;
     changeBlock(id, "files", sound, { num });
+    console.log("here 2");
 
     if (type === "Sound Link") {
       getAudio(sound_id).then(res => {
@@ -149,7 +150,8 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
     masterVolume,
     loop,
     random,
-    audioObj
+    audioObj,
+    URLs
   } = blockInfo;
 
   return (

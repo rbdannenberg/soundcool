@@ -11,6 +11,7 @@ export const updateProject = payload => {
   payload["content"] = JSON.stringify(
     cleanPayload(JSON.parse(payload.content))
   );
+  console.log(payload);
   return patchRequest(url, payload);
 };
 
