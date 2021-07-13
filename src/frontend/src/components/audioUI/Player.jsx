@@ -269,7 +269,10 @@ class Player extends React.Component {
               height: "12px"
             }}
           >
-            <canvas style={{ position: "relative", width: "100%", height: "100%"}} ref={this.canvasSeekRef} />
+            <canvas
+              style={{ position: "relative", width: "100%", height: "100%" }}
+              ref={this.canvasSeekRef}
+            />
           </div>
 
           <div

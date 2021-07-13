@@ -48,7 +48,6 @@ function initPort(portNumber) {
   if (portInUse.indexOf(portNumber) === -1) {
     oscHelper.addPort(portNumber);
     var udp_server = dgram.createSocket("udp4", function(msg, rinfo) {
-      console.log(rinfo);
       oscHelper.getName().forEach(client_socket => {
         sendMessage(msg, client_socket, portNumber);
       });
@@ -63,11 +62,9 @@ function initPort(portNumber) {
 }
 
 function sendMessage(msg, socket, portNumber) {
-  console.log("send message called");
   var osc_message;
   try {
     osc_message = osc.fromBuffer(msg);
-    // console.log("osc message:");
     // console.log(osc_message);
     // e.g. /1/toggle1 True
     const osc_message_splitted = osc_message.address.split("/");

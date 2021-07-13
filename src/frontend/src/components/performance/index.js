@@ -359,10 +359,7 @@ class Performance extends React.Component {
     commonSocket.on("oscData", data => {
       let portNumber = data.portNumber;
       let targetComponent = this.findComponents(portNumber);
-      console.log(targetComponent);
-      targetComponent.forEach(comp => {
-        this.handleOscInput(comp, data);
-      });
+      this.handleOscInput(targetComponent, data);
     });
     commonSocket.on("changeBlock", data => {
       data["isStreamed"] = true;
@@ -407,17 +404,16 @@ class Performance extends React.Component {
   }
 
   findComponents(oscPort) {
-    let components = [];
+    let component = undefined;
     this.props.blocks["bs"].forEach((comp, index) => {
       if (!!comp.oscPort && comp.oscPort == oscPort) {
-        components.push({ id: comp.id, index: index, typeName: comp.typeName });
+        component = { id: comp.id, index: index, typeName: comp.typeName };
       }
     });
-    return components;
+    return component;
   }
 
   handleOscInput(comp, data) {
-    console.log(comp);
     switch (comp.typeName) {
       case "Delay":
         this.handleOscDelay(comp.id, comp.index, data);
@@ -688,7 +684,6 @@ class Performance extends React.Component {
 
   // assign ports to blocks from the ports values loaded
   assignPorts(blocks) {
-    console.log("assigning blocks");
     blocks.forEach(block => {
       this.state.oscPorts.forEach(module => {
         if (module.id === block.id) {
@@ -870,6 +865,7 @@ class Performance extends React.Component {
                 >
                   <span class="badge badge-secondary">
                     OSC IP: 18.224.253.25
+                    {/* OSC IP: 18.116.26.75 */}
                   </span>
                 </h6>
                 <div style={{ height: "30px", paddingTop: "5px" }}>

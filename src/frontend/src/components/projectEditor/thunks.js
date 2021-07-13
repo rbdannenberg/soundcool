@@ -122,7 +122,6 @@ function asyncAddBlock(moduleType, audioConfig = {}, moduleConfig = {}) {
 }
 
 const addBlock = (audioObj, typeName, moduleConfig) => {
-  console.log(typeName, moduleConfig);
   let config = Object.assign({}, specValues[typeName], moduleConfig);
   delete config.inNode;
   delete config.outNode;

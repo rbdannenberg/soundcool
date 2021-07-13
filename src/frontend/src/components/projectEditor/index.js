@@ -315,7 +315,8 @@ class ProjectEditor extends React.Component {
         });
       });
       if (this.state.projectId === "new") {
-        localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
+        // console.log(nextProps.blocks);
+        // localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
       }
 
       let opts = {};
@@ -1151,6 +1152,7 @@ class ProjectEditor extends React.Component {
                 <h6 style={{ paddingTop: "10px", paddingLeft: "10px" }}>
                   <span class="badge badge-secondary">
                     OSC IP: 18.224.253.25
+                    {/* OSC IP: 18.116.26.75 */}
                   </span>
                 </h6>
                 {isUserLoggedIn() && (
