@@ -18,7 +18,6 @@ function updateTimeStamp() {
 const storage = multer.diskStorage({
   destination: "./uploads/sounds/",
   filename(req, file, cb) {
-    console.log(req.body);
     cb(null, `${cTimeStamp}-${file.originalname}`);
   }
 });
@@ -83,23 +82,28 @@ router.get("/get", (req, res) => {
 
 function handleDatabaseFile({ user_id, name, fileLocation, res }) {
   updateTimeStamp();
-  const QUERY = `insert into sounds(user,name,type,fileLocation) values(${user_id},'${name}','upload','${fileLocation}')`;
+  const QUERY = `insert into sounds(user,name,type,fileLocation) values(?,?,?,?)`;
   if (database == "mysql") {
-    connection.query(QUERY, (err, results) => {
-      if (err) {
-        return res.json({ err: err });
-      } else {
-        const soundId = results.insertId;
-        console.log("Sound id is", soundId);
-        return res.json({
-          sound_id: soundId,
-          user: user_id,
-          name: name
-        });
+    connection.query(
+      QUERY,
+      [user_id, name, "upload", fileLocation],
+      (err, results) => {
+        if (err) {
+          return res.json({ err: err });
+        } else {
+          const soundId = results.insertId;
+          return res.json({
+            sound_id: soundId,
+            user: user_id,
+            name: name
+          });
+        }
       }
-    });
+    );
   } else if (database == "sqlite") {
-    connection.run(QUERY, [], function(err) {
+    connection.run(QUERY, [user_id, name, "upload", fileLocation], function(
+      err
+    ) {
       if (err) {
         return res.json({ err: err });
       } else {
@@ -115,6 +119,7 @@ function handleDatabaseFile({ user_id, name, fileLocation, res }) {
 }
 
 router.post("/upload", upload.single("file"), (req, res) => {
+  console.log(database, "is");
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const fileLocation =
