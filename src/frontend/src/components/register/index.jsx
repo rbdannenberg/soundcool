@@ -10,7 +10,7 @@ const cookies = new Cookies();
 class Register extends Component {
   
   afterRegister = res => {
-    const { token, error, name } = res;
+    const { token, error, name, user_id } = res;
 
     if (error) {
       showToastrError(res);
@@ -18,6 +18,8 @@ class Register extends Component {
       showToastr("success", "User registered successfully");
       cookies.set('name', name, { path: '/' });
       cookies.set('token', token, { path: '/' });
+      localStorage.setItem("user_id", user_id);
+      localStorage.setItem("userName", name);
       redirectToRoot();
     }
   };
