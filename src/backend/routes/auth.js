@@ -120,7 +120,8 @@ function handleRegister(err, user_id, name) {
     });
     return {
       name: name,
-      token
+      token,
+      user_id,
     };
   }
 }
