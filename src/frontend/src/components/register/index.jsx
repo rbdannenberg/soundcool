@@ -8,7 +8,7 @@ import Cookies from 'universal-cookie';
  
 const cookies = new Cookies();
 class Register extends Component {
-  
+  //
   afterRegister = res => {
     const { token, error, name, user_id } = res;
 
