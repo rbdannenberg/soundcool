@@ -25,7 +25,10 @@ class UserProfile extends React.Component {
       isValid: null,
     };
   }
-
+  componentDidUpdate(){
+		document.addEventListener('keydown',this.onkeydown);
+	}
+  
   handleOnChange = (name, value) => {
     const params = { [name]: value };
     this.setState(params);
@@ -57,6 +60,7 @@ class UserProfile extends React.Component {
         localStorage.setItem("userName", response.user.name)
         localStorage.setItem("userEmail", response.user.email)
         showToastr("success", "User updated successfully.");
+        window.location = "/home";
         setTimeout(() => {
           window.location.reload()
         }, 1500)
@@ -72,6 +76,11 @@ class UserProfile extends React.Component {
       })
     }
   };
+  onkeydown = (e)=>{         
+		if (e.keyCode === 13) {   
+			this.handleSubmit()
+		}
+	}
 
   render() {
     const { username, email, pass, isValid } = this.state;
