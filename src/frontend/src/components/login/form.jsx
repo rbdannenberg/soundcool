@@ -11,6 +11,9 @@ class LoginForm extends React.Component {
       password: ""
     };
   }
+  componentDidUpdate(){
+		document.addEventListener('keydown',this.onkeydown);
+	}
   handleOnChange = (name, value) => {
     const params = { [name]: value };
     this.setState(params);
@@ -35,6 +38,11 @@ class LoginForm extends React.Component {
         showToastrError(error);
       });
   };
+  onkeydown = (e)=>{         
+		if (e.keyCode === 13) {   
+			this.handleSubmit()
+		}
+	}
 
   render() {
     const { email, password } = this.state;
