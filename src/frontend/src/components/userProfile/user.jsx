@@ -12,7 +12,6 @@ import { BASE_URL } from "../../constants.js";
 import Cookies from "universal-cookie";
 import { showToastr, showToastrError } from "../../actions/common";
 
-const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const cookies = new Cookies();
 
 class UserProfile extends React.Component {
@@ -37,7 +36,7 @@ class UserProfile extends React.Component {
 
   handleSubmit = () => {
     const { username, email, pass } = this.state;
-    if (username != "" && email != "" && pass != "" && emailRegexp.test(email) && pass.length >= 6) {
+    if (username != "" && email != "" && pass != "") {
       fetch(`${BASE_URL}/user/edit_user`, {
         method: 'PATCH',
         headers: {
@@ -70,7 +69,7 @@ class UserProfile extends React.Component {
         showToastrError(err);
       })
     } else {
-      // If empty fields or Email invalid or password too short
+      // If empty fields
       this.setState({
         ...this.state,
         isValid: false,
