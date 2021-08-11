@@ -82,11 +82,14 @@ class ProjectEditor extends React.Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
+
   constructor(props) {
     super(props);
+    console.log(this.props);
     this.state = {
       projectId: this.props.match.params.id,
       items: [[], [], []],
+      orderingItems: [[], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
@@ -127,7 +130,8 @@ class ProjectEditor extends React.Component {
     if (!destination) {
       return;
     }
-    // console.log(source, destination);
+    console.log(source, destination);
+    console.log(this.state.items);
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
         this.getList(source.droppableId),
@@ -180,6 +184,7 @@ class ProjectEditor extends React.Component {
       const col = column.filter(item => item !== undefined);
       return col;
     });
+
     if (this.state.view === "Floating") {
       let finalBlock = [];
       blocks.forEach(o => {
@@ -235,6 +240,7 @@ class ProjectEditor extends React.Component {
       return (
         <React.Fragment>
           <DragDropContext onDragEnd={this.onDragEnd}>
+            {/* b is each column */}
             {blocks.map((b, listIndex) => (
               <div
                 style={{
@@ -249,6 +255,7 @@ class ProjectEditor extends React.Component {
                       ref={provided.innerRef}
                       style={getListStyle(snapshot.isDraggingOver)}
                     >
+                      {/* each item in the column */}
                       {b.map((item, index) => (
                         <Draggable
                           key={item.id}
@@ -288,18 +295,24 @@ class ProjectEditor extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    console.log("here 1");
+    console.log(nextProps);
+    console.log(this.state.items);
     if (nextProps.match.params.id !== this.props.match.params.id)
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
       });
+    // sync the item list with the block list - create ordering of the blocks
     if (this.state.prevItems !== nextProps.blocks.bs) {
       let length = this.state.items.length;
       let newValue = [];
       for (let i = 0; i < length; i++) {
         newValue[i] = [];
       }
+      // let newValue = this.state.items;
+      // for each block in the blocklist, find its place in the items ordering array
       nextProps.blocks.bs.forEach(o => {
-        this.state.items.every((arr, index) => {
+        this.state.orderingItems.every((arr, index) => {
           arr = arr.filter(e => e !== undefined);
           const found = arr.find(element => element["id"] === o["id"]);
           if (found === undefined) {
@@ -678,10 +691,14 @@ class ProjectEditor extends React.Component {
   }
 
   loadState() {
+    console.log("here 0");
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
         .then(res => {
           let { name, description, content } = res;
+          let jsonContent = JSON.parse(content);
+          this.setState({ orderingItems: jsonContent.items });
+
           this.props.dispatch(loadProject(content));
           let parsedBS = JSON.parse(content)["bs"];
           let loadCount = parsedBS.length;
@@ -776,9 +793,12 @@ class ProjectEditor extends React.Component {
         this.setState({
           isProjectChanged: false
         });
+        let blocks = this.props.blocks;
+        blocks["items"] = this.state.items;
+        let content = JSON.stringify(blocks);
         this.updateProject({
           projectId: this.state.projectId,
-          content: JSON.stringify(this.props.blocks)
+          content: content
         });
       } else this.toggleModal();
     else {
@@ -801,7 +821,8 @@ class ProjectEditor extends React.Component {
     let isFormValid = true,
       error = "";
     const { projectName, projectDescription } = this.state;
-    const blocks = this.props.blocks;
+    let blocks = this.props.blocks;
+    blocks["items"] = this.state.items;
 
     if (blocks.length === 0) {
       error = "Project is Empty";

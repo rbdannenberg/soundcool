@@ -29,7 +29,8 @@ const emptyState = {
   nextTypeId: allTypes,
   nowIn: [],
   nowOut: [],
-  cns: []
+  cns: [],
+  items: [[], [], []]
 };
 const blocks = (
   state = {
@@ -41,7 +42,8 @@ const blocks = (
     // connections: each time we do a connection
     // we save it in the list, so that we can reconnect everything
     // when reloading the project
-    cns: []
+    cns: [],
+    items: [[], [], []]
   },
   action
 ) => {
@@ -92,7 +94,7 @@ const blocks = (
       if (deletedBlock.audioObj) {
         deletedBlock.audioObj.destroy();
       }
-      console.log(deletedBlock)
+      console.log(deletedBlock);
       let newBs = filteredBs.map(t =>
         // pass in the block, so we can check for each connection that
         // whether the block still exist

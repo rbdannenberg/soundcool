@@ -70,7 +70,7 @@ class ProjectHome extends React.Component {
     // case on the user, if there is no user logged in, then no
     // project get displayed
     var projectsShown = this.state.projectsShown;
-  if (isUserLoggedIn() && this.props.user) {
+    if (isUserLoggedIn() && this.props.user) {
       fetchUserProjects(projectsShown)
         .then(data => {
           this.setState({ projects: data });
