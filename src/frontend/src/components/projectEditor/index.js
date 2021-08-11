@@ -952,7 +952,7 @@ class ProjectEditor extends React.Component {
       )) || (
         <React.Fragment>
           <NavigationPrompt
-            renderIfNotActive={true}
+            renderIfNotActive={true}           
             // Confirm navigation if going to a path that does not start with current path:
             when={(crntLocation, nextLocation) =>
               this.state.isProjectChanged &&
@@ -972,6 +972,10 @@ class ProjectEditor extends React.Component {
                         they will be lost.
                       </Modal.Body>
                       <Modal.Footer>
+                        <button className="btn btn-info" onClick={
+                          () => {this.saveProject(false); onConfirm()}}>
+                          Save and Leave
+                        </button>
                         <button className="btn btn-success" onClick={onCancel}>
                           Stay On Page
                         </button>
