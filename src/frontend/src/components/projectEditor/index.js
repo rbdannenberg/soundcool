@@ -85,7 +85,6 @@ class ProjectEditor extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       projectId: this.props.match.params.id,
       items: [[], [], []],
@@ -130,8 +129,6 @@ class ProjectEditor extends React.Component {
     if (!destination) {
       return;
     }
-    console.log(source, destination);
-    console.log(this.state.items);
     if (source.droppableId === destination.droppableId) {
       const items = reorder(
         this.getList(source.droppableId),
@@ -295,9 +292,6 @@ class ProjectEditor extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log("here 1");
-    console.log(nextProps);
-    console.log(this.state.items);
     if (nextProps.match.params.id !== this.props.match.params.id)
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
@@ -691,7 +685,6 @@ class ProjectEditor extends React.Component {
   }
 
   loadState() {
-    console.log("here 0");
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
         .then(res => {
