@@ -140,9 +140,7 @@ const addBlock = (audioObj, typeName, moduleConfig) => {
 };
 
 function loadProject(content) {
-  console.log("here 2");
   let jsonContent = JSON.parse(content);
-  console.log(jsonContent);
   return function(dispatch, getState) {
     let loadProjectProm = new Promise((resolve, reject) => {
       if (content === undefined || jsonContent === null) {
@@ -179,7 +177,6 @@ function loadProject(content) {
           );
           promiseStore.push(prom);
         });
-        // add connections
         Promise.all(promiseStore).then(function() {
           let state = getState();
           let idMapper = {};

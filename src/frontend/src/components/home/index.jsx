@@ -290,9 +290,9 @@ class Home extends Component {
                           verticalAlign: "inherit"
                         }}
                       >
-                        Make audiovisuals creatively by mixing videos, images or
-                        video loops, controlling everything live via mobile /
-                        tablet.
+                        Make audiovisuals creatively by mixing videos, images
+                        or video loops, controlling everything live via
+                        mobile / tablet.
                       </font>
                     </font>
                   </p>
@@ -369,8 +369,9 @@ class Home extends Component {
                         }}
                       >
                         Inclusive pedagogies with Soundcool have demonstrated
-                        their suitability to instruction for students with
-                        autism, Down syndrome, partial or total blindness, etc.
+                        their suitability to instruction for students
+                        with autism, Down syndrome, partial or total blindness,
+                        etc.
                       </font>
                     </font>
                   </p>
