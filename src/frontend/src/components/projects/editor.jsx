@@ -181,7 +181,7 @@ class Projects extends Component {
               let payload = {
                 performanceName: performanceName,
                 oscModuleList: newOscModuleList,
-                blocks: { bs: content.bs, items: content.items }
+                blocks: { bs: content.bs }
               };
               createPerformance(payload)
                 .then(data => {

@@ -82,7 +82,6 @@ class Performance extends React.Component {
       isDragging: false,
       performanceName: this.props.match.params.id,
       items: [[], [], []],
-      orderingItems: [[], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
@@ -307,7 +306,7 @@ class Performance extends React.Component {
         newValue[i] = [];
       }
       nextProps.blocks.bs.forEach(o => {
-        this.state.orderingItems.every((arr, index) => {
+        this.state.items.every((arr, index) => {
           arr = arr.filter(e => e !== undefined);
           const found = arr.find(element => element["id"] === o["id"]);
           if (found === undefined) {
@@ -699,10 +698,6 @@ class Performance extends React.Component {
     fetchPerformance(this.state.performanceName)
       .then(res => {
         let { name, oscports, content } = res;
-        let jsonContent = JSON.parse(content);
-        console.log(jsonContent);
-        this.setState({ orderingItems: jsonContent.items });
-
         this.props.dispatch(loadProject(content));
         oscports = JSON.parse(oscports);
         this.setState({
