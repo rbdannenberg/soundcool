@@ -20,7 +20,7 @@ class ScModule {
   connectAsync(destination) {
     this.connPromise
       .then(
-        function () {
+        function() {
           if (destination instanceof ScModule) {
             this.outNode.connect(destination.inNode);
             this.outputs.push(destination);
@@ -33,12 +33,12 @@ class ScModule {
         }.bind(this)
       )
       .catch(
-        function () {
+        function() {
           console.error(
             "Failed to connect: " +
-            this.constructor.name +
-            " --> " +
-            destination.constructor.name
+              this.constructor.name +
+              " --> " +
+              destination.constructor.name
           );
           destination.connPromise.reject();
         }.bind(this)
@@ -64,22 +64,35 @@ class ScModule {
 
   applyWithSmoothing(audioParam, value, timeConstant = 50e-3) {
     let currentTime = this.context.currentTime;
-    audioParam.setTargetAtTime(value, currentTime,
-      timeConstant);
+    audioParam.setTargetAtTime(value, currentTime, timeConstant);
   }
 
   linearToExp(value) {
     return Math.pow(value, 4);
   }
 
+  dB_to_linear(db) {
+    return 10 ** (db / 20);
+  }
+
   set volume(value) {
-    value = parseFloat(value / 100);
+    // value = parseFloat(value / 100);
+
+    let y = 0;
+    if (value >= 10) {
+      y = ((value - 100) * 2) / 3; // [0, -60]
+      y = this.dB_to_linear(y);
+    } else {
+      y = (this.dB_to_linear(-60) * value) / 10;
+    }
+
+    // console.log("here");
+    console.log(y);
     value = this.linearToExp(value);
-    this.applyWithSmoothing(this.outNode.gain, value);
+    this.applyWithSmoothing(this.outNode.gain, y);
   }
 
   destroy() {}
-
 }
 
 export default ScModule;
