@@ -86,7 +86,8 @@ class ProjectEditor extends React.Component {
     super(props);
     this.state = {
       projectId: this.props.match.params.id,
-      items: [[], [], []],
+      items: [[], [], [], [], []],
+      orderingItems: [[], [], [], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
@@ -292,7 +293,11 @@ class ProjectEditor extends React.Component {
       this.setState({ projectId: nextProps.match.params.id }, () => {
         this.loadState();
       });
-    if (this.state.prevItems !== nextProps.blocks.bs) {
+    // sync the item list with the block list - create ordering of the blocks
+    if (
+      this.state.prevItems !== nextProps.blocks.bs ||
+      this.state.projectId === "new"
+    ) {
       let length = this.state.items.length;
       let newValue = [];
       for (let i = 0; i < length; i++) {
@@ -952,7 +957,7 @@ class ProjectEditor extends React.Component {
       )) || (
         <React.Fragment>
           <NavigationPrompt
-            renderIfNotActive={true}           
+            renderIfNotActive={true}
             // Confirm navigation if going to a path that does not start with current path:
             when={(crntLocation, nextLocation) =>
               this.state.isProjectChanged &&
@@ -972,8 +977,13 @@ class ProjectEditor extends React.Component {
                         they will be lost.
                       </Modal.Body>
                       <Modal.Footer>
-                        <button className="btn btn-info" onClick={
-                          () => {this.saveProject(false); onConfirm()}}>
+                        <button
+                          className="btn btn-info"
+                          onClick={() => {
+                            this.saveProject(false);
+                            onConfirm();
+                          }}
+                        >
                           Save and Leave
                         </button>
                         <button className="btn btn-success" onClick={onCancel}>

@@ -106,19 +106,29 @@ class Player extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getAudioData()[0];
-    // console.log(x);
-    let data = Math.max(this.oldDb - 7, x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 50, 15, 100);
+    const height = 150;
+    const width = 25;
 
-    var grd = renderCtx.createLinearGradient(0, 50, 0, 150);
+    let x = audioObj.getAudioData()[0];
+    // console.log(x); // in db, [-100, 10]
+    let data = Math.max(this.oldDb - 7, x, -100);
+    let scaledData = data;
+    if (data >= -50) {
+      scaledData = 0.1 * height + ((data + 50) / 60) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 65) * (0.1 * height);
+    }
+
+    // let scaledData = 150;
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.2, "yellow");
+    grd.addColorStop(0.15, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 150 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   async getAudioUrl(sound_id) {
@@ -405,7 +415,12 @@ class Player extends React.Component {
               backgroundColor: "black"
             }}
           >
-            <canvas ref={this.canvasMeterRef} />
+            <canvas
+              ref={this.canvasMeterRef}
+              style={{
+                height: "80px"
+              }}
+            />
           </div>
 
           <div

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { changeBlock } from "./actions";
 
 class DirectInput extends React.Component {
-
   constructor(props) {
     super(props);
     this.oldDb = -100;
@@ -20,20 +19,29 @@ class DirectInput extends React.Component {
       return;
     }
 
+    const width = 300;
+    const height = 140;
+
     let canvasLCtx = canvasL.getContext("2d");
     let renderCtx = canvasLCtx;
     let x = audioObj.getAudioData();
     let data = Math.max(this.oldDb - 7, x, -100);
-    let scaledData = 230 + data * 2.3;
-    renderCtx.clearRect(0, 0, 230, 140);
+    let scaledData = data;
+    if (data >= -50) {
+      scaledData = 0.1 * width + ((data + 50) / 60) * (0.9 * width);
+    } else {
+      scaledData = ((data + 100) / 65) * (0.1 * width);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 230, 0);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, width, 0);
     grd.addColorStop(0, "green");
-    grd.addColorStop(0.8, "yellow");
+    grd.addColorStop(0.85, "yellow");
     grd.addColorStop(1, "red");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 0, scaledData, 140);
+    renderCtx.fillRect(0, 0, scaledData, height);
   };
 
   componentDidMount = () => {
@@ -46,7 +54,7 @@ class DirectInput extends React.Component {
     if (this.micPermission) {
       return (
         <React.Fragment>
-          <div style={{ position: "relative", height: "5rem", width: "13rem"}}>
+          <div style={{ position: "relative", height: "5rem", width: "13rem" }}>
             <div
               style={{
                 fontSize: "0.64rem",
@@ -106,7 +114,12 @@ class DirectInput extends React.Component {
                 height: "0.7rem"
               }}
             >
-              <canvas ref={this.canvasLRef} />
+              <canvas
+                ref={this.canvasLRef}
+                style={{
+                  width: "164px"
+                }}
+              />
             </div>
 
             {/* Mute and Channel */}
@@ -129,8 +142,12 @@ class DirectInput extends React.Component {
                 type="checkbox"
                 className="my-1"
                 id="muted"
-                style={{ position: "absolute", left: "2.525rem", top: "-0.125rem" }}
-                onChange={(evt) => {
+                style={{
+                  position: "absolute",
+                  left: "2.525rem",
+                  top: "-0.125rem"
+                }}
+                onChange={evt => {
                   this.props.changeBlock(id, "muted", !muted);
                 }}
               />
@@ -156,7 +173,9 @@ class DirectInput extends React.Component {
                   fontSize: "0.64rem"
                 }}
                 id="channel"
-                onChange={e => this.props.changeBlock(id, "channel", e.target.value)}
+                onChange={e =>
+                  this.props.changeBlock(id, "channel", e.target.value)
+                }
               />
             </div>
 
@@ -172,7 +191,9 @@ class DirectInput extends React.Component {
                 left: "185px",
                 top: "2px"
               }}
-              onChange={e => this.props.changeBlock(id, "volume", e.target.value)}
+              onChange={e =>
+                this.props.changeBlock(id, "volume", e.target.value)
+              }
               min={0}
               max={100}
               step={1}
@@ -192,16 +213,24 @@ class DirectInput extends React.Component {
               Audio Settings
             </button>
             <span className="">
-              <label htmlFor="osc" style={{ fontSize: "0.64rem",
-                marginBottom: "0"}}>
+              <label
+                htmlFor="osc"
+                style={{ fontSize: "0.64rem", marginBottom: "0" }}
+              >
                 OSC port:
               </label>
               <input
                 type="text"
                 className="m-1"
-                style={{height: "1.2rem", width: "2.4rem", fontSize: "0.64rem"}}
+                style={{
+                  height: "1.2rem",
+                  width: "2.4rem",
+                  fontSize: "0.64rem"
+                }}
                 id="osc"
-                onChange={e => this.props.changeBlock(id, "osc", e.target.value)}
+                onChange={e =>
+                  this.props.changeBlock(id, "osc", e.target.value)
+                }
               />
             </span>
           </div>
@@ -210,18 +239,26 @@ class DirectInput extends React.Component {
     } else {
       return (
         <React.Fragment>
-          <div style={{ position:"relative", height:"5rem",
-            width: "13rem", textAlign: "center", verticalAlign:"middle", 
-            display:"table-cell", fontSize:".8rem", color:"red" }} >
-            Cannot access microphone. Please "allow" the access to microphone to use Direct Input.
-            </div>
+          <div
+            style={{
+              position: "relative",
+              height: "5rem",
+              width: "13rem",
+              textAlign: "center",
+              verticalAlign: "middle",
+              display: "table-cell",
+              fontSize: ".8rem",
+              color: "red"
+            }}
+          >
+            Cannot access microphone. Please "allow" the access to microphone to
+            use Direct Input.
+          </div>
         </React.Fragment>
       );
     }
   }
 }
-
-
 
 /*const DirectInput = ({ blockInfo,changeBlock }) => {
   // catch
@@ -233,8 +270,5 @@ const mapStateToProps = state => {
   return {
     state
   };
-}
-export default connect(
-  mapStateToProps,
-  { changeBlock }
-)(DirectInput);
+};
+export default connect(mapStateToProps, { changeBlock })(DirectInput);

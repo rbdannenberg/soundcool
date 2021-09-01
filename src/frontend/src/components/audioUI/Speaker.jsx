@@ -36,21 +36,29 @@ class Speaker extends React.Component {
       clearInterval(this.rendererL);
       return;
     }
+    const width = 300;
+    const height = 140;
 
     let canvasLCtx = canvasL.getContext("2d");
     let renderCtx = canvasLCtx;
     let x = audioObj.getAudioData()[0];
     let data = Math.max(this.oldDb - 7, x, -100);
-    let scaledData = 230 + data * 2.3;
-    renderCtx.clearRect(0, 0, 230, 140);
+    let scaledData = data;
+    if (data >= -50) {
+      scaledData = 0.1 * width + ((data + 50) / 60) * (0.9 * width);
+    } else {
+      scaledData = ((data + 100) / 65) * (0.1 * width);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 230, 0);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, width, 0);
     grd.addColorStop(0, "green");
-    grd.addColorStop(0.8, "yellow");
+    grd.addColorStop(0.85, "yellow");
     grd.addColorStop(1, "red");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 0, scaledData, 140);
+    renderCtx.fillRect(0, 0, scaledData, height);
   };
 
   // render function
@@ -61,20 +69,29 @@ class Speaker extends React.Component {
       clearInterval(this.rendererR);
       return;
     }
+    const width = 300;
+    const height = 140;
+
     let canvasRCtx = canvasR.getContext("2d");
     let renderCtx = canvasRCtx;
     let x = audioObj.getAudioData()[1];
     let data = Math.max(this.oldDb - 7, x, -100);
-    let scaledData = 230 + data * 2.3;
-    renderCtx.clearRect(0, 0, 230, 140);
+    let scaledData = data;
+    if (data >= -50) {
+      scaledData = 0.1 * width + ((data + 50) / 60) * (0.9 * width);
+    } else {
+      scaledData = ((data + 100) / 65) * (0.1 * width);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 230, 0);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, width, 0);
     grd.addColorStop(0, "green");
-    grd.addColorStop(0.8, "yellow");
+    grd.addColorStop(0.85, "yellow");
     grd.addColorStop(1, "red");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 0, scaledData, 140);
+    renderCtx.fillRect(0, 0, scaledData, height);
   };
 
   // bindtocanvas
@@ -83,9 +100,9 @@ class Speaker extends React.Component {
     this.rendererL = setInterval(this.renderAudioL.bind(this), renderRate);
     this.rendererR = setInterval(this.renderAudioR.bind(this), renderRate);
     const unlisten = this.props.history.listen(() => {
-      if (this.props.location.pathname.includes('project-editor')) {
-        this.props.changeBlock(this.props.blockInfo.id, "suspended", true)
-        unlisten()
+      if (this.props.location.pathname.includes("project-editor")) {
+        this.props.changeBlock(this.props.blockInfo.id, "suspended", true);
+        unlisten();
       }
     });
   };
@@ -129,7 +146,12 @@ class Speaker extends React.Component {
               height: "0.7rem"
             }}
           >
-            <canvas ref={this.canvasLRef} />
+            <canvas
+              ref={this.canvasLRef}
+              style={{
+                width: "164px"
+              }}
+            />
             {/* <div
               className="progress-bar"
               role="progressbar"
@@ -162,7 +184,12 @@ class Speaker extends React.Component {
               height: "0.7rem"
             }}
           >
-            <canvas ref={this.canvasRRef} />
+            <canvas
+              ref={this.canvasRRef}
+              style={{
+                width: "164px"
+              }}
+            />
           </div>
 
           {/* speaker icon button */}
@@ -178,7 +205,7 @@ class Speaker extends React.Component {
               border: "1px dotted"
             }}
             onClick={() => {
-              this.props.changeBlock(id, "suspended", undefined)
+              this.props.changeBlock(id, "suspended", undefined);
             }}
           >
             {playButton}
