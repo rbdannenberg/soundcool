@@ -117,20 +117,32 @@ class Mixer extends React.Component {
       clearInterval(this.rendererCMR);
       return;
     }
+
+    const width = 25;
+    const height = 160;
+
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getMasterAudioData()[c] * 4.65;
-    let data = Math.max(x, -200);
-    let scaledData = 200 + data;
-    renderCtx.clearRect(0, 0, 15, 200);
+    // let x = audioObj.getMasterAudioData()[c] * 4.65;
+    let x = audioObj.getMasterAudioData()[c];
+    let data = Math.max(x, -100);
+    // data = -45;
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 200);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 200 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode0Meter = (ref, c) => {
@@ -141,21 +153,32 @@ class Mixer extends React.Component {
       clearInterval(this.renderer0R);
       return;
     }
+
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode0AudioData()[c] * 1.82;
+    // let x = audioObj.getNode0AudioData()[c] * 1.82;
+    let x = audioObj.getNode0AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 0, 15, 200);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode1Meter = (ref, c) => {
@@ -168,19 +191,28 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode1AudioData()[c] * 1.82;
+    let x = audioObj.getNode1AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode2Meter = (ref, c) => {
@@ -193,19 +225,27 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode2AudioData()[c] * 1.82;
+    let x = audioObj.getNode2AudioData()[c];
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode3Meter = (ref, c) => {
@@ -218,21 +258,27 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode3AudioData()[c] * 1.82;
+    let x = audioObj.getNode3AudioData()[c];
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    // console.log("scaledData is: ");
-    // console.log(scaledData);
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode4Meter = (ref, c) => {
@@ -245,19 +291,28 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode4AudioData()[c] * 1.82;
+    let x = audioObj.getNode4AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode5Meter = (ref, c) => {
@@ -270,21 +325,28 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode5AudioData()[c] * 1.82;
+    let x = audioObj.getNode5AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    // console.log("scaledData is: ");
-    // console.log(scaledData);
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode6Meter = (ref, c) => {
@@ -297,21 +359,28 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode6AudioData()[c] * 1.82;
+    let x = audioObj.getNode6AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    // console.log("scaledData is: ");
-    // console.log(scaledData);
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   rendererNode7Meter = (ref, c) => {
@@ -324,20 +393,28 @@ class Mixer extends React.Component {
     }
     let canvasCtx = canvas.getContext("2d");
     let renderCtx = canvasCtx;
-    let x = audioObj.getNode7AudioData()[c] * 1.82;
+    let x = audioObj.getNode7AudioData()[c];
+
+    const width = 25;
+    const height = 80;
 
     let data = Math.max(x, -100);
-    let scaledData = 100 + data;
-    renderCtx.clearRect(0, 0, 15, 100);
+    let scaledData = data;
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
+    } else {
+      scaledData = ((data + 100) / 55) * (0.1 * height);
+    }
 
-    var grd = renderCtx.createLinearGradient(0, 0, 0, 100);
+    renderCtx.clearRect(0, 0, width, height);
+
+    var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.1, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;
-
-    renderCtx.fillRect(0, 100 - scaledData, 15, scaledData);
+    renderCtx.fillRect(0, height - scaledData, width, scaledData);
   };
 
   setOpacity(inNode, port, opacity) {
@@ -442,7 +519,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain0LRef} />
+                  <canvas height="80" ref={this.canvasGain0LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -455,7 +532,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain0RRef} />
+                  <canvas height="80" ref={this.canvasGain0RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -543,7 +620,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain1LRef} />
+                  <canvas height="80" ref={this.canvasGain1LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -556,7 +633,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain1RRef} />
+                  <canvas height="80" ref={this.canvasGain1RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -644,7 +721,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain2LRef} />
+                  <canvas height="80" ref={this.canvasGain2LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -657,7 +734,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain2RRef} />
+                  <canvas height="80" ref={this.canvasGain2RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -745,7 +822,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain3LRef} />
+                  <canvas height="80" ref={this.canvasGain3LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -758,7 +835,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain3RRef} />
+                  <canvas height="80" ref={this.canvasGain3RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -846,7 +923,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain4LRef} />
+                  <canvas height="80" ref={this.canvasGain4LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -859,7 +936,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain4RRef} />
+                  <canvas height="80" ref={this.canvasGain4RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -947,7 +1024,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain5LRef} />
+                  <canvas height="80" ref={this.canvasGain5LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -960,7 +1037,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain5RRef} />
+                  <canvas height="80" ref={this.canvasGain5RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -1054,7 +1131,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain6LRef} />
+                  <canvas height="80" ref={this.canvasGain6LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -1067,7 +1144,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain6RRef} />
+                  <canvas height="80" ref={this.canvasGain6RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -1161,7 +1238,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain7LRef} />
+                  <canvas height="80" ref={this.canvasGain7LRef} />
                 </div>
                 <div
                   className="progress progress-bar-vertical"
@@ -1174,7 +1251,7 @@ class Mixer extends React.Component {
                     minHeight: "80px"
                   }}
                 >
-                  <canvas height="100" ref={this.canvasGain7RRef} />
+                  <canvas height="80" ref={this.canvasGain7RRef} />
                 </div>
                 <input
                   className="slider text-center"
@@ -1213,7 +1290,7 @@ class Mixer extends React.Component {
                   top: "30px"
                 }}
               >
-                <canvas height={200} ref={this.canvasMasterLRef}></canvas>
+                <canvas height={160} ref={this.canvasMasterLRef}></canvas>
               </div>
               <div
                 className="progress progress-bar-vertical"
@@ -1226,7 +1303,7 @@ class Mixer extends React.Component {
                   top: "30px"
                 }}
               >
-                <canvas height={200} ref={this.canvasMasterRRef}></canvas>
+                <canvas height={160} ref={this.canvasMasterRRef}></canvas>
               </div>
               <input
                 className="slider "
