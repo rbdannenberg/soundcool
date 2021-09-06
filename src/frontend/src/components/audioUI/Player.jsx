@@ -113,10 +113,10 @@ class Player extends React.Component {
     // console.log(x); // in db, [-100, 10]
     let data = Math.max(this.oldDb - 7, x, -100);
     let scaledData = data;
-    if (data >= -50) {
-      scaledData = 0.1 * height + ((data + 50) / 60) * (0.9 * height);
+    if (data >= -45) {
+      scaledData = 0.1 * height + ((data + 45) / 55) * (0.9 * height);
     } else {
-      scaledData = ((data + 100) / 65) * (0.1 * height);
+      scaledData = ((data + 100) / 55) * (0.1 * height);
     }
 
     // let scaledData = 150;
@@ -124,7 +124,7 @@ class Player extends React.Component {
 
     var grd = renderCtx.createLinearGradient(0, 0, 0, height);
     grd.addColorStop(0, "red");
-    grd.addColorStop(0.15, "yellow");
+    grd.addColorStop(0.25, "yellow");
     grd.addColorStop(1, "green");
 
     renderCtx.fillStyle = grd;

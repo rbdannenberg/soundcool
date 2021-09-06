@@ -27,17 +27,17 @@ class DirectInput extends React.Component {
     let x = audioObj.getAudioData();
     let data = Math.max(this.oldDb - 7, x, -100);
     let scaledData = data;
-    if (data >= -50) {
-      scaledData = 0.1 * width + ((data + 50) / 60) * (0.9 * width);
+    if (data >= -45) {
+      scaledData = 0.1 * width + ((data + 45) / 55) * (0.9 * width);
     } else {
-      scaledData = ((data + 100) / 65) * (0.1 * width);
+      scaledData = ((data + 100) / 55) * (0.1 * width);
     }
 
     renderCtx.clearRect(0, 0, width, height);
 
     var grd = renderCtx.createLinearGradient(0, 0, width, 0);
     grd.addColorStop(0, "green");
-    grd.addColorStop(0.85, "yellow");
+    grd.addColorStop(0.75, "yellow");
     grd.addColorStop(1, "red");
 
     renderCtx.fillStyle = grd;

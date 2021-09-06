@@ -80,14 +80,13 @@ class ScModule {
 
     let y = 0;
     if (value >= 10) {
-      y = ((value - 100) * 2) / 3; // [0, -60]
+      y = ((value - 100) * 1) / 2; // [0, -45]
       y = this.dB_to_linear(y);
     } else {
-      y = (this.dB_to_linear(-60) * value) / 10;
+      y = (this.dB_to_linear(-45) * value) / 10;
     }
 
     // console.log("here");
-    console.log(y);
     value = this.linearToExp(value);
     this.applyWithSmoothing(this.outNode.gain, y);
   }
