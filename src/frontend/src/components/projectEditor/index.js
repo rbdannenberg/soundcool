@@ -88,6 +88,8 @@ class ProjectEditor extends React.Component {
       projectId: this.props.match.params.id,
       items: [[], [], [], [], []],
       orderingItems: [[], [], [], [], []],
+      dragState: [],
+      resizeState: [[], [], [], [], []],
       prevItems: this.props.blocks.bs,
       projectName: "",
       projectDescription: "",
@@ -153,6 +155,8 @@ class ProjectEditor extends React.Component {
       this.setState({
         items: finalResult
       });
+      this.setState({ dragState: [...finalResult] });
+      //console.log(dragState);
     }
   };
 
@@ -408,12 +412,22 @@ class ProjectEditor extends React.Component {
         while (sizeChange--) {
           items.push([]);
         }
+        if(maxColumn === this.state.dragState.length) {
+          items = [...this.state.dragState];
+        }
+        if(maxColumn < this.state.dragState.length) {
+          items = [...this.state.resizeState[maxColumn - 1]];
+        }
       } else if (sizeChange < 0) {
+       // console.log(this.state.fiveState)
         while (sizeChange++ < 0) {
           items[items.length - 2] = items[items.length - 2].concat(
             items[items.length - 1]
           );
           items.pop();
+          const newResizeState = this.state.resizeState;
+          newResizeState[maxColumn - 1] = [...items];
+          this.setState({ resizeState: newResizeState});
         }
       }
     }
