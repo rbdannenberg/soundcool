@@ -41,11 +41,12 @@ const blocks = (
     // connections: each time we do a connection
     // we save it in the list, so that we can reconnect everything
     // when reloading the project
-    cns: []
+    cns: [],
+    positions: []
   },
   action
 ) => {
-  let { bs, nextBlockId, nextTypeId, nowIn, nowOut, cns } = state;
+  let { bs, nextBlockId, nextTypeId, nowIn, nowOut, cns, positions } = state;
   switch (action.type) {
     case "ADD_BLOCK": {
       // add the count information into action, so block knows the count when newing
@@ -84,6 +85,7 @@ const blocks = (
         nowIn,
         nowOut,
         cns,
+        positions,
         bs: bs.map(t => block(t, action))
       };
     case "DELETE_BLOCK":
@@ -166,7 +168,9 @@ const blocks = (
           })
         )
       };
-
+    case "POSITION_BLOCK":
+      //console.log(action)
+      return { ...state, positions: action.positions };
     case "LOAD_STATE":
       let newState = action.content ? action.content : undefined;
 

@@ -156,7 +156,10 @@ class ProjectEditor extends React.Component {
         items: finalResult
       });
       this.setState({ dragState: [...finalResult] });
-      //console.log(dragState);
+      this.props.dispatch({
+        type: 'POSITION_BLOCK',
+        positions: this.state.items.map(item => item.map(i => i.id))
+      })
     }
   };
 
@@ -397,6 +400,13 @@ class ProjectEditor extends React.Component {
       data["isStreamed"] = true;
       this.props.dispatch(data);
     });
+    setTimeout(() => {
+      const allItems = this.state.items.reduce((prev, cur) => prev.concat(cur), []);
+      const newItems = this.state.positions.map(col => col.map(id => allItems.find(item => item.id === id)));
+      const newResizeState = [];
+      newResizeState[newItems.length - 1] = newItems;
+      this.setState({ items: newItems, resizeState: newResizeState, dragState: [...newItems] });
+    }, 1000);
   }
 
   componentWillUnmount() {
@@ -419,7 +429,6 @@ class ProjectEditor extends React.Component {
           items = [...this.state.resizeState[maxColumn - 1]];
         }
       } else if (sizeChange < 0) {
-       // console.log(this.state.fiveState)
         while (sizeChange++ < 0) {
           items[items.length - 2] = items[items.length - 2].concat(
             items[items.length - 1]
@@ -714,7 +723,8 @@ class ProjectEditor extends React.Component {
             isLoadingComp: true,
             isLoadingCon: connectionCount > 0,
             projectName: name,
-            projectDescription: description
+            projectDescription: description,
+            positions: JSON.parse(content)["positions"]
           });
         })
         .catch(err => {
