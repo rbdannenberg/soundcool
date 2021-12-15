@@ -129,7 +129,6 @@ const WithHeader = ({
   const Block = eva(typeName);
   let inButton;
   let outButton;
-
   // conditionally render in and out buttons in the header
   if (inDisabled) {
     inButton = (

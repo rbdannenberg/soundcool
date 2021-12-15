@@ -29,7 +29,9 @@ class Player extends React.Component {
   }
 
   componentDidMount = () => {
+  //  console.log(this.props, 'blockinfo')
     let { audioObj } = this.props.blockInfo;
+  //  audioObj = audioObj || {};
     this.rendererP = setInterval(this.rendererMeter.bind(this), 200);
     this.rendererS = setInterval(this.rendererSeek.bind(this), 200);
     var canvas = this.canvasSeekRef.current;
@@ -150,7 +152,17 @@ class Player extends React.Component {
       inDisabled,
       audioObj
     } = this.props.blockInfo;
-
+    console.log(audioObj);
+    if(audioObj.loadPromise) {
+      audioObj.loadPromise.then((res) => {
+        if(res === 'missing sound') {
+          file.no = true;
+        }
+        else {
+          file.no = false;
+        }
+      })
+    }
     const loadUrl = url => {
       audioObj.load(url).then(res => {
         this.props.blockInfo.URL = url;
@@ -187,7 +199,6 @@ class Player extends React.Component {
     let hour = timeFormat(playedTime / 3600);
     let minute = timeFormat((playedTime - hour * 3600) / 60);
     let second = timeFormat(playedTime - hour * 3600 - minute * 60);
-
     return (
       <React.Fragment>
         <div className="" style={{ position: "relative", height: "6.25rem" }}>

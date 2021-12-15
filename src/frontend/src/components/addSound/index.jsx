@@ -15,7 +15,8 @@ class AddSound extends Component {
     super(props);
     this.state = {
       search: "",
-      isModalOpen: false
+      isModalOpen: false,
+      fileName: ""
     };
   }
 
@@ -122,14 +123,20 @@ class AddSound extends Component {
 
   render() {
     const { sounds } = this.state;
+    setTimeout(() => {
+      this.setState({ fileName: this.props.minimal
+          ? ''
+          : !this.props.file
+            ? 'Please select a sound'
+            : this.props.file.no
+              ? `❕${this.props.file.name}`
+              : `${this.props.file.name}` });
+    }, 1000);
     return (
       <React.Fragment>
         <p style={{ fontSize: "0.64rem", marginBottom: "0" }}>
-          {this.props.minimal
-            ? ""
-            : this.props.file
-              ? this.props.file.name
-              : "Please select a sound"}{" "}
+          {this.state.fileName}
+          {" "}
           <button
             className="btn btn-info"
             style={
@@ -147,7 +154,7 @@ class AddSound extends Component {
           >
             {this.props.file && this.props.file.name
               ? this.props.minimal
-                ? this.props.file.name
+                ? this.props.file.no ? `❕${this.props.file.name}` : `${this.props.file.name}`
                 : "Upd"
               : "Snd"}
           </button>

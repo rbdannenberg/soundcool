@@ -1,5 +1,6 @@
 import ScModule from "./sc-module.js";
 import ScAnalyzer from "./sc-analyzer.js";
+import { showToastr } from "../actions/common";
 
 function loadBufferSuccess(buffer) {
   this.buffer = buffer;
@@ -42,6 +43,7 @@ class ScPlayer extends ScModule {
   }
 
   load(path) {
+   // console.log('load', path)
     this.offset = 0;
     this.startTime = null;
     this.isPlaying = false;
@@ -57,11 +59,20 @@ class ScPlayer extends ScModule {
     request.open("GET", this.options.path, true);
     request.responseType = "arraybuffer";
     request.onload = function(progressEvent) {
-      this.context.decodeAudioData(
-        progressEvent.target.response,
-        this.loadBufferSuccess,
-        this.loadBufferError
-      );
+     //console.log(progressEvent, progressEvent.target.response.byteLength, 'progressevent')
+
+      if(progressEvent.target.status === 200) {
+        this.context.decodeAudioData(
+          progressEvent.target.response,
+          this.loadBufferSuccess,
+          this.loadBufferError
+        );
+      }
+      else {
+        showToastr("error", "Missing Sound");
+        this.loadPromise.resolve('missing sound');
+      }
+      
     }.bind(this);
     request.send();
     return this.loadPromise;

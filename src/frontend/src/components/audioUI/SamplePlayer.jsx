@@ -25,6 +25,16 @@ const IndividualPlayer = ({
   audioObj,
   changeBlock
 }) => {
+  if(audioObj.players[num].loadPromise) {
+    audioObj.players[num].loadPromise.then((res) => {
+      if(res === 'missing sound') {
+        file.no = true;
+      }
+      else {
+        file.no = false;
+      }
+    })
+  }
   // let inDisabled = true;
   const loadUrl = url => {
     audioObj.load(num, url).then(res => {
