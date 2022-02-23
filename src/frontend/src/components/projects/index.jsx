@@ -115,45 +115,25 @@ class ProjectHome extends React.Component {
       <div className="container">
         <Row className="py-1">
           <Col>
-            <Button
-              color="primary"
-              block
-              onClick={() => {
-                localStorage.setItem("localProject", null);
-                this.openProjectEditor();
-              }}
-            >
-              {" "}
-              Start New Project{" "}
-            </Button>
-          </Col>
-          <Col>
-            {
-              <Button
-                color="warning"
-                block
-                onClick={() => this.toggleJoinPerformanceModal()}
-              >
-                {" "}
-                Join Existing Performance{" "}
-              </Button>
-            }
-          </Col>
-          <Col>
-            {this.state.localProject && (
-              <Button
-                color="success"
-                block
-                onClick={() => this.openProjectEditor()}
-              >
-                {" "}
-                Resume Local Project{" "}
-              </Button>
-            )}
-          </Col>
-        </Row>
-        <CardDeck className="mt-2">
-          <Card style={{ width: "18rem" }}>
+          <CardDeck className="mt-2">
+          <Card className="mt-2" style={{ width: "35rem", marginBottom: "8rem", marginTop: "2rem"}}>
+          <Card.Body>
+            <Card.Title>Getting Started</Card.Title>
+          </Card.Body>
+          <Carousel
+            itemClass="py-3 px-3"
+            responsive={responsive}
+            showDots={true}
+          >
+            <iframe
+              title="guide1"
+              src="https://www.youtube.com/embed/zoZaVK7ysRM?rel=0"
+              frameborder="0"
+            ></iframe>
+          </Carousel>
+        </Card>
+        <Row className="py-1">
+        <Card style={{ width: "35rem", marginRight: "4rem" }}>
             <Card.Body>
               <Card.Title>Recent Projects</Card.Title>
             </Card.Body>
@@ -177,8 +157,45 @@ class ProjectHome extends React.Component {
               })}
             </ListGroup>
           </Card>
+          </Row>
 
-          <Card style={{ width: "18rem" }}>
+        </CardDeck>
+          </Col>
+          <Col>
+            <Button
+              block
+              onClick={() => {
+                localStorage.setItem("localProject", null);
+                this.openProjectEditor();
+              }}
+              style={{ marginTop: "5rem", marginLeft: "2rem", backgroundColor: "#F4D018", color: "black" }}
+            >
+              {" "}
+              Start New Project{" "}
+            </Button>
+            {
+              <Button
+                style={{ marginBottom: "5rem", marginLeft: "2rem", marginTop: "3rem", backgroundColor: "#F4D018", color: "black"}}
+                block
+                onClick={() => this.toggleJoinPerformanceModal()}
+              >
+                {" "}
+                Share Project{" "}
+              </Button>
+            }
+            {this.state.localProject && (
+              <Button
+                color="#FFEB3B"
+                block
+                onClick={() => this.openProjectEditor()}
+                
+              >
+                {" "}
+                Resume Local Project{" "}
+              </Button>
+            )}
+            <Row className="py-1">
+            <Card style={{ width: "35rem", marginTop: "8rem", marginLeft: "4rem"}}>
             <Card.Body>
               <Card.Title>Cloud Projects</Card.Title>
             </Card.Body>
@@ -209,99 +226,10 @@ class ProjectHome extends React.Component {
               </>
             )}
           </Card>
-          <Card style={{ width: "18rem" }}>
-            <Card.Body>
-              <Card.Title>Configuration</Card.Title>
-            </Card.Body>
-            <ListGroup className="list-group-flush">
-              <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                Default View{" "}
-                <Input
-                  onChange={e => {
-                    localStorage.setItem("editorView", e.target.value);
-                    this.setState({ editorView: e.target.value });
-                  }}
-                  style={{ width: "120px" }}
-                  value={this.state.editorView}
-                  type="select"
-                  name="select"
-                  id="exampleSelect"
-                >
-                  <option>Column</option>
-                  <option>Floating</option>
-                </Input>
-              </ListGroupItem>
-              <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                Max Recent Project{" "}
-                <Input
-                  onChange={e => {
-                    localStorage.setItem("recentProjectsSize", e.target.value);
-                    this.setState({ recentPSize: e.target.value });
-                  }}
-                  style={{ width: "120px" }}
-                  type="select"
-                  name="select"
-                  value={this.state.recentPSize}
-                  id="exampleSelect"
-                >
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                </Input>
-              </ListGroupItem>
-              <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                Max Cloud Project{" "}
-                <Input
-                  onChange={e => {
-                    localStorage.setItem("projectsShown", e.target.value);
-                    this.setState({ projectsShown: e.target.value }, () =>
-                      this.loadProject()
-                    );
-                  }}
-                  style={{ width: "120px" }}
-                  type="select"
-                  name="select"
-                  value={this.state.projectsShown}
-                  id="exampleSelect"
-                >
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                </Input>
-              </ListGroupItem>
-            </ListGroup>
-          </Card>
-        </CardDeck>
-        <Card className="mt-2">
-          <Card.Body>
-            <Card.Title>Guide</Card.Title>
-          </Card.Body>
-          <Carousel
-            itemClass="py-3 px-3"
-            responsive={responsive}
-            showDots={true}
-          >
-            <iframe
-              title="guide1"
-              src="https://www.youtube.com/embed/zoZaVK7ysRM?rel=0"
-              frameborder="0"
-            ></iframe>
-            <iframe
-              title="guide2"
-              src="https://www.youtube.com/embed/eobcIXsifdA?rel=0"
-              frameborder="0"
-            ></iframe>
-            <iframe
-              title="guide3"
-              src="https://www.youtube.com/embed/ueNVlhKOujw?rel=0"
-              frameborder="0"
-            ></iframe>
-          </Carousel>
-        </Card>
+          </Row>
+          </Col>
+        </Row>
+        
         <Modal
           centered
           show={this.state.isJoinPerformanceModalOpen}
