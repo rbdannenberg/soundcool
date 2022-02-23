@@ -182,6 +182,14 @@ Without recompiling them, you will find that none of your changes are shown.
 - Any changes you make in terms of the server (anything outside of both client folders)
   will be automatically updated by `nodemon`. As you can see it's nodemon instead of node
   running when you starts the server.
+  
+### package-lock.json
+
+Maybe someone can explain this to me or fix our repo. When I run `git pull` to get the latest changes, I often get an error message like `the following files would be overwritten by merge:  src/backend/package-lock.json`.  I think this is a lock file that's erroneously in the git repo.  The following commands seem to eliminate the problem, but I have no idea what's actually going on:
+```
+git stash push --include-untracked
+git stash drop
+```
 
 ## What do we currently have
 
