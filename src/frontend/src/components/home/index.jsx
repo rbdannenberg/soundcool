@@ -187,7 +187,7 @@ class Home extends Component {
                       </font>
                     </p>
                   </div>
-
+{/*
                   <div className="col-sm-3 col-md col-12">
                     <img
                       alt="icon-knect"
@@ -224,6 +224,7 @@ class Home extends Component {
                       </font>
                     </p>
                   </div>
+*/}
                 </div>
               </div>
             </div>
