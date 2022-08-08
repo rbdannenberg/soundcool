@@ -349,7 +349,7 @@ class Home extends Component {
                   alt="Inclusive education"
                   width="100%"
                   height="200px"
-                  src="/assets/images/6.jpg"
+                  src="/assets/images/6.jpeg"
                 />
                 <div className="text">
                   <h3>
