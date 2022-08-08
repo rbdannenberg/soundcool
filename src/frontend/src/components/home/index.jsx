@@ -43,7 +43,7 @@ class Home extends Component {
                   <div className="col-sm-3 col-md col-12">
                     <img
                       alt="icon-tablet"
-                      src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-tablet.png"
+                      src="/assets/images/soundcool-icono-tablet.png"
                     />
                     <p>
                       <font
@@ -80,7 +80,7 @@ class Home extends Component {
                   <div className="col-sm-3 col-md col-12">
                     <img
                       alt="icon-mobile"
-                      src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-movil.png"
+                      src="/assets/images/soundcool-icono-movil.png"
                     />
                     <p>
                       <font
@@ -117,7 +117,7 @@ class Home extends Component {
                   <div className="col-12 col-md">
                     <img
                       alt="icon-ordenador"
-                      src="http://soundcool.org/wp-content/uploads/2018/11/soundcool-icono-ordenador.png"
+                      src="/assets/images/soundcool-icono-ordenador.png"
                     />
                     <p>
                       <font
@@ -154,7 +154,7 @@ class Home extends Component {
                   <div className="col-sm-3 col-md col-12">
                     <img
                       alt="icon-vr"
-                      src="http://soundcool.org/wp-content/uploads/2019/02/vr_icon.png"
+                      src="/assets/images/vr_icon.png"
                     />
                     <p>
                       <font
@@ -230,14 +230,15 @@ class Home extends Component {
             </div>
           </div>
 
-          <div className="banner-photo">
+          {/* Need new demo video, current one is not availble anymore */}
+          {/* <div className="banner-photo">
             <video width="100%" height="auto" autoPlay muted loop>
               <source
                 src="http://soundcool.org/wp-content/uploads/teasersoundcool.mp4"
                 type="video/mp4"
               />
             </video>
-          </div>
+          </div> */}
 
           <div className="banner-photo-efect"></div>
         </div>
@@ -270,7 +271,7 @@ class Home extends Component {
                   alt="Audiovisual creators"
                   width="100%"
                   height="200px"
-                  src="http://soundcool.org/wp-content/uploads/2019/01/4.jpg"
+                  src="/assets/images/4.jpeg"
                 />
                 <div className="text">
                   <h3>
@@ -304,7 +305,7 @@ class Home extends Component {
                   alt="Education"
                   width="100%"
                   height="200px"
-                  src="http://soundcool.org/wp-content/uploads/2019/01/5-e1552466526596.jpg"
+                  src="/assets/images/5-e1552466526596.jpeg"
                 />
                 <div className="text">
                   <h3>
@@ -348,7 +349,7 @@ class Home extends Component {
                   alt="Inclusive education"
                   width="100%"
                   height="200px"
-                  src="http://soundcool.org/wp-content/uploads/2019/01/6.jpg"
+                  src="/assets/images/6.jpg"
                 />
                 <div className="text">
                   <h3>
