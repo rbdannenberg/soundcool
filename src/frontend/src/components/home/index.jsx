@@ -187,7 +187,7 @@ class Home extends Component {
                       </font>
                     </p>
                   </div>
-{/*
+{/*   removed an item mainly just to see if I could do it and make the change visible on our UPV server:
                   <div className="col-sm-3 col-md col-12">
                     <img
                       alt="icon-knect"
