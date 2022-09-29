@@ -726,6 +726,8 @@ class ProjectEditor extends React.Component {
             projectDescription: description,
             positions: JSON.parse(content)["positions"]
           });
+            console.log("loadState !new sets positions to " +
+                        this.state.positions);  // RBDDBG
         })
         .catch(err => {
           showToastrError(err);
@@ -736,6 +738,9 @@ class ProjectEditor extends React.Component {
         projectName: "",
         projectDescription: ""
       });
+      console.log("loadState new positions are " +
+                  this.state.positions + " name " +
+                  this.state.projectName); // RBDDBG
     }
   }
 
