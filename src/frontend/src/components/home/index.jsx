@@ -1,17 +1,99 @@
 import React, { Component } from "react";
 
 class Home extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        modalState: true
+    };
+
+    this.handleShow = this.handleShow.bind(this);
+  }
+
+  handleShow() {
+    this.setState({ modalState: !this.state.modalState });
+  }
+
   render() {
     return (
       <div>
+        <div>
+          <div className={"modal fade" + (this.state.modalState ?
+                                          " show d-block" :
+                                          " d-none")}
+               tabIndex="-1" role="dialog">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Privacy Policy</h5>
+                </div>
+                <div className="modal-body"><p>This pop-up is used to inform
+                  visitors regarding our policies on the collection, use,
+                  and disclosure of information. If you choose to use our
+                  service, then you agree to the collection and use of
+                  information related to this policy. This service is provided
+                  by the PerformingARTech research group of the Universitat
+                  Politècnica de València, free of charge, and is designed to
+                  be used as is. This privacy policy establishes the terms in
+                  which Soundcool Web Version uses and protects the information
+                  that is provided by its users. This company is committed to
+                  the safety of its users’ data.</p>
+                  <p>DATA PROTECTION POLICY</p>
+                  <p>a) Responsible:<br />
+                  POLYTECHNIC UNIVERSITY OF VALENCIA<br />
+                  CIF Q4618002B<br />
+                  Camí de Vera, s/n.<br />
+                  46022-Valencia.</p>
+                  <p>b) Contact details of the data protection delegate:<br />
+                  You can contact the data protection officer by email sent to
+                  the account dpd@upv.es or by writing to the General
+                  Secretariat of the UPV.</p>
+                  <p>c) Purposes and legal basis of the treatment:<br />
+                  The holder requests the following personal data: email
+                  address and password so that users can test the web version
+                  of the demo in Soundcool tests.</p>
+                  <p>d) Recipients:<br />
+                  The information obtained in the forms of this website will
+                  not be transferred to third parties, beyond the assignments
+                  provided for in the law.</p>
+                  <p>e) International data transfers are not foreseen.</p>
+                  <p>f) Conservation criteria:<br />
+                  The personal data will be kept for as long as they are
+                  necessary, and once cease to be necessary for the
+                  conservation time provided for in the legislation
+                  applicable.</p>
+                  <p>g) Exercise of rights:<br />
+                  Interested persons have the right to exercise the rights of
+                  access, rectification, deletion, portability, limitation, or
+                  opposition to the treatment by providing a copy of an
+                  official document that identifies them (NIF-NIE, Passport),
+                  and if it were necessary, supporting documentation of your
+                  request before:</p>
+                  <p>POLYTECHNIC UNIVERSITY OF VALENCIA<br />
+                  UPV Data Protection Delegate.<br />
+                  General Secretary.<br />
+                  Camí de Vera, s/n.<br />
+                  46022-Valencia.</p>
+                  <p>h) Data Protection Authority<br />
+                  Interested persons have the right to file claims with the
+                  Agency Spanish Data Protection.</p>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary"
+                          onClick={this.handleShow}>Accept</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="block background-black banner home">
           <div className="container">
             <div className="row">
               <h1 className="col-12 text-center color-white">
                 <font style={{ verticalAlign: "inherit" }}>
                   <font style={{ verticalAlign: "inherit" }}>
-                    Discover Soundcool
+                    Discover Soundcool Online
                   </font>
                 </font>
               </h1>
@@ -187,44 +269,6 @@ class Home extends Component {
                       </font>
                     </p>
                   </div>
-{/*   removed an item mainly just to see if I could do it and make the change visible on our UPV server:
-                  <div className="col-sm-3 col-md col-12">
-                    <img
-                      alt="icon-knect"
-                      src="http://soundcool.org/wp-content/uploads/2019/02/kinect_icon-1.png"
-                    />
-                    <p>
-                      <font
-                        style={{
-                          verticalAlign: "inherit"
-                        }}
-                      >
-                        <font
-                          style={{
-                            verticalAlign: "inherit"
-                          }}
-                        >
-                          Kinect
-                        </font>
-                      </font>
-                    </p>
-                    <p>
-                      <font
-                        style={{
-                          verticalAlign: "inherit"
-                        }}
-                      >
-                        <font
-                          style={{
-                            verticalAlign: "inherit"
-                          }}
-                        >
-                          KINECT XBOX 360 UP TO MAC SIERRA AND WINDOWS 7
-                        </font>
-                      </font>
-                    </p>
-                  </div>
-*/}
                 </div>
               </div>
             </div>
@@ -266,7 +310,7 @@ class Home extends Component {
             <br />
             <br />
             <div className="row">
-              <div className="col-sm-4">
+              <div className="col-sm-3">
                 <img
                   alt="Audiovisual creators"
                   width="100%"
@@ -300,7 +344,43 @@ class Home extends Component {
                   </p>
                 </div>
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm-3">
+                <img
+                  alt="Health Applications"
+                  src="https://soundcool.org/wp-content/uploads/2021/12/Grupo-5437-2.png"
+                  height="200px"
+                />
+                <div className="text">
+                  <h3>
+                    <font style={{ verticalAlign: "inherit" }}>
+                      <font
+                        style={{
+                          verticalAlign: "inherit"
+                        }}
+                      >
+                        Health Applications
+                      </font>
+                    </font>
+                  </h3>
+                  <p>
+                    <font style={{ verticalAlign: "inherit" }}>
+                      <font
+                        style={{
+                          verticalAlign: "inherit"
+                        }}
+                      >
+                        We apply our technology in the development of therapies
+                        for the rehabilitation of patients with
+                        neurodegenerative diseases.  If you want to be part of
+                        this new project contact us on&nbsp;
+                        <a href="https://soundcool.org/contacto/">
+                        https://soundcool.org/contacto/</a>.
+                      </font>
+                    </font>
+                  </p>
+                </div>
+              </div>
+              <div className="col-sm-3">
                 <img
                   alt="Education"
                   width="100%"
@@ -344,7 +424,7 @@ class Home extends Component {
                   </p>
                 </div>
               </div>
-              <div className="col-sm-4">
+              <div className="col-sm-3">
                 <img
                   alt="Inclusive education"
                   width="100%"
@@ -367,13 +447,12 @@ class Home extends Component {
                     <font style={{ verticalAlign: "inherit" }}>
                       <font
                         style={{
-                          verticalAlign: "inherit"
+                          verticalAlign: "center"
                         }}
                       >
                         Inclusive pedagogies with Soundcool have demonstrated
-                        their suitability to instruction for students
-                        with autism, Down syndrome, partial or total blindness,
-                        etc.
+                        their suitability to instruction for students with
+                        autism, Down syndrome, partial or total blindness, etc.
                       </font>
                     </font>
                   </p>

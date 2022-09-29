@@ -56,7 +56,7 @@ function About(props) {
           <h2>Our Goal</h2>
           <p>
             Soundcool is a system for collaborative creation through mobile,
-            tablet, hololens and kinect.
+            tablet, hololens.
             The system has been created by the Polytechnic University of
             Valencia with an international collaboration of universities and
             institutions.
@@ -66,6 +66,9 @@ function About(props) {
             implementation in MaxMSP to Web technologies to enable greater
             portability and eventually a free cloud-based system where
             Soundcool users can learn, create, and share.
+            See &nbsp;<a href="http://soundcool.org">http://soundcool.org</a>
+            for the computer and playstore/iOS applications and other
+            running projects.
           </p>
         </div>
 {/*
@@ -92,7 +95,9 @@ function About(props) {
           <h2>Soundcool Web Audio Team</h2>
         </div>
         <div className="col-12">
-          <Media list className="row" style={{ padding: "0px" }}>
+          <Media list className="row"
+                 style={{ padding: "0px", wordBreak:"break-word",
+                          height: "auto" }}>
             {leaders}
           </Media>
         </div>

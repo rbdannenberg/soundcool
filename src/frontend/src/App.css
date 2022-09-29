@@ -46,6 +46,19 @@ address {
     background-color: darkslategray;
 }
 
+.modal-body {
+    overflow: scroll;
+}
+
+.modal-content {
+    height: 500px;
+}
+
+.btn-secondary {
+    background-color: blue;
+    border-color: blue;
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
