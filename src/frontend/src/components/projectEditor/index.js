@@ -402,10 +402,18 @@ class ProjectEditor extends React.Component {
     });
     setTimeout(() => {
       const allItems = this.state.items.reduce((prev, cur) => prev.concat(cur), []);
-      const newItems = this.state.positions.map(col => col.map(id => allItems.find(item => item.id === id)));
+      console.log(this.state); 
+      const newItems = this.state.positions?.map(col => col.map(id => allItems.find(item => item.id === id)));
+      console.log(newItems); 
       const newResizeState = [];
-      newResizeState[newItems.length - 1] = newItems;
-      this.setState({ items: newItems, resizeState: newResizeState, dragState: [...newItems] });
+      if (newItems == null || newItems.length === 0) {
+        console.log("HERE")
+      } else { 
+        console.log("****")
+        newResizeState[newItems.length - 1] = newItems;
+        this.setState({ items: newItems, resizeState: newResizeState, dragState: [...newItems] });
+      }
+      
     }, 1000);
   }
 
@@ -416,6 +424,7 @@ class ProjectEditor extends React.Component {
   updateWindowDimensions() {
     let maxColumn = Math.floor((window.innerWidth - 100) / 220);
     let items = this.state.items;
+    console.log(this.state);
     if (items.length !== maxColumn) {
       let sizeChange = maxColumn - items.length;
       if (sizeChange > 0) {
@@ -430,13 +439,16 @@ class ProjectEditor extends React.Component {
         }
       } else if (sizeChange < 0) {
         while (sizeChange++ < 0) {
-          items[items.length - 2] = items[items.length - 2].concat(
-            items[items.length - 1]
-          );
-          items.pop();
-          const newResizeState = this.state.resizeState;
-          newResizeState[maxColumn - 1] = [...items];
-          this.setState({ resizeState: newResizeState});
+          console.log("ITEM LIST" + items + items.length)
+          if (items.length > 1) {
+            items[items.length - 2] = items[items.length - 2].concat(
+              items[items.length - 1]
+            );
+            items.pop();
+            const newResizeState = this.state.resizeState;
+            newResizeState[maxColumn - 1] = [...items];
+            this.setState({ resizeState: newResizeState});
+          }
         }
       }
     }
