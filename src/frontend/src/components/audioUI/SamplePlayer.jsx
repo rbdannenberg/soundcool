@@ -159,7 +159,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
     loop,
     random,
     audioObj,
-    URLs
+    // URLs
   } = blockInfo;
 
   return (

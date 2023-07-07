@@ -193,7 +193,8 @@ const WithHeader = ({
             elem.style.opacity = 1;
           }else{
             var elem = document.querySelectorAll('.text-left');
-            for (var i=0; i <= document.querySelectorAll('.text-left').length; i++){
+            console.log(elem);
+            for (var i=0; i < elem.length; i++){
               elem[i].style.opacity = 1;
             }
           }

@@ -146,7 +146,7 @@ export const clearData = () => {
 
 export const getCurrentProjectId = () => {
   let location = window.location.href.split("/");
-  if (location[3] == 'project-editor' && location[4] != null && location[4] != 'new') {
+  if (location[3] === 'project-editor' && location[4] !== null && location[4] !== 'new') {
     return location[4];
   }
   return null;
@@ -154,7 +154,7 @@ export const getCurrentProjectId = () => {
 
 export const getCurrentPerformanceId = () => {
   let location = window.location.href.split("/");
-  if (location[3] == 'performance' && location[4] != null) {
+  if (location[3] === 'performance' && location[4] !== null) {
     return location[4];
   }
   return null;
