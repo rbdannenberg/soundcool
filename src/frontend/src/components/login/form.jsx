@@ -46,6 +46,10 @@ class LoginForm extends React.Component {
 
   render() {
     const { email, password } = this.state;
+    const inputStyle = {
+      height: '10px', // Adjust the desired height
+      marginBottom: '100px', // Adjust the desired margin-bottom
+    };
     return (
       <div id="user_login" method="post">
         <FormInput
@@ -57,6 +61,7 @@ class LoginForm extends React.Component {
           value={email}
           onChange={this.handleOnChange}
           autoFocus
+          style={inputStyle} 
         />
         <br />
         <FormInput
@@ -67,6 +72,7 @@ class LoginForm extends React.Component {
           placeholder="Password"
           value={password}
           onChange={this.handleOnChange}
+          style={inputStyle} 
         />
         <br />
         <button onClick={() => this.handleSubmit()} className="btn btn-primary">
