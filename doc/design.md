@@ -21,8 +21,53 @@ This document also contains other topics, including
 
 ## Audio Components
 
+The GUI alone is not responsible for producing sound. To accomplish this, navigate to the projectEditor/audio folder and create sc-yourModule.js. Refer to the documentation in doc/modules from the root folder for guidance during the implementation process.
+
+
+
 ## GUI Components
 
+
+The GUI represents the module. How to build modules and handle sound files is an important design decision. The breif overview is here: 
+
+
+####  Connection Spec:
+   - Connect and disconnect actions are dispatched with values documenting the input and output connections.
+   - The connection information includes the module's name, port, ID, and web audio object.
+   - Each module has input and output ports, identified by string values starting from 0 index.
+   - Modules have unique IDs, and the name alone is not sufficient for identification.
+   - Audio objects based on the web audio API are used.
+
+#### Module GUI Building:
+   - Developers create a module GUI by implementing a module class with HTML code embedded in the `render()` function.
+   - The module class is added to the projectEditor's directory and exported.
+   - Module properties, such as delayTime and feedback amount, are added as fields in the `blockSpecs.jsx` file.
+
+#### Event Handling:
+   - Events reflecting user changes are dispatched using `store.dispatch()` or `changeBlock()` functions.
+   - The events of type `"CHANGE_BLOCK"` are processed by the `reducers/blocks.js` file.
+
+#### Audio Object Implementation:
+   - The GUI represents the module, but the actual sound functionality is implemented using audio objects.
+   - Audio object files, such as `sc-yourModule.js`, are created in the `projectEditor/audio` folder.
+   - Documentation in `doc/modules` provides guidance for implementing audio objects.
+
+####  Module Setup:
+   - The `addBlock` setup involves importing the module in `reducers/block.js` and calling it in the `newSoundModule()` function.
+   - A new `<div/>` is added in `AddBlock.jsx` to include the new module in the dropdown list.
+
+####  Module Creation:
+   - Functions in `projectEditor/index.js` handle project saving, loading, and downloading by storing the Redux state in a JSON object.
+   - When loading a project, the Redux state is copied, ensuring recreation of module GUIs and their parameters.
+   - However, the audio objects (`sc-module`) are not reinitialized, and efforts are being made to implement a buffer time for their reinitialization.
+
+####  Sound Management:
+   - Users can upload sounds, which are stored in the file system and accessed through a RESTful API.
+   - The `AddSound` GUI class allows users to choose sounds from a list.
+   - The `serveAudio` function fetches the sound's URL from the API based on its ID.
+   - Developers can use HTTP requests inside their audio objects to fetch sounds.
+
+These design choices revolve around building module GUIs, handling events, implementing audio objects, managing module creation, and incorporating sound functionality into the system.
 ## Front End
 The basic front end design consists of a left-hand column serving as a menu of components that can be instantiated, and two more columns that contain active component instances. All components must have a fixed width so they can be organized or stacked into columns. Components may have a way to "open" them into larger separate windows, e.g. to display data.
 

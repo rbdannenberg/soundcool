@@ -1,0 +1,63 @@
+
+@mixin make-container($gutter: $grid-gutter-width) {
+    width: 100%;
+    padding-right: $gutter / 2;
+    padding-left: $gutter / 2;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  @mixin make-row($gutter: $grid-gutter-width, $max-elements: $max-elements-per-column) {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -$gutter / 2;
+    margin-left: -$gutter / 2;
+  
+    @include row-cols($max-elements);
+  }
+  
+  @mixin row-cols($count) {
+    $width: 100% / $count;
+  
+    & > * {
+      flex: 0 0 $width;
+      max-width: $width;
+    }
+  }
+  
+  @mixin make-col-ready($gutter: $grid-gutter-width) {
+    position: relative;
+    width: 100%;
+    padding-right: $gutter / 2;
+    padding-left: $gutter / 2;
+  }
+  
+  @mixin make-col($size, $columns: $grid-columns) {
+    flex: 0 0 percentage($size / $columns);
+    max-width: percentage($size / $columns);
+  }
+  
+  @mixin make-col-auto() {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 100%;
+  }
+  
+  @mixin make-col-offset($size, $columns: $grid-columns) {
+    $num: $size / $columns;
+    margin-left: if($num == 0, 0, percentage($num));
+  }
+  
+  /* // Example usage with $max-elements set to 5 */
+  .container {
+    @include make-container;
+  }
+  
+  .row {
+    @include make-row($max-elements: 5);
+  }
+  
+  .column {
+    @include make-col(1);
+  }
+  

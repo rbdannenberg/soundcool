@@ -66,8 +66,7 @@ function About(props) {
             implementation in MaxMSP to Web technologies to enable greater
             portability and eventually a free cloud-based system where
             Soundcool users can learn, create, and share.
-            See &nbsp;<a href="http://soundcool.org">http://soundcool.org</a>
-            for the computer and playstore/iOS applications and other
+            See &nbsp;<a href="http://soundcool.org">http://soundcool.org</a>&nbsp;for the computer and playstore/iOS applications and other
             running projects.
           </p>
         </div>
