@@ -16,7 +16,7 @@ a.nav-link {
 
 a.active {
     color: fff;
-    border-bottom: red 2px solid !important;
+    border-bottom: rgb(250, 250, 250) 0 solid !important;
 }
 
 .row-content {
