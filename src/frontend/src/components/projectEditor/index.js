@@ -87,6 +87,7 @@ class ProjectEditor extends React.Component {
     console.log("ProjectEditor constructor: " + JSON.stringify(props.match.params.id)); // RBDDBG
     super(props);
     this.state = {
+      nextLocation: null,
       projectId: this.props.match.params.id,
       items: [[], [], [], [], []],
       orderingItems: [[], [], [], [], []],
@@ -337,7 +338,7 @@ class ProjectEditor extends React.Component {
       let opts = {};
       if (
         this.state.loadCount &&
-        this.state.loadCount == nextProps.blocks.bs.length
+        this.state.loadCount === nextProps.blocks.bs.length
       ) {
         var connectionCount = 0;
         nextProps.blocks.bs.forEach(bs => {
@@ -467,8 +468,8 @@ class ProjectEditor extends React.Component {
     this.props.blocks["bs"].forEach((comp, index) => {
       if (
         !!comp.oscPort &&
-        comp.oscPort == oscPort &&
-        comp.typeName == targetType
+        comp.oscPort === oscPort &&
+        comp.typeName === targetType
       ) {
         components.push({ id: comp.id, index: index });
       }
@@ -817,24 +818,37 @@ class ProjectEditor extends React.Component {
   };
 
   saveProject = saveAs => {
-    console.log("saveProject: this.props.blocks" + JSON.stringify(this.props.blocks));
-    console.log("saveProject: saveAs" + saveAs);
-    console.log("saveProject: this.copyname" + this.state.projectName);
     if (saveAs) {
       this.copyname();
     }
-    console.log("saveProject: this.copyname" + JSON.stringify(this.state));
     if (isUserLoggedIn())
       if (this.state.projectId !== "new" && !saveAs) {
         this.setState({
           isProjectChanged: false
         });
+        
         this.updateProject({
           projectId: this.state.projectId,
           content: JSON.stringify(this.props.blocks)
+        })
+        .then(response => {
+          console.log('Response:', response); // Log the full response to inspect its structure
+      
+          if(response && response.message === "Project Updated successfully"){ 
+            callback && callback();
+          } else {
+            // Handle unsuccessful update here, maybe show a toastr message to notify the user
+            showToastr("error", "Project update was not successful");
+          }
+        })
+        .catch(error => {
+          console.error(error);
         });
-      } else this.toggleModal();
-    else {
+      } else {
+        this.saveCallback = callback; 
+        this.toggleModal();
+      }
+    } else {
       this.toggleLoginModal();
     }
   };
@@ -846,9 +860,10 @@ class ProjectEditor extends React.Component {
       })
       .catch(error => {
         showToastrError(error);
-        console.log("COULD NOT SAVE")
       });
   }
+  
+  
 
   createProject = event => {
     event.preventDefault();
@@ -880,7 +895,16 @@ class ProjectEditor extends React.Component {
           console.log("createProject" + JSON.stringify(data));
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
+
+
+
+         // Call the saved callback function, if available
+        if (this.saveCallback) {
+          this.saveCallback();
+        } else {
           window.location = "/project-editor/" + data.project_id;
+        }
+         
         })
         .catch(error => {
           showToastrError(error);
@@ -931,6 +955,13 @@ class ProjectEditor extends React.Component {
 
   toggleLoginModal = () => {
     this.setState({ isLoginModalOpen: !this.state.isLoginModalOpen });
+  };
+  toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(console.log);
+    } else {
+      document.exitFullscreen().catch(console.log);
+    }
   };
 
   afterRegister = res => {
@@ -1016,11 +1047,22 @@ class ProjectEditor extends React.Component {
           <NavigationPrompt
             renderIfNotActive={true}
             // Confirm navigation if going to a path that does not start with current path:
+            // when={(crntLocation, nextLocation) =>
+            //   this.state.isProjectChanged &&
+            //   (!nextLocation ||
+            //     !nextLocation.pathname.startsWith(crntLocation.pathname))
+            // }
             when={(crntLocation, nextLocation) =>
-              this.state.isProjectChanged &&
-              (!nextLocation ||
-                !nextLocation.pathname.startsWith(crntLocation.pathname))
+              {
+                if (this.state.isProjectChanged &&
+                    (!nextLocation || !nextLocation.pathname.startsWith(crntLocation.pathname))) {
+                  this.setState({ nextLocation: nextLocation });
+                  return true;
+                }
+                return false;
+              }
             }
+            
             disableNative={true}
           >
             {({ isActive, onCancel, onConfirm }) => {
@@ -1034,15 +1076,19 @@ class ProjectEditor extends React.Component {
                         they will be lost.
                       </Modal.Body>
                       <Modal.Footer>
-                        <button
-                          className="btn btn-info"
-                          onClick={() => {
-                            this.saveProject(false);
-                            onConfirm();
-                          }}
-                        >
-                          Save and Leave
-                        </button>
+                      <button
+  className="btn btn-info"
+  onClick={() => {
+    this.saveProject(false, () => {
+      if (this.state.nextLocation) {
+        window.location.href = this.state.nextLocation.pathname;
+      }
+    });
+  }}
+>
+  Save and Leave
+</button>
+                         
                         <button className="btn btn-success" onClick={onCancel}>
                           Stay On Page
                         </button>
@@ -1243,16 +1289,34 @@ class ProjectEditor extends React.Component {
               </Nav>
               
               <Nav className="ml-auto" navbar>
-                <NavItem>
-                  <NavLink className="nav-link" to="/contact">
+              {/* <NavItem>
+              <NavLink 
+                className="nav-link" 
+                to="#" 
+                onClick={this.toggleFullScreen}
+              >
+                <span className="fa fa-expand " />
+              </NavLink>
+            </NavItem> */}
+             <NavItem>
+             <NavLink 
+                className="nav-link" 
+                to={window.location.pathname}
+                onClick={this.toggleFullScreen}
+              >
                     <span className="fa fa-expand " />
                   </NavLink>
                 </NavItem>
-                <NavItem>
-                  <NavLink className="nav-link" to="/contact">
-                    <span className="fa fa-compress " />
-                  </NavLink>
-                </NavItem>
+            <NavItem>
+              <NavLink 
+                className="nav-link" 
+                to={window.location.pathname}
+                onClick={this.toggleFullScreen}
+              >
+                <span className="fa fa-compress " />
+              </NavLink>
+            </NavItem>
+
               </Nav>
             </div>
           </Navbar>

@@ -10,12 +10,10 @@ import ScOscilloscope from "../../audio/sc-oscilloscope";
 import ScSpectroscope from "../../audio/sc-spectroscope";
 import ScPitch from "../../audio/sc-pitch-phasor";
 import ScTransposer from "../../audio/sc-transposer";
-//import ScPitch from "../audio/sc-pitch";
 import ScMixer from "../../audio/sc-mixer";
 import ScReverb from "../../audio/sc-reverb";
 import ScGranSynth from "../../audio/sc-granular-synthesis";
 import { specValues, audioDefaults } from "./Components/blockSpecs";
-
 function initAudioObj(typeName, audioConfig) {
   let t;
   let audioObjPromise = new Promise((resolve, reject) => {
