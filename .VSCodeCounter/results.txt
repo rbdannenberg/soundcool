@@ -204,7 +204,7 @@ Files
 | src/frontend/src/components/form/FormRadio.jsx                      | JavaScript React |         51 |          0 |          5 |         56 |
 | src/frontend/src/components/form/FormSelect.jsx                     | JavaScript React |         31 |          0 |          3 |         34 |
 | src/frontend/src/components/form/index.js                           | JavaScript       |         18 |          0 |          2 |         20 |
-| src/frontend/src/components/header/index.jsx                        | JavaScript React |        128 |          0 |         15 |        143 |
+| src/frontend/src/components/header/header.jsx                        | JavaScript React |        128 |          0 |         15 |        143 |
 | src/frontend/src/components/home/index.jsx                          | JavaScript React |        378 |          0 |         11 |        389 |
 | src/frontend/src/components/login/actions.jsx                       | JavaScript React |         10 |          0 |          2 |         12 |
 | src/frontend/src/components/login/form.jsx                          | JavaScript React |         65 |          0 |          5 |         70 |

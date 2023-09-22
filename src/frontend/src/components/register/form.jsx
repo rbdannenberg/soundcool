@@ -71,7 +71,7 @@ class RegisterForm extends Component {
           onChange={this.handleOnChange}
         />
         <br />
-        <button onClick={this.handleSubmit} className="btn btn-primary">
+        <button onClick={this.handleSubmit} className="btn btn-primary register-button">
           Register
         </button>
       </form>

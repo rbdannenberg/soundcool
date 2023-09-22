@@ -110,8 +110,10 @@ class Player extends React.Component {
     let renderCtx = canvasCtx;
     const height = 150;
     const width = 25;
-
-    let x = audioObj.getAudioData()[0];
+    // console.log("audioOBJ: " + JSON.stringify(audioObj));
+    
+    let x = audioObj[0];
+    // let x = audioObj.getAudioData()[0];
     // console.log(x); // in db, [-100, 10]
     let data = Math.max(this.oldDb - 7, x, -100);
     let scaledData = data;
@@ -131,6 +133,7 @@ class Player extends React.Component {
 
     renderCtx.fillStyle = grd;
     renderCtx.fillRect(0, height - scaledData, width, scaledData);
+    
   };
 
   async getAudioUrl(sound_id) {

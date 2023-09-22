@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
+import ReactDOM from "react-dom";
+import "semantic-ui-css/semantic.min.css";
+import emailjs from "emailjs-com";
+import { Form, Input, TextArea, Button } from "semantic-ui-react";
+import Swal from "sweetalert2";
+import "./contact.css";
 
-// const required = val => val && val.length;
-// const maxLength = len => val => !val || val.length <= len;
-// const minLength = len => val => val && val.length >= len;
-// const isNumber = val => !isNaN(Number(val));
-// const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
+const SERVICE_ID = "service_55v0vbb";
+const TEMPLATE_ID = "template_pe0ldvo";
+const USER_ID = "nRbuE3-vBaJhuoJ6H";
 
 class Contact extends Component {
   constructor(props) {
@@ -23,51 +27,64 @@ class Contact extends Component {
   // render() {
   //   return <div>hello</div>;
   // }
-
+  handleOnSubmit = (e) => {
+    e.preventDefault();
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, e.target, USER_ID)
+      .then((result) => {
+        console.log(result.text);
+        Swal.fire({
+          icon: "success",
+          title: "Message Sent Successfully"
+        })
+      }, (error) => {
+        console.log(error.text);
+        Swal.fire({
+          icon: "error",
+          title: "Ooops, something went wrong",
+          text: error.text,
+        })
+      });
+    e.target.reset()
+  };
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/home">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>Contact us</BreadcrumbItem>
-          </Breadcrumb>
-          <div className="col-12">
-            <h3>Contact us</h3>
-            <hr />
-          </div>
-        </div>
-        <div className="row row-content">
-          <div className="col-12">
-            <h5>Our Address</h5>
-            <address>
-              Roger B. Dannenberg <br />
-              School of Computer Science <br />
-              Carnegie Mellon University <br />
-              5000 Forbes Avenue <br />
-              Pittsburgh, PA <br />
-              USA <br />
-              <i className="fa fa-envelope fa-lg" />:{" "}
-              <a href="mailto:rbd+soundcool@cs.cmu.edu">rbd+soundcool@cs.cmu.edu</a>
-            </address>
-          </div>
-          <div className="col-12 col-sm-11 offset-sm-1">
-            <div className="btn-group" role="group">
-              <a
-                role="button"
-                className="btn btn-success"
-                href="mailto:rbd+soundcool@cs.cmu.edu"
-              >
-                <i className="fa fa-envelope-o" /> Email
-              </a>
+        <div className="page-container">
+          
+          <div className="content-container">
+            <Form id="contact-form" onSubmit={this.handleOnSubmit}>
+            <div id="contact-title">CONTACT US</div>
+            <Form.Field
+                id='form-input-control-email'
+                control={Input}
+                label='Email'
+                name='reply_to'
+                placeholder='Email…'
+                required
+                icon='mail'
+                iconPosition='left'
+            />
+            <Form.Field
+                id='form-input-control-last-name'
+                control={Input}
+                label='Name'
+                name='from_name'
+                placeholder='Name…'
+                required
+                icon='user circle'
+                iconPosition='left'
+            />
+            <Form.Field
+                id='form-textarea-control-opinion'
+                control={TextArea}
+                label='Message'
+                name='message'
+                placeholder='Message…'
+                required
+            />
+            <Button type='submit' color='green'>Submit</Button>
+            </Form>
             </div>
-          </div>
         </div>
-
-        {/* TODO: Page send us feedback */}
-      </div>
     );
   }
 }

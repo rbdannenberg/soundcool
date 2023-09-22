@@ -47,22 +47,31 @@ router.get("/get", (req, res) => {
 });
 
 router.get("/project", (req, res) => {
+  console.log("*********** " + JSON.stringify(req.query));
   const projectId = req.query.projectId;
   const token = req.headers["x-auth-token"];
   utils.verifyToken(token, user => {
     if (user) {
-      const QUERY = `select *,(CASE WHEN user=${user.id} THEN 0 ELSE user END)as isOwner from projects where (user=${user.id} or sharedUsers like '%"user_id":${user.id}%' or isPublic =true) and project_id = ${projectId}`;
+      var projID_SQL = projectId; 
+      if (projectId === "undefined") {
+        projID_SQL = -1;
+      }
+      const QUERY = `select *,(CASE WHEN user=${user.id} THEN 0 ELSE user END)as isOwner from projects where (user=${user.id} or sharedUsers like '%"user_id":${user.id}%' or isPublic =true) and project_id = ${projID_SQL}`;
+      
       if (database == "mysql") {
         connection.query(QUERY, (err, results) => {
+          console.log("*********** " + JSON.stringify(results));
           if (err) {
             console.log(err);
             return res.json({ err: err });
           } else {
+            
             return res.json(results[0]);
           }
         });
       } else if (database == "sqlite") {
         connection.all(QUERY, [], (err, results) => {
+          console.log("*********** " + JSON.stringify(results));
           if (err) {
             console.log(err);
             return res.json({ err: err });

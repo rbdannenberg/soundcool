@@ -361,7 +361,7 @@ const SamplePlayer = ({ blockInfo, changeBlock }) => {
             width: "1.2rem",
             height: "170px",
             position: "absolute",
-            left: "11.5rem",
+            left: "12.5rem",
             top: "2.5rem"
           }}
           onChange={e => changeBlock(id, "masterVolume", e.target.value)}

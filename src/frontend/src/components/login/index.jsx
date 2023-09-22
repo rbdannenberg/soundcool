@@ -6,6 +6,7 @@ import { showToastr, showToastrError } from "../../actions/common";
 import LoginForm from "./form";
 
 import Cookies from 'universal-cookie';
+import "./login.css";
 
 const cookies = new Cookies();
 
@@ -28,17 +29,20 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/home">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Login</BreadcrumbItem>
-          </Breadcrumb>
+      <div id="page-container"> 
+        <div id="login-container">
+          <div className="login-row">
+            {/* <Breadcrumb>
+              <BreadcrumbItem>
+                <Link to="/home">Home</Link>
+              </BreadcrumbItem>
+              <BreadcrumbItem active>Login</BreadcrumbItem>
+            </Breadcrumb> */}
+            LOGIN
+          </div>
+          <LoginForm afterSignin={this.afterSignin} />
+          <Link id="register-link" to="/register">New user? Register</Link>
         </div>
-        <LoginForm afterSignin={this.afterSignin} />
-        <Link to="/register">New user? Register</Link>
       </div>
     );
   }

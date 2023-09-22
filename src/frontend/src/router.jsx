@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import Home from "./components/home";
+import Home from "./components/home/home";
 import Login from "./components/login";
 import Register from "./components/register";
 import Header from "./components/header";
 import ProjectHome from "./components/projects";
 import Sounds from "./components/sounds";
+import aboutPage from "./components/aboutPage/aboutPage";
 import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
@@ -81,6 +82,7 @@ class Main extends Component {
           />
           <Route path="/register" component={Register} />
           <Route path="/home" component={Home} />
+          <Route path="/aboutPage" component={aboutPage} />
           <Route exact path="/user-profile" component={UserProfile} />
           <Route
             exact

@@ -1,0 +1,57 @@
+.page-container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.content-container{
+    /* margin-left: auto;
+    margin-right: auto;
+    margin-top: auto; 
+    margin-bottom: auto;
+    color: white;
+    text-align: center;
+    width: fit-content;
+    height: fit-content;
+    border: solid whitesmoke;
+    padding: 30px 20px; 
+    background-color: black; */
+    text-align: center;
+    width: 40vw;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto; 
+    margin-bottom: auto;
+    font-family: "SHRIMP";
+    background-color: black;
+    box-shadow: 1px 1px 5px 1px whitesmoke;
+    border-radius: 10px;
+}
+
+.text{
+    font-family: "SHRIMP";
+    color: white;
+}
+
+.contact{
+    color: white;
+}
+
+/* *********************************** */
+
+  #contact-form {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .ui.form .field>label {
+    color: white !important;
+  }
+
+  #contact-title{
+    font-family: "SHRIMP";
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }

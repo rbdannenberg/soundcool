@@ -11,7 +11,7 @@ body {
 }
 
 a.nav-link {
-    color: #fafafa !important;
+    margin-left: 35px;
 }
 
 a.active {
@@ -39,7 +39,7 @@ address {
 }
 
 .navbar-dark {
-    background-color: #512da8;
+    background-color: white
 }
 
 .navbar-light {
@@ -232,4 +232,17 @@ a.active.border-0 {
     .react-multi-carousel-track {
         overflow: visible !important
     }
+}
+
+#video_background{
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+    filter: brightness(0.7);
 }

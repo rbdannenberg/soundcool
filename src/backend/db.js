@@ -1,5 +1,5 @@
-process.env.MYSQL_HOST = "";
-console.log(process.env.MYSQL_HOST);
+process.env.MYSQL_HOST = "localhost";
+console.log("SQL HOST: " + process.env.MYSQL_HOST);
 if (process.env.MYSQL_HOST) {
   console.log("mysqlhost");
   const mysql = require("mysql");

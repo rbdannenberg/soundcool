@@ -156,3 +156,34 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.editor-container-fluid {
+  position: relative;
+  height: 100%; 
+  margin-top: 20px;
+}
+
+.editor-nav-container{
+  position: relative;
+  height: fit-content;
+  width: 100%;
+  display: flex;
+  padding: 10px 0px;
+}
+
+#editor-nav-component{
+  width: 75vw;
+  justify-content: space-evenly;
+  font-family: "SHRIMP";
+}
+
+.dropdown-item{
+  font-family: 'SHRIMP' !important;
+  font-weight: normal !important;
+}
+
+#editor-nav-container-fluid{
+  background-color: #1c2321;
+  border: 1px solid white; 
+  box-shadow: 1px 1px 5px 1px whitesmoke;
+}

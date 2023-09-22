@@ -1,0 +1,51 @@
+#user_login{
+    width: 100%;
+}
+
+#register-container{
+    margin: 0 auto; 
+    width: 50%; 
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 30px; 
+    border: solid whitesmoke;
+    border-width: medium;
+    box-shadow: 1px 1px 3px 3px whitesmoke;
+    background-color: black;
+}
+
+.register-row{
+    margin-left: auto; 
+    color: white; 
+    font-family: "SHRIMP";
+    font-size: 1.5rem;
+    margin-bottom: 15px; 
+    font-weight: bold;
+}
+
+#page-container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.register-button{
+    background-color: transparent;
+    border-color: white;
+    margin-bottom: 15px;
+    font-family: "SHRIMP";
+}
+
+#login-link{
+    color: white; 
+    font-family: "SHRIMP";
+    font-style: italic;
+}
+
+#user_register{
+    font-family: "SHRIMP";
+}
+
+.form-control{
+    padding: 25px 20px;
+}

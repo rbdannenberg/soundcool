@@ -82,7 +82,9 @@ class ProjectEditor extends React.Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
+
   constructor(props) {
+    console.log("ProjectEditor constructor: " + JSON.stringify(props.match.params.id)); // RBDDBG
     super(props);
     this.state = {
       projectId: this.props.match.params.id,
@@ -124,6 +126,7 @@ class ProjectEditor extends React.Component {
     let x = this.state["items"];
     return x[id.split("_")[1]];
   };
+
   onDragEnd = result => {
     const { source, destination } = result;
     // dropped outside the list
@@ -814,9 +817,13 @@ class ProjectEditor extends React.Component {
   };
 
   saveProject = saveAs => {
+    console.log("saveProject: this.props.blocks" + JSON.stringify(this.props.blocks));
+    console.log("saveProject: saveAs" + saveAs);
+    console.log("saveProject: this.copyname" + this.state.projectName);
     if (saveAs) {
       this.copyname();
     }
+    console.log("saveProject: this.copyname" + JSON.stringify(this.state));
     if (isUserLoggedIn())
       if (this.state.projectId !== "new" && !saveAs) {
         this.setState({
@@ -839,25 +846,29 @@ class ProjectEditor extends React.Component {
       })
       .catch(error => {
         showToastrError(error);
+        console.log("COULD NOT SAVE")
       });
   }
 
   createProject = event => {
     event.preventDefault();
+    
     let isFormValid = true,
       error = "";
     const { projectName, projectDescription } = this.state;
     const blocks = this.props.blocks;
-
-    if (blocks.length === 0) {
+    if (Object.keys(blocks).length === 0) {
       error = "Project is Empty";
+      console.log("createProject: blocks" + Object.keys(blocks).length )
       isFormValid = false;
     } else if (projectName === "") {
       error = "Project name is required";
+      
       isFormValid = false;
     }
 
     if (isFormValid) {
+      console.log("createProject: this.props.blocks" + JSON.stringify(this.props.blocks))
       let payload = {
         projectName,
         projectDescription,
@@ -866,6 +877,7 @@ class ProjectEditor extends React.Component {
 
       createProject(payload)
         .then(data => {
+          console.log("createProject" + JSON.stringify(data));
           this.setState({ projectName: "", projectDescription: "" });
           showToastr("success", "Project created successfully");
           window.location = "/project-editor/" + data.project_id;
@@ -964,12 +976,14 @@ class ProjectEditor extends React.Component {
     const openPortsButton = this.checkIfAllPortsAreOpen(this.props.blocks["bs"])
       ? false
       : true;
+
     if (openPortsButton) {
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
         this.openNewPort(this.props.blocks["bs"]);
       }, 2000);
     }
+
     const handleFileRead = e => {
       const content = JSON.parse(fileReader.result);
       let payload = {
@@ -987,11 +1001,13 @@ class ProjectEditor extends React.Component {
           showToastrError(error);
         });
     };
+
     const handleFileChosen = file => {
       fileReader = new FileReader();
       fileReader.onloadend = handleFileRead;
       fileReader.readAsText(file);
     };
+
     return (
       (this.state.isLoadingComp && (
         <div class="loading">Loading&#8230;</div>
@@ -1040,10 +1056,11 @@ class ProjectEditor extends React.Component {
               }
             }}
           </NavigationPrompt>
-          <Navbar light expand="md" style={{ padding: "0 90px 0 90px" }}>
-            <div className="container-fluid">
-              <Nav navbar>
+          <Navbar id="editor-nav-container-fluid" light expand="md" style={{ padding: "0 90px 0 90px" }}>
+            <div className="editor-nav-container">
+              <Nav navbar id="editor-nav-component">
                 {isUserLoggedIn() && (
+            
                   <Dropdown
                     nav
                     isOpen={this.state.viewDropdownOpen}
@@ -1224,6 +1241,7 @@ class ProjectEditor extends React.Component {
                   </NavItem>
                 )}
               </Nav>
+              
               <Nav className="ml-auto" navbar>
                 <NavItem>
                   <NavLink className="nav-link" to="/contact">
@@ -1238,7 +1256,7 @@ class ProjectEditor extends React.Component {
               </Nav>
             </div>
           </Navbar>
-          <div className="container-fluid">
+          <div className="editor-container-fluid">
             <AddBlock />
             <div>
               <div

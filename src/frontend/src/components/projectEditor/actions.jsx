@@ -17,6 +17,7 @@ export const updateProject = payload => {
 export const createProject = payload => {
   const url = projectCreateUrl();
   payload["blocks"] = cleanPayload(payload.blocks);
+  console.log("?????" + JSON.stringify(payload["blocks"]));
   return postRequest(url, payload);
 };
 

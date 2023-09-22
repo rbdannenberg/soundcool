@@ -41,7 +41,8 @@ module.exports = {
             }
           },
           "css-loader"
-        ]
+        ],
+        include: /\.moodule\.css$/,
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
