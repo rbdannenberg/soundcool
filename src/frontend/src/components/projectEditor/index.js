@@ -404,7 +404,13 @@ class ProjectEditor extends React.Component {
     setTimeout(() => {
       const allItems = this.state.items.reduce((prev, cur) => prev.concat(cur), []);
       console.log(this.state); 
-      const newItems = this.state.positions?.map(col => col.map(id => allItems.find(item => item.id === id)));
+
+      // const newItems = this.state.positions?.map(col => col.map(id => allItems.find(item => item.id === id)));
+
+      const newItems = this.state.positions 
+  ? this.state.positions.map(col => col.map(id => allItems.find(item => item.id === id)))
+  : undefined;
+
       console.log(newItems); 
       const newResizeState = [];
       if (newItems == null || newItems.length === 0) {

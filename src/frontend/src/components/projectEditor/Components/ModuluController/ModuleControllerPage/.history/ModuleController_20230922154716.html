@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./modulerPage/ModuleController.css">
+    <style>
+        /* 导航栏样式 */
+        .top {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 999;
+            height: 50px;
+            background-color: rgba(46, 202, 223, 0.729);
+        }
+
+        .menu {
+            width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .logo {
+            float: left;
+            margin-top: 0px;
+            display: flex;
+        }
+
+    
+
+        .nav {
+            float: right;
+            margin-top: 10px;
+            font-size: 0;
+        }
+
+        .nav li {
+            display: inline-block;
+            margin-left: 40px;
+        }
+
+        .nav a {
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            font-size: 14px;
+            color: #000000;
+            text-decoration: none;
+ 
+         }
+
+        
+
+        .nav a:hover {
+            color: #25a1ff;
+        }
+    </style>
+    <title>ModuleController</title>
+</head>
+
+<body>
+    <!--nav-->
+    <div class="top">
+        <div class="menu">
+            <h1 class="logo"><img src="./icos/soundcoolLogo.png"></a></h1>
+
+            <ul class="nav">
+                <li><a href="javascript:">Patches Arrangement</a></li>
+                <li><a href="javascript:">IP from router</a></li>
+                <li><a href="javascript:">Language</a></li>
+                <li><a href="javascript:">Load</a></li>
+                <li><a href="javascript:">Save</a></li>
+                <li><a href="javascript:">Close All</a></li>
+                <li><a href="javascript:">Port</a></li>
+            </ul>
+        </div>
+    </div>
+
+  <!--AUDIO -->
+    <div class="container">
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Player.png"/>
+            </div>
+            <p>Player</p>
+
+        </div>
+        <div class="box">
+            <div class="img">
+                <img src="./icos/SamplePlayer.png"/>
+            </div>
+            <p>SamplePlayer</p>
+        
+        </div>
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Mixer.png"/>
+            </div>
+            <p>Mixer</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Transposer.png"/>
+            </div>
+            <p>Transposer</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Keyboard.png"/>
+            </div>
+            <p>Keyboard</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/VST.png"/>
+            </div>
+            <p>VST</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Delay.png"/>
+            </div>
+            <p>Delay</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Pan.png"/>
+            </div>
+            <p>Pan</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Oscilloscope.png"/>
+            </div>
+            <p>Oscillsocope</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/SignalGen.png"/>
+            </div>
+            <p>SignalGen</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Envelope.png"/>
+            </div>
+            <p>Envelope</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Sequencer.png"/>
+            </div>
+            <p>Sequencer</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Routing.png"/>
+            </div>
+            <p>Routing</p>
+        </div>
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Pitch.png"/>
+            </div>
+            <p>Pitch</p>
+        </div>
+
+
+        <div class="box">
+            <div class="img">
+                <img src="./icos/Filter.png"/>
+            </div>
+            <p>Filter</p>
+        </div>
+
+
+ <!-- <br> <p> Input </p>--> 
+   <div class="box">
+    <div class="img">
+        <img src="./icos/Direclput.png"/>
+    </div>
+    <p>Directlput</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/DirectlnputV.png"/>
+    </div>
+    <p>DirectlnputV</p>
+</div>
+
+<!-- <br> <p> Onput </p>--> 
+<div class="box">
+    <div class="img">
+        <img src="./icos/Speakers.png"/>
+    </div>
+    <p>Speakers</p>
+</div>
+
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/ScreenV.png"/>
+    </div>
+    <p>ScreenV</p>
+</div>
+
+<!--Control -->
+<div class="box">
+    <div class="img">
+        <img src="./icos/MIDI.png"/>
+    </div>
+    <p>MIDI</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/Record.png"/>
+    </div>
+    <p>Record</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/OSC.png"/>
+    </div>
+    <p>OSC</p>
+</div>
+
+<!--Video-->
+<div class="box">
+    <div class="img">
+        <img src="./icos/PlayerV.png"/>
+    </div>
+    <p>PlayerV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/SamplerV.png"/>
+    </div>
+    <p>SamplerV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/ImSV.png"/>
+    </div>
+    <p>ImageSamplerV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/SwitcherV.png"/>
+    </div>
+    <p>SwitcherV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/ColorV.png"/>
+    </div>
+    <p>ColorV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/BlendingV.png"/>
+    </div>
+    <p>BlendingV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/AV-React.png"/>
+    </div>
+    <p>AV-Reacter</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/DelayV.png"/>
+    </div>
+    <p>DelayV</p>
+</div>
+
+<div class="box">
+    <div class="img">
+        <img src="./icos/ChromaKeyV.png"/>
+    </div>
+    <p>ChromaKeyV</p>
+</div>
+
+
+
+
+
+
+
+
+    
+    </div>
+</body>
+</html>
