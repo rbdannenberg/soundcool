@@ -3,7 +3,7 @@ import { createProject } from "../projectEditor/actions";
 import {
   createPerformance,
   fetchPerformance,
-  getPorts
+  getPorts,
 } from "../performance/actions";
 import { showToastr, showToastrError } from "../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
@@ -16,7 +16,7 @@ import {
   addSharedUser,
   removeSharedUser,
   setProjectPublic,
-  cloneProject
+  cloneProject,
 } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput.jsx";
@@ -25,17 +25,18 @@ class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: "",
+      userName: "",
       userEmail: "",
       projects: [],
       search: "",
+      currentProjectName: "",
       isModalOpen: false,
       projectState: null,
       isAddUserModalOpen: false,
       isPerformanceModalOpen: false,
       isJoinPerformanceModalOpen: false,
       checked: false,
-      oscModuleList: []
+      oscModuleList: [],
     };
     this.toggleProjectVisibility = this.toggleProjectVisibility.bind(this);
   }
@@ -45,11 +46,11 @@ class Projects extends Component {
     // project get displayed
     if (this.props.user) {
       fetchUserProjects()
-        .then(data => {
+        .then((data) => {
           // console.log(data);
           this.setState({ projects: data });
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     } else {
@@ -62,22 +63,22 @@ class Projects extends Component {
     this.setState({ isAddUserModalOpen: !this.state.isAddUserModalOpen });
   togglePerformanceModal = () =>
     this.setState({
-      isPerformanceModalOpen: !this.state.isPerformanceModalOpen
+      isPerformanceModalOpen: !this.state.isPerformanceModalOpen,
     });
   toggleJoinPerformanceModal = () =>
     this.setState({
-      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen,
     });
 
   removeSharedUser() {
     let { projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
     removeSharedUser({ projectId: project_id, sharedUsers })
-      .then(res => {
+      .then((res) => {
         // console.log(res);
         showToastr("success", res.message);
         let index = -1;
-        this.state.projects.some(project => {
+        this.state.projects.some((project) => {
           index++;
           if (project.project_id === project_id) {
             // eslint-disable-next-line
@@ -87,10 +88,10 @@ class Projects extends Component {
           return false;
         });
         this.setState({
-          projects: this.state.projects
+          projects: this.state.projects,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
@@ -99,11 +100,11 @@ class Projects extends Component {
     let { projectState } = this.state;
     let { project_id } = projectState;
     setProjectPublic({ projectId: project_id, isPublic: checked })
-      .then(res => {
+      .then((res) => {
         // console.log(res);
         showToastr("success", res.message);
         let index = -1;
-        this.state.projects.some(project => {
+        this.state.projects.some((project) => {
           index++;
           if (project.project_id === project_id) {
             // eslint-disable-next-line
@@ -116,17 +117,17 @@ class Projects extends Component {
           projects: this.state.projects,
           projectState: {
             ...this.state.projectState,
-            isPublic: checked
-          }
+            isPublic: checked,
+          },
         });
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
   cloneProject(projectId) {
     cloneProject({ projectId })
-      .then(data => {
+      .then((data) => {
         if (data.error) {
           showToastr("success", "Project can't be cloned");
         } else {
@@ -135,7 +136,7 @@ class Projects extends Component {
           // console.log([...this.state.projects, data]);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   }
@@ -143,11 +144,11 @@ class Projects extends Component {
     let { performanceName } = this.state;
 
     fetchPerformance(performanceName)
-      .then(res => {
+      .then((res) => {
         showToastr("success", "Joined performance successfully");
         window.location = "/performance/" + res.name;
       })
-      .catch(err => {
+      .catch((err) => {
         showToastr("error", "The performance doesn't exist!");
       });
   }
@@ -159,15 +160,15 @@ class Projects extends Component {
       return;
     }
     fetchPerformance(performanceName)
-      .then(res => {
+      .then((res) => {
         console.log("already exists");
         showToastr("error", "Performance name already exists!");
       })
-      .catch(err => {
+      .catch((err) => {
         // if not, ask server to assign random ports and create new performance
         let newOscModuleList = oscModuleList;
         getPorts({ N: oscModuleList.length })
-          .then(data => {
+          .then((data) => {
             if (data.err) {
               showToastrError(data);
             } else {
@@ -181,28 +182,28 @@ class Projects extends Component {
               let payload = {
                 performanceName: performanceName,
                 oscModuleList: newOscModuleList,
-                blocks: { bs: content.bs }
+                blocks: { bs: content.bs },
               };
               createPerformance(payload)
-                .then(data => {
+                .then((data) => {
                   showToastr("success", "Performance created successfully");
                   window.location = "/performance/" + data.name;
                 })
-                .catch(error => {
+                .catch((error) => {
                   showToastrError(error);
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             showToastrError(error);
           });
       });
   }
 
-  getOscModules = content => {
+  getOscModules = (content) => {
     let modules = content["bs"];
     let oscModules = [];
-    modules.forEach(module => {
+    modules.forEach((module) => {
       if (module["osc"] !== undefined) {
         oscModules = [
           ...oscModules,
@@ -210,36 +211,36 @@ class Projects extends Component {
             givenName: module["givenName"],
             oscPort: "",
             id: module["id"],
-            name: module["name"]
-          }
+            name: module["name"],
+          },
         ];
       }
     });
     return oscModules;
   };
   addSharedUser() {
-    let { userId, userEmail, projectState } = this.state;
+    let { userName, userEmail, projectState } = this.state;
     let { project_id, sharedUsers } = projectState;
     let duplicate = false;
-    if (userId !== "") {
+    if (userName !== "") {
       if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
-          return user.user_id === userId;
+        duplicate = JSON.parse(sharedUsers)["users"].some((user) => {
+          return user.name === userName;
         });
     }
     if (userEmail !== "") {
       if (sharedUsers)
-        duplicate = JSON.parse(sharedUsers)["users"].some(user => {
+        duplicate = JSON.parse(sharedUsers)["users"].some((user) => {
           return user.email === userEmail;
         });
     }
     if (!duplicate) {
-      addSharedUser({ userId, userEmail, projectId: project_id })
-        .then(res => {
+      addSharedUser({ userName, userEmail, projectId: project_id })
+        .then((res) => {
           showToastr("success", res.message);
           if (res.data) {
             let index = -1;
-            this.state.projects.some(project => {
+            this.state.projects.some((project) => {
               index++;
               if (project.project_id === project_id) {
                 // eslint-disable-next-line
@@ -252,17 +253,17 @@ class Projects extends Component {
               projects: this.state.projects,
               projectState: {
                 ...this.state.projectState,
-                sharedUsers: res.data
-              }
+                sharedUsers: res.data,
+              },
             });
           }
           this.toggleUserModal();
           this.toggleModal();
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
-      this.setState({ userId: "", userEmail: "" });
+      this.setState({ userName: "", userEmail: "" });
     } else {
       showToastr("success", "Already Shared");
     }
@@ -271,28 +272,23 @@ class Projects extends Component {
     var r = window.confirm("Do you want to delete project " + projectId);
     if (r === true) {
       removeProject({ projectId })
-        .then(res => {
+        .then((res) => {
           showToastr("success", res.message);
           let projects = this.state.projects;
           projects.splice(index, 1);
           this.setState({
-            projects
+            projects,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     }
   }
-  filterProjects = project => {
+  filterProjects = (project) => {
     let qry = this.state.search;
     if (qry === "") return true;
-    else if (
-      project.user
-        .toString()
-        .toLowerCase()
-        .includes(qry.toLowerCase())
-    )
+    else if (project.user.toString().toLowerCase().includes(qry.toLowerCase()))
       return true;
     else if (project.name.toLowerCase().includes(qry.toLowerCase()))
       return true;
@@ -305,39 +301,37 @@ class Projects extends Component {
       return true;
     else return false;
   };
-  handleSharing = project => {
-    this.setState({ projectState: project }, () => {
-      this.toggleModal();
-    });
+  handleSharing = (project) => {
+    this.setState(
+      { currentProjectName: project.name, projectState: project },
+      () => {
+        this.toggleModal();
+      }
+    );
   };
-  handlePerformance = project => {
+  handlePerformance = (project) => {
     this.setState(
       {
+        currentProjectName: project.name,
         projectState: project,
-        oscModuleList: this.getOscModules(JSON.parse(project.content))
+        oscModuleList: this.getOscModules(JSON.parse(project.content)),
       },
       () => {
         this.togglePerformanceModal();
       }
     );
   };
-  renderProjects = projects =>
+  renderProjects = (projects) =>
     projects.map((project, index) => {
-      let {
-        project_id,
-        name,
-        description,
-        sharedUsers,
-        isOwner,
-        isPublic
-      } = project;
+      let { project_id, name, description, sharedUsers, isOwner, isPublic } =
+        project;
       let sUsers = [],
         multiple = false;
       let countt = 0;
       if (sharedUsers)
-        JSON.parse(sharedUsers)["users"].every(user => {
+        JSON.parse(sharedUsers)["users"].every((user) => {
           if (multiple) sUsers.push(", ");
-          sUsers.push(user.user_id);
+          sUsers.push(user.name);
           multiple = true;
           countt++;
           if (countt > 2) {
@@ -411,24 +405,24 @@ class Projects extends Component {
 
   render() {
     let fileReader;
-    const handleFileRead = e => {
+    const handleFileRead = (e) => {
       const content = JSON.parse(fileReader.result);
       let payload = {
         projectName: content.projectName,
         projectDescription: content.projectDescription,
-        blocks: content.blocks
+        blocks: content.blocks,
       };
       createProject(payload)
-        .then(data => {
+        .then((data) => {
           showToastr("success", "Project imported successfully");
           this.setState({ projects: [...this.state.projects, data] });
           this.upload.value = "";
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     };
-    const handleFileChosen = file => {
+    const handleFileChosen = (file) => {
       fileReader = new FileReader();
       fileReader.onloadend = handleFileRead;
       fileReader.readAsText(file);
@@ -441,17 +435,17 @@ class Projects extends Component {
             <BreadcrumbItem>
               <Link to="/home">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>ProjectMenu</BreadcrumbItem>
+            <BreadcrumbItem active>Project</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
             <h3>Projects</h3>
             <input
               style={{ display: "none" }}
-              ref={ref => (this.upload = ref)}
+              ref={(ref) => (this.upload = ref)}
               type="file"
               id="projectFile"
               accept=".json"
-              onChange={e => handleFileChosen(e.target.files[0])}
+              onChange={(e) => handleFileChosen(e.target.files[0])}
               className="btn btn-info float-right"
             />
             <div className="float-right">
@@ -460,13 +454,13 @@ class Projects extends Component {
                 style={{ marginRight: "10px" }}
                 type="text"
                 placeholder="Search.."
-                onChange={e => {
+                onChange={(e) => {
                   this.setState({ search: e.target.value });
                 }}
               ></input>
               <button
                 className="btn btn-info"
-                onClick={e => this.upload.click()}
+                onClick={(e) => this.upload.click()}
               >
                 Import project
               </button>
@@ -474,7 +468,7 @@ class Projects extends Component {
                 className="btn btn-warning"
                 onClick={this.toggleJoinPerformanceModal}
               >
-                Join Performance
+                Show Performances
               </button>
             </div>
           </div>
@@ -503,6 +497,7 @@ class Projects extends Component {
             <Modal.Title>Manage sharing</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <p>Project Name: {this.state.currentProjectName} </p>
             <p>
               Set visible to everyone :
               <Switch
@@ -518,7 +513,7 @@ class Projects extends Component {
               />
             </p>
             <p>
-              User List
+              Add Sharer
               <button
                 onClick={() => {
                   this.toggleModal();
@@ -537,7 +532,7 @@ class Projects extends Component {
                     (user, index) => {
                       return (
                         <p>
-                          User Id : {user.user_id}
+                          SharerList : {user.name}
                           <button
                             onClick={() => {
                               let arr = JSON.parse(
@@ -549,9 +544,9 @@ class Projects extends Component {
                                   projectState: {
                                     ...this.state.projectState,
                                     sharedUsers: JSON.stringify({
-                                      users: arr
-                                    })
-                                  }
+                                      users: arr,
+                                    }),
+                                  },
                                 },
                                 () => {
                                   this.removeSharedUser();
@@ -583,19 +578,19 @@ class Projects extends Component {
               <FormInput
                 className="form-control"
                 type="text"
-                name="userId"
+                name="userName"
                 required={true}
-                placeholder="User Id"
+                placeholder="Username"
                 onChange={this.handleOnChange}
                 autoFocus
               />
             )}
-            {this.state.userId === "" && this.state.userEmail === "" && (
+            {this.state.userName === "" && this.state.userEmail === "" && (
               <center>
                 <h5>OR</h5>
               </center>
             )}
-            {this.state.userId === "" && (
+            {this.state.userName === "" && (
               <FormInput
                 className="form-control"
                 type="text"
@@ -634,6 +629,7 @@ class Projects extends Component {
           </Modal.Header>
           <Modal.Body>
             <p>Create a new performance:</p>
+            <p>Project Name: {this.state.currentProjectName} </p>
             <FormInput
               className="form-control"
               type="text"
@@ -644,30 +640,16 @@ class Projects extends Component {
               autoFocus
             />
             <br></br>
-            {/* <p>
-              Register device IP
-              {this.state.oscModuleList.map((x, i) => {
-                return (
-                  <div>
-                    <FormInput
-                      className="form-control"
-                      type="text"
-                      name="ip"
-                      required={false}
-                      placeholder={
-                        "IP of module " + x.givenName + " - " + x.name
-                      }
-                      onChange={(name, value) => {
-                        let newOsc = this.state.oscModuleList;
-                        newOsc[i]["ip"] = value;
-                        this.setState({ oscModuleList: newOsc });
-                      }}
-                      autoFocus
-                    />
-                  </div>
-                );
-              })}
-            </p> */}
+            {/* Added the following lines for the Description input */}
+            <FormInput
+              className="form-control"
+              type="text"
+              name="performanceDescription"
+              required={true} // Remove this if description is optional
+              placeholder="Performance Description"
+              value={this.state.performanceDescription}
+              onChange={this.handleOnChange}
+            />
           </Modal.Body>
           <Modal.Footer>
             <button

@@ -55,8 +55,8 @@ address {
 }
 
 .btn-secondary {
-    background-color: blue;
-    border-color: blue;
+    background-color: none;
+    border-color: none;
 }
 
 body {

@@ -5,8 +5,8 @@ import Home from "./components/home";
 import Login from "./components/login";
 import Register from "./components/register";
 import Header from "./components/header";
-import ProjectHome from "./components/projects";
-import Sounds from "./components/sounds";
+import DashboardHome from "./components/projects";
+import Medias from "./components/sounds";
 import Contact from "./components/contact";
 import jwtDecode from "jwt-decode";
 import About from "./components/about";
@@ -84,8 +84,8 @@ class Main extends Component {
           <Route exact path="/user-profile" component={UserProfile} />
           <Route
             exact
-            path="/projects"
-            component={() => <ProjectHome user={user} />}
+            path="/dashboard"
+            component={() => <DashboardHome user={user} />}
           />
           <Route
             exact
@@ -94,8 +94,8 @@ class Main extends Component {
           />
           <Route
             exact
-            path="/sounds"
-            component={() => <Sounds user={user} />}
+            path="/medias"
+            component={() => <Medias user={user} />}
           />
           <Route exact path="/contact" component={Contact} />
           <Route

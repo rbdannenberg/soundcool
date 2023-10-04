@@ -89,19 +89,43 @@ router.post("/register", (req, res) => {
       error: "Password length must be atleast 6 character long"
     });
   } else {
-    name = name.trim();
-    password = password.trim();
-    email = email.trim();
-    const hash_password = bcrypt.hashSync(password, saltRounds);
-    const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
+    const CHECK_NAME_QUERY = `SELECT * from users WHERE name = ${'"' + name + '"'} `;
 
     if (database == "mysql") {
-      connection.query(CREATE_NEW_USER, (err, results) => {
-        res.json(handleRegister(err, results.insertId, name));
+      connection.query(CHECK_NAME_QUERY, (err, results) => {
+        if (results && results.length > 0) {
+          res.json({ error: "Username already exists. Please choose a different username." });
+        } else {
+          // Your user creation code starts here
+          name = name.trim();
+          password = password.trim();
+          email = email.trim();
+          const hash_password = bcrypt.hashSync(password, saltRounds);
+          const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
+
+          connection.query(CREATE_NEW_USER, (err, results) => {
+            res.json(handleRegister(err, results.insertId, name));
+          });
+          // Your user creation code ends here
+        }
       });
     } else if (database == "sqlite") {
-      connection.run(CREATE_NEW_USER, function(err) {
-        res.json(handleRegister(err, this.lastID, name));
+      connection.all(CHECK_NAME_QUERY, [], (err, results) => {
+        if (results && results.length > 0) {
+          res.json({ error: "Username already exists. Please choose a different username." });
+        } else {
+          // Your user creation code starts here
+          name = name.trim();
+          password = password.trim();
+          email = email.trim();
+          const hash_password = bcrypt.hashSync(password, saltRounds);
+          const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
+
+          connection.run(CREATE_NEW_USER, function(err) {
+            res.json(handleRegister(err, this.lastID, name));
+          });
+          // Your user creation code ends here
+        }
       });
     }
   }

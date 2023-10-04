@@ -336,9 +336,9 @@ router.patch("/remove", (req, res) => {
 });
 
 router.patch("/addShare", (req, res) => {
-  const { userId, projectId, userEmail } = req.body;
+  const { userName, projectId, userEmail } = req.body;
   let QUERY;
-  if (userId) QUERY = `select * from users WHERE user_id = ${userId}`;
+  if (userName) QUERY = `select * from users WHERE name = '${userName}'`;
   else QUERY = `select * from users WHERE email = '${userEmail}'`;
   if (database == "mysql") {
     connection.query(QUERY, (err, users) => {
