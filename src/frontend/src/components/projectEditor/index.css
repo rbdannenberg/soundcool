@@ -174,7 +174,7 @@ body {
 #editor-nav-component{
   width: 75vw;
   justify-content: space-evenly;
-  font-family: "SHRIMP";
+  font-family: sans-serif;
 }
 
 .dropdown-item{

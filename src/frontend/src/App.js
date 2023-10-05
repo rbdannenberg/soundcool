@@ -61,9 +61,9 @@ class App extends React.Component {
             draggable={false}
             pauseOnHover={true}
           />
-          <video id="video_background" preload="auto" autoPlay muted loop>
-          <source src={bg} type="video/mp4" />
-        </video>
+          {/* <video id="video_background" preload="auto" autoPlay muted loop> */}
+          {/* <source src={bg} type="video/mp4" /> */}
+        {/* </video> */}
         </div>
       </Provider>
     );

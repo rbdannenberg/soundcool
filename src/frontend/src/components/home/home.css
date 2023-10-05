@@ -47,22 +47,23 @@ body{
     padding: 20px 0px 0px 0px;
     border-radius: 10%;
     box-shadow: 1px 1px 5px 5px whitesmoke;
-    color: white;
-    background-color: black;
+    color: black;
+    background-color: white;
 }
 
 .icons{
     justify-content: space-evenly;
 }
 
-@font-face {
+/* @font-face {
     font-family: 'SHRIMP';
+    src: sans-serif;
     src: url('../../assets/fonts/SHRIMP.ttf');
-}
+} */
 
 .text{
-    font-family: 'SHRIMP';
-    color: white; 
+    font-family: sans-serif;
+    color: black; 
 }
 
 .card-subheader{
@@ -71,7 +72,7 @@ body{
 }
 
 .card-text{
-    font-family: 'SHRIMP';
+    font-family: sans-serif;
 }
 
 .card-title{
@@ -82,19 +83,19 @@ body{
     margin-top: 1%;
     margin-bottom: 2%;
     font-size: 1.5vw; 
-    color: white;
+    color: black;
 }
 
 #sub-header{
     font-size: 2vw; 
-    color: white;
+    color: black;
     font-style: italic;
 }
 
 #header{
-    font-size: 6vw; 
+    font-size: 10vw; 
     font-weight: bold;
-    color: white;
+    color: black;
 }
 
 
@@ -103,10 +104,10 @@ body{
     border-radius: 40px;
     border-width: 2px;
     border-color: white;
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     font-size: 1vw;
     background-color: transparent;
-    color: white;
+    color: black;
 }
 
 #scroll_button_container{

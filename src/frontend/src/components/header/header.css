@@ -1,11 +1,11 @@
-@font-face {
+/* @font-face {
     font-family: 'SHRIMP';
-    src: url('../../assets/fonts/SHRIMP.ttf');
+    src: Sans-Serif;
 }
 
 .text{
     font-family: 'SHRIMP';
-}
+} */
 
 #header-container{
     /* padding: 0px 90px; */

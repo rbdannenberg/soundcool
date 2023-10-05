@@ -22,19 +22,19 @@
     margin-right: auto;
     margin-top: auto; 
     margin-bottom: auto;
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     background-color: black;
     box-shadow: 1px 1px 5px 1px whitesmoke;
     border-radius: 10px;
 }
 
 .text{
-    font-family: "SHRIMP";
-    color: white;
+    font-family: sans-serif;
+    color: black;
 }
 
 .contact{
-    color: white;
+    color: black;
 }
 
 /* *********************************** */
@@ -50,7 +50,7 @@
   }
 
   #contact-title{
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     color: white;
     font-size: 2rem;
     margin-bottom: 20px;

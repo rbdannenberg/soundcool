@@ -18,7 +18,7 @@
 .login-row{
     margin-left: auto; 
     color: white; 
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     font-size: 1.5rem;
     margin-bottom: 15px; 
     font-weight: bold;
@@ -34,17 +34,17 @@
     background-color: transparent;
     border-color: white;
     margin-bottom: 5px;
-    font-family: "SHRIMP";
+    font-family: sans-serif;
 }
 
 #register-link{
     color: white; 
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     font-style: italic;
 }
 
 #user_login{
-    font-family: "SHRIMP";
+    font-family: sans-serif;
     margin-bottom: 15px;
 }
 

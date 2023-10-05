@@ -817,11 +817,12 @@ class ProjectEditor extends React.Component {
     }
   };
 
-  saveProject = saveAs => {
+  saveProject = (saveAs, callback) => {
     if (saveAs) {
       this.copyname();
     }
-    if (isUserLoggedIn())
+    
+    if (isUserLoggedIn()) {
       if (this.state.projectId !== "new" && !saveAs) {
         this.setState({
           isProjectChanged: false
