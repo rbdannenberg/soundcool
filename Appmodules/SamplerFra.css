@@ -1,0 +1,17 @@
+.button-style {
+    border-radius: 68px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+   
+
+    width: 200px;  
+    height: 200px;  
+    font-size: 60px;  
+    padding: 20px;  
+    color: rgb(255, 184, 31);
+    margin: 30px; 
+    border: 10px solid #170909;
+   }
+   .button-style:hover {
+    background: linear-gradient(145deg, #ffffff, hwb(35 36% 0%));
+    
+  }
