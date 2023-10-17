@@ -44,7 +44,7 @@ class RegisterForm extends Component {
           type="text"
           name="name"
           required={true}
-          placeholder="Name"
+          placeholder="Username"
           value={name}
           onChange={this.handleOnChange}
           autoFocus

@@ -17,7 +17,7 @@ import ReactTooltip from "react-tooltip";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { Link } from "react-router-dom";
 
-class Sounds extends React.Component {
+class Medias extends React.Component {
   state = {
     sounds: [],
     sound: {
@@ -190,7 +190,7 @@ class Sounds extends React.Component {
             <BreadcrumbItem>
               <Link to="/home">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>Sounds</BreadcrumbItem>
+            <BreadcrumbItem active>Media</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
             <h3>Menu</h3>
@@ -256,4 +256,4 @@ class Sounds extends React.Component {
   }
 }
 
-export default Sounds;
+export default Medias;

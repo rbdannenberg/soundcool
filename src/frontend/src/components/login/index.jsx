@@ -1,6 +1,6 @@
 import React from "react";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import { redirectToHome } from "./actions";
+import { redirectToDashboard } from "./actions";
 import { Link } from "react-router-dom";
 import { showToastr, showToastrError } from "../../actions/common";
 import LoginForm from "./form";
@@ -23,7 +23,7 @@ class Login extends React.Component {
       cookies.set("token", token, { path: '/' });
       localStorage.setItem('user_id', user_id);
       localStorage.setItem('userName',name);
-      redirectToHome();
+      redirectToDashboard();
     }
   };
 

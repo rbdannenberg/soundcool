@@ -83,15 +83,24 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink className="nav-link text" to="/projects">
-                    <span className="fa" /> Projects
+                  <NavLink className="nav-link" to="/dashboard">
+                    <span className="fas fa-columns" /> Dashboard
                   </NavLink>
                 </NavItem>
+                {isUserLoggedIn() && (
+
+                  <NavItem>
+                    <NavLink className="nav-link" to="/projectsList">
+                      <span className="fa fa-project-diagram" /> Projects
+                    </NavLink>
+                  </NavItem>
+                )}
 
                 {isUserLoggedIn() && (
+                  
                   <NavItem>
-                    <NavLink className="nav-link text" to="/sounds">
-                      <span className="fa fa-list " /> Sounds
+                    <NavLink className="nav-link" to="/medias">
+                      <span className="fa fa-list " /> Media
                     </NavLink>
                   </NavItem>
                 )}
