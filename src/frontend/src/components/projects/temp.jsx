@@ -12,7 +12,7 @@ import {
   showToastr,
   showToastrError,
   timedifference,
-  updateRecentProjects
+  updateRecentProjects,
 } from "../../actions/common";
 import { fetchUserProjects } from "./actions";
 import Modal from "react-bootstrap/Modal";
@@ -20,7 +20,7 @@ import FormInput from "../form/FormInput.jsx";
 import "./projects.css";
 import SideNav from "./sideNav";
 
-class ProjectHome extends Component {
+class DashboardHome extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +36,6 @@ class ProjectHome extends Component {
         : "Column",
       localProject: !!JSON.parse(localStorage.getItem("localProject")),
       isJoinPerformanceModalOpen: false,
-      projects : [],
     };
     this.openProjectEditor = this.openProjectEditor.bind(this);
   }
@@ -69,18 +68,18 @@ class ProjectHome extends Component {
 
   toggleJoinPerformanceModal = () =>
     this.setState({
-      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen,
     });
 
   handlePerformanceJoin() {
     let { performanceName } = this.state;
 
     fetchPerformance(performanceName)
-      .then(res => {
+      .then((res) => {
         showToastr("success", "Joined performance successfully");
         window.location = "/performance/" + res.name;
       })
-      .catch(err => {
+      .catch((err) => {
         showToastr("error", "The performance doesn't exist!");
       });
   }
@@ -89,12 +88,12 @@ class ProjectHome extends Component {
     // case on the user, if there is no user logged in, then no
     // project get displayed
     var projectsShown = this.state.projectsShown;
-  if (isUserLoggedIn() && this.props.user) {
+    if (isUserLoggedIn() && this.props.user) {
       fetchUserProjects(projectsShown)
-        .then(data => {
+        .then((data) => {
           this.setState({ projects: data });
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     } else {
@@ -123,20 +122,20 @@ class ProjectHome extends Component {
       superLargeDesktop: {
         // the naming can be any, depends on you.
         breakpoint: { max: 4000, min: 3000 },
-        items: 5
+        items: 5,
       },
       desktop: {
         breakpoint: { max: 3000, min: 1024 },
-        items: 3
+        items: 3,
       },
       tablet: {
         breakpoint: { max: 1024, min: 464 },
-        items: 2
+        items: 2,
       },
       mobile: {
         breakpoint: { max: 464, min: 0 },
-        items: 1
-      }
+        items: 1,
+      },
     };
     var recentP = localStorage.getItem("recentProjects")
       ? JSON.parse(localStorage.getItem("recentProjects"))
@@ -379,4 +378,4 @@ class ProjectHome extends Component {
   }
 }
 
-export default withRouter(ProjectHome);
+export default withRouter(DashboardHome);
