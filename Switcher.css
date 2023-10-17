@@ -1,0 +1,17 @@
+.button-style {
+    border-radius: 78px;
+    background: #b1e2ec;
+    
+    width: 200px;  
+    height: 200px;  
+    font-size: 60px;  
+    padding: 20px;  
+    color: rgb(20, 134, 255);
+    margin: 50px; 
+    border: 10px solid #170909;
+   }
+   .button-style:hover {
+    background: linear-gradient(145deg, #ffffff, hwb(240 26% 2%));
+    
+  }
+  
