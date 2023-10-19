@@ -13,7 +13,7 @@ import {
   cleanPayload,
   commonSocket,
   getCurrentProjectId,
-  getCurrentPerformanceId
+  getCurrentPerformanceId,
 } from "../../actions/common";
 import { fetchPerformance, removePerformance, openPort } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -26,7 +26,7 @@ import {
   DropdownToggle,
   Nav,
   Navbar,
-  NavItem
+  NavItem,
 } from "reactstrap";
 import { NavLink } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
@@ -50,7 +50,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
   boxShadow: isDragging
     ? `0 25px 50px rgba(255,20,147,0.50), 0 20px 15px rgba(255,20,147,0.42)`
-    : ""
+    : "",
 });
 
 const move = (source, destination, droppableSource, droppableDestination) => {
@@ -67,14 +67,14 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-const getListStyle = isDraggingOver => ({
+const getListStyle = (isDraggingOver) => ({
   width: "13rem",
-  background: isDraggingOver ? "lightblue" : "transparent"
+  background: isDraggingOver ? "lightblue" : "transparent",
 });
 
 class Performance extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
+    cookies: instanceOf(Cookies).isRequired,
   };
   constructor(props) {
     super(props);
@@ -98,7 +98,7 @@ class Performance extends React.Component {
       isModalOpen: false,
       isRegisterModalOpen: false,
       isLoginModalOpen: false,
-      isEndModalOpen: false
+      isEndModalOpen: false,
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -109,11 +109,11 @@ class Performance extends React.Component {
     this.timer = null;
   }
 
-  getList = id => {
+  getList = (id) => {
     let x = this.state["items"];
     return x[id.split("_")[1]];
   };
-  onDragEnd = result => {
+  onDragEnd = (result) => {
     const { source, destination } = result;
     let finalResult;
     // dropped outside the list
@@ -146,14 +146,14 @@ class Performance extends React.Component {
     }
     this.setState(
       {
-        items: finalResult
+        items: finalResult,
       },
       () => {
         if (!result.isStreamed) {
           commonSocket.emit("dragEnd", {
             room: getCurrentPerformanceId(),
             value: result,
-            updatedItem: JSON.stringify(this.props.blocks)
+            updatedItem: JSON.stringify(this.props.blocks),
           });
         }
       }
@@ -164,7 +164,7 @@ class Performance extends React.Component {
     commonSocket.emit("isDragging", getCurrentPerformanceId());
   };
 
-  blockStyle = id => {
+  blockStyle = (id) => {
     const top = (id % 15) * 20 + "px";
     const left = (id % 15) * 20 + "px";
     const zIndex = this.state.selectedBlock
@@ -176,18 +176,18 @@ class Performance extends React.Component {
       position: "absolute",
       top: top,
       left: left,
-      zIndex: zIndex
+      zIndex: zIndex,
     };
   };
 
   renderBlockList = (blocks, nowOut) => {
-    blocks = blocks.map(column => {
-      const col = column.filter(item => item !== undefined);
+    blocks = blocks.map((column) => {
+      const col = column.filter((item) => item !== undefined);
       return col;
     });
     if (this.state.view === "Floating") {
       let finalBlock = [];
-      blocks.forEach(o => {
+      blocks.forEach((o) => {
         finalBlock = finalBlock.concat(o);
       });
       return (
@@ -196,11 +196,11 @@ class Performance extends React.Component {
             top: "5px",
             height: this.state.windowH - 95,
             width: this.state.windowW - 20,
-            position: "relative"
+            position: "relative",
           }}
         >
           <div className="boxContainer">
-            {finalBlock.map(b => (
+            {finalBlock.map((b) => (
               <RDraggable
                 bounds="parent"
                 cancel="input"
@@ -243,7 +243,7 @@ class Performance extends React.Component {
               <div
                 style={{
                   paddingTop: "5px",
-                  paddingLeft: "10px"
+                  paddingLeft: "10px",
                 }}
               >
                 <Droppable droppableId={"droppable_" + listIndex}>
@@ -305,17 +305,17 @@ class Performance extends React.Component {
       for (let i = 0; i < length; i++) {
         newValue[i] = [];
       }
-      nextProps.blocks.bs.forEach(o => {
+      nextProps.blocks.bs.forEach((o) => {
         this.state.items.every((arr, index) => {
-          arr = arr.filter(e => e !== undefined);
-          const found = arr.find(element => element["id"] === o["id"]);
+          arr = arr.filter((e) => e !== undefined);
+          const found = arr.find((element) => element["id"] === o["id"]);
           if (found === undefined) {
             if (index === length - 1) {
               newValue[0].push(o);
             }
             return true;
           } else {
-            const i = arr.findIndex(element => element["id"] === o["id"]);
+            const i = arr.findIndex((element) => element["id"] === o["id"]);
             newValue[index][i] = o;
             return false;
           }
@@ -331,7 +331,7 @@ class Performance extends React.Component {
       this.setState({
         isProjectChanged: checkUpdate,
         items: newValue,
-        prevItems: nextProps.blocks.bs
+        prevItems: nextProps.blocks.bs,
       });
     }
   }
@@ -345,29 +345,29 @@ class Performance extends React.Component {
     if (performanceId) {
       commonSocket.emit("joinRoom", performanceId);
     }
-    commonSocket.on("openPort", data => {
+    commonSocket.on("openPort", (data) => {
       // console.log(data);
       this.setState({
-        openPorts: data
+        openPorts: data,
       });
     });
     commonSocket.on("isDragging", () => {
       this.setState({
-        isDragging: true
+        isDragging: true,
       });
     });
-    commonSocket.on("oscData", data => {
+    commonSocket.on("oscData", (data) => {
       let portNumber = data.portNumber;
       let targetComponent = this.findComponents(portNumber);
       this.handleOscInput(targetComponent, data);
     });
-    commonSocket.on("changeBlock", data => {
+    commonSocket.on("changeBlock", (data) => {
       data["isStreamed"] = true;
       this.props.dispatch(data);
     });
-    commonSocket.on("dragEnd", result => {
+    commonSocket.on("dragEnd", (result) => {
       this.setState({
-        isDragging: false
+        isDragging: false,
       });
       result["isStreamed"] = true;
       this.onDragEnd(result);
@@ -399,7 +399,7 @@ class Performance extends React.Component {
     this.setState({
       windowW: window.innerWidth,
       windowH: window.innerHeight,
-      items: items
+      items: items,
     });
   }
 
@@ -528,7 +528,7 @@ class Performance extends React.Component {
         id: id,
         field,
         value,
-        ...num
+        ...num,
       });
     }
   }
@@ -551,7 +551,7 @@ class Performance extends React.Component {
         type: "CHANGE_BLOCK",
         id: id,
         field,
-        value
+        value,
       });
     }
   }
@@ -608,7 +608,7 @@ class Performance extends React.Component {
           data.value === 0 &&
           this.props.blocks["bs"][index].audioObj.options.path !== ""
         ) {
-          this.props.blocks["bs"][index].audioObj.reverse(res => {
+          this.props.blocks["bs"][index].audioObj.reverse((res) => {
             // console.log(res);
           });
         } else {
@@ -630,7 +630,7 @@ class Performance extends React.Component {
         type: "CHANGE_BLOCK",
         id: id,
         field,
-        value
+        value,
       });
     }
   }
@@ -653,12 +653,12 @@ class Performance extends React.Component {
       type: "CHANGE_BLOCK",
       id: id,
       field,
-      value
+      value,
     });
   }
 
   openNewPort(blocks) {
-    blocks.forEach(block => {
+    blocks.forEach((block) => {
       if (
         block.osc &&
         block.oscPort &&
@@ -668,14 +668,14 @@ class Performance extends React.Component {
         this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
         // console.log({ portNumber: block.oscPort });
         openPort({ portNumber: block.oscPort })
-          .then(data => {
+          .then((data) => {
             if (data.err) {
               showToastrError(data);
             } else {
               showToastr("success", data["message"]);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             showToastrError(error);
           });
       }
@@ -684,8 +684,8 @@ class Performance extends React.Component {
 
   // assign ports to blocks from the ports values loaded
   assignPorts(blocks) {
-    blocks.forEach(block => {
-      this.state.oscPorts.forEach(module => {
+    blocks.forEach((block) => {
+      this.state.oscPorts.forEach((module) => {
         if (module.id === block.id) {
           block.osc = true;
           block.oscPort = module.oscPort;
@@ -696,16 +696,16 @@ class Performance extends React.Component {
 
   loadState() {
     fetchPerformance(this.state.performanceName)
-      .then(res => {
+      .then((res) => {
         let { name, oscports, content } = res;
         this.props.dispatch(loadProject(content));
         oscports = JSON.parse(oscports);
         this.setState({
           projectName: name,
-          oscPorts: oscports
+          oscPorts: oscports,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         showToastrError(err);
       });
   }
@@ -717,7 +717,7 @@ class Performance extends React.Component {
 
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
-    blocks.forEach(block => {
+    blocks.forEach((block) => {
       if (
         block.osc &&
         block.oscPort &&
@@ -744,7 +744,7 @@ class Performance extends React.Component {
 
   endPerformance = () => {
     removePerformance({ performanceName: this.state.performanceName })
-      .then(res => {
+      .then((res) => {
         if (res.message) {
           showToastr("success", res.message);
           window.location = "/projectsList";
@@ -752,7 +752,7 @@ class Performance extends React.Component {
           showToastr("error", "only performance creator can delete");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         showToastrError(error);
       });
   };
@@ -860,7 +860,7 @@ class Performance extends React.Component {
                   style={{
                     paddingTop: "10px",
                     paddingLeft: "10px",
-                    paddingRight: "10px"
+                    paddingRight: "10px",
                   }}
                 >
                   <span class="badge badge-secondary">
@@ -938,8 +938,8 @@ class Performance extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  blocks: state.blocks
+const mapStateToProps = (state) => ({
+  blocks: state.blocks,
 });
 
 export default connect(mapStateToProps)(Performance);

@@ -106,19 +106,16 @@ router.patch("/update", (req, res) => {
     });
   }
 });
-
 router.post("/new", (req, res) => {
   var user = jwt.verify(req.headers["x-auth-token"], jwtToken);
   const user_id = user.id;
   const { projectName, projectDescription, blocks } = req.body;
   let error = "";
-  if (blocks["bs"].length == 0) {
-    error = "Project is Empty";
-    return res.json({ error });
-  } else if (projectName == "") {
+  if (projectName == "") {
+    error = "Project Name is Empty";
     return res.json({ error });
   } else {
-    let content = JSON.stringify(blocks);
+    let content = blocks ? JSON.stringify(blocks) : JSON.stringify({ bs: [] });
     const QUERY = `INSERT INTO projects(user,name,description,content) values('${user_id}','${projectName}','${projectDescription}','${content}')`;
     if (database == "mysql") {
       connection.query(QUERY, (err, results) => {
@@ -433,7 +430,7 @@ router.patch("/addShare", (req, res) => {
           });
         } else {
           return res.json({
-            message: "User not found"
+            message: "User added successfully"
           });
         }
       }
@@ -441,31 +438,60 @@ router.patch("/addShare", (req, res) => {
   }
 });
 
+
+
 router.patch("/removeShare", (req, res) => {
-  const { projectId, sharedUsers } = req.body;
-  const QUERY = `UPDATE projects SET sharedUsers = '${sharedUsers}' WHERE project_id = ${projectId}`;
+  const { projectId, userName } = req.body;
+
+  // First fetch the existing sharedUsers for the given project
+  const getSharedUsersQuery = `SELECT sharedUsers FROM projects WHERE project_id = ${projectId}`;
+
+  const handleUserRemoval = (err, results) => {
+    if (err) {
+      return res.json({ err: err });
+    } else {
+      let sharedUsers = results[0]["sharedUsers"];
+      sharedUsers = sharedUsers ? JSON.parse(sharedUsers) : { users: [] };
+
+      // Filter out the user to remove
+      const updatedSharedUsersList = sharedUsers["users"].filter(
+        user => user.name !== userName
+      );
+      sharedUsers["users"] = updatedSharedUsersList;
+
+      const updatedSharedUsersString = JSON.stringify(sharedUsers);
+      const updateSharedUsersQuery = `UPDATE projects SET sharedUsers = '${updatedSharedUsersString}' WHERE project_id = ${projectId}`;
+
+      if (database == "mysql") {
+        connection.query(updateSharedUsersQuery, (err, results) => {
+          if (err) {
+            return res.json({ err: err });
+          } else {
+            return res.json({
+              data: updatedSharedUsersString,
+              message: "User removed successfully"
+            });
+          }
+        });
+      } else if (database == "sqlite") {
+        connection.run(updateSharedUsersQuery, [], function(err) {
+          if (err) {
+            return res.json({ err: err });
+          } else {
+            return res.json({
+              data: updatedSharedUsersString,
+              message: "User removed successfully"
+            });
+          }
+        });
+      }
+    }
+  };
+
   if (database == "mysql") {
-    connection.query(QUERY, (err, results) => {
-      if (err) {
-        return res.json({ err: err });
-      } else {
-        return res.json({
-          data: sharedUsers,
-          message: "User removed successfully"
-        });
-      }
-    });
+    connection.query(getSharedUsersQuery, handleUserRemoval);
   } else if (database == "sqlite") {
-    connection.run(QUERY, [], function(err) {
-      if (err) {
-        return res.json({ err: err });
-      } else {
-        return res.json({
-          data: sharedUsers,
-          message: "User removed successfully"
-        });
-      }
-    });
+    connection.all(getSharedUsersQuery, [], handleUserRemoval);
   }
 });
 

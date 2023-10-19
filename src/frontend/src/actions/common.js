@@ -1,6 +1,4 @@
-import {
-  toast
-} from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 import socketIOClient from "socket.io-client";
 
@@ -13,13 +11,13 @@ export const showToastr = (type, ...rest) => {
 };
 export const successErrorHandler = (resolve, reject) => {
   const success = (data, status) => resolve(data);
-  const err = error => {
+  const err = (error) => {
     console.error(error);
     reject && reject(error);
   };
   return {
     success,
-    err
+    err,
   };
 };
 
@@ -31,23 +29,21 @@ export const baseAddress = () => {
   );
 };
 
-export const showToastrError = errObj => {
+export const showToastrError = (errObj) => {
   showToastr(
     "error",
     errObj.error || errObj.err || "Something went wrong.",
-    null, {
+    null,
+    {
       timeOut: 0,
-      extendedTimeOut: 0
+      extendedTimeOut: 0,
     }
   );
 };
 
-export const getHeaders = ({
-  email,
-  token
-}) => ({
+export const getHeaders = ({ email, token }) => ({
   // 'X-Auth-Email': email,
-  "X-Auth-Token": token
+  "X-Auth-Token": token,
 });
 
 export const getCssPropById = (id, prop) => {
@@ -64,12 +60,7 @@ export const highlightElementById = (id, time = 3000) => {
   }, time);
 };
 
-export const setCssPropById = ({
-  id,
-  prop,
-  time = 3000,
-  temp = false
-}) => {
+export const setCssPropById = ({ id, prop, time = 3000, temp = false }) => {
   var elem = document.getElementById(id);
   var orig = elem.style[prop];
   elem.style[prop] = "8px 8px 8px darkred";
@@ -80,15 +71,21 @@ export const setCssPropById = ({
   }
 };
 
-export const focusElementById = id => {
+export const focusElementById = (id) => {
   var elem = document.getElementById(id);
   elem.scrollIntoView();
 };
 
-export const cleanPayload = pd => {
-  pd["bs"].forEach(o => {
-    o["audioObj"] = {};
-  });
+export const cleanPayload = (pd) => {
+  if (pd && Array.isArray(pd["bs"])) {
+    pd["bs"].forEach((o) => {
+      if (o && typeof o === "object") {
+        o["audioObj"] = {};
+      }
+    });
+  } else {
+    pd = { bs: [] };
+  }
   pd["cns"] = {};
   return pd;
 };
@@ -104,17 +101,17 @@ export const removeByAttr = (arr, attr, value) => {
 };
 
 export const updateRecentProjects = (projectId, projectName) => {
-  var recentP = localStorage.getItem("recentProjects") ?
-    JSON.parse(localStorage.getItem("recentProjects")) :
-    [];
-  var recentPSize = localStorage.getItem("recentProjectsSize") ?
-    localStorage.getItem("recentProjectsSize") :
-    3;
+  var recentP = localStorage.getItem("recentProjects")
+    ? JSON.parse(localStorage.getItem("recentProjects"))
+    : [];
+  var recentPSize = localStorage.getItem("recentProjectsSize")
+    ? localStorage.getItem("recentProjectsSize")
+    : 4;
   removeByAttr(recentP, "id", projectId);
   recentP.unshift({
     id: projectId,
     lastActive: Math.floor(Date.now() / 1000),
-    projectName: projectName
+    projectName: projectName,
   });
   while (recentP.length > recentPSize) {
     recentP.pop();
@@ -133,20 +130,24 @@ export const timedifference = (start, end) => {
 
 export const clearData = () => {
   cookies.remove("name", {
-    path: "/"
+    path: "/",
   });
   cookies.remove("token", {
-    path: "/"
+    path: "/",
   });
   cookies.remove("token", {
-    path: "/project-editor"
+    path: "/project-editor",
   });
   localStorage.clear();
 };
 
 export const getCurrentProjectId = () => {
   let location = window.location.href.split("/");
-  if (location[3] === 'project-editor' && location[4] !== null && location[4] !== 'new') {
+  if (
+    location[3] === "project-editor" &&
+    location[4] !== null &&
+    location[4] !== "new"
+  ) {
     return location[4];
   }
   return null;
@@ -154,7 +155,7 @@ export const getCurrentProjectId = () => {
 
 export const getCurrentPerformanceId = () => {
   let location = window.location.href.split("/");
-  if (location[3] === 'performance' && location[4] !== null) {
+  if (location[3] === "performance" && location[4] !== null) {
     return location[4];
   }
   return null;
@@ -163,6 +164,5 @@ export const getCurrentPerformanceId = () => {
 export const isUserLoggedIn = () => {
   return cookies.get("token") || "";
 };
-
 
 export const commonSocket = socketIOClient(baseAddress());

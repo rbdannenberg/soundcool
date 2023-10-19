@@ -1,15 +1,12 @@
 import React, { Component } from "react";
-import { createProject } from "../projectEditor/actions";
+import { createProject } from "../../projectEditor/actions";
 import {
   createPerformance,
   fetchPerformance,
   getPorts,
-} from "../performance/actions";
-import {
-  showToastr,
-  showToastrError,
-  updateRecentProjects,
-} from "../../actions/common";
+} from "../../performance/actions";
+// import { showToastr, showToastrError } from "../../../actions/common";
+import { showToastr, showToastrError } from "../../../actions/common";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import ReactTooltip from "react-tooltip";
 import { Link } from "react-router-dom";
@@ -21,11 +18,11 @@ import {
   removeSharedUser,
   setProjectPublic,
   cloneProject,
-} from "./actions";
+} from "../../projects/actions";
 import Modal from "react-bootstrap/Modal";
-import FormInput from "../form/FormInput.jsx";
+import FormInput from "../../form/FormInput.jsx";
 
-class Projects extends Component {
+class PerformancesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,11 +38,6 @@ class Projects extends Component {
       isJoinPerformanceModalOpen: false,
       checked: false,
       oscModuleList: [],
-      filters: {
-        private: true,
-        shared: true,
-        public: true,
-      },
     };
     this.toggleProjectVisibility = this.toggleProjectVisibility.bind(this);
   }
@@ -80,32 +72,24 @@ class Projects extends Component {
     });
 
   removeSharedUser() {
-    let { projectState, userNameToRemove } = this.state;
-    let { project_id } = projectState;
-
-    removeSharedUser({ projectId: project_id, userName: userNameToRemove })
+    let { projectState } = this.state;
+    let { project_id, sharedUsers } = projectState;
+    removeSharedUser({ projectId: project_id, sharedUsers })
       .then((res) => {
         // console.log(res);
         showToastr("success", res.message);
-
-        let updatedProjects = this.state.projects.map((project) => {
+        let index = -1;
+        this.state.projects.some((project) => {
+          index++;
           if (project.project_id === project_id) {
-            // Parse the sharedUsers from string to object
-            let sharedUsersList = JSON.parse(project.sharedUsers).users;
-
-            // Remove the user by filtering out the user with the given userNameToRemove
-            sharedUsersList = sharedUsersList.filter(
-              (user) => user.name !== userNameToRemove
-            );
-
-            // Convert the updated sharedUsers back to string and set it to the project
-            project.sharedUsers = JSON.stringify({ users: sharedUsersList });
+            // eslint-disable-next-line
+            this.state.projects[index]["sharedUsers"] = sharedUsers;
+            return true;
           }
-          return project;
+          return false;
         });
-
         this.setState({
-          projects: updatedProjects,
+          projects: this.state.projects,
         });
       })
       .catch((error) => {
@@ -303,38 +287,7 @@ class Projects extends Component {
         });
     }
   }
-
   filterProjects = (project) => {
-    const {
-      private: privateFilter,
-      shared: sharedFilter,
-      public: publicFilter,
-    } = this.state.filters;
-
-    if (
-      privateFilter &&
-      !project.isOwner &&
-      !project.sharedUsers &&
-      !project.isPublic
-    ) {
-      return true;
-    }
-
-    if (
-      sharedFilter &&
-      !project.isOwner &&
-      (project.sharedUsers || project.isPublic)
-    ) {
-      return true;
-    }
-
-    if (publicFilter && project.isOwner) {
-      return true;
-    }
-
-    return false;
-  };
-  searchProjects = (project) => {
     let qry = this.state.search;
     if (qry === "") return true;
     else if (project.user.toString().toLowerCase().includes(qry.toLowerCase()))
@@ -370,20 +323,6 @@ class Projects extends Component {
       }
     );
   };
-
-  handleCheckboxChange = (filterName) => {
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        [filterName]: !prevState.filters[filterName],
-      },
-    }));
-  };
-  handleOnChange = (name, value) => {
-    const params = { [name]: value };
-    this.setState(params);
-  };
-
   renderProjects = (projects) =>
     projects.map((project, index) => {
       let { project_id, name, description, sharedUsers, isOwner, isPublic } =
@@ -397,7 +336,7 @@ class Projects extends Component {
           sUsers.push(user.name);
           multiple = true;
           countt++;
-          if (countt > 5) {
+          if (countt > 2) {
             sUsers.push(" , ... ");
             return false;
           }
@@ -405,17 +344,16 @@ class Projects extends Component {
         });
       return (
         <tr>
-          <th scope="row">{index + 1}</th>
+          {/* <th scope="row">{index + 1}</th>
           <td>{name}</td>
           <td>{description}</td>
           <td>{isOwner ? isOwner : "You"}</td>
-          <td>{isPublic ? "Everyone" : sUsers}</td>
-          <td>
+          <td>{isPublic ? "Everyone" : sUsers}</td> */}
+          {/* <td>
             <button
               data-tip="Edit Project"
               className="btn btn-primary"
               onClick={() => {
-                updateRecentProjects(project_id, name);
                 window.location = "project-editor/" + project_id;
               }}
             >
@@ -437,8 +375,8 @@ class Projects extends Component {
             >
               <i className="fas fa-music" aria-hidden="true"></i>
             </button>
-            &nbsp;
-            {!isOwner && (
+            &nbsp; */}
+          {/* {!isOwner && (
               <button
                 data-tip="Delete Project"
                 className="btn btn-danger"
@@ -446,8 +384,8 @@ class Projects extends Component {
               >
                 <i className="fas fa-trash" aria-hidden="true"></i>
               </button>
-            )}
-            {isOwner !== 0 && isOwner && (
+            )} */}
+          {/* {isOwner !== 0 && isOwner && (
               <button
                 data-tip="Clone Project"
                 className="btn btn-primary"
@@ -455,13 +393,17 @@ class Projects extends Component {
               >
                 <i className="fas fa-clone" aria-hidden="true"></i>
               </button>
-            )}
-          </td>
+            )} */}
+          {/* </td> */}
 
           <ReactTooltip place="top" type="dark" effect="float" />
         </tr>
       );
     });
+  handleOnChange = (name, value) => {
+    const params = { [name]: value };
+    this.setState(params);
+  };
 
   render() {
     let fileReader;
@@ -495,10 +437,10 @@ class Projects extends Component {
             <BreadcrumbItem>
               <Link to="/home">Home</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem active>Project</BreadcrumbItem>
+            <BreadcrumbItem active>Performances</BreadcrumbItem>
           </Breadcrumb>
           <div className="col-12">
-            <h3>Projects</h3>
+            <h3>Performances</h3>
             <input
               style={{ display: "none" }}
               ref={(ref) => (this.upload = ref)}
@@ -509,30 +451,6 @@ class Projects extends Component {
               className="btn btn-info float-right"
             />
             <div className="float-right">
-              <label style={{ marginRight: "15px" }}>
-                <input
-                  type="checkbox"
-                  checked={this.state.filters.private}
-                  onChange={() => this.handleCheckboxChange("private")}
-                />
-                Private
-              </label>
-              <label style={{ marginRight: "15px" }}>
-                <input
-                  type="checkbox"
-                  checked={this.state.filters.shared}
-                  onChange={() => this.handleCheckboxChange("shared")}
-                />
-                Shared
-              </label>
-              <label style={{ marginRight: "15px" }}>
-                <input
-                  type="checkbox"
-                  checked={this.state.filters.public}
-                  onChange={() => this.handleCheckboxChange("public")}
-                />
-                Public
-              </label>
               <input
                 className="search"
                 style={{ marginRight: "10px" }}
@@ -546,7 +464,7 @@ class Projects extends Component {
                 className="btn btn-info"
                 onClick={(e) => this.upload.click()}
               >
-                Import project
+                Import performance
               </button>
               {/* <button
                 className="btn btn-warning"
@@ -554,9 +472,6 @@ class Projects extends Component {
               >
                 Show Performances
               </button> */}
-              <Link to="/performancesList" className="btn btn-warning">
-                Show Performances
-              </Link>
             </div>
           </div>
         </div>
@@ -565,18 +480,16 @@ class Projects extends Component {
           <table className="table table-hover">
             <thead>
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
+                <th scope="col">Affiliated Project</th>
                 <th scope="col">Created By</th>
                 <th scope="col">Shared With</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {this.renderProjects(
-                projects.filter(this.filterProjects).filter(this.searchProjects)
-              )}
+              {this.renderProjects(projects.filter(this.filterProjects))}
             </tbody>
             {/* <tbody>{this.renderProjects(projects)}</tbody> */}
           </table>
@@ -587,93 +500,82 @@ class Projects extends Component {
           </Modal.Header>
           <Modal.Body>
             <p>Project Name: {this.state.currentProjectName} </p>
-            {this.state.projectState &&
-              this.state.projectState.isOwner === 0 &&
-              !this.state.projectState.isOwner && (
-                <p>
-                  Set visible to everyone :
-                  <Switch
-                    className="float-right"
-                    onChange={this.toggleProjectVisibility}
-                    checked={
-                      this.state.projectState
-                        ? this.state.projectState.isPublic
-                          ? true
-                          : false
-                        : false
-                    }
-                  />
-                </p>
-              )}
-            {this.state.projectState &&
-              this.state.projectState.isOwner === 0 &&
-              !this.state.projectState.isOwner && (
-                <p>
-                  Add Sharer
-                  <button
-                    onClick={() => {
-                      this.toggleModal();
-                      this.toggleUserModal();
-                    }}
-                    className="float-right btn btn-primary"
-                  >
-                    <i className="fa fa-plus"></i>
-                  </button>
-                </p>
-              )}
+            <p>
+              Set visible to everyone :
+              <Switch
+                className="float-right"
+                onChange={this.toggleProjectVisibility}
+                checked={
+                  this.state.projectState
+                    ? this.state.projectState.isPublic
+                      ? true
+                      : false
+                    : false
+                }
+              />
+            </p>
+            <p>
+              Add Sharer
+              <button
+                onClick={() => {
+                  this.toggleModal();
+                  this.toggleUserModal();
+                }}
+                className="float-right btn btn-primary"
+              >
+                <i className="fa fa-plus"></i>
+              </button>
+            </p>
             <p>Sharer List:</p>
             <div className="sharer-list">
               {this.state.projectState &&
-              !this.state.projectState.isPublic &&
-              this.state.projectState.sharedUsers ? (
-                <div>
-                  {JSON.parse(this.state.projectState.sharedUsers)["users"].map(
-                    (user, index) => (
-                      <div
-                        className="sharer-item"
-                        key={index}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginBottom: "10px",
-                          borderRadius: "15px",
-                          border: "1px solid #ccc",
-                          padding: "10px",
-                        }}
-                      >
-                        <span style={{ flex: 1 }}>{user.name}</span>
-                        {this.state.projectState &&
-                          this.state.projectState.isOwner === 0 &&
-                          !this.state.projectState.isOwner && (
-                            <button
-                              style={{
-                                marginLeft: "10px",
-                                padding: "5px 10px",
-                                borderRadius: "5px",
-                                background: "#e44d3a",
-                                color: "white",
-                                border: "none",
-                                cursor: "pointer",
-                              }}
-                              onClick={() => {
-                                this.setState(
-                                  { userNameToRemove: user.name },
-                                  () => {
-                                    this.removeSharedUser();
-                                  }
-                                );
-                              }}
-                            >
-                              Delete
-                            </button>
-                          )}
-                      </div>
-                    )
-                  )}
-                </div>
-              ) : (
-                <p>This is a public project</p>
-              )}
+                !this.state.projectState.isPublic &&
+                this.state.projectState.sharedUsers && (
+                  <div>
+                    {JSON.parse(this.state.projectState.sharedUsers)[
+                      "users"
+                    ].map((user, index) => {
+                      return (
+                        <div className="sharer-item" key={index}>
+                          <input
+                            type="checkbox"
+                            defaultChecked={true}
+                            style={{ marginRight: "10px" }}
+                            onChange={(event) => {
+                              let arr = JSON.parse(
+                                this.state.projectState.sharedUsers
+                              )["users"];
+                              if (event.target.checked) {
+                                // If user was unchecked, execute removeSharedUser or any other logic.
+                                // Here, you can adjust the data without actually removing the user from the list.
+                                // Perhaps setting an 'isActive' property on the user object to false.
+                                arr[index].isActive = true;
+                                this.addSharedUser(index);
+                                // arr[index].isActive = false;
+                                // this.removeSharedUser(index);
+                                // let copy = removeSharedUser(index);
+                              } else {
+                                // If user was rechecked, re-add them or adjust their sharing status.
+                                this.removeSharedUser(index);
+                                let copy = removeSharedUser(index);
+                                // console.log("!!!!!!", arr[index]);
+                              }
+                              this.setState({
+                                projectState: {
+                                  ...this.state.projectState,
+                                  sharedUsers: JSON.stringify({
+                                    users: arr,
+                                  }),
+                                },
+                              });
+                            }}
+                          />
+                          {user.name}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
             </div>
           </Modal.Body>
         </Modal>
@@ -808,4 +710,4 @@ class Projects extends Component {
   }
 }
 
-export default Projects;
+export default PerformancesList;

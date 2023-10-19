@@ -1,3 +1,4 @@
+import dummy from "./dummyTutorial.png";
 import React from "react";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
@@ -125,7 +126,7 @@ class DashboardHome extends React.Component {
                 }}
               >
                 <Card.Body>
-                  <Card.Title>Getting Started</Card.Title>
+                  <Card.Title>Tutorial</Card.Title>
                 </Card.Body>
                 <Carousel
                   itemClass="py-3 px-3"
@@ -138,36 +139,16 @@ class DashboardHome extends React.Component {
                     frameBorder="0"
                   ></iframe>
                 </Carousel>
+                {/* <Card.Body> */}
+                {/* <Card.Title>Tutorial</Card.Title> */}
+                <div style={{ height: "5rem" }}></div>
+
+                <Card.Img
+                  variant="top"
+                  src={dummy}
+                  alt="Description of Image"
+                />
               </Card>
-              <Row className="py-1">
-                <Card style={{ width: "35rem", marginRight: "4rem" }}>
-                  <Card.Body>
-                    <Card.Title>Recent Projects</Card.Title>
-                  </Card.Body>
-                  <ListGroup>
-                    {recentP.map((o) => {
-                      return (
-                        <ListGroupItem
-                          key={o.id} // <-- Add a unique key here
-                          className=" d-flex justify-content-between align-items-center"
-                        >
-                          <Button
-                            color="link"
-                            onClick={() =>
-                              this.openProjectEditor(o.id, o.projectName)
-                            }
-                          >
-                            {o.projectName}
-                          </Button>{" "}
-                          <Badge color="primary" pill>
-                            {timedifference(o.lastActive, Date.now() / 1000)}
-                          </Badge>
-                        </ListGroupItem>
-                      );
-                    })}
-                  </ListGroup>
-                </Card>
-              </Row>
             </CardDeck>
           </Col>
           <Col>
@@ -299,7 +280,7 @@ class DashboardHome extends React.Component {
                 }}
               >
                 <Card.Body>
-                  <Card.Title>Cloud Projects</Card.Title>
+                  <Card.Title>Recent Projects</Card.Title>
                 </Card.Body>
                 {!isUserLoggedIn() && (
                   <Card.Body>Please Login to access</Card.Body>
@@ -327,9 +308,6 @@ class DashboardHome extends React.Component {
                           );
                         })}
                     </ListGroup>
-                    {/* <Card.Body>
-                      <Card.Link href="/projectsList">Projects Menu</Card.Link>
-                    </Card.Body> */}
                   </>
                 )}
               </Card>

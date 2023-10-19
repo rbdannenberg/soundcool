@@ -13,6 +13,7 @@ import About from "./components/about";
 import ProjectEditor from "./components/projectEditor";
 import Performance from "./components/performance";
 import PerformanceMobile from "./components/performance/indexmobile";
+import PerformancesList from "./components/performance/performancesList";
 import Cookies from "universal-cookie";
 import Projects from "./components/projects/editor";
 import { removePerformance } from "./components/performance/actions";
@@ -32,7 +33,6 @@ class Main extends Component {
       const user = jwtDecode(jwt);
       this.setState({ user: user });
     } catch (ex) {}
-
   }
   leavingProjectEditor = () => {
     if (this.props.location.pathname.split("/")[1] !== "project-editor") {
@@ -91,6 +91,11 @@ class Main extends Component {
             exact
             path="/projectsList"
             component={() => <Projects user={user} />}
+          />
+          <Route
+            exact
+            path="/performancesList"
+            component={() => <PerformancesList user={user} />}
           />
           <Route
             exact
