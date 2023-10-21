@@ -1,4 +1,5 @@
-import React, {useState, Component} from "react";
+import dummy from "./dummyTutorial.png";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -231,116 +232,200 @@ class ProjectHome extends Component {
           {/* <Row className="py-1">
             <Col>
             <CardDeck className="mt-2">
-            <Card className="mt-2" style={{ width: "35rem", marginBottom: "8rem", marginTop: "2rem"}}>
-            <Card.Body>
-              <Card.Title>Getting Started</Card.Title>
-            </Card.Body>
-            <Carousel
-              itemClass="py-3 px-3"
-              responsive={responsive}
-              showDots={true}
-            >
-              <iframe
-                title="guide1"
-                src="https://www.youtube.com/embed/zoZaVK7ysRM?rel=0"
-                frameborder="0"
-              ></iframe>
-            </Carousel>
-          </Card>
-          <Row className="py-1">
-          <Card style={{ width: "35rem", marginRight: "4rem" }}>
-              <Card.Body>
-                <Card.Title>Recent Projects</Card.Title>
-              </Card.Body>
-              <ListGroup>
-                {recentP.map(o => {
-                  return (
-                    <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                      <Button
-                        color="link"
-                        onClick={() =>
-                          this.openProjectEditor(o.id, o.projectName)
-                        }
-                      >
-                        {o.projectName}
-                      </Button>{" "}
-                      <Badge color="primary" pill>
-                        {timedifference(o.lastActive, Date.now() / 1000)}
-                      </Badge>
-                    </ListGroupItem>
-                  );
-                })}
-              </ListGroup>
-            </Card>
-            </Row>
-
-          </CardDeck>
-            </Col>
-            <Col>
-              <Button
-                block
-                onClick={() => {
-                  localStorage.setItem("localProject", null);
-                  this.openProjectEditor();
+              <Card
+                className="mt-2"
+                style={{
+                  width: "35rem",
+                  marginBottom: "8rem",
+                  marginTop: "2rem",
                 }}
-                style={{ marginTop: "5rem", marginLeft: "2rem", backgroundColor: "#F4D018", color: "black" }}
+              >
+                <Card.Body>
+                  <Card.Title>Tutorial</Card.Title>
+                </Card.Body>
+                <Carousel
+                  itemClass="py-3 px-3"
+                  responsive={responsive}
+                  showDots={true}
+                >
+                  <iframe
+                    title="guide1"
+                    src="https://www.youtube.com/embed/zoZaVK7ysRM?rel=0"
+                    frameBorder="0"
+                  ></iframe>
+                </Carousel>
+                {/* <Card.Body> */}
+                {/* <Card.Title>Tutorial</Card.Title> */}
+                <div style={{ height: "5rem" }}></div>
+
+                <Card.Img
+                  variant="top"
+                  src={dummy}
+                  alt="Description of Image"
+                />
+              </Card>
+            </CardDeck>
+          </Col>
+          <Col>
+            {isUserLoggedIn() ? (
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Button
+                    block
+                    onClick={() => {
+                      localStorage.setItem("localProject", null);
+                      this.openProjectEditor();
+                    }}
+                    style={{
+                      marginTop: "5rem",
+                      marginLeft: "2rem",
+                      backgroundColor: "#4c9fb5",
+                      color: "white",
+                    }}
+                  >
+                    Start New Project
+                  </Button>
+                </Col>
+                <Col md={6}>
+                  <Button
+                    block
+                    onClick={() => {
+                      this.props.history.push("/"); // Redirecting to the homepage
+                    }}
+                    style={{
+                      marginTop: "5rem",
+                      marginLeft: "2rem",
+                      backgroundColor: "#4c2fa2",
+                      color: "white",
+                    }}
+                  >
+                    Back to Home
+                  </Button>
+                </Col>
+              </Row>
+            ) : (
+              <Row className="mb-3">
+                <Col>
+                  <Button
+                    block
+                    onClick={() => {
+                      localStorage.setItem("localProject", null);
+                      this.openProjectEditor();
+                    }}
+                    style={{
+                      marginTop: "5rem",
+                      marginLeft: "2rem",
+                      backgroundColor: "#F4D018",
+                      color: "black",
+                    }}
+                  >
+                    Start New Project
+                  </Button>
+                </Col>
+              </Row>
+            )}
+            {isUserLoggedIn() ? (
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Button
+                    block
+                    onClick={this.toggleJoinPerformanceModal}
+                    style={{
+                      marginTop: "3rem",
+                      marginLeft: "2rem",
+                      backgroundColor: "#F4D018",
+                      color: "white",
+                    }}
+                  >
+                    Join Performance
+                  </Button>
+                </Col>
+                <Col md={6}>
+                  <Button
+                    block
+                    onClick={() => {
+                      this.props.history.push("/projectsList"); // Redirecting to the projects menu
+                    }}
+                    style={{
+                      marginTop: "3rem",
+                      marginLeft: "2rem",
+                      backgroundColor: "#3679f6",
+                      color: "white",
+                    }}
+                  >
+                    Projects Menu
+                  </Button>
+                </Col>
+              </Row>
+            ) : (
+              <Row className="mb-3">
+                <Col>
+                  <Button
+                    style={{
+                      marginBottom: "5rem",
+                      marginLeft: "2rem",
+                      marginTop: "3rem",
+                      backgroundColor: "#F4D018",
+                      color: "black",
+                    }}
+                    block
+                    onClick={this.toggleJoinPerformanceModal}
+                  >
+                    Share Project
+                  </Button>
+                </Col>
+              </Row>
+            )}
+            {this.state.localProject && (
+              <Button
+                color="#FFEB3B"
+                block
+                onClick={() => this.openProjectEditor()}
               >
                 {" "}
-                Start New Project{" "}
+                Resume Local Project{" "}
               </Button>
-              {
-                <Button
-                  style={{ marginBottom: "5rem", marginLeft: "2rem", marginTop: "3rem", backgroundColor: "#F4D018", color: "black"}}
-                  block
-                  onClick={() => this.toggleJoinPerformanceModal()}
-                >
-                  {" "}
-                  Share Project{" "}
-                </Button>
-              }
-              {this.state.localProject && (
-                <Button
-                  color="#FFEB3B"
-                  block
-                  onClick={() => this.openProjectEditor()}
-                  
-                >
-                  {" "}
-                  Resume Local Project{" "}
-                </Button>
-              )}
-              <Row className="py-1">
-              <Card style={{ width: "35rem", marginTop: "8rem", marginLeft: "4rem"}}>
-              <Card.Body>
-                <Card.Title>Cloud Projects</Card.Title>
-              </Card.Body>
-              {!isUserLoggedIn() && <Card.Body>Please Login to access</Card.Body>}
+            )}
+            <Row className="py-1">
+              <Card
+                style={{
+                  width: "35rem",
+                  marginTop: "8rem",
+                  marginLeft: "4rem",
+                }}
+              >
+                <Card.Body>
+                  <Card.Title>Recent Projects</Card.Title>
+                </Card.Body>
+                {!isUserLoggedIn() && (
+                  <Card.Body>Please Login to access</Card.Body>
+                )}
 
-              {isUserLoggedIn() && (
-                <>
-                  <ListGroup>
-                    {!!projects &&
-                      projects.map(o => {
-                        return (
-                          <ListGroupItem className=" d-flex justify-content-between align-items-center">
-                            <Button
-                              color="link"
-                              onClick={() =>
-                                this.openProjectEditor(o.project_id, o.name)
-                              }
+                {isUserLoggedIn() && (
+                  <>
+                    <ListGroup>
+                      {!!projects &&
+                        projects.map((o) => {
+                          return (
+                            <ListGroupItem
+                              key={o.project_id} // <-- Add a unique key here
+                              className=" d-flex justify-content-between align-items-center"
                             >
-                              {o.name}
-                            </Button>{" "}
-                          </ListGroupItem>
-                        );
-                      })}
-                  </ListGroup>
-                  <Card.Body>
-                    <Card.Link href="/projectsList">Complete Dashboard</Card.Link>
-                  </Card.Body>
-                </>
-              )}
-            </Card>
+                              <Button
+                                color="link"
+                                onClick={() =>
+                                  this.openProjectEditor(o.project_id, o.name)
+                                }
+                              >
+                                {o.name}
+                              </Button>{" "}
+                            </ListGroupItem>
+                          );
+                        })}
+                    </ListGroup>
+                  </>
+                )}
+              </Card>
             </Row>
             </Col>
           </Row>

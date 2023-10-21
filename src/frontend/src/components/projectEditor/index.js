@@ -13,13 +13,13 @@ import {
   isUserLoggedIn,
   cleanPayload,
   getCurrentProjectId,
-  commonSocket
+  commonSocket,
 } from "../../actions/common";
 import {
   createProject,
   fetchUserProject,
   openPort,
-  updateProject
+  updateProject,
 } from "./actions";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { loadProject } from "./thunks.js";
@@ -32,7 +32,7 @@ import {
   DropdownToggle,
   Nav,
   Navbar,
-  NavItem
+  NavItem,
 } from "reactstrap";
 import { NavLink, withRouter } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
@@ -56,7 +56,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
   boxShadow: isDragging
     ? `0 25px 50px rgba(255,20,147,0.50), 0 20px 15px rgba(255,20,147,0.42)`
-    : ""
+    : "",
 });
 
 const move = (source, destination, droppableSource, droppableDestination) => {
@@ -73,14 +73,14 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-const getListStyle = isDraggingOver => ({
+const getListStyle = (isDraggingOver) => ({
   width: "13rem",
-  background: isDraggingOver ? "lightblue" : "transparent"
+  background: isDraggingOver ? "lightblue" : "transparent",
 });
 
 class ProjectEditor extends React.Component {
   static propTypes = {
-    cookies: instanceOf(Cookies).isRequired
+    cookies: instanceOf(Cookies).isRequired,
   };
 
   constructor(props) {
@@ -109,7 +109,7 @@ class ProjectEditor extends React.Component {
       recentProjectsDropdownOpen: false,
       isModalOpen: false,
       isRegisterModalOpen: false,
-      isLoginModalOpen: false
+      isLoginModalOpen: false,
     };
     this.canvasRef = React.createRef();
     this.onDragEnd = this.onDragEnd.bind(this);
@@ -117,18 +117,16 @@ class ProjectEditor extends React.Component {
     this.toggleViewDropdown = this.toggleViewDropdown.bind(this);
     this.toggleProjectsDropdown = this.toggleProjectsDropdown.bind(this);
     this.toggleSharingDropdown = this.toggleSharingDropdown.bind(this);
-    this.toggleRecentProjectsDropdown = this.toggleRecentProjectsDropdown.bind(
-      this
-    );
+    this.toggleRecentProjectsDropdown =
+      this.toggleRecentProjectsDropdown.bind(this);
     this.timer = null;
   }
 
-  getList = id => {
+  getList = (id) => {
     let x = this.state["items"];
     return x[id.split("_")[1]];
   };
-
-  onDragEnd = result => {
+  onDragEnd = (result) => {
     const { source, destination } = result;
     // dropped outside the list
     if (!destination) {
@@ -157,17 +155,17 @@ class ProjectEditor extends React.Component {
       finalResult[parseInt(result[0]["id"].split("_")[1])] = result[0]["value"];
       finalResult[parseInt(result[1]["id"].split("_")[1])] = result[1]["value"];
       this.setState({
-        items: finalResult
+        items: finalResult,
       });
       this.setState({ dragState: [...finalResult] });
       this.props.dispatch({
-        type: 'POSITION_BLOCK',
-        positions: this.state.items.map(item => item.map(i => i.id))
-      })
+        type: "POSITION_BLOCK",
+        positions: this.state.items.map((item) => item.map((i) => i.id)),
+      });
     }
   };
 
-  blockStyle = id => {
+  blockStyle = (id) => {
     const top = (id % 15) * 20 + "px";
     const left = (id % 15) * 20 + "px";
     const zIndex = this.state.selectedBlock
@@ -179,22 +177,22 @@ class ProjectEditor extends React.Component {
       position: "absolute",
       top: top,
       left: left,
-      zIndex: zIndex
+      zIndex: zIndex,
     };
   };
 
-  handleStop = arg => {
+  handleStop = (arg) => {
     console.log(arg);
   };
 
   renderBlockList = (blocks, nowOut) => {
-    blocks = blocks.map(column => {
-      const col = column.filter(item => item !== undefined);
+    blocks = blocks.map((column) => {
+      const col = column.filter((item) => item !== undefined);
       return col;
     });
     if (this.state.view === "Floating") {
       let finalBlock = [];
-      blocks.forEach(o => {
+      blocks.forEach((o) => {
         finalBlock = finalBlock.concat(o);
       });
 
@@ -205,11 +203,11 @@ class ProjectEditor extends React.Component {
             top: "5px",
             height: this.state.windowH - 95,
             width: this.state.windowW - 20,
-            position: "relative"
+            position: "relative",
           }}
         >
           <div className="boxContainer">
-            {finalBlock.map(b => (
+            {finalBlock.map((b) => (
               <RDraggable
                 // position={{ x: 0, y: 0 }}
                 bounds="parent"
@@ -251,7 +249,7 @@ class ProjectEditor extends React.Component {
               <div
                 style={{
                   paddingTop: "5px",
-                  paddingLeft: "10px"
+                  paddingLeft: "10px",
                 }}
               >
                 <Droppable droppableId={"droppable_" + listIndex}>
@@ -314,17 +312,17 @@ class ProjectEditor extends React.Component {
       for (let i = 0; i < length; i++) {
         newValue[i] = [];
       }
-      nextProps.blocks.bs.forEach(o => {
+      nextProps.blocks.bs.forEach((o) => {
         this.state.items.every((arr, index) => {
-          arr = arr.filter(e => e !== undefined);
-          const found = arr.find(element => element["id"] === o["id"]);
+          arr = arr.filter((e) => e !== undefined);
+          const found = arr.find((element) => element["id"] === o["id"]);
           if (found === undefined) {
             if (index === length - 1) {
               newValue[0].push(o);
             }
             return true;
           } else {
-            const i = arr.findIndex(element => element["id"] === o["id"]);
+            const i = arr.findIndex((element) => element["id"] === o["id"]);
             newValue[index][i] = o;
             return false;
           }
@@ -332,7 +330,7 @@ class ProjectEditor extends React.Component {
       });
       if (this.state.projectId === "new") {
         // console.log(nextProps.blocks);
-        // localStorage.setItem("localProject", JSON.stringify(nextProps.blocks));
+        // localStorage.setItem("localProject", JSON.stringify(nextProps.blocks)); ////////////
       }
 
       let opts = {};
@@ -341,7 +339,7 @@ class ProjectEditor extends React.Component {
         this.state.loadCount === nextProps.blocks.bs.length
       ) {
         var connectionCount = 0;
-        nextProps.blocks.bs.forEach(bs => {
+        nextProps.blocks.bs.forEach((bs) => {
           connectionCount += bs["inNode"].length + bs["outNode"].length;
         });
         if (this.state.connectionCount > 0) {
@@ -350,7 +348,7 @@ class ProjectEditor extends React.Component {
               isLoadingConn: false,
               loadCount: undefined,
               connectionCount: 0,
-              isProjectChanged: false
+              isProjectChanged: false,
             };
           } else {
             opts = { isLoadingComp: false };
@@ -361,7 +359,7 @@ class ProjectEditor extends React.Component {
             isLoadingConn: false,
             loadCount: undefined,
             connectionCount: 0,
-            isProjectChanged: false
+            isProjectChanged: false,
           };
         }
       }
@@ -371,7 +369,7 @@ class ProjectEditor extends React.Component {
         isProjectChanged: nextProps.blocks.bs.length > 0,
         items: newValue,
         prevItems: nextProps.blocks.bs,
-        ...opts
+        ...opts,
       });
     }
   }
@@ -385,45 +383,51 @@ class ProjectEditor extends React.Component {
     if (projectId) {
       commonSocket.emit("joinRoom", projectId);
     }
-    commonSocket.on("openPort", data => {
+    commonSocket.on("openPort", (data) => {
       // console.log(data);
       this.setState({
-        openPorts: data
+        openPorts: data,
       });
     });
-    commonSocket.on("oscData", data => {
+    commonSocket.on("oscData", (data) => {
       console.log("received oscData");
       let portNumber = data.portNumber;
       let targetType = data.component;
       let targetComponent = this.findComponents(portNumber, targetType);
-      targetComponent.forEach(comp => {
+      targetComponent.forEach((comp) => {
         this.handleOscInput(comp, data);
       });
     });
-    commonSocket.on("changeBlock", data => {
+    commonSocket.on("changeBlock", (data) => {
       data["isStreamed"] = true;
       this.props.dispatch(data);
     });
     setTimeout(() => {
-      const allItems = this.state.items.reduce((prev, cur) => prev.concat(cur), []);
-      console.log(this.state); 
+      const allItems = this.state.items.reduce(
+        (prev, cur) => prev.concat(cur),
+        []
+      );
+      console.log(this.state);
 
-      // const newItems = this.state.positions?.map(col => col.map(id => allItems.find(item => item.id === id)));
+      const newItems = this.state.positions
+        ? this.state.positions.map((col) =>
+            col.map((id) => allItems.find((item) => item.id === id))
+          )
+        : undefined;
 
-      const newItems = this.state.positions 
-  ? this.state.positions.map(col => col.map(id => allItems.find(item => item.id === id)))
-  : undefined;
-
-      console.log(newItems); 
+      console.log(newItems);
       const newResizeState = [];
       if (newItems == null || newItems.length === 0) {
-        console.log("HERE")
-      } else { 
-        console.log("****")
+        console.log("HERE");
+      } else {
+        console.log("****");
         newResizeState[newItems.length - 1] = newItems;
-        this.setState({ items: newItems, resizeState: newResizeState, dragState: [...newItems] });
+        this.setState({
+          items: newItems,
+          resizeState: newResizeState,
+          dragState: [...newItems],
+        });
       }
-      
     }, 1000);
   }
 
@@ -441,15 +445,15 @@ class ProjectEditor extends React.Component {
         while (sizeChange--) {
           items.push([]);
         }
-        if(maxColumn === this.state.dragState.length) {
+        if (maxColumn === this.state.dragState.length) {
           items = [...this.state.dragState];
         }
-        if(maxColumn < this.state.dragState.length) {
+        if (maxColumn < this.state.dragState.length) {
           items = [...this.state.resizeState[maxColumn - 1]];
         }
       } else if (sizeChange < 0) {
         while (sizeChange++ < 0) {
-          console.log("ITEM LIST" + items + items.length)
+          console.log("ITEM LIST" + items + items.length);
           if (items.length > 1) {
             items[items.length - 2] = items[items.length - 2].concat(
               items[items.length - 1]
@@ -457,7 +461,7 @@ class ProjectEditor extends React.Component {
             items.pop();
             const newResizeState = this.state.resizeState;
             newResizeState[maxColumn - 1] = [...items];
-            this.setState({ resizeState: newResizeState});
+            this.setState({ resizeState: newResizeState });
           }
         }
       }
@@ -465,7 +469,7 @@ class ProjectEditor extends React.Component {
     this.setState({
       windowW: window.innerWidth,
       windowH: window.innerHeight,
-      items: items
+      items: items,
     });
   }
 
@@ -597,7 +601,7 @@ class ProjectEditor extends React.Component {
         id: id,
         field,
         value,
-        ...num
+        ...num,
       });
     }
   }
@@ -654,7 +658,7 @@ class ProjectEditor extends React.Component {
           data.value === 0 &&
           this.props.blocks["bs"][index].audioObj.options.path !== ""
         ) {
-          this.props.blocks["bs"][index].audioObj.reverse(res => {
+          this.props.blocks["bs"][index].audioObj.reverse((res) => {
             // console.log(res);
           });
         } else {
@@ -676,7 +680,7 @@ class ProjectEditor extends React.Component {
         type: "CHANGE_BLOCK",
         id: id,
         field,
-        value
+        value,
       });
     }
   }
@@ -699,12 +703,12 @@ class ProjectEditor extends React.Component {
       type: "CHANGE_BLOCK",
       id: id,
       field,
-      value
+      value,
     });
   }
 
   openNewPort(blocks) {
-    blocks.forEach(block => {
+    blocks.forEach((block) => {
       if (
         block.osc &&
         block.oscPort &&
@@ -713,14 +717,17 @@ class ProjectEditor extends React.Component {
         this.setState({ openPorts: [...this.state.openPorts, block.oscPort] });
         // console.log({ portNumber: block.oscPort });
         openPort({ portNumber: block.oscPort })
-          .then(data => {
+          .then((data) => {
             if (data.err) {
+              console.log("ccccc:");
               showToastrError(data);
             } else {
-              showToastr("success", data["message"]);
+              console.log("eeeee:");
+              showToastr(data["message"]);
             }
           })
-          .catch(error => {
+          .catch((error) => {
+            console.log("fffff:");
             showToastrError(error);
           });
       }
@@ -730,39 +737,77 @@ class ProjectEditor extends React.Component {
   loadState() {
     if (this.state.projectId !== "new") {
       fetchUserProject(this.state.projectId)
-        .then(res => {
+        .then((res) => {
           let { name, description, content } = res;
           this.props.dispatch(loadProject(content));
-          let parsedBS = JSON.parse(content)["bs"];
+
+          let parsedContent = JSON.parse(content) || {}; // Default to an empty object if null
+          let parsedBS = parsedContent["bs"] || [];
           let loadCount = parsedBS.length;
           var connectionCount = 0;
-          parsedBS.forEach(bs => {
-            connectionCount += bs["inNode"].length + bs["outNode"].length;
-          });
+
+          if (Array.isArray(parsedBS)) {
+            parsedBS.forEach((bs) => {
+              connectionCount +=
+                (bs["inNode"]?.length || 0) + (bs["outNode"]?.length || 0);
+            });
+          }
+
           this.setState({
             loadCount,
             connectionCount,
-            isLoadingComp: true,
+            isLoadingComp: loadCount > 0,
             isLoadingCon: connectionCount > 0,
             projectName: name,
             projectDescription: description,
-            positions: JSON.parse(content)["positions"]
+            positions: parsedContent["positions"] || [],
           });
-            console.log("loadState !new sets positions to " +
-                        this.state.positions);  // RBDDBG
+
+          console.log(
+            "loadState !new sets positions to " + this.state.positions
+          );
         })
-        .catch(err => {
+        .catch((err) => {
+          // Ensure loading indicators are turned off on error
+          this.setState({
+            isLoadingComp: false,
+            isLoadingCon: false,
+          });
+
           showToastrError(err);
         });
     } else {
-      this.props.dispatch(loadProject(localStorage.getItem("localProject")));
+      const localProject = localStorage.getItem("localProject");
+      // const safeLocalProject = localProject
+      //   ? JSON.parse(localProject)
+      //   : { bs: [], positions: [] };
+      let safeLocalProject;
+
+      try {
+        const parsedProject = JSON.parse(localProject);
+        safeLocalProject =
+          typeof parsedProject === "object" && parsedProject !== null
+            ? parsedProject
+            : { bs: [], positions: [] };
+      } catch (e) {
+        safeLocalProject = { bs: [], positions: [] };
+      }
+
+      this.props.dispatch(loadProject(JSON.stringify(safeLocalProject)));
+
       this.setState({
         projectName: "",
-        projectDescription: ""
+        projectDescription: "",
+        positions: safeLocalProject.positions || [],
+        bs: safeLocalProject.bs || [],
       });
-      console.log("loadState new positions are " +
-                  this.state.positions + " name " +
-                  this.state.projectName); // RBDDBG
+
+      console.log(
+        "loadState new positions are " +
+          this.state.positions +
+          " name " +
+          this.state.projectName
+      );
     }
   }
 
@@ -773,7 +818,7 @@ class ProjectEditor extends React.Component {
 
   checkIfAllPortsAreOpen(blocks) {
     let flag = true;
-    blocks.forEach(block => {
+    blocks.forEach((block) => {
       if (
         block.osc &&
         block.oscPort &&
@@ -799,7 +844,7 @@ class ProjectEditor extends React.Component {
 
   toggleRecentProjectsDropdown() {
     this.setState({
-      recentProjectsDropdownOpen: !this.state.recentProjectsDropdownOpen
+      recentProjectsDropdownOpen: !this.state.recentProjectsDropdownOpen,
     });
   }
 
@@ -827,32 +872,35 @@ class ProjectEditor extends React.Component {
     if (saveAs) {
       this.copyname();
     }
-    
+
     if (isUserLoggedIn()) {
       if (this.state.projectId !== "new" && !saveAs) {
         this.setState({
-          isProjectChanged: false
+          isProjectChanged: false,
         });
-        
+
         this.updateProject({
           projectId: this.state.projectId,
-          content: JSON.stringify(this.props.blocks)
+          content: JSON.stringify(this.props.blocks),
         })
-        .then(response => {
-          console.log('Response:', response); // Log the full response to inspect its structure
-      
-          if(response && response.message === "Project Updated successfully"){ 
-            callback && callback();
-          } else {
-            // Handle unsuccessful update here, maybe show a toastr message to notify the user
-            showToastr("error", "Project update was not successful");
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+          .then((response) => {
+            console.log("Response:", response); // Log the full response to inspect its structure
+
+            if (
+              response &&
+              response.message === "Project Updated successfully"
+            ) {
+              callback && callback();
+            } else {
+              // Handle unsuccessful update here, maybe show a toastr message to notify the user
+              showToastr("error", "Project update was not successful");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       } else {
-        this.saveCallback = callback; 
+        this.saveCallback = callback;
         this.toggleModal();
       }
     } else {
@@ -860,30 +908,29 @@ class ProjectEditor extends React.Component {
     }
   };
 
-  updateProject(payload) {
-    updateProject(payload)
-      .then(() => {
-        showToastr("success", "Project successfully updated");
-      })
-      .catch(error => {
-        showToastrError(error);
-      });
-  }
-  
-  
+  updateProject = (payload) => {
+    return new Promise((resolve, reject) => {
+      updateProject(payload)
+        .then((response) => {
+          showToastr("success", "Project successfully updated");
+          resolve(response); // resolving the promise with the response
+        })
+        .catch((error) => {
+          showToastrError(error);
+          reject(error); // rejecting the promise with the error
+        });
+    });
+  };
 
-  createProject = event => {
+  createProject = (event) => {
     event.preventDefault();
     
     let isFormValid = true,
       error = "";
     const { projectName, projectDescription } = this.state;
     const blocks = this.props.blocks;
-    if (Object.keys(blocks).length === 0) {
-      error = "Project is Empty";
-      console.log("createProject: blocks" + Object.keys(blocks).length )
-      isFormValid = false;
-    } else if (projectName === "") {
+
+    if (projectName === "") {
       error = "Project name is required";
       
       isFormValid = false;
@@ -894,26 +941,25 @@ class ProjectEditor extends React.Component {
       let payload = {
         projectName,
         projectDescription,
-        blocks
+        blocks,
       };
 
       createProject(payload)
-        .then(data => {
-          console.log("createProject" + JSON.stringify(data));
-          this.setState({ projectName: "", projectDescription: "" });
+        .then((data) => {
           showToastr("success", "Project created successfully");
+          this.setState({ projectName: "", projectDescription: "" });
 
-
-
-         // Call the saved callback function, if available
-        if (this.saveCallback) {
-          this.saveCallback();
-        } else {
-          window.location = "/project-editor/" + data.project_id;
-        }
-         
+          // Call the saved callback function, if available
+          if (this.saveCallback) {
+            this.saveCallback();
+          } else {
+            // window.location = "/project-editor/" + data.project_id;
+            setTimeout(() => {
+              window.location = "/project-editor/" + data.project_id;
+            }, 1400); // Delay of 5 seconds
+          }
         })
-        .catch(error => {
+        .catch((error) => {
           showToastrError(error);
         });
     } else {
@@ -928,17 +974,17 @@ class ProjectEditor extends React.Component {
     let nowOut = this.props.blocks.nowOut;
     let blocks = {
       bs,
-      nowOut
+      nowOut,
     };
     this.downloadFile({
       projectName,
       projectDescription,
-      blocks
+      blocks,
     });
     showToastr("success", "Project has been exported");
   };
 
-  downloadFile = async myData => {
+  downloadFile = async (myData) => {
     const fileName = myData.projectName;
     const json = JSON.stringify(myData, null, "\u0020");
     let readData = JSON.parse(json);
@@ -971,15 +1017,15 @@ class ProjectEditor extends React.Component {
     }
   };
 
-  afterRegister = res => {
+  afterRegister = (res) => {
     const { token, error, name } = res;
     if (error) {
-      showToastrError(res);
+      showToastrError("mlmlm", res);
     } else {
       cookies.set("name", name, { path: "/" });
       cookies.set("token", token, { path: "/" });
       Store.populateFromProps({
-        userToken: { email: undefined, token: token }
+        userToken: { email: undefined, token: token },
       });
       showToastr("success", "Please enter project details");
       this.toggleRegisterModal();
@@ -987,16 +1033,16 @@ class ProjectEditor extends React.Component {
     }
   };
 
-  afterSignin = res => {
+  afterSignin = (res) => {
     const { token, error, name } = res;
     if (error) {
-      showToastrError(res);
+      showToastrError("kokok", res);
     } else {
       showToastr("success", "Logged in successfully.");
       cookies.set("name", name, { path: "/" });
       cookies.set("token", token, { path: "/" });
       Store.populateFromProps({
-        userToken: { email: undefined, token: token }
+        userToken: { email: undefined, token: token },
       });
       this.toggleLoginModal();
       this.toggleModal();
@@ -1021,26 +1067,24 @@ class ProjectEditor extends React.Component {
         this.openNewPort(this.props.blocks["bs"]);
       }, 2000);
     }
-
-    const handleFileRead = e => {
+    const handleFileRead = (e) => {
       const content = JSON.parse(fileReader.result);
       let payload = {
         projectName: content.projectName,
         projectDescription: content.projectDescription,
-        blocks: content.blocks
+        blocks: content.blocks,
       };
       createProject(payload)
-        .then(data => {
+        .then((data) => {
           showToastr("success", "Project imported successfully");
           this.upload.value = "";
           window.location = data.project_id;
         })
-        .catch(error => {
-          showToastrError(error);
+        .catch((error) => {
+          showToastrError("fhfh", error);
         });
     };
-
-    const handleFileChosen = file => {
+    const handleFileChosen = (file) => {
       fileReader = new FileReader();
       fileReader.onloadend = handleFileRead;
       fileReader.readAsText(file);
@@ -1053,23 +1097,17 @@ class ProjectEditor extends React.Component {
         <React.Fragment>
           <NavigationPrompt
             renderIfNotActive={true}
-            // Confirm navigation if going to a path that does not start with current path:
-            // when={(crntLocation, nextLocation) =>
-            //   this.state.isProjectChanged &&
-            //   (!nextLocation ||
-            //     !nextLocation.pathname.startsWith(crntLocation.pathname))
-            // }
-            when={(crntLocation, nextLocation) =>
-              {
-                if (this.state.isProjectChanged &&
-                    (!nextLocation || !nextLocation.pathname.startsWith(crntLocation.pathname))) {
-                  this.setState({ nextLocation: nextLocation });
-                  return true;
-                }
-                return false;
+            when={(crntLocation, nextLocation) => {
+              if (
+                this.state.isProjectChanged &&
+                (!nextLocation ||
+                  !nextLocation.pathname.startsWith(crntLocation.pathname))
+              ) {
+                this.setState({ nextLocation: nextLocation });
+                return true;
               }
-            }
-            
+              return false;
+            }}
             disableNative={true}
           >
             {({ isActive, onCancel, onConfirm }) => {
@@ -1083,19 +1121,20 @@ class ProjectEditor extends React.Component {
                         they will be lost.
                       </Modal.Body>
                       <Modal.Footer>
-                      <button
-  className="btn btn-info"
-  onClick={() => {
-    this.saveProject(false, () => {
-      if (this.state.nextLocation) {
-        window.location.href = this.state.nextLocation.pathname;
-      }
-    });
-  }}
->
-  Save and Leave
-</button>
-                         
+                        <button
+                          className="btn btn-info"
+                          onClick={() => {
+                            this.saveProject(false, () => {
+                              if (this.state.nextLocation) {
+                                window.location.href =
+                                  this.state.nextLocation.pathname;
+                              }
+                            });
+                          }}
+                        >
+                          Save and Leave
+                        </button>
+
                         <button className="btn btn-success" onClick={onCancel}>
                           Stay On Page
                         </button>
@@ -1228,16 +1267,16 @@ class ProjectEditor extends React.Component {
                       <div className="nav-link p-0">
                         <input
                           style={{ display: "none" }}
-                          ref={ref => (this.upload = ref)}
+                          ref={(ref) => (this.upload = ref)}
                           type="file"
                           id="projectFile"
                           accept=".json"
-                          onChange={e => handleFileChosen(e.target.files[0])}
+                          onChange={(e) => handleFileChosen(e.target.files[0])}
                           className="dropdown-item"
                         />
                         <div
                           className="dropdown-item"
-                          onClick={e => this.upload.click()}
+                          onClick={(e) => this.upload.click()}
                         >
                           Import
                         </div>
@@ -1263,7 +1302,7 @@ class ProjectEditor extends React.Component {
                       Recent Projects
                     </DropdownToggle>
                     <DropdownMenu tog>
-                      {recentP.map(project => (
+                      {recentP.map((project) => (
                         <NavLink
                           className="dropdown-item border-0"
                           to={"/project-editor/" + project.id}
@@ -1285,7 +1324,7 @@ class ProjectEditor extends React.Component {
                     style={{
                       color: "white",
                       lineHeight: "2.5",
-                      marginLeft: "15px"
+                      marginLeft: "15px",
                     }}
                     id="ActualProject"
                   >
@@ -1296,34 +1335,24 @@ class ProjectEditor extends React.Component {
               </Nav>
               
               <Nav className="ml-auto" navbar>
-              {/* <NavItem>
-              <NavLink 
-                className="nav-link" 
-                to="#" 
-                onClick={this.toggleFullScreen}
-              >
-                <span className="fa fa-expand " />
-              </NavLink>
-            </NavItem> */}
-             <NavItem>
-             <NavLink 
-                className="nav-link" 
-                to={window.location.pathname}
-                onClick={this.toggleFullScreen}
-              >
+                <NavItem>
+                  <NavLink
+                    className="nav-link"
+                    to={window.location.pathname}
+                    onClick={this.toggleFullScreen}
+                  >
                     <span className="fa fa-expand " />
                   </NavLink>
                 </NavItem>
-            <NavItem>
-              <NavLink 
-                className="nav-link" 
-                to={window.location.pathname}
-                onClick={this.toggleFullScreen}
-              >
-                <span className="fa fa-compress " />
-              </NavLink>
-            </NavItem>
-
+                <NavItem>
+                  <NavLink
+                    className="nav-link"
+                    to={window.location.pathname}
+                    onClick={this.toggleFullScreen}
+                  >
+                    <span className="fa fa-compress " />
+                  </NavLink>
+                </NavItem>
               </Nav>
             </div>
           </Navbar>
@@ -1431,8 +1460,8 @@ class ProjectEditor extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  blocks: state.blocks
+const mapStateToProps = (state) => ({
+  blocks: state.blocks,
 });
 
 export default withRouter(connect(mapStateToProps)(ProjectEditor));
