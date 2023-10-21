@@ -20,7 +20,7 @@ import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput.jsx";
 import "./projects.css";
 import SideNav from "./sideNav";
-
+import {Component} from "react";
 class ProjectHome extends Component {
   constructor(props) {
     super(props);
@@ -263,9 +263,9 @@ class ProjectHome extends Component {
                   src={dummy}
                   alt="Description of Image"
                 />
-              </Card>
-            </CardDeck>
-          </Col>
+              {/* </Card> */}
+            {/* </CardDeck>
+          </Col> */}
           <Col>
             {isUserLoggedIn() ? (
               <Row className="mb-3">
@@ -428,7 +428,6 @@ class ProjectHome extends Component {
               </Card>
             </Row>
             </Col>
-          </Row>
           
           <Modal
             centered
