@@ -13,16 +13,19 @@ import {
   showToastr,
   showToastrError,
   timedifference,
-  updateRecentProjects,
+  updateRecentProjects
 } from "../../actions/common";
 import { fetchUserProjects } from "./actions";
 import Modal from "react-bootstrap/Modal";
 import FormInput from "../form/FormInput.jsx";
-
-class DashboardHome extends React.Component {
+import "./projects.css";
+import SideNav from "./sideNav";
+import {Component} from "react";
+class ProjectHome extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      wid: "100px",
       projectsShown: localStorage.getItem("projectsShown")
         ? localStorage.getItem("projectsShown")
         : 3,
@@ -34,9 +37,11 @@ class DashboardHome extends React.Component {
         : "Column",
       localProject: !!JSON.parse(localStorage.getItem("localProject")),
       isJoinPerformanceModalOpen: false,
+      projects : [],
     };
     this.openProjectEditor = this.openProjectEditor.bind(this);
   }
+
 
   openProjectEditor(projectId, projectName = "Local Project") {
     if (!!!projectId) {
@@ -46,23 +51,37 @@ class DashboardHome extends React.Component {
     this.props.history.push("/project-editor/" + projectId);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.loadProject();
-  }
+    if (this.props.user) {
+      fetchUserProjects()
+        .then(data => {
+          // console.log(data);
+          this.setState({ projects: data });
+          console.log(this.state.projects); 
+        })
+        .catch(error => {
+          showToastrError(error);
+        });
+    } else {
+      return;
+    }
+  };
+
   toggleJoinPerformanceModal = () =>
     this.setState({
-      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen,
+      isJoinPerformanceModalOpen: !this.state.isJoinPerformanceModalOpen
     });
 
   handlePerformanceJoin() {
     let { performanceName } = this.state;
 
     fetchPerformance(performanceName)
-      .then((res) => {
+      .then(res => {
         showToastr("success", "Joined performance successfully");
         window.location = "/performance/" + res.name;
       })
-      .catch((err) => {
+      .catch(err => {
         showToastr("error", "The performance doesn't exist!");
       });
   }
@@ -71,12 +90,12 @@ class DashboardHome extends React.Component {
     // case on the user, if there is no user logged in, then no
     // project get displayed
     var projectsShown = this.state.projectsShown;
-    if (isUserLoggedIn() && this.props.user) {
+  if (isUserLoggedIn() && this.props.user) {
       fetchUserProjects(projectsShown)
-        .then((data) => {
+        .then(data => {
           this.setState({ projects: data });
         })
-        .catch((error) => {
+        .catch(error => {
           showToastrError(error);
         });
     } else {
@@ -87,35 +106,131 @@ class DashboardHome extends React.Component {
     const params = { [name]: value };
     this.setState(params);
   };
+  
+  openSidenav = ( ) => {
+    this.setState({
+      wid: "360px"
+    })
+  }
+
+  closeSideNav = () => {
+    this.setState({
+      wid: "100px"
+    })
+  }
 
   render() {
     const responsive = {
       superLargeDesktop: {
         // the naming can be any, depends on you.
         breakpoint: { max: 4000, min: 3000 },
-        items: 5,
+        items: 5
       },
       desktop: {
         breakpoint: { max: 3000, min: 1024 },
-        items: 3,
+        items: 3
       },
       tablet: {
         breakpoint: { max: 1024, min: 464 },
-        items: 2,
+        items: 2
       },
       mobile: {
         breakpoint: { max: 464, min: 0 },
-        items: 1,
-      },
+        items: 1
+      }
     };
     var recentP = localStorage.getItem("recentProjects")
       ? JSON.parse(localStorage.getItem("recentProjects"))
       : [];
-    var { projects } = this.state;
+    var projects = this.state.projects;
+    console.log("projects: " + projects)
     return (
-      <div className="container">
-        <Row className="py-1">
-          <Col>
+      <div id="projects-page-container">
+        <div onMouseEnter={()=>{this.openSidenav()}} onMouseLeave={()=>{this.closeSideNav()}}>
+          <SideNav width={this.state.wid}></SideNav>
+        </div>
+        
+          <div id="projects-main-container">
+            <div id="projects-library-header">
+              <p className="text" style={{fontSize: 4 + "rem", fontStyle: "bold"}}>LIBRARY</p>
+            </div>
+            <div id="projects-create-project-btn-container">
+              <Button id="projects-create-project-btn" onClick={() => this.openProjectEditor()}>NEW PROJECT</Button>
+            </div>
+            <div id="projects-name-label" className="text projects-label">NAME</div>
+            <div id="projects-description-label" className="text projects-label">DESCRIPTION</div>
+            <div id="projects-collaborator-label" className="text projects-label">COLLABORATORS</div>
+            <div id="projects-date-label" className="text projects-label">CREATED</div>
+            <div id="projects-launch-label" className="text projects-label">LAUNCH</div>
+            
+            <div id="projects-project-names" className="projects-column">
+              <ListGroup className="projects-lists">
+                {projects.map(o => {
+                  return (
+                    <ListGroupItem className="projects-name-item">
+                        {o.name}
+                    </ListGroupItem>
+                  );
+                })}
+              </ListGroup>
+            </div>
+            <div id="projects-project-descriptions" className="projects-column">
+              <ListGroup className="projects-lists">
+                  {projects.map(o => {
+                    return (
+                      <ListGroupItem className="projects-name-item">
+                          {o.description}
+                      </ListGroupItem>
+                    );
+                  })}
+              </ListGroup>
+            </div>
+            <div id="projects-project-collaborators" className="projects-column">
+              <ListGroup className="projects-lists">
+                    {projects.map(o => {
+                      return (
+                        <ListGroupItem className="projects-name-item">
+                            {o.sharedUsers}
+                        </ListGroupItem>
+                      );
+                    })}
+                </ListGroup>
+            </div>
+            <div id="projects-project-dates" className="projects-column">
+              <ListGroup className="projects-lists">
+                  {projects.map(o => {
+                    return (
+                      <ListGroupItem className="projects-name-item">
+                          {/* {timedifference(o.lastActive, Date.now() / 1000)} */}
+                          {o.created_date.split("T")[0]}
+                      </ListGroupItem>
+                    );
+                  })}
+              </ListGroup>
+            </div>
+            <div id="projects-project-launch" className="projects-column">
+              <ListGroup className="projects-lists">
+                    {projects.map(o => {
+                      return (
+                        <ListGroupItem className="projects-name-item">
+                            <Button
+                              color="link"
+                              onClick={() =>
+                                this.openProjectEditor(o.project_id, o.name)
+                              }
+                              className="projects-launch-btn"
+                            >
+                              LAUNCH
+                          </Button>{" "}
+                        </ListGroupItem>
+                      );
+                    })}
+              </ListGroup>
+            </div>
+          </div>
+          
+          {/* <Row className="py-1">
+            <Col>
             <CardDeck className="mt-2">
               <Card
                 className="mt-2"
@@ -148,9 +263,9 @@ class DashboardHome extends React.Component {
                   src={dummy}
                   alt="Description of Image"
                 />
-              </Card>
-            </CardDeck>
-          </Col>
+              {/* </Card> */}
+            {/* </CardDeck>
+          </Col> */}
           <Col>
             {isUserLoggedIn() ? (
               <Row className="mb-3">
@@ -312,41 +427,40 @@ class DashboardHome extends React.Component {
                 )}
               </Card>
             </Row>
-          </Col>
-        </Row>
-
-        <Modal
-          centered
-          show={this.state.isJoinPerformanceModalOpen}
-          onHide={this.toggleJoinPerformanceModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Join an existing performance</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <FormInput
-              className="form-control"
-              type="text"
-              name="performanceName"
-              required={true}
-              placeholder="Performance Name"
-              onChange={this.handleOnChange}
-              autoFocus
-            />
-            <br></br>
-          </Modal.Body>
-          <Modal.Footer>
-            <button
-              className="btn btn-primary"
-              onClick={() => this.handlePerformanceJoin()}
-            >
-              Go
-            </button>
-          </Modal.Footer>
-        </Modal>
+            </Col>
+          
+          <Modal
+            centered
+            show={this.state.isJoinPerformanceModalOpen}
+            onHide={this.toggleJoinPerformanceModal}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Join an existing performance</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <FormInput
+                className="form-control"
+                type="text"
+                name="performanceName"
+                required={true}
+                placeholder="Performance Name"
+                onChange={this.handleOnChange}
+                autoFocus
+              />
+              <br></br>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                className="btn btn-primary"
+                onClick={() => this.handlePerformanceJoin()}
+              >
+                Go
+              </button>
+            </Modal.Footer>
+          </Modal> */}
       </div>
     );
   }
 }
 
-export default withRouter(DashboardHome);
+export default withRouter(ProjectHome);

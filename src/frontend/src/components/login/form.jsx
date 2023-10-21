@@ -2,6 +2,7 @@ import React from "react";
 import FormInput from "../form/FormInput.jsx";
 import { showToastrError } from "../../actions/common";
 import { loginUser } from "./actions";
+import "./login.css";
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -75,7 +76,7 @@ class LoginForm extends React.Component {
           style={inputStyle} 
         />
         <br />
-        <button onClick={() => this.handleSubmit()} className="btn btn-primary">
+        <button onClick={() => this.handleSubmit()} className="btn btn-primary login-button">
           Login
         </button>
       </div>

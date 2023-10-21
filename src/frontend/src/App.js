@@ -12,7 +12,7 @@ import { validateUser } from "./actions/validation";
 import { showToastrError } from "./actions/common";
 import store from "./store";
 import Cookies from "universal-cookie";
-
+import bg from "./assets/images/bgmovie6.mov";
 const cookies = new Cookies();
 
 class App extends React.Component {
@@ -53,7 +53,7 @@ class App extends React.Component {
           <Main />
           <ToastContainer
             position="top-right"
-            autoClose={5000}
+            autoClose={9000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick={true}
@@ -61,6 +61,9 @@ class App extends React.Component {
             draggable={false}
             pauseOnHover={true}
           />
+          {/* <video id="video_background" preload="auto" autoPlay muted loop> */}
+          {/* <source src={bg} type="video/mp4" /> */}
+        {/* </video> */}
         </div>
       </Provider>
     );

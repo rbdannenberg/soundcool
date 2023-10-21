@@ -1313,7 +1313,7 @@ class Mixer extends React.Component {
                   width: "1rem",
                   height: "160px",
                   position: "absolute",
-                  left: "15px",
+                  // left: "15px",
                   top: "29px"
                 }}
                 onChange={e => {

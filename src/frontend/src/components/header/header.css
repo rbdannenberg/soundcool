@@ -1,0 +1,45 @@
+/* @font-face {
+    font-family: 'SHRIMP';
+    src: Sans-Serif;
+}
+
+.text{
+    font-family: 'SHRIMP';
+} */
+
+#header-container{
+    /* padding: 0px 90px; */
+    z-index: 10;
+    position: sticky;
+    width: 100%;
+    top: 0;
+    background-color: black;
+    height: fit-content;
+}
+
+.header-text{
+    color:white !important; 
+}
+
+.dropdown-menu.show{
+    z-index: 1000;
+}
+
+
+.navbar-nav{
+  height: fit-content;
+  color:white;
+
+}
+
+.dropdown-toggle nav-link{
+  color:white;
+}
+
+/* EDITOR MENU OPTIONS */
+.editor-nav-container{
+    position: relative;
+    height: 500px;
+    width: 100%;
+    z-index: 10;
+}

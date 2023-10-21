@@ -18,7 +18,7 @@ const presets = require("./routes/presets.js");
 const oscRoute = require("./routes/osc.js");
 var auth = require("./routes/auth.js");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9000;
 const app = express();
 
 const server = http.createServer(app);

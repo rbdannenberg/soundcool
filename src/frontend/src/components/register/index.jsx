@@ -5,7 +5,8 @@ import RegisterForm from "./form";
 import { redirectToRoot } from "./actions";
 import { showToastr, showToastrError } from "../../actions/common";
 import Cookies from 'universal-cookie';
- 
+import "./register.css";
+
 const cookies = new Cookies();
 class Register extends Component {
   //
@@ -26,17 +27,14 @@ class Register extends Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <Breadcrumb>
-            <BreadcrumbItem>
-              <Link to="/home">Home</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem active>Register</BreadcrumbItem>
-          </Breadcrumb>
+      <div id="page-container">
+        <div id="register-container">
+          <div className="register-row">
+            REGISTER
+          </div>
+          <RegisterForm afterRegister={this.afterRegister} />
+          <Link id="login-link" to="/signIn">Already a user? Login</Link>
         </div>
-        <RegisterForm afterRegister={this.afterRegister} />
-        <Link to="/signIn">Already a user? Login</Link>
       </div>
     );
   }

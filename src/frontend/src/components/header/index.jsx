@@ -20,6 +20,7 @@ import {
 } from "../../actions/common";
 
 import { NavLink } from "react-router-dom";
+import "./header.css";
 
 class Header extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class Header extends Component {
         <Navbar
           dark
           expand="md"
-          style={{ padding: "0 90px 0 90px", zIndex: 10 }}
+          id="header-container"
         >
           <div className="container-fluid">
             <NavbarToggler onClick={this.toggleNav} />
@@ -71,14 +72,14 @@ class Header extends Component {
               <Nav navbar>
 
                 <NavItem>
-                  <NavLink className="nav-link" to="/home">
-                    <span className="fa fa-home " /> Home
+                  <NavLink className="nav-link text" to="/home">
+                    <span className="fa header-text" /> Home
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
-                  <NavLink className="nav-link" to="/about">
-                    <span className="fa fa-info " /> About us
+                  <NavLink className="nav-link text" to="/about">
+                    <span className="fa" /> About us
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -104,15 +105,15 @@ class Header extends Component {
                   </NavItem>
                 )}
                 <NavItem>
-                  <NavLink className="nav-link" to="/contact">
-                    <span className="fa fa-address-card " /> Contact us
+                  <NavLink className="nav-link text" to="/contact">
+                    <span className="fa" /> Contact us
                   </NavLink>
                 </NavItem>
 
                 {!isUserLoggedIn() && (
                   <NavItem>
-                    <NavLink className="nav-link" to="/signIn">
-                      <span className="fa fa-address-card " /> Login
+                    <NavLink className="nav-link text" to="/signIn">
+                      <span className="fa" /> Login
                     </NavLink>
                   </NavItem>
                 )}

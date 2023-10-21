@@ -1,0 +1,168 @@
+
+html { 
+    height: 100%; 
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+body{
+    width: 100vw; 
+    /* background-image: url('../../assets/images/bg.png'); */
+    height: 100vh; 
+    /* background-size:100% 100%; 
+    background-repeat: no-repeat; */
+    scroll-behavior: smooth;
+    overflow: scroll;
+}
+#home_container{
+    height: 100vh;
+    object-fit: contain;
+    width: 100%;
+    margin-top: 50px;
+}
+.section1-container{
+    height: fit-content;
+}
+#section1{ 
+    width: 100vw; 
+    height: 100vh;
+    /* padding: 5rem 0.5rem 3rem 0.5rem; */
+    display: table-cell;
+    vertical-align: middle;    
+}
+
+#section2{
+    width: 100vw; 
+    height: 100vh; 
+    padding: 3rem 0.5rem 3rem 0.5rem;
+    display: flex; 
+}
+
+.card-img-top {
+    width: 15vw;
+    height: auto;
+    padding: 10px 50px;
+}
+
+.card{
+    padding: 20px 0px 0px 0px;
+    border-radius: 10%;
+    box-shadow: 1px 1px 5px 5px whitesmoke;
+    color: black;
+    background-color: white;
+}
+
+.icons{
+    justify-content: space-evenly;
+}
+
+/* @font-face {
+    font-family: 'SHRIMP';
+    src: sans-serif;
+    src: url('../../assets/fonts/SHRIMP.ttf');
+} */
+
+.text{
+    font-family: sans-serif;
+    color: black; 
+}
+
+.card-subheader{
+    font-size: 0.8vw;
+    margin-bottom: 20px;
+}
+
+.card-text{
+    font-family: sans-serif;
+}
+
+.card-title{
+    font-size: 1.2vw;
+}
+
+#subtext{
+    margin-top: 1%;
+    margin-bottom: 2%;
+    font-size: 1.5vw; 
+    color: black;
+}
+
+#sub-header{
+    font-size: 2vw; 
+    color: black;
+    font-style: italic;
+}
+
+#header{
+    font-size: 10vw; 
+    font-weight: bold;
+    color: black;
+}
+
+
+#scroll_button{
+    padding: 1% 2%;
+    border-radius: 40px;
+    border-width: 2px;
+    border-color: white;
+    font-family: sans-serif;
+    font-size: 1vw;
+    background-color: transparent;
+    color: black;
+}
+
+#scroll_button_container{
+    margin-top: 5%;
+    text-align: center;
+}
+
+.row-container{
+    overflow: hidden;
+    margin: 0px 10px;
+    max-width: 20%;
+    text-align: center;
+    background-color: transparent;
+    border-radius: 20px;
+    border: solid whitesmoke;
+    border-width: medium;
+    box-shadow: 1px 1px 3px 3px whitesmoke;
+    padding: 5px;
+    padding-top: 20px;
+}
+
+.rows-container{
+    width: 90vw;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.section2-container{
+    max-width: 90vw; 
+    margin-left:auto; 
+    margin-right: auto;     
+    
+}
+
+#down{
+    margin: auto;
+}
+
+.section2-card-text{
+    margin-top: 50px; 
+}
+
+#section2-title{
+    font-size: 5rem;
+}
+
+#home-subheader-container{
+    margin-top: 3%;
+    margin-bottom: 2%;
+}
+
+#home-section2-title-container{
+    margin-bottom: 2%;
+}
+
+#home-section2-subtitle{
+    font-size: 1.5rem;
+}

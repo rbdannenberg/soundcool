@@ -33,6 +33,7 @@ const request = (
       if (status === 404) {
         statusText = "Not Found";
       }
+      console.log(res)
       return res.json();
     })
     .then(data => {
