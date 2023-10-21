@@ -466,6 +466,12 @@ class PerformancesList extends Component {
               >
                 Import performance
               </button>
+              <a
+                className="btn btn-warning"
+                href="/projectsList"
+              >
+                Show projects
+              </a>
               {/* <button
                 className="btn btn-warning"
                 onClick={this.toggleJoinPerformanceModal}

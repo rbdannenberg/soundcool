@@ -104,6 +104,7 @@ router.post("/register", (req, res) => {
           const CREATE_NEW_USER = `INSERT INTO users(name,password,email) values('${name}','${hash_password}','${email}')`;
 
           connection.query(CREATE_NEW_USER, (err, results) => {
+            console.log(err, results);
             res.json(handleRegister(err, results.insertId, name));
           });
           // Your user creation code ends here
