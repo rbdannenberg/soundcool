@@ -8,7 +8,7 @@ along with react frontend and mysql database.
 - Prerequisites
   - Python (required by Node; install Python if it is not already installed on your computer)
   - sqlite3 library (required if you use sqlite3 instead of MySQL; maybe required anyway)
-  - Node 10.16.0+
+  - Node 10.16.0
     - Linux (these commands tested on Ubuntu 18.04 LTS):
       - `sudo apt update`
       - `sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates`
@@ -20,16 +20,16 @@ along with react frontend and mysql database.
       - in a terminal, `node -v` to get the current version if any
       - if the version is not v10.16.0, uninstall node.js:
         - maybe `nvm` is the best approach
-        - if you used brew, `brew install nvm`, or you can also try 
+        - brew will no longer install v10.16.0, but you may need to clear out a brew installation:
           - `brew uninstall node`
           - `brew cleanup`
           - `rm -f /usr/local/bin/npm /usr/local/lib/dtrace/node.d`
           - `rm -rf ~/.npm`
+          - `rm /opt/homebrew/bin/npm`
         - otherwise, the [brute force approach (tested) is here](https://gist.github.com/TonyMtz/d75101d9bdf764c890ef)
       - install node 10.16.0
         - again, mayb `nvm` is the best approach
-        - if you use brew, `brew install nmv`, or `brew install node@10`
-        - otherwise download and install [the .pkg file](https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg)
+        - otherwise (tested) download and install [the .pkg file](https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg)
   - NPM 6.10.0+
   	- Linux/OS X note: NPM version is 6.9.0 for Node 10.16. They are installed together.
   - MySQL 8.0+
@@ -95,7 +95,7 @@ If you are running the whole project, there are four steps.
     
     - Linux (Ubuntu 18.04 LTS): [Install MySQL Workbench](https://linuxize.com/post/how-to-install-and-use-mysql-workbench-on-ubuntu-18-04/)
 
-  - Create a new user using the command below (You can use mysql command line or mysql workbench).
+  - Create a new user using the command below (You can use mysql command line or mysql workbench). You may want to substitute a "real" password for `password` in either of the following commands):
     ```sql
     CREATE USER 'soundcool'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
     GRANT ALL PRIVILEGES ON soundcool.* TO 'soundcool'@'localhost';
@@ -123,14 +123,14 @@ If you are running the whole project, there are four steps.
     help says "Create a new schema in the connected server", and note
     that databases are called "schemas".) 
 
-  - Initialize the soundcool database. If using mysql command line,
-    run this command in terminal in the soundcool/src/database directory:
+  - Initialize the soundcool database. If using mysql command line, run this where
+    user "soundcool" and password "password" match the CREATE
+    USER command above. (In my test, I got prompted for a password, so I'm not
+    sure this is right -RBD). Run this command in terminal in the
+    `soundcool/src/database directory`:
     ```sql
     mysql -u soundcool -p soundcool < create-soundcool-db.sql
     ```
-
-    (Note: user "soundcool" and password "password" match the CREATE
-    USER command above.)
     
     If using MySQL workbench, use File:Open SQL Script... to open the
     `database/create-soundcool-db.sql` file.
@@ -143,9 +143,11 @@ If you are running the whole project, there are four steps.
     user2@welcome.com with password welcome.
     
 
-- **Step 4**: Setting up enviormental variables
+- **Step 4**: Setting up environment variables
   - Create a `.env` file in `backend` directory
-  - Copy the below details in the newly created `.env` file.
+  - Copy the below details in the newly created `.env` file. Again, if
+    you picked a different user name or password above, substitute your
+    choices for `soundcool` and `password` in the following:
     ```ruby
       MYSQL_HOST= localhost
       MYSQL_USER= soundcool
@@ -158,7 +160,7 @@ If you are running the whole project, there are four steps.
 
   - Go to `backend` folder.
   - Run `npm start`
-  - Go to http://localhost:5000 to see the project!
+  - Go to http://localhost:9000 to see the project!
   - Remember there are already two users: "User 1" as user1@welcome.com with password welcome, and "User 2" as user2@welcome.com with password welcome.
 
 - **Step 6(Optional)**: Development Tools 
@@ -169,7 +171,7 @@ Alternatively, if you just want to run the project front-end and want it to use 
 - Go to `frontend/src/components/constants.js` file.
 - Change the `BASE_URL` with the X
 - run `npm start`
-- It will start the project editor in http://localhost:3000
+- It will start the project editor in http://localhost:9000
 
 ## How to develop
 
