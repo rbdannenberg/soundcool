@@ -156,11 +156,13 @@ If you are running the whole project, there are four steps.
       JWT_SECRET= randomText
     ```
 
-- **Step 5**: Start server
+- **Step 5**: Start servers
 
   - Go to `backend` folder.
   - Run `npm start`
-  - Go to http://localhost:9000 to see the project!
+  - In a new shell, go to `frontend` folder.
+  - Run `npm start`
+  - This will automatically open localhost:3000 which will show the Soundcool home page!
   - Remember there are already two users: "User 1" as user1@welcome.com with password welcome, and "User 2" as user2@welcome.com with password welcome.
 
 - **Step 6(Optional)**: Development Tools 
@@ -171,7 +173,6 @@ Alternatively, if you just want to run the project front-end and want it to use 
 - Go to `frontend/src/components/constants.js` file.
 - Change the `BASE_URL` with the X
 - run `npm start`
-- It will start the project editor in http://localhost:9000
 
 ## How to develop
 
@@ -179,11 +180,13 @@ As you may noticed, both the create-react-app and server-side-rendering
 require you to compile the react codes into a bundle and serve it when running the app.
 Without recompiling them, you will find that none of your changes are shown.
 
+If someone understands the basic architecture, this is a good place to describe it. From what I can tell, the fontend server is a proxy for the backend server, but I don't know why it is set up this way. [RBD]
+
 - Anytime you make changes in the folder `frontend` (the create-react-app)
   - Run `npm run webpack`. You don't need to call this every time, since webpack is watching you and automatically recompile when you make changes.
 - Any changes you make in terms of the server (anything outside of both client folders)
   will be automatically updated by `nodemon`. As you can see it's nodemon instead of node
-  running when you starts the server.
+  running when you start the server.
   
 ### package-lock.json
 
@@ -193,14 +196,12 @@ git stash push --include-untracked
 git stash drop
 ```
 
-## What do we currently have
+## What do we currently have (obsolete material here)
 
 - A simple login scheme.
   - Please check the database for the table of user, projects and sounds.
     You can login as `user1@welcome.com` or `user2@welcome.com` using password `welcome`, they will have a few pre-populated projects and
     sound associated.
-  - There is authorization scheme so that you can only access the projects or sounds
-    when you logged in as a user.
 - Register
 
 For what needs to be implemented, please refer to the Issues page which contains TODOs.
