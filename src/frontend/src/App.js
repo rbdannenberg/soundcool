@@ -12,7 +12,7 @@ import { validateUser } from "./actions/validation";
 import { showToastrError } from "./actions/common";
 import store from "./store";
 import Cookies from "universal-cookie";
-import bg from "./assets/images/bgmovie6.mov";
+
 const cookies = new Cookies();
 
 class App extends React.Component {

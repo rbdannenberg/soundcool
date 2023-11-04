@@ -32,20 +32,26 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: true
-            }
-          },
-          "css-loader"
-        ],
-        include: /\.moodule\.css$/,
+        test: /\.m?js/,
+        // resolve: {
+        //     fullySpecified: false
+        // }
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i,
+        test: /\.(sass|less|css)$/,
+        use: [
+          "style-loader", "css-loader"
+          // {
+          //   loader: MiniCssExtractPlugin.loader,
+          //   options: {
+          //     hmr: true
+          //   }
+          // },
+        ],
+        // include: /\.module\.css$/,
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg|woff|woff2|ttf|eot)$/i,
         use: [
           {
             loader: "file-loader",
@@ -54,11 +60,16 @@ module.exports = {
             }
           }
         ]
-      }
+      },
+      // {
+      //   test: /\.(woff|woff2|ttf|eot)$/,
+      //   use: 'file?name=fonts/[name].[ext]!static'
+      // }
     ]
   },
   resolve: {
-    extensions: [".js", ".jsx"]
+    extensions: [".js", ".jsx", ".css"],
+    modules: ["node_modules", "src/frontend/src/assets"]
   },
   plugins: [
     new MiniCssExtractPlugin({
