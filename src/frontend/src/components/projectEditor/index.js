@@ -84,7 +84,9 @@ class ProjectEditor extends React.Component {
   };
 
   constructor(props) {
-    console.log("ProjectEditor constructor: " + JSON.stringify(props.match.params.id)); // RBDDBG
+    console.log(
+      "ProjectEditor constructor: " + JSON.stringify(props.match.params.id)
+    ); // RBDDBG
     super(props);
     this.state = {
       nextLocation: null,
@@ -924,7 +926,7 @@ class ProjectEditor extends React.Component {
 
   createProject = (event) => {
     event.preventDefault();
-    
+
     let isFormValid = true,
       error = "";
     const { projectName, projectDescription } = this.state;
@@ -932,12 +934,14 @@ class ProjectEditor extends React.Component {
 
     if (projectName === "") {
       error = "Project name is required";
-      
+
       isFormValid = false;
     }
 
     if (isFormValid) {
-      console.log("createProject: this.props.blocks" + JSON.stringify(this.props.blocks))
+      console.log(
+        "createProject: this.props.blocks" + JSON.stringify(this.props.blocks)
+      );
       let payload = {
         projectName,
         projectDescription,
@@ -1148,11 +1152,15 @@ class ProjectEditor extends React.Component {
               }
             }}
           </NavigationPrompt>
-          <Navbar id="editor-nav-container-fluid" light expand="md" style={{ padding: "0 90px 0 90px" }}>
+          <Navbar
+            id="editor-nav-container-fluid"
+            light
+            expand="md"
+            style={{ padding: "0 90px 0 90px" }}
+          >
             <div className="editor-nav-container">
               <Nav navbar id="editor-nav-component">
                 {isUserLoggedIn() && (
-            
                   <Dropdown
                     nav
                     isOpen={this.state.viewDropdownOpen}
@@ -1333,7 +1341,7 @@ class ProjectEditor extends React.Component {
                   </NavItem>
                 )}
               </Nav>
-              
+
               <Nav className="ml-auto" navbar>
                 <NavItem>
                   <NavLink

@@ -11,13 +11,17 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Collapse
+  Collapse,
 } from "reactstrap";
+import home from "../../assets/images/house.png";
+import contact from "../../assets/images/contact.png";
+import dashboard from "../../assets/images/dashboard.png";
+import login from "../../assets/images/login.png";
+import about from "../../assets/images/about.png";
+import media from "../../assets/images/media.png";
+import projects from "../../assets/images/project.png";
 
-import {
-  clearData,
-  isUserLoggedIn
-} from "../../actions/common";
+import { clearData, isUserLoggedIn } from "../../actions/common";
 
 import { NavLink } from "react-router-dom";
 import "./header.css";
@@ -53,11 +57,7 @@ class Header extends Component {
 
     return (
       <React.Fragment>
-        <Navbar
-          dark
-          expand="md"
-          id="header-container"
-        >
+        <Navbar dark expand="md" id="header-container">
           <div className="container-fluid">
             <NavbarToggler onClick={this.toggleNav} />
             <NavbarBrand className="mr-5" href="/">
@@ -70,50 +70,58 @@ class Header extends Component {
             </NavbarBrand>
             <Collapse isOpen={this.state.isNavOpen} navbar>
               <Nav navbar>
-
                 <NavItem>
                   <NavLink className="nav-link text" to="/home">
-                    <span className="fa header-text" /> Home
+                    <img src={home} alt="logo" className="projects-logo" />
+                    HOME
                   </NavLink>
                 </NavItem>
 
                 <NavItem>
                   <NavLink className="nav-link text" to="/about">
-                    <span className="fa" /> About us
+                    <img src={about} alt="logo" className="projects-logo" />
+                    ABOUT US
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/dashboard">
-                    <span className="fas fa-columns" /> Dashboard
+                    <img src={dashboard} alt="logo" className="projects-logo" />
+                    DASHBOARD
                   </NavLink>
                 </NavItem>
                 {isUserLoggedIn() && (
-
                   <NavItem>
                     <NavLink className="nav-link" to="/projectsList">
-                      <span className="fa fa-project-diagram" /> Projects
+                      <img
+                        src={projects}
+                        alt="logo"
+                        className="projects-logo"
+                      />
+                      PROJECTS
                     </NavLink>
                   </NavItem>
                 )}
 
                 {isUserLoggedIn() && (
-                  
                   <NavItem>
                     <NavLink className="nav-link" to="/medias">
-                      <span className="fa fa-list " /> Media
+                      <img src={media} alt="logo" className="projects-logo" />
+                      MEDIA
                     </NavLink>
                   </NavItem>
                 )}
                 <NavItem>
                   <NavLink className="nav-link text" to="/contact">
-                    <span className="fa" /> Contact us
+                    <img src={contact} alt="logo" className="projects-logo" />
+                    CONTACT US
                   </NavLink>
                 </NavItem>
 
                 {!isUserLoggedIn() && (
                   <NavItem>
                     <NavLink className="nav-link text" to="/signIn">
-                      <span className="fa" /> Login
+                      <img src={login} alt="logo" className="projects-logo" />
+                      LOGIN
                     </NavLink>
                   </NavItem>
                 )}
@@ -132,8 +140,8 @@ class Header extends Component {
                     <DropdownMenu>
                       <DropdownItem>
                         <NavLink className="text-black" to="/user-profile">
-                        <span className="fa fa-address-card " /> Edit Profile
-                      </NavLink>
+                          <span className="fa fa-address-card " /> Edit Profile
+                        </NavLink>
                       </DropdownItem>
                       <DropdownItem onClick={this.handleLogout}>
                         Logout
@@ -150,8 +158,8 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  blocks: state.blocks
+const mapStateToProps = (state) => ({
+  blocks: state.blocks,
 });
 
 export default withRouter(connect(mapStateToProps)(Header));

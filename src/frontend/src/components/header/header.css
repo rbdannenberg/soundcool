@@ -1,45 +1,55 @@
 /* @font-face {
-    font-family: 'SHRIMP';
-    src: Sans-Serif;
+  font-family: "SHRIMP";
+  src: Sans-Serif;
 }
 
-.text{
-    font-family: 'SHRIMP';
+.text {
+  font-family: "SHRIMP";
 } */
 
-#header-container{
-    /* padding: 0px 90px; */
-    z-index: 10;
-    position: sticky;
-    width: 100%;
-    top: 0;
-    background-color: black;
-    height: fit-content;
-}
-
-.header-text{
-    color:white !important; 
-}
-
-.dropdown-menu.show{
-    z-index: 1000;
-}
-
-
-.navbar-nav{
+#header-container {
+  /* padding: 0px 90px; */
+  z-index: 10;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  background-color: black;
   height: fit-content;
-  color:white;
-
 }
 
-.dropdown-toggle nav-link{
-  color:white;
+.header-text {
+  color: white !important;
+  font-size: large;
+}
+
+.dropdown-menu.show {
+  z-index: 1000;
+}
+
+.navbar-nav {
+  height: fit-content;
+  color: white;
+  margin-left: 20px;
+}
+/* header.css */
+
+.navbar .nav-item {
+  display: flex;
+  margin-right: 30px; /* Space between NavItems */
+}
+
+.navbar .nav-item .projects-logo {
+  margin-right: 2px; /* Adjust the space between the logo and the text */
+}
+
+.dropdown-toggle nav-link {
+  color: white;
 }
 
 /* EDITOR MENU OPTIONS */
-.editor-nav-container{
-    position: relative;
-    height: 500px;
-    width: 100%;
-    z-index: 10;
+.editor-nav-container {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  z-index: 10;
 }

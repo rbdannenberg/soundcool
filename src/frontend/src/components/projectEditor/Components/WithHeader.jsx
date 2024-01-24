@@ -24,16 +24,16 @@ import {
   SamplePlayer,
   Sequencer,
   Reverb,
-  GranSynth
+  GranSynth,
   // #endregion
 } from "../../audioUI/all";
 import {
   getCssPropById,
   focusElementById,
-  setCssPropById
+  setCssPropById,
 } from "../../../actions/common";
 
-const eva = typeName => {
+const eva = (typeName) => {
   let t;
   switch (typeName) {
     case "Delay":
@@ -111,7 +111,7 @@ const WithHeader = ({
   handleDelete,
   dispatch,
   disablePatching,
-  assignedOSC
+  assignedOSC,
 }) => {
   let {
     typeName,
@@ -124,7 +124,7 @@ const WithHeader = ({
     outNode,
     inNode,
     collapse,
-    color
+    color,
   } = blockInfo;
   const Block = eva(typeName);
   let inButton;
@@ -136,10 +136,10 @@ const WithHeader = ({
       <div
         className="btn btn-sm m-1 text-center"
         style={{
-          // width: "1.5rem",
+          width: "1.5rem",
           height: "1rem",
           fontSize: "0.64rem",
-          padding: "0px"
+          padding: "0px",
         }}
       />
     );
@@ -149,13 +149,13 @@ const WithHeader = ({
       height: "1rem",
       fontSize: "0.5rem",
       padding: "0px",
-      border: "0px"
+      border: "0px",
     };
     if (inNode[0] && inNode[0].length > 0) {
       let backgroundColor = getCssPropById(inNode[0][1], "background-color");
       style = {
         ...style,
-        backgroundColor
+        backgroundColor,
       };
     }
     inButton = (
@@ -168,13 +168,13 @@ const WithHeader = ({
               dispatch({
                 type: "DISCONNECTING_BLOCK",
                 node: "nowIn",
-                value: [name, "0", id, audioObj]
+                value: [name, "0", id, audioObj],
               });
             } else {
               dispatch({
                 type: "CONNECTING_BLOCK",
                 node: "nowIn",
-                value: [name, "0", id, audioObj]
+                value: [name, "0", id, audioObj],
               });
             }
           }
@@ -191,15 +191,15 @@ const WithHeader = ({
             let inId = inNode[0][1];
             var elem = document.getElementById(inId);
             elem.style.opacity = 1;
-          }else{
-            var elem = document.querySelectorAll('.text-left');
+          } else {
+            var elem = document.querySelectorAll(".text-left");
             console.log(elem);
-            for (var i=0; i < elem.length; i++){
+            for (var i = 0; i < elem.length; i++) {
               elem[i].style.opacity = 1;
             }
           }
         }}
-        onContextMenu={e => {
+        onContextMenu={(e) => {
           e.preventDefault();
           if (inNode[0]) {
             focusElementById(inNode[0][0]);
@@ -219,7 +219,7 @@ const WithHeader = ({
     padding: "0px",
     width: "1rem",
     height: "1rem",
-    fontSize: "0.5rem"
+    fontSize: "0.5rem",
   };
   const circleStyle = {
     width: "1rem",
@@ -230,7 +230,7 @@ const WithHeader = ({
     lineHeight: 1.428571429,
     borderRadius: "0.5rem",
     borderColor: "black",
-    backgroundColor: "white"
+    backgroundColor: "white",
   };
 
   const outId = nowOut === undefined ? undefined : nowOut[2];
@@ -249,31 +249,31 @@ const WithHeader = ({
         id="outButton"
         className="btn btn-sm text-center m-1"
         style={style}
-        onContextMenu={e => {
+        onContextMenu={(e) => {
           e.preventDefault();
           if (outNode[0]) {
             focusElementById(outNode[0][0]);
             setCssPropById({
               id: outNode[0][0],
               prop: "boxShadow",
-              temp: true
+              temp: true,
             });
           }
         }}
-        onClick={e => {
+        onClick={(e) => {
           if (!disablePatching) {
             e.preventDefault();
             dispatch({
               type: "CONNECTING_BLOCK",
               node: "nowOut",
-              value: [name, "0", id, audioObj]
+              value: [name, "0", id, audioObj],
             });
           }
         }}
         onMouseEnter={() => {
           if (outNode) {
             let outId;
-            outNode.forEach(node => {
+            outNode.forEach((node) => {
               if (!!node && node.length > 0) {
                 outId = node[1];
                 document.getElementById(outId).style.opacity = 0.5;
@@ -284,7 +284,7 @@ const WithHeader = ({
         onMouseLeave={() => {
           if (outNode) {
             let outId;
-            outNode.forEach(node => {
+            outNode.forEach((node) => {
               if (!!node && node.length > 0) {
                 outId = node[1];
                 document.getElementById(outId).style.opacity = 1;
@@ -303,11 +303,11 @@ const WithHeader = ({
       id={id}
       className="text-left my-1"
       style={{
-        width: "13rem",
+        width: "14rem",
         backgroundColor: color,
         borderColor: "grey",
         borderStyle: "solid",
-        borderWidth: "2px"
+        borderWidth: "2px",
       }}
     >
       <div id={name}>
@@ -317,25 +317,26 @@ const WithHeader = ({
             {name}
           </span>
           <input
-            class="form-control badge-secondary badge-pill m-1"
+            // class="form-control badge-secondary badge-pill m-1"
+            class="badge-secondary badge-pill m-1"
             style={{
               fontSize: "0.64rem",
               color: "black",
               backgroundColor: "white",
               textAlign: "center",
               fontWeight: "bold",
-              width: "5.3rem",
+              width: "5.8rem",
               height: "0.7rem",
-              display: "inline"
+              display: "inline",
             }}
             id="givenName"
             value={givenName}
-            onChange={e => {
+            onChange={(e) => {
               dispatch({
                 type: "CHANGE_BLOCK",
                 id: id,
                 field: "givenName",
-                value: e.target.value
+                value: e.target.value,
               });
             }}
           />
@@ -348,14 +349,14 @@ const WithHeader = ({
                 height: "1rem",
                 fontSize: "0.4rem",
                 padding: "0rem",
-                border: "0.0625rem solid black"
+                border: "0.0625rem solid black",
               }}
               onClick={() =>
                 dispatch({
                   type: "CHANGE_BLOCK",
                   id: id,
                   field: "collapse",
-                  value: undefined
+                  value: undefined,
                 })
               }
             >
@@ -370,13 +371,13 @@ const WithHeader = ({
                 height: "1rem",
                 fontSize: "0.4rem",
                 padding: "0rem",
-                border: "0.0625rem solid black"
+                border: "0.0625rem solid black",
               }}
               onClick={() => {
                 // handleDelete();
                 dispatch({
                   type: "DELETE_BLOCK",
-                  id: id
+                  id: id,
                 });
               }}
             >
@@ -394,9 +395,9 @@ const WithHeader = ({
     </div>
   );
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    state
+    state,
   };
 };
 export default connect(mapStateToProps)(WithHeader);
