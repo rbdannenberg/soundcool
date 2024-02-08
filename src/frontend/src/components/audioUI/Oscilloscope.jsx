@@ -149,20 +149,6 @@ toggleExpand = () => {
 
 
 
-<button 
-                    style={{
-                      position: "absolute", 
-    bottom: "18px",  // Adjust these values if needed 
-    left: "20px",    // Adjust these values if needed
-    border: "none", 
-   backgroundColor: "transparent",
-     padding: "0px", // Add padding to ensure the button has some space around the image
-    cursor: "pointer"
-                    }} 
-                    onClick={this.toggleExpand}
-                >
-                    <img src="/assets/images/project_component_logos/Magnifier.png" alt="Expand/Shrink" style={{ width: "17px", height: "22px" }}/>
-                </button>
             </div>
         </React.Fragment>
     );

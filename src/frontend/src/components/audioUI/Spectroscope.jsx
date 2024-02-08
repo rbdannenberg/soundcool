@@ -165,22 +165,6 @@ if (audioObj.options.history) {
                     -4 s
                   </div>
           
-                          {/* Magnifier button */}
-                          <button
-                              style={{
-                                  position: "absolute",
-                                  bottom: "5px",
-                                  left: "44px",
-                                  border: "none",
-                                  backgroundColor: "transparent",
-                                  padding: "0px",
-                                  cursor: "pointer",
-                                  fontSize: "0.8rem"
-                              }}
-                              onClick={() => {}}
-                          >
-                              <img src="/assets/images/project_component_logos/Magnifier.png" alt="Expand/Shrink" style={{ width: "17px", height: "21px" }}/>
-                          </button>
 
                           {/* dB amplification buttons */}
                           <div style={{ position: "absolute", top: "35%", right: "1%", display: "flex", flexDirection: "column", fontSize: "0.8rem" }}>
@@ -284,22 +268,6 @@ if (audioObj.options.history) {
             <button style={{ borderRadius: "5px", margin: "0px" }} onClick={this.zoomOut}>-</button>
             </div>
 
-                {/* Magnifier button */}
-                <button
-                    style={{
-                        position: "absolute",
-                        bottom: "5px",
-                        left: "44px",
-                        border: "none",
-                        backgroundColor: "transparent",
-                        padding: "0px",
-                        cursor: "pointer",
-                        fontSize: "0.8rem"
-                    }}
-                    onClick={() => {}}
-                >
-                    <img src="/assets/images/project_component_logos/Magnifier.png" alt="Expand/Shrink" style={{ width: "17px", height: "21px" }}/>
-                </button>
 
                 <div style={{ position: "absolute", top: "35%", right: "1%", display: "flex", flexDirection: "column", fontSize: "0.8rem" }}>
     <button style={{ borderRadius: "5px",margin: "1px 0px"}} onClick={() => this.amplify(10)}>+</button>
