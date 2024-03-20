@@ -26,7 +26,7 @@ import Pan from "./Appmodules/Pan";
 import Mixer from "./Appmodules/Mixer";
 import Player from "./Appmodules/Player";
 import SignalGen from "./Appmodules/SignalGen";
-import SamplePlayer from "./Appmodules/SamplePlayer";
+import SamplePlayer from "./Appmodules/SimplePlayer";
 
 
 
@@ -146,7 +146,7 @@ class Main extends Component {
            <Route path="/mixer" component={Mixer} /> 
            <Route path="/signalGen" component={SignalGen} /> 
            <Route path="/player" component={Player} /> 
-           <Route path="/sampleplayer" component={SamplePlayer} /> 
+           <Route path="/simpleplayer" component={SimplePlayer} /> 
            
 
           <Route path="/" component={Home} />

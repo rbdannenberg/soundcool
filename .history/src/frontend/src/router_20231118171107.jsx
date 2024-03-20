@@ -22,12 +22,7 @@ import { showToastr, showToastrError } from "./actions/common";
 import UserProfile from "./components/userProfile/user";
 //testing
 import Delay from "./Appmodules/Delay";
-import Pan from "./Appmodules/Pan";
-import Mixer from "./Appmodules/Mixer";
-import Player from "./Appmodules/Player";
-import SignalGen from "./Appmodules/SignalGen";
-import SamplePlayer from "./Appmodules/SamplePlayer";
-
+import Pan from "./components/audioUI/Pan";
 
 
 
@@ -143,11 +138,6 @@ class Main extends Component {
            {/* Add the app route */}
            <Route path="/delay" component={Delay} /> 
            <Route path="/pan" component={Pan} /> 
-           <Route path="/mixer" component={Mixer} /> 
-           <Route path="/signalGen" component={SignalGen} /> 
-           <Route path="/player" component={Player} /> 
-           <Route path="/sampleplayer" component={SamplePlayer} /> 
-           
 
           <Route path="/" component={Home} />
         </Switch>
